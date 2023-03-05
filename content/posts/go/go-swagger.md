@@ -71,3 +71,33 @@ func ShowAccount(ctx *gin.Context) {
 >- number (float32)
 >- boolean (bool)
 >- user defined struct
+
+
+
+## 三: 生成文档
+
+```shell
+swag init -g main.go
+```
+
+
+
+## 四: 引用
+
+```go
+_ "swaggerDemo/docs"
+```
+
+
+
+## 五: 载入gin
+
+```go
+engine.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+```
+
+
+
+## 六: 访问index页面
+
+地址/swagger/index.html

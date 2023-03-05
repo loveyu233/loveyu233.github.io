@@ -12,6 +12,20 @@ tags:
 
 # 命令
 
+## kubectl语法
+
+```she
+kubectl [command] [TYPE] [NAME] [flags]
+```
+
+**command**：指定在一个或多个资源上要执行的操作。例如：create、get、describe、delete、apply等
+
+**TYPE**：指定资源类型（如：pod、node、services、deployments等）。资源类型大小写敏感，可以指定单数、复数或缩写形式。
+
+**NAME**：指定资源的名称。名称大小写敏感。**如果省略名称空间，则显示默认名称空间的资源的详细信息**或者提示：No resources found in default namespace.。
+
+**flags**：指定可选的**命令参数**。例如，可以使用 -s 或 --server标识来指定Kubernetes API服务器的地址和端口；-n指定名称空间等。
+
 ## 查看节点详情
 
 必须在主节点执行才可以
