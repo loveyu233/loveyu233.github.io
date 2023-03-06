@@ -48,12 +48,12 @@ languages:
             url: posts/go
           - name: 👨🏻‍💻Java
             url: posts/java
-          - name: 👨🏻‍💻数据库
-            url: posts/数据库
-          - name: 👨🏻‍💻中间件
-            url: posts/中间件
-          - name: 👨🏻‍💻其他
-            url: posts/其他
+          - name: 👨🏻‍💻Databases
+            url: posts/databases
+          - name: 👨🏻‍💻Middleware
+            url: posts/middleware
+          - name: 👨🏻‍💻Other
+            url: posts/other
 
       menu:
         main:
