@@ -1,1133 +1,1069 @@
 ---
 title: "Vue"
-date: 2020-11-04T19:38:37+08:00
+date: 2022-12-04T19:38:37+08:00
 author: ["loveyu"]
 draft: false
 categories: 
-- 其他
+- other
 tags: 
 - vue
+
 ---
 
+# 指令
 
+|                             语法                             |                             描述                             |
+| :----------------------------------------------------------: | :----------------------------------------------------------: |
+|                          {{ key }}                           |                           插值句法                           |
+|              v-bind:value="key" / :value="key"               |                           单向绑定                           |
+|             v-model:value="key" / v-model="key"              |                 双向绑定,只能用于有value值的                 |
+|     @keydown / @keyup / @keydown/keyup.键位名称.键位名称     |                           键盘事件                           |
+| @click.prevent / @click.stop / @click.once / @click.capture / @click.self / @click.passive | 默认事件 / 冒泡 / 只执行一次 / 捕获模式 / event.target是当前元素在执行 / 不等待事件处理完 |
+|              v-if / v-else-if / v-else / v-show              | v-if 条件不成立则没有这个元素, v-show则是使用display隐藏这个元素 |
+|       v-for="(key, value/index) in data" :key="唯一值"       |                   key里面的值必须是唯一的                    |
+|              v-text / v-html / v-once / v-cloak              |        文本 / 解析html / 只执行一次 / 渲染完毕后删除         |
+|                          ref="key"                           |                     获取 this.#refs.key                      |
+|              this.$nextTick(function () { ... }              |                下一次dom更新时执行的回调方法                 |
 
-# 基础
-
->```js
->const x = new Vue({
->el: '#root',    //指定容器
->data: {     //设置数据
->   name: 'world',
->   age: 18,
->   url: "www.baidu.com",
->   user: {
->       username: "zhangsan",
->       password: "qwe"
->   }
->}
->})
->```
-
-## 插值语法
-
->{{name}}
-
-## 指令语法
-
->```
-><a v-bind:href="url" v-bind:x="name">百度</a>
->```
->
->`v-bind:`可以简写为     `:`
-
-## el和data写法
-
->```js
->const x = new Vue({
->el: '#root',    //指定容器
->data: {     //设置数据
->   name: 'world',
->   age: 18,
->   url: "www.baidu.com",
->   user: {
->       username: "zhangsan",
->       password: "qwe"
->   }
->}
->})
->```
->
->等同于：
->
->```js
->const vm = new Vue({
->  // data: function () {
->  //     return {
->  //         name: "zhangsan233"
->  //     }
->  // }
->data() {
->    return {
->        name: "zhangsan233"
->    }
->}
->})
->vm.$mount("#root")
->```
->
->data(){return}是data:function(){return}的简写
-
-## 单双向绑定
-
->单向：`v-bind`
->
->双向：`v-model`
->
->单向是vm向m传递；双向是vm向m传递，m可以向vm传递
->
->`v-model:value="name" `简写：`v-model="name"`
-
-## #数据代理
-
->```js
->var num = 19
->let user = {
->username: "qwe"
->}
->Object.defineProperty(user,"age",{
->value: 12,
->enumerable: true,   //是否可以枚举（遍历）默认false
->writable: true, //是被可以被改写，默认false
->configurable: true,  //是否可以被删除，默认false
->//读取age属性就会调用这个函数
->get:function () {
->   return num
->},
->//修改age调用,value就是修改的值, set(){} * set:function(){}
->set(value) {
->   console.log(value)
->   num = value
->}
->})
->```
-
-## 事件绑定
-
->```js
-><button v-on:click="o1">a</button>
-><button @click="o2(22)">b</button>
->
->new Vue({
->el: '#root',
->methods:{
->o1(){
-> alert("a")
->},
->o2(num) {
-> alert(num)
->}
->}
->})
->```
->
->`v-on:click` 简写为 `@click`
->
->var a = true
->
->click后边可以下一写简单的语句：@click=" a ? b : c "
-
-## 事件修饰符
-
->```js
-><!--    事件修饰符可以连着用
->@click.stop.once
->-->
-><!--  prevent：阻止默认事件，超链接跳转  -->
-><a href="www.baidu.com" @click.prevent="c1">跳转</a>
-><!--  stop：阻止冒泡  -->
-><div class="d1" @click="c1">div1
->   <div class="d2" @click.stop="c1">div2</div>
-></div>
-><!-- once：只触发一次   -->
-><button type="button" @click.once="c1">button</button>
-><!-- capture：使用事件的捕获，正常情况是点d2，触发d1，冒泡d2，d2相应事件，d1相应事件
->         使用事件捕获就是d1会先触发，在冒泡到d2触发-->
-><div class="d1" @click.capture="c1">div1
->   <div class="d2" @click="c1">div2</div>
-></div>
-><!--  self：只有event.target是当前操作的元素才会触发事件,也可以阻止冒泡发生  -->
-><div class="d1" @click.self="c1">div1
->   <div class="d2" @click="c1">div2</div>
-></div>
-><!--    passive：异步，先相应触发结果同时对触发事件做处理-->
->```
-
-## 键位事件
-
->```
-><!--@keyup：键盘事件
->keyup：按键需要按下松开才可以
->keydown：按键只需按下即可
->-->
-><!--
->vue提供的事件有：
->enter，delete，esc，上下左右，空格，换行
->vue未提供的用按键的名字绑定，如果这个按键是两个单词，两个首字母小写中间-隔开
->特殊的按键：
->ctrl，shift，alt，meta这几个是系统按键，想要这几个键位触发事件需要在按下这个键的同时按下其他键然后释放其他键才可以
->keyup需要这样，keydown不需要
->-->
-><!--可以使用组合键
->@keyup.q.w
->-->
->```
->
->```js
->methods:{
->en(){
->  // console.log(e.keyCode)     //获取键盘按键对应数字
->  // console.log(e.key)    //获取键盘按键对应键位名字
->   alert("。。。")
->}
->}
->```
-
-## 计算属性
-
->```html
-><input v-model:value="a">
-><input v-model:value="b">
-><input v-model:value="c">
->```
->
->```js
->const vm = new Vue({
->el: '#root',
->data: {
->   a: "a",
->   b: "b"
->},
->computed: {
->   c:{
->       get(){
->           return this.a+"-"+this.b
->       },
->       set(v){
->           const tr = v.split("-")
->           this.a = tr[0]
->           this.b = tr[1]
->       }
->   }
->}
->})
->```
->
->计算属性在读取第一次后会被缓存，下次使用的时候就不会调用而是拿缓存
->
->当计算属性被修改就会调用set方法
->
->当计算属性被读取的时候调用get方法，当依赖的数据被修改也会调用
->
->*当计算属性只有get方法的时候可以简写为*：
->
->```js
->c() {
->return this.a + "-" + this.b
->}
->```
->
->这个fun函数就相当于get了
-
-## 监视属性
-
->```js
->//也可以监视计算属性
->const vm = new Vue({
->   el: '#root',
->   data: {
->       name: "a"
->   },
->   // watch:{
->   //     name: {
->   //         immediate: true,
->   //         handler(newName,oldName){
->   //             console.log("newName:",newName,",oldName:",oldName)
->   //         }
->   //     }
->   // }
->})
->
->//第二种写法：
->vm.$watch('name',{
->   immediate: true,
->   handler(newName,oldName){
->       console.log("newName:",newName,",oldName:",oldName)
->   }
->})
->```
->
->`immediate`：程序启动就调用一次handler
->
->`handler`：当被监视的属性发成改变的时候会被调用，参数为新的属性值和旧的属性值
->
->```js
->//监听多级结构中的某一个属性
->'a.b':{
->handler(newA,oldB){
->   console.log("newA:",newA,",oldB:",oldB)
->}
->},
->//监听多级结构的全部属性
->a: {
->deep: true,
->handler(newA,oldA){
->   console.log("newA/B:",newA,",oldA/B:",oldA)
->}
->}
->```
->
->`deep`：深度监视；默认是false，fasle是不能监听的
->
->简写：简写相当于只有一个handler函数，也就不能开启深度监视了
->
->```js
->name(n,o){
->console.log(n,o)
->}
->
->vm.$watch("name",function (n,o) {
->	  console.log(n,o)
->})
->```
-
-## 样式绑定
-
->```js
-><!--        适用于：样式类名不确定需要动态绑定-->
-><div class="a" :class="b">b</div>
-><!--        适用于：样式个数不确定，名字也不确定-->
-><div class="a" :class="cd">cd</div>
-><!--        适用于：绑定个数确定，名字也确定，单要动态决定用那个-->
-><div class="a" :class="bcd">bcd</div>
-><!--        控制style样式用key-value格式-->
-><div class="a" :style="d">d</div>
->```
->
->```js
->new Vue({
->el: '#root',
->data: {
->   b: "b",
->   cd: ["c","d"],
->   bcd:{
->       b: true,
->       c: true,
->       d: true
->   },
->   d: {
->       background: "red"
->   }
->}
->})
->```
-
-## 条件渲染
-
->```js
-><!--    if和elseIf和else这三个不能分开-->
-><h1 v-if="a *= 1">1</h1>
-><h1 v-else-if="a *= 2">2</h1>
-><h1 v-else>3</h1>
-><!--    show的条件为false是只是调用display：none-->
-><h1 v-show="a *= 4">v-show</h1>
-><!--    template里面的是一组，加载时不会加载template这个标签-->
-><template v-if="a*=5">
->   <h1>a</h1>
->   <h1>b</h1>
->   <h1>c</h1>
->   <h1>d</h1>
-></template>
->```
-
-## 遍历
-
->```js
-><h1>遍历数组</h1>
-><ul>
->   <li v-for="(p,index) in persons" :key="p.id">
->       {{index}}---{{p.age}}---{{p.username}}
->   </li>
-></ul>
-><h1>遍历kv</h1>
-><ul>
->   <li v-for="(v,k) in user" :key="k">
->       {{k}}---{{v}}
->   </li>
-></ul>
-><h1>循环</h1>
-><ul>
->   <li v-for="(number,index) in 10">
->       {{number}}---{{index}}
->   </li>
-></ul>
->```
->
->```js
->new Vue({
->el: '#root',
->data: {
->   persons:[
->       {id:"1",username:"张1",age:11},
->       {id:"2",username:"张2",age:12},
->       {id:"3",username:"张3",age:13},
->       {id:"4",username:"张4",age:14},
->   ],
->   user:{
->       id: 19,
->       username: "qwe",
->       password: "asd"
->   }
->}
->})
->```
-
-## 搜索
-
->```js
-><div id="root">
-><input type="text" v-model="sear">
-><button @click="sortType = 1">升序</button>
-><button @click="sortType = 2">降序</button>
-><button @click="sortType = 0">原序</button>
-><ul>
->   <li v-for="u in searUsers" :key="u.id">
->       {{u.id}}----{{u.name}}---{{u.age}}
->   </li>
-></ul>
-></div>
->```
->
->```js
->//watch实现
->//     new Vue({
->//         el: '#root',
->//         data: {
->//             users:[
->//                 {id:1,"name":"abc","age":10},
->//                 {id:2,"name":"bcd","age":11},
->//                 {id:3,"name":"cde","age":12},
->//                 {id:4,"name":"def","age":13},
->//             ],
->//             sear: "",
->//             searUsers: "",
->//         },
->//         watch: {
->//             sear:{
->//                 immediate: true,
->//                 handler(n,o){
->//                     this.searUsers = this.users.filter((u)=>{
->//                         return u.name.indexOf(n) !* -1
->//                     })
->//                 }
->//             }
->//         }
->//     })
->
->
->//监视实现
->new Vue({
->el: '#root',
->data: {
->   users: [
->       {id: 1, "name": "abc", "age": 10},
->       {id: 2, "name": "bcd", "age": 4},
->       {id: 3, "name": "cde", "age": 1},
->       {id: 4, "name": "def", "age": 13},
->   ],
->   sear: "",
->   sortType: 0
->},
->computed: {
->   searUsers() {
->       const arr = this.users.filter((u) => {
->           return u.name.indexOf(this.sear) !* -1
->       })
->       if (this.sortType) {
->           arr.sort((u1,u2)=>{
->               return this.sortType *= 1 ? u1.age - u2.age : u2.age - u1.age
->           })
->       }
->       return arr
->   }
->}
->})
->```
-
-## 表单
-
->```html
-><div id="root">
-><!--
->number:转化为整形
->trim：去掉前后空格
->lazy：失去焦点再收集
->-->
-><form @click.prevent="">
->   账号：<input type="number" v-model.number="info.account"><br/><br/>
->   密码：<input type="password" v-model.trim="info.password"><br/><br/>
->   性别：男：<input type="radio" value="nan" name="s" v-model="info.sex">
->        女：<input type="radio" value="nv" name="s" v-model="info.sex"><br/><br/>
->   爱好：a<input type="checkbox" value="a" v-model="info.aihao">
->   b<input type="checkbox" value="b"  v-model="info.aihao">
->   c<input type="checkbox" value="c"  v-model="info.aihao"><br/><br/>
->   地址：<select v-model="info.addr">
->   <option value="bejing">北京</option>
->   <option value="shanghai">上海</option>
->   <option value="guangzhou">广州</option>
->       </select><br/><br/>
->   other：<textarea v-model.lazy="info.other"></textarea><br/><br/>
->   协议:<input type="checkbox" v-model="info.xieyi"><br/><br/>
->   <button>提交</button>
-></form>
-></div>
->```
->
->```js
->new Vue({
->el: '#root',
->data: {
->   info: {
->       account: "",
->       password: "",
->       sex: "",
->       aihao: [],
->       addr: "",
->       other: "",
->       xieyi: ""
->   }
->}
->})
->```
-
-## 管道过滤
-
->```html
-><div id="root">
-><h1>{{age | add}}</h1>
-><h1>{{age | add | add2}}</h1>
-><h1>{{age | add | add2 | add3}}</h1>
-></div>
->```
->
->```js
->//全局
->Vue.filter("add3",function (value){
->return value * 10
->})
->new Vue({
->el: '#root',
->data: {
->   age: 10
->},
->//局部
->filters: {
->   add(value){
->       return value+10
->   },
->   add2(value){
->       return value + 100
->   }
->}
->})
->```
-
-## 内置指令
-
->```html
-><div id="root">
-><!--
->v-text：整体替换调标签内的内容
->v-html：可以编译内容中的语法
->v-pre：vue加载是会调过这个标签
->v-one：编译一次后就变为静态的
->-->
-><h1>msg:{{msg}}</h1>
-><h1 v-text="msg"></h1>
-><h1 v-html="msg"></h1>
-><h1 v-pre v-html="msg">aaa</h1>
-><h1 v-one v-html="msg"></h1>
-></div>
->```
->
->```js
->new Vue({
->el: '#root',
->data: {
->   msg: "<h1>abc</h1>"
->}
->})
->```
-
-## 自定义指定
-
->```html
-><div id="root">
-><h1>{{msg}}</h1>
-><h1 v-add="msg"></h1>
-></div>
->```
->
->```js
->new Vue({
->el: '#root',
->data: {
->   msg: 10
->},
->directives: {
->   //简写
->   add(element,binding){
->       element.innerHTML = binding.value + 10
->   },
->   //完全体
->   del:{
->       bind(element,binding){
->           console.log("指令与元素绑定时调用")
->       },
->       inserted(element,binding){
->           console.log("指令所在元素插入页面时调用")
->       },
->       update(element,binding){
->           console.log("指令所在模版重新解析时调用")
->       }
->   }
->}
->})
->```
-
-
-
-# 组件
-
-## 非单文件组件
-
->在一个文件里面写多个组件
->
->```js
->const school = Vue.extend({
->template:  `<div><h1>{{name}}</h1><h1>{{address}}</h1></div>`,
->data(){
->   return{
->       name: "哈哈",
->       address: "北京"
->   }
->}
->})
->const user = Vue.extend({
->template:  `<div><h1>{{name}}</h1><h1>{{age}}</h1></div>`,
->data(){
->   return{
->       name: "张三",
->       age: 10
->   }
->}
->})
->const gUser = Vue.extend({
->template:  `<div><h1>{{name}}</h1><h1>{{age}}</h1></div>`,
->data(){
->   return{
->       name: "张三",
->       age: 10
->   }
->}
->})
->Vue.component("guser",gUser)
->new Vue({
->el: '#root',
->components: {
->   school,
->   user
->}
->})
->new Vue({
->   el: '#root2'
->})
->```
->
->`Vue.component`:全局注册
->
->`components: {school,user}`:局部注册
->
->```html
-><div id="root">
-><school></school>
-><hr/>
-><user></user>
-><user></user>
-><hr/>
-><guser></guser>
-></div>
-><hr/>
-><div id="root2">
-><guser></guser>
-></div>
->```
->
->使用：直接当作标签使用
-
-
-
-# 插件：
-
-定义plugins.js
+# 计算属性
 
 ```js
-export default {
-    install(vue) {
-        vue.mixin({
-            data(){
-                return{
-                    pluginName: "plugins.js"
+computed: {
+  // 计算的值
+  info: {
+    	// 获取这个值时调用
+      get() {
+          return ...
+      },
+      // 设置值时调用,value为设置的值
+      set(value) {
+          ...
+      }
+  }
+}
+
+// 如果只读不修改的话可以简写为:
+computed: {
+  info() {
+      return ...
+  }
+}
+```
+
+
+
+# 监视属性
+
+```js
+watch: {
+  name: {
+      // immediate页面打开直接调用一次,用来初始化
+      immediate: true,
+      handler(newdata, olddata) {
+          console.log("newData: ", newdata, "  oldData: ", olddata)
+      }
+  },
+  // 监视里面某一个属性可以写: "number.a" 必须加上引号不然格式不对,默认不写引号是因为简写
+  number: {
+      // 开启深度监视,否则无法直接监视number里面的属性变化
+      deep: true,
+      handler(newDta, oldData) {
+          console.log(newDta, " ", oldData)
+      }
+  },
+  // 当只有handler时简写:
+  demo(newData, oldData) {
+      console.log(newData, oldData)
+      // 这里必须是箭头方式的,因为只有箭头的没有this向外招,招到demo,demo的this是vue
+      // 不使用箭头的this就是wind
+      setTimeout(() => {
+          console.log("")
+      }, 1000)
+  }
+}
+```
+
+# 表单绑定
+
+```html
+<body>
+<div id="root">
+    <form @submit.prevent="submit">
+        <!--     v-model.number 把输入转为数字   -->
+        账号:<input type="number" v-model.number="userinfo.phone"><br><br>
+        <!--     v-model.trim 去掉前后空格   -->
+        密码:<input type="password" v-model.trim="userinfo.password"><br><br>
+        性别:<input type="radio" name="sex" value="1" v-model="userinfo.sex">男
+        <input type="radio" name="sex" value="0" v-model="userinfo.sex">女<br><br>
+        爱好:<input type="checkbox" value="a" v-model="userinfo.hobby">A
+        <input type="checkbox" value="b" v-model="userinfo.hobby">B
+        <input type="checkbox" value="c" v-model="userinfo.hobby">C<br><br>
+        所属:<select v-model="userinfo.city">
+        <option value="">选择</option>
+        <option value="北京">北京</option>
+        <option value="上海">上海</option>
+    </select><br><br>
+        <!--    v-model.lazy 当失去焦点的时候再收集    -->
+        其他信息:<textarea v-model.lazy="userinfo.other"></textarea><br><br>
+        <input type="checkbox" v-model="userinfo.agree">接受阅读协议<a>用户协议
+    </a><br><br>
+        <button>提交</button>
+    </form>
+</div>
+</body>
+<script>
+    new Vue({
+        el: "#root",
+        data: {
+            userinfo: {
+                phone: "",
+                password: "",
+                sex: "",
+                hobby: [],
+                city: "",
+                other: "",
+                agree: false
+            }
+        },
+        methods: {
+            submit() {
+                console.log(JSON.stringify(this.userinfo))
+            }
+        }
+    })
+</script>
+```
+
+
+
+# 过滤器
+
+```html
+<body>
+<div id="root">
+    <!--    过滤器只能用在插值语法或者v-bind-->
+    <h1>当前时间戳: {{ time }}</h1>
+
+    <h1>计算属性 {{ filterTime }}</h1>
+    <h1>过滤器无参 {{ time | timePar }}</h1>
+    <h1>过滤器带参 {{ time | timePar("YYYY-MM") }}</h1>
+    <h1>多个过滤器结合使用 {{ time | timePar | jiequ }}</h1>
+    <h1>全局过滤器: {{ time | timePar | quanju }}</h1>
+</div>
+</body>
+<script>
+    //    全局过滤器
+    Vue.filter("quanju", function (value) {
+        return value.slice(0, 1)
+    })
+    new Vue({
+        el: "#root",
+        data: {
+            time: 1681548595292
+        },
+        computed: {
+            filterTime() {
+                return dayjs(this.time).format("YYYY-MM-DD HH:mm:ss")
+            }
+        },
+        filters: {
+            timePar(value, fomt = "YYYY-MM-DD HH:mm:ss") {
+                return dayjs(this.time).format(fomt)
+            },
+            jiequ(value) {
+                return value.slice(0, 4)
+            }
+        }
+    })
+</script>
+```
+
+
+
+# 自定义指令
+
+```html
+<body>
+<div id="root">
+    <h1>n: {{ n }}</h1>
+    <!--    使用自定义指令,作用就是把n*10后展示-->
+    <h1>n*10: <span v-big="n"></span></h1>
+    <!--   页面打开就获取焦点 -->
+    <input v-fbind:value="n">
+    <button @click="n++">n+1</button>
+    <h1>如果指定名称是多个单词则需要用 ' - ' 分割,例如: big-number, 创建时: 'big-number'(){...}</h1>
+</div>
+</body>
+<script>
+    //    全局指令
+    Vue.directive('big1', function (element, bindalue) {
+        //     内容
+    })
+    Vue.directive('big2', {
+        bind(element, bindalue) {
+            //     内容
+        },
+        inserted(element, bindalue) {
+            //     内容
+        },
+        update(element, bindalue) {
+            //     内容
+        }
+    })
+    new Vue({
+        el: "#root",
+        data: {
+            n: 1,
+        },
+        directives: {
+            // 精简写法,相当于bind + update
+            big(element, bindalue) {
+                // this 为 wind 不是vm
+                element.innerText = bindalue.value * 10
+            },
+            fbind: {
+                // 指令与元素绑定后
+                bind(element, bindalue) {
+                    element.value = bindalue.value
+                },
+                // 指令所在元素被插入页面后
+                inserted(element, bindalue) {
+                    element.focus()
+                },
+                // 模版重新解析时调用
+                update(element, bindalue) {
+                    element.value = bindalue.value
                 }
             }
-        })
-        //可以添加全局过滤器，自定义指定等全局的设置
+        }
+    })
+</script>
+```
+
+
+
+# props 父组件给子组件传值
+
+```js
+// 父组件传值:
+<!--        直接使用 name=""传递的是字符串 使用 :age="" 绑定形式传递的是语法格式-->
+<HelloWorld name="张三" :age="11"></HelloWorld>
+
+
+// 子组件接收:
+
+// 简写
+// props: ["name", "age"]
+
+// 限制传递数据的类型
+// props: {
+//     name: String,
+//     age: Number
+// }
+
+// 详细写法
+props: {
+    name: {
+        type: String,   // 限制类型
+        required: true, // 是否为必须的值
+    },
+    age: {
+        type: Number,
+        default: 100,   // 没有这个值的话默认值是多少
     }
 }
 ```
 
-main.js使用
+
+
+# mixin混入
+
+>抽取实例之间相同的数据或方法然后共用
+
+``minxin.js``
 
 ```js
-//引入插件
+export const mixin1 = {
+    // 里面可以写所有的,例如:data,methods等等,如果数据和实例数据重复以实例的为准,如果是挂载方法则全都用,mixin的先执行
+    methods: {
+        showName() {
+            alert(this.name)
+        }
+    }
+}
+export const mixin2 = {
+    data() {
+        return {
+            x: 100,
+            y: 100
+        }
+    }
+}
+```
 
-import plugins from "./plugins/plugins"
+``xxx.vue 局部引用``
 
-//可以加参数，然后再接收即可 user(plugins,1,2,"aaa","bb")
+```vue
+<template>
+    <div>
+        <h1 @click="showName">{{ name }}</h1>
+        <h1>{{ x }}</h1>
+        <h1>{{ y }}</h1>
+    </div>
+</template>
+
+<script>
+// 局部引用
+import {mixin1, mixin2} from "../mixin"
+
+export default {
+    name: 'HelloWorld',
+    data() {
+        return {
+            name: "张三"
+        }
+    },
+    // 使用
+    mixins: [mixin1, mixin2]
+}
+```
+
+``main.js 全局引用``
+
+```js
+// 全局引用
+import {mixin1, mixin2} from "./mixin"
+// 全局使用
+Vue.mixin(mixin1)
+Vue.mixin(mixin2)
+```
+
+
+
+# 插件
+
+``plugins.js``
+
+```js
+export default {
+    // 参数就是vue,方法名必须是install,可以在这个方法里面注册过滤器,自定义指令,混入等等
+    install(vue) {
+        // 过滤器
+        vue.filter("slice", function (value) {
+            return value.slice(0, 4)
+        })
+
+        // 自定义指令
+        vue.directive("get", {
+            // 指令与元素绑定后
+            bind(element, bindalue) {
+                element.value = bindalue.value
+            },
+            // 指令所在元素被插入页面后
+            inserted(element) {
+                element.focus()
+            },
+            // 模版重新解析时调用
+            update(element, bindalue) {
+                element.value = bindalue.value
+            }
+        })
+
+        // 混入
+        vue.mixin({
+            data() {
+                return {
+                    x: 100,
+                    y: 100
+                }
+            }
+        })
+    }
+}
+```
+
+``main.js``
+
+```js
+import plugins from "./plugins"
+
+// 使用插件
 Vue.use(plugins)
 ```
 
+>可以在使用插件时传递自己想要的参数,例如:
+>
+>Vue.user(plugins,1,2,3)
+>
+>在plugins.js的install(vue,a,b,c)接受传递的参数,其中a就是1,b是2,c是3
+
+
+
 # 自定义事件
 
->父组件和子组件通信使用
-
-## 用法：
-
-### 父组件绑定事件
-
-#### 两种方法
-
-1. ```vue
-   <HelloWorld @getNameData="回调方法" />
-   
-   methods: {
-     回调方法(value) {
-     	console.log(value);
-     },
-   }
-   ```
-
-   1. 使用这个办法只需在mehods中添加一个回调方法即可，多个参数逗号隔开
-
-      
-
-2. ```vue
-   <HelloWorld ref="helloWorld" />
-   
-   mounted() {
-   	this.$refs.helloWorld.$on("getAgeData", 回调方法);
-   },
-   ```
-
-   1. 使用2方法需要在钩子函数`mouted`中绑定上这个事件，多个参数逗号隔开
-
-      
-
-### 子组件调用事件
-
-1. ```vue
-   this.$emit("事件名称", 数据);
-   ```
-
-### 子组件解除绑定事件
-
-1. ```
-   this.$off("getNameData");
-   多个参数用[“a”,"b"]数组方式
-   不传递参数就是全部解除绑定
-   ```
-
-## 案例：
-
-### 父组件
-
->```vue
-><template>
-><div id="app">
-><!-- 第一种办法 -->
-><HelloWorld @getNameData="getNameData" />
-><!-- 第二种办法 -->
-><HelloWorld ref="helloWorld" />
-><!-- 如果要给组件绑定本来就有的事件需要加上 native ，组件上编定的事件默认都认为是自定义的-->
-><HelloWorld @click.native="a" />
-></div>
-></template>
->
-><script>
->import HelloWorld from "./components/HelloWorld.vue";
->
->export default {
->name: "App",
->components: {
->HelloWorld,
->},
->methods: {
->getNameData(value) {
-> console.log(value);
->},
->getAgeData(value) {
-> console.log(value);
->},
->},
->mounted() {
->this.$refs.helloWorld.$on("getAgeData", this.getAgeData);
->},
->};
-></script>
->
-><style>
-></style>
->
->```
+>``子组件给父组件传递数据`` 
 >
 >
+>
+>第一种方法是立即绑定事件,第二种方法可以做到延时绑定事件,也就是在做完某些事后再绑定事件
+>
+>
+>
+>组件上绑定的事件都会默认为是自定义事件包括@click,变为原生dom事件就需要使用``@click.native=""`` ,使用native修饰
+>
+>所有的自定义事件都可以绑定修饰符,例如``.once``只触发一次等等修饰符
 
-### 子组件：
 
->```vue
-><template>
-><div class="hello">
-><h1>{{ name }}</h1>
-><h1>{{ age }}</h1>
-><button @click="sendNameData">点击给app发送name数据</button>
-><button @click="sendAgeData">点击给app发送age数据</button>
+
+## 第一种方法
+
+>在要传递消息的组件上绑定一个自定义事件,自定义事件的回调方法声明在接受数据的组件上
 >
-><button @click="gg">解绑自定义事件</button>
-></div>
-></template>
+>绑定使用 ``v-on:自定义时间名称="回调方法" 或 @自定义事件名称="回调方法"`` 
 >
-><script>
->export default {
->name: "HelloWorld",
->data() {
->return {
-> name: "张三",
-> age: 10,
->};
->},
->methods: {
->sendNameData() {
-> this.$emit("getNameData", this.name);
->},
->sendAgeData() {
-> this.$emit("getAgeData", this.age);
->},
->gg() {
-> //解绑多个就用off(['a','b'])，解绑全部就用off()不加参数就是接绑全部的自定义事件
-> this.$off("getNameData");
->},
->},
->};
-></script>
+>传递消息触发时间使用 ``this.$emit(事件名称,传递的数据)`` 
+
+``App.vue``
+
+```vue
+<template>
+    <div id="app">
+        <HelloWorld @getNameData="getName"></HelloWorld>
+    </div>
+</template>
+
+<script>
+import HelloWorld from './components/HelloWorld.vue'
+
+export default {
+    name: 'App',
+    components: {
+        HelloWorld
+    },
+    methods: {
+        getName(name) {
+            console.log("App收到data: ", name)
+        }
+    },
+}
+</script>
+```
+
+``HelloWorld.vue``
+
+```vue
+<template>
+    <div>
+        <button @click="sendName">点击向父组件传递name</button>
+    </div>
+</template>
+
+<script>
+export default {
+    name: 'HelloWorld',
+    data() {
+        return {
+            name: "张三",
+            age: "18"
+        }
+    },
+    methods: {
+        sendName() {
+            this.$emit("getNameData", this.name)
+        }
+    }
+}
+</script>
+```
+
+
+
+## 第二种方法
+
+>使用``ref="xxx"`` 然后在挂载钩子上给需要传递数据的组件绑定事件``this.$refs.hello.$on("getAgeData", this.getAge)``  
 >
-><!-- Add "scoped" attribute to limit CSS to this component only -->
-><style>
-></style>
+>传递数据组件依旧使用``this.$emit(事件名称,传递的数据)`` 触发事件
+
+``App.vue``
+
+>1. this.$refs.hello.$on("getAgeData", this.getAge)
 >
->```
+>2. 使用箭头函数
 >
+>   1. ```vue
+>      this.$refs.hello.$on("getAgeData", (age)=>{ console.log(age) })
+>      ```
 >
+>   2. 一定不能使用function(){}这种形式,箭头函数的this是当前组件,function的this是调用组件
+
+```vue
+<template>
+    <div id="app">
+        <HelloWorld ref="hello"></HelloWorld>
+    </div>
+</template>
+
+<script>
+import HelloWorld from './components/HelloWorld.vue'
+
+export default {
+    name: 'App',
+    components: {
+        HelloWorld
+    },
+    methods: {
+        getAge(age) {
+            console.log("App收到data: ", age)
+        }
+    },
+    mounted() {
+        this.$refs.hello.$on("getAgeData", this.getAge)
+    }
+}
+</script>
+```
+
+``HelloWorld.vue``
+
+```vue
+<template>
+    <div>
+        <button @click="sendAge">点击向父组件传递age</button>
+    </div>
+</template>
+
+<script>
+export default {
+    name: 'HelloWorld',
+    data() {
+        return {
+            name: "张三",
+            age: "18"
+        }
+    },
+    methods: {
+        sendAge() {
+            this.$emit("getAgeData", this.age)
+        }
+    }
+}
+</script>
+
+
+```
+
+## 解除绑定事件
+
+>在那个实例上绑定的就在那个实例上解除绑定
+
+```js
+// 解绑一个
+this.$off("getAgeData")
+
+// 解绑多个用数组
+this.$off(["getAgeData","getNameData"])
+
+// 不传参数解绑全部
+this.$off()
+```
 
 
 
 # 全局事件总线
 
->全局事件总线就是在自定义事件的基础上进行修改，让vm当作一个 工具人 供其他组件相互传递数据
+``main.js``
 
-用法和自定义事件差不多只需在app.vue中添加`bus`总线即可
+```js
+new Vue({
+    render: h => h(App),
+    beforeCreate() {
+        // 安装全局事件总线
+        Vue.prototype.$bus = this
+    }
+}).$mount('#app')
 
-在app.vue中添加bus	`Vue.prototype.$bus = this`
+```
+
+>使用: ``this.$bus.on("事件名称","回调方法")`` 
+>
+>触发: ``this.$emit("事件名称","参数")`` 
+>
+>谁绑定的就一定要在绑定实例销毁时``beforeDestroy``解绑事件: ``this.$off("事件名称")`` 一定不能解绑全部事件因为这个``bus`` 还有别的实例在用
+
+
+
+# 消息订阅与发布
+
+>安装
+>
+>``npm i pubsub-js``
+>
+>订阅: ``this.pubId = pubsub.subscribe("订阅的名字", (定于的名字,接收的数据) => {...})``返回订阅id, ``第一个参数不是传递的数据而是订阅名称``
+>
+>发布: `` pubsub.publish("订阅的名字", 传递的数据)`` 
+>
+>取消订阅: `` pubsub.unsubscribe(订阅id)``  
+
+
+
+## 订阅消息
+
+>用来接受消息
 
 ```vue
+<script>
+import pubsub from "pubsub-js"
+
 export default {
-  name: "App",
-  components: {...},
-  beforeCreate() {
-    Vue.prototype.$bus = this; // 添加全局总线
-  },
-};
+    name: 'HelloWorld',
+    data() {
+        return {}
+    },
+    mounted() {
+      	// 返回一个订阅id, 取消订阅需要使用这个id所以把这个id方法this身上
+        this.pubId = pubsub.subscribe("test", (data) => {
+            console.log("HelloWorld: ", data)
+        })
+    },
+    beforeDestroy() {
+      	// 取消订阅消息用id来取消订阅
+        pubsub.unsubscribe(this.pubId)
+    }
+}
 ```
 
-使用时把自定义事件中的换成bus即可，如：
-
-```
-this.$bus.$on()
-this.$bus.$emit()
-this.$bus.$off()
-```
 
 
+## 发布消息
 
-# 订阅发布
-
-需要第三方库：npm i subpub-js 下载
-
-使用：
-
-接收消息的为订阅；发送消息为发布
-
-## 发布消息：
-
-> import pubsub from "pubsub-js";
->
-> 
->
-> pubsub.publish("管道名字", 数据);
-
-## 订阅消息：
+>用来发送数据
 
 ```vue
+<script>
 import pubsub from "pubsub-js";
 
-
-
-this.subId = pubsub.subscribe("管道名字", (msgName, data) => {
-
-​      subid用来后续的关闭，msgName就是管道的名字，data为传送数据
-
-});
-
-
-
-beforeDestroy() {
-
-//取消订阅
-
-​    pubsub.unsubscribe(this.subId);
-
-},
+export default {
+    name: "Stu",
+    data() {
+        return {
+            name: "张三",
+        }
+    },
+    methods: {
+        sendName() {
+          	// 发布数据
+            pubsub.publish("test", this.name)
+        }
+    }
+}
+</script>
 ```
 
 
 
 # 动画
 
-导入：animate.css
+```vue
+<!-- transition: 只能用于一个元素的   name: 这个动画的名称,  appear 页面加载就执行一次进入动画   -->
+<transition name="hello" appear>
+    <h1 class="tar" v-show="show">transition</h1>
+</transition>
+<hr/>
+<transition-group name="hello" appear>
+    <h1 class="tar" v-show="!show" key="1">transition-group</h1>
+    <h1 class="tar" v-show="show" key="2">transition-group</h1>
+</transition-group>
+
+<style>
+h1 {
+    background-color: aqua;
+}
+
+/*进入的起点, 离开的终点*/
+.hello-enter, .hello-leave-to {
+    transform: translateX(-100%);
+}
+
+/*进入的活动, 离开的活动*/
+.hello-enter-active, .hello-leave-active {
+    transition: 0.5s linear;
+}
+
+/*进入的终点, 离开的起点*/
+.hello-enter-to, .hello-leave {
+    transform: translateX(0);
+}
+</style>
+
+```
+
+
+
+## 第三方库
+
+```shell
+npm install animate.css
+```
+
+引用
 
 ```vue
-<template>
-  <div class="hello">
-<!--
-transition：只能包裹一个标签
-transition-group：可以包裹多个标签但是，里面的标签的key必须唯一
--->
-    <transition-group
-        name="animate__animated animate__bounce"
-        appear
-        enter-active-class="animate__swing"
-        leave-active-class="animate__backOutUp"
-    >
-      <h1 v-show="show" key="1">Hello World !</h1>
-      <h1 v-show="!show" key="2">Hello World !</h1>
-    </transition-group>
-    <button @click="show=!show">显示/隐藏</button>
-  </div>
-</template>
-<!--
-进来的起点 * 离开的终点
-进来的终点 * 离开的起点
-v=transition标签的name，没写name就是v，写了就是name的value-xxx-xxx
-元素进入的样式：
-  v-enter:进来的起点
-  v-enter-active:进来的过程
-  v-enter-to:进来的终点
-元素离开的样式：
-  v-leave:离开的起点
-  v-leave-active:离开的过程
-  v-leave-to:离开的终点
-
--->
+import 'animate.css';
 ```
+
+使用
+
+```vue
+<transition-group
+        appear
+        name="animate__animated animate__bounce"
+        enter-active-class="animate__heartBeat"
+        leave-active-class="animate__backOutUp"
+>
+    <h1 class="tar" v-show="show" key="2">transition-group</h1>
+</transition-group>
+```
+
+
+
+# 请求
+
+## 解决跨域
+
+``vue.config.js``
+
+```js
+module.exports = {
+    // 方法一
+    // devServer: {
+    //     proxy: 'http://localhost:9888'
+    // }
+    // 方法二
+    devServer: {
+        proxy: {
+          	// 前缀,所有是这个前缀的请求才会走代理,例如: http://127.0.0.1/demo/stu
+            "/demo": {
+              	// 要请求的后端服务器地址
+                target: "http://127.0.0.1:9888",
+              	// 因为后端的请求中没有 /demo 这个前缀所以需要去掉这个前缀把 /demo/stu 变为 /stu
+                pathRewrite: {"^/demo": ""},
+              	// websocket
+              	ws: true,
+              	// 是否请求的端口和服务器端口一样,true就是一样,false就是代理服务器的端口号
+                changeOrigin: true
+            },
+          	// 可以配置多个服务
+          	"": {
+            },...
+        }
+    }
+}
+```
+
+
+
+## Get
+
+```js
+// 这里的/demo/stu 会被过滤为 /stu
+axios.get("http://localhost:8081/demo/stu").then(
+  Response => {
+      console.log(Response.data)
+  },
+  Error => {
+      console.log(Error.message)
+  }
+)
+```
+
+
+
+## Post
+
+```js
+axios.post("http://localhost:8081/demo/car").then(
+  Response => {
+      console.log(Response.data)
+  },
+  Error => {
+      console.log(Error.message)
+  }
+)
+```
+
+
 
 # 插槽
 
+## 默认插槽
+
+``app.vue``
+
 ```vue
-app:
-<template>
-  <div id="app">
-    <HelloWorld>
-      <h1>默认插槽</h1>
-      <template v-slot:name1>
-        <h1>具名插槽</h1>
-      </template>
-      <template scope="data">
-        <h1>作用域插槽，收到data：{{data.sendMsg}}</h1>
-      </template>
-    </HelloWorld>
-  </div>
-</template>
-helloWorld:
-<template>
-  <div class="hello">
-    <slot>当这个插槽没有使用就会显示这些默认值</slot>
-    <slot name="name1">有名字的插槽</slot>
-    <slot :sendMsg="msg">作用域插槽，可以向使用组件传递data</slot>
-  </div>
+<HelloWorld>
+  <h1>这是默认插槽</h1>
+</HelloWorld>
+```
+
+``HelloWorld.vue``
+
+```vue
+<div>
+  <slot>没有内容时显示</slot>
+</div>
+```
+
+## 具名插槽
+
+``app.vue``
+
+>``v-slot:demo1`` 这个标签必须放到``template`` 标签中才可以使用
+
+```vue
+<HelloWorld2>
+  <template v-slot:demo1>
+      <h1>这个内容放到名字叫demo1的插槽中</h1>
+      <h1>这个内容放到名字叫demo1的插槽中</h1>
+  </template>
+  <h1 slot="demo2">这个内容放到名字叫demo2的插槽中</h1>
+</HelloWorld2>
+```
+
+``HelloWorld2.vue``
+
+```vue
+<div>
+  <slot name="demo1">demo1</slot>
+  <slot name="demo2">demo2</slot>
+</div>
+```
+
+
+
+## 作用域插槽
+
+>必须使用``template`` 标签包裹
+>
+>``v-slot:demo="demoData"``  ``v-slot`` 关键字 ``:demo`` 作用到``名字叫demo的插槽中`` `` ="demoData"`` 接受插槽的数据到`` demoData`` 的对象上
+>
+>``v-slot:demo="{testData}"`` 解析``demoData.testData``的数据到``testData`` 
+
+``app.vue``
+
+```vue
+<HelloWorld3>
+  <template v-slot:demo="demoData">
+      <h1>{{ demoData.testData }}</h1>
+  </template>
+</HelloWorld3>
+
+// 或使用:
+<template v-slot:demo="{testData}">
+  <h1>{{ testData }}</h1>
 </template>
 ```
+
+``HelloWorld3.vue``
+
+```vue
+<div>
+  <slot name="demo" :testData="slotData"></slot>
+</div>
+data() {
+  return {
+      slotData: "内容来自使用 <slot></slot> 的组件中"
+  }
+},
+```
+
+
 
 # Vuex
 
-共享数据
+>数据共享
 
-引入：cnpm i vuex
+## 环境搭建
 
-创建store文件夹创建index.js写入：
+```shell
+npm i vuex@3
+```
+
+
+
+``store/index.js``
 
 ```js
-import vuex from "vuex"
 import Vue from "vue";
+import Vuex from "vuex"
 
-Vue.use(vuex)
+Vue.use(Vuex)
 
-//响应组件动作
-const actions = {
-    add(context, value) {
-        context.commit("ADD", value)
-    },
-    jian(c, v) {
-        c.commit("JIAN", v)
-    },
-    demo(c,v) {
-        //这里可以dis在调用其他的actions方法
-        c.dispatch("add",v)
-    }
-}
-//加工数据，这里的数据就是state里面的
-const mutations = {
-    ADD(state, value) {
-        state.num += value
-    },
-    JIAN(s, v) {
-        s.num -= v
-    }
-}
-const getters = {
-    bigNum(state) {
-        return state.num * 10
-    }
-}
-//保存数据
-const state = {
-    num: 0
-}
+const actions = {}
 
-//k v 一样就不用写=了
-export default new vuex.Store({
-    actions,
-    mutations,
-    state,
-    getters
+const mutations = {}
+
+const state = {}
+
+const getters = {}
+
+export default new Vuex.Store({
+    actions, mutations, state, getters
 })
 ```
 
-app组件中引入store并使用
+``main.js``
 
-```vue
-import store from "./store"
+```js
+import Vue from 'vue'
+import App from './App.vue'
 
+// 引入创建的js文件
+import Store from "@/store";
+
+Vue.config.productionTip = false
+
+new Vue({
+    render: h => h(App),
+  	// 使用
+    store: Store,
+}).$mount('#app')
+```
+
+
+
+## 单文件使用
+
+>组件调用``this.$store.dispatch("actions里函数名字", 传递的参数)`` store/index.js里的action接收到然后调用``context.commuit("mutations里函数名字",参数)`` mutations调用state里面的数据``state.data`` 做出具体的修改
+>
+>``state相当于组件里面的data, getters相当于计算属性`` 
+
+```js
+// 基础访问:
+{{ $store.state.data }}		{{ $store.getters.data }}
+// 简单写法
+import {mapState, mapGetters, mapActions, mapMutations} from "vuex";
+
+computed: {
+  // 直接使用数组形式相当于这个方法名就是数据名
+  ...mapState(["num"]),
+  ...mapGetters(["bigNum"])
+  // 对象写法
+  ...mapState({方法名:"数据名"}),
+},
+methods: {
+  // 使用这种办法的话参数需要再使用的时候传递,也可以使用对象方式
+  ...mapActions(["actions里面的方法名字"]),
+  ...mapMutations(["mutations里面的方法名字"])
+}
+{{ 方法名字也就是数据名字 }}
+
+// 使用简写的方法
+@click="方法名(参数)"
+```
+
+## 多文件使用
+
+``Options1.js``
+
+```js
 export default {
-  name: 'App',
-  store,
-  components: {
-    HelloWorld,Demo
-  }
+    namespace: true,
+    actions: {},
+    mutations: {},
+    state: {}
 }
 ```
 
-# 路由：
 
-1. 在main.js中添加路由并使用
+
+``Options2.js``
 
 ```js
-import vueRouter from "vue-router"
-
-Vue.use(vueRouter)
+export default {
+    namespace: true,
+    actions: {},
+    mutations: {},
+    state: {}
+}
 ```
 
-2. 创建router/router.js文件，用来设置路由
+
+
+``store/index.js``
 
 ```js
-import vueRouter from "vue-router"
-import About from "@/pages/About";
-import Home from "@/pages/Home";
-import Message from "@/pages/Message";
-import News from "@/pages/News"
-import Tt from "@/pages/Tt";
+import Optuions1 from "./Options1"
+import Optuions2 from "./Options2"
+export default new Vuex.Store({
+    modules: {
+        Optuions1, Optuions2
+    }
+})
+```
 
-//meta 路由配置中可以用来存储数据
-const router = new vueRouter({
-    mode: "history",  //默认是hash，hash带#号，使用history不带#号但需要后端适配一下
-    routes:[
+使用
+
+```js
+// 在原有的基础上指定namespace
+...mapState(Options1,["num"]),
+
+// 非简写形式
+this.$store.Options1.state.data
+// 必须用 / 隔开namespace和方法名
+this.$store.dispatch("namespace/方法名", 参数)
+this.$store.commit("namespace/方法名", 参数)
+```
+
+
+
+# 路由
+
+下载
+
+```npm
+npm i vue-router@3
+```
+
+## 注意点
+
+>1. 普通页面放到components文件夹下,路由的页面放到pages文件夹下
+>
+>2. 每个路由页面都有自己专属的``$route`` 但是所有的路由页面共享一个``$router`` 
+>3.  "隐藏"的路由组件是被``销毁`` 了,需要的时候会再被``挂载`` 
+
+## 使用
+
+``router/index.js``
+
+```js
+import VueRouter from "vue-router";
+import About from "@/pages/About.vue";
+import Home from "@/pages/Home.vue";
+import News from "@/pages/News.vue";
+import Message from "@/pages/Message.vue";
+import Detatil from "@/pages/Detatil.vue";
+
+export default new VueRouter({
+    routes: [
         {
-            name: "about",
             path: "/about",
-            component: About,
-            meta: {title:"关于"},
-            beforeEnter(to,from,next){
-                console.log("独享守卫，只有前置没有后置",to,from,next)
-                next()
-            }
-        },
-        {
-            name: "home",
+            component: About
+        }, {
             path: "/home",
             component: Home,
-            meta: {title:"主页"},
-            children:[
+            children: [
                 {
-                    name: "message",
-                    path:"message",
-                    component: Message,
-                    meta: {title:"消息"},
-                    children: [
-                        {
-                            name: "tt",
-                            path: "tt",
-                            component: Tt,
-                            meta: {title:"消息Other",isAuth:true}
-                        }
-                    ]
-                },
-                {
-                    name: "news",
                     path: "news",
-                    component: News,
-                    meta: {title:"新闻"},
+                    component: News
+                }, {
+                    path: "message",
+                    component: Message,
                     children: [
                         {
-                            name: "newtt",
-                            path: "newtt/:id/:title",
-                            component: Tt,
-                            meta: {title:"新闻Other",isAuth:true}
-
-                            //把query和params参数进行封装，在组件中直接用props接收即可
-
-                            // props($router){
-                            //     return {
-                            //         id: $router.params.id,
-                            //         title: $router.params.title
-                            //     }
-                            // }
+                          	// 多级路由可以配置name属性方便后续跳转写法
+                            name:"xiangqing",
+                            path: "detatil",
+                            component: Detatil
                         }
                     ]
                 }
@@ -1135,40 +1071,349 @@ const router = new vueRouter({
         }
     ]
 })
-//to:去哪 from：哪来 next：跳不跳转 beforeEach：每次路由跳转前
-router.beforeEach((to,from,next)=>{
-    console.log(to,from,next)
-    if (to.meta.isAuth) {
-        if (localStorage.getItem("key") *= "value") {
-            next()
-        } else {
-            alert("no auth")
-        }
+```
+
+``main.js``
+
+```js
+import Vue from 'vue'
+import App from './App.vue'
+// 引入路由
+import VueRouter from "vue-router";
+// 引入自己写的路由配置
+import router from "./router"
+
+Vue.config.productionTip = false
+// 使用路由
+Vue.use(VueRouter)
+new Vue({
+    render: h => h(App),
+  	// 配置自己写的路由配置
+    router
+}).$mount('#app')
+
+```
+
+``xxx.vue``
+
+```vue
+// 相当于a标签, to就是要跳转的页面,active-class跳转到的页面会有active这个属性,用于高亮显示
+<router-link active-class="active" to="/home">Home</router-link>
+// 在需要显示的位置写上,跳转的页面就是显示到该位置
+<router-view></router-view>
+
+// 需要传递参数的写法,建议这样写不要写成?拼接参数, 一级路由直接写 to=""更简单
+<router-link :to="{
+  // path:'/home/message/detatil',
+  // 使用name更简单
+  name:'xiangqing',
+  query:{
+      id:m.id,
+      title:m.msgData
+  }
+}">
+  {{ m.msgData }}
+</router-link>
+
+// 在路由跳转的页面使用``this.$route.query`` 获取参数
+{{ this.$route.query.id }} -- {{ this.$route.query.title }}
+```
+
+
+
+## 传递query参数
+
+>传递: ``query:{ id:m.id,  title:m.msgData}`` 
+>
+>接收: ``{{this.#route.query.data}}`` 
+
+
+
+## 传递params参数
+
+一. 在router/index.js里面声明
+
+```js
+{
+  name: "xiangqing",
+  // 声明
+  path: "detatil/:x/:y",
+  component: Detatil
+}
+```
+
+二. 传递参数
+
+>使用params传递参数必须使用``name``,不能使用``path`` 
+>
+>注意在路由配置里面的占位符名字要和传递的参数key相同
+>
+>``path: "detatil/:x/:y"   x:'qwe'+m.id, y:'asd'+m.msgData`` 
+
+```js
+<router-link :to="{
+  name:'xiangqing',
+  params:{
+      x:'qwe'+m.id,
+      y:'asd'+m.msgData
+  }
+}">
+  {{ m.msgData }}
+</router-link>
+```
+
+三. 接收参数
+
+```js
+{{ this.$route.params.x }} -- {{ this.$route.params.y }}
+```
+
+
+
+## 接收参数简写
+
+``router/index.js``
+
+```js
+// params的简写形式
+{
+  name: "xiangqing",
+  path: "detatil/:x/:y",
+  component: Detatil,
+  // 把传递的params的数据以props的方式传递
+  props: true
+}
+// 接收
+props: ["x", "y"]
+{{ x }}--{{ y }}
+
+// query的简写形式
+{
+  name: "xiangqing",
+  path: "detatil/:x/:y",
+  component: Detatil,
+  // 参数就是 this.$route, 使用结构赋值的方式写为{query}更简单
+  props({query}) {
+      return {
+          x: query.x,
+          y: query.y
+      }
+  }
+}
+// 接收不变
+props: ["x", "y"]
+{{ x }}--{{ y }}
+```
+
+
+
+## replace模式
+
+>不写默认为push,push的可以被浏览器记录给记录下来,可以适用浏览器的左右小箭头
+>
+>replace是替换模式,点击后会替换掉上一个记录,也就是无法使用左右的小箭头了
+
+```js
+<router-link replace class="list-group-item" active-class="active" to="/about"></router-link>
+```
+
+
+
+## 编程式路由导航
+
+```js
+pushShow(m) {
+  // 对象里面的写法和 to 一样
+  this.$router.push({
+      name: 'xiangqing',
+      query: {
+          x: m.id,
+          y: m.msgData
+      },
+  })
+},
+replaceShow(m) {
+  this.$router.push({
+      name: 'xiangqing',
+      query: {
+          x: m.id,
+          y: m.msgData
+      },
+  })
+},
+// 后退
+back() {
+  this.$router.back()
+},
+// 前进
+forward() {
+  this.$router.forward()
+},
+go() {
+  // 正数前进n步,负数后退n步
+  this.$router.go(3)
+}
+```
+
+
+
+## 缓存路由组件
+
+>使用``keep-alive`` 标签包裹即可,``include`` :设置只有哪些组件缓存,value为组件名称.不设置include则在这个位置显示的组件都将被缓存,如果缓存多个:``:include="["A","B"]"`` 
+
+```vue
+<keep-alive include="News">
+  <router-view/>
+</keep-alive>
+```
+
+
+
+## 路由周期钩子
+
+```js
+activated() {
+  console.log("这个路由组件展示的时候调用")
+},
+deactivated() {
+  console.log("这个路由组件被切换走的时候调用")
+}
+```
+
+
+
+## 全局前置/后置路由守卫
+
+>``beforeEach``:路由组件跳转前调用
+>
+>``afterEach``:路由组件跳转后调用
+
+```js
+{
+  path: "news",
+  component: News,
+  // 添加meta数据方便前置和后置函数使用
+  meta: {title: "新闻", isAu: true},
+}
+// to: 去哪 form: 哪来 next是否跳转, 前置用来校验权限,后置用来修改title
+router.beforeEach((to, from, next) => {
+    console.log("前置:", to, from, next)
+    if (to.meta.isAu) {
+        alert("需要校验权限")
     } else {
         next()
     }
 })
-//afterEach 每次路由跳转后
-router.afterEach((to, from)=>{
-    console.log(to,from)
-    document.title = to.meta.title || "hzyy"
+router.afterEach((to, from) => {
+    console.log("前置:", to, from)
+    document.title = to.meta.title || "loveyu"
 })
-
-
-export default router
 ```
 
-3. 再App.vue中使用
+## 独享路由守卫
+
+>只有前置没有后置
 
 ```js
-import router from "./router"
-import TopCom from "@/components/TopCom";
-
-export default {
-  name: 'App',
-  components:{
-    TopCom
-  },
-  router: router
+{
+  path: "/about",
+  component: About,
+  meta: {title: "关于"},
+  beforeEnter: (to, from, next) => {
+    // 写法和之前的一样
+      console.log("独享守卫", to, from, next)
+      next()
+  }
 }
 ```
+
+
+
+## 组件内路由守卫
+
+>``beforeRouteEnter``:根据路由规则进入组件前调用
+>
+>``beforeRouteLeave``:根据路由规则离开组件前调用
+>
+>直接引用这个组件是不会调用这两个函数的
+
+```js
+export default {
+    name: "Detatil",
+    props: ["x", "y"],
+    beforeRouteEnter(to, from, next) {
+        console.log("beforeRouteEnter", to, from, next)
+        next()
+    },
+    beforeRouteLeave(to, from, next) {
+        console.log("beforeRouteLeave", to, from, next)
+        next()
+    }
+}
+```
+
+
+
+## 路由模式
+
+>默认为``hash``模式也就是路径上带``#``号的,``history``不带``#``号,但是``#``需要服务器配置使用
+>
+>hash比history兼容性好
+
+```js
+const router = new VueRouter({
+    mode: "history",
+```
+
+
+
+# elementUI
+
+>按需引入的配置文件,官网的是老版本不对
+
+``babel.config.js``
+
+```js
+module.exports = {
+    presets: [
+        '@vue/cli-plugin-babel/preset',
+        ["@babel/preset-env", {"modules": false}],
+    ],
+    plugins: [
+        [
+            "component",
+            {
+                "libraryName": "element-ui",
+                "styleLibraryName": "theme-chalk"
+            }
+        ]
+    ]
+}
+
+```
+
+
+
+
+
+# 其他
+
+>查看版本
+
+```nom
+npm view less-load versions
+```
+
+
+
+>覆盖原对象内容
+>
+>info有的dataObj也有呢就以dataObj的为主覆盖掉info的,dataObj没有info还是原值
+
+```js
+this.info = {...this.info, ...dataObj}
+```
+
+
+
+>vue-router必须是npm下载才会有代码提示

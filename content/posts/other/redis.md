@@ -708,6 +708,25 @@ k857178
 2. MySQL master 收到 dump 请求，开始推送 binary log 给 slave（即cancal）
 3. canal 解析 binary log 对象（原始为 byte 流）
 
+``mysql设置``
+
+```sql
+select version();
+
+show master status ;
+
+show variables like 'log_bin' ;
+
+select * from mysql.user ;
+create user 'canal'@'%' identified by 'canal';
+GRANT ALL PRIVILEGES ON *.* TO 'canal'@'%' WITH GRANT OPTION;
+# 因为mysql8.0.3后身份检验方式为caching_sha2_password，但canal使用的是mysql_native_password，因此需要设置检验方式（如果该版本之前的可跳过），否则会报错IOException: caching_sha2_password Auth failed
+ALTER USER 'canal'@'%' IDENTIFIED WITH mysql_native_password BY 'canal';
+flush privileges ;
+```
+
+
+
 ### 代码
 
 >连接canal,进行监听,当获取到mysql的操作后再做对应的redis操作
@@ -902,13 +921,100 @@ func checkError(err error) {
 
 
 
+# 分布式锁
 
+1. 独占性
+   1. 任何时刻有且仅有一个线程拥有这个锁
+2. 高可用
+   1. redis在集群环境下不能因为主节点挂了而导致这个锁不可用
+   2. 高并发下性能依旧好
+3. 防死锁
+   1. 要有超时控制
+4. 不乱入
+   1. 不能unlock别的线程的锁
+5. 重入性
+   1. 同一个节点的同一个线程获得锁后它也可以再次获得这个锁
+   1. 重入锁也叫递归锁
 
+>不使用setnx因为setnx无法做到可重入,所以使用hset
 
+```go
+package lua
 
+import (
+	"context"
+	"github.com/go-redis/redis/v8"
+	"github.com/google/uuid"
+	"runtime"
+	"sync"
+	"time"
+)
 
+type RedisLock struct {
+	redisClient *redis.Client   //redis客户端
+	context     context.Context //上下文
+	lockKey     string          //锁名称
+	lockValue   string          //锁的值,防止乱入
+	expire      int             //重入了多少次
+}
 
+const (
+	REDIS = "redis"
+	MYSQL = "mysql"
+)
 
+// NewDistributedLocks 使用工厂设计模式易扩展
+func NewDistributedLocks(lockType, lockName string, context context.Context, redisClient *redis.Client) sync.Locker {
+	if lockType == REDIS {
+		return &RedisLock{
+			redisClient: redisClient,
+			context:     context,
+			lockKey:     lockName,
+			lockValue:   uuid.New().String(),
+			expire:      10,
+		}
+	} else if lockType == MYSQL {
+		//	TODO
+	}
+	return nil
+}
+
+// Lock 加锁
+func (r RedisLock) Lock() {
+	lock := "if redis.call('EXISTS', KEYS[1]) == 0 or redis.call('HEXISTS', KEYS[1], ARGV[1]) == 1 then   redis.call('HINCRBY', KEYS[1], ARGV[1], 1)    redis.call('EXPIRE', KEYS[1], ARGV[2])    return 1    else    return 0    end"
+	for true {
+		re, _ := redis.NewScript(lock).Run(r.context, r.redisClient, []string{r.lockKey}, r.lockValue, r.expire).Int()
+		if re != 1 {
+			// 自旋
+			runtime.Gosched()
+		} else {
+			// 开启一个goroutine用来检测是否需要续期
+			go r.Renewal()
+			break
+		}
+	}
+}
+
+// Unlock 释放锁
+func (r RedisLock) Unlock() {
+	unlock := "if redis.call('HEXISTS', KEYS[1], ARGV[1]) == 0 then    return -1    elseif redis.call('HINCRBY', KEYS[1], ARGV[1], -1) == 0 then    return redis.call('DEL', KEYS[1])    else    return 0    end"
+	redis.NewScript(unlock).Run(r.context, r.redisClient, []string{r.lockKey}, r.lockValue)
+}
+
+// Renewal 续期
+func (r RedisLock) Renewal() {
+	renewalLock := "if redis.call('HEXISTS', KEYS[1], ARGV[1]) == 1 then    return redis.call('EXPIRE', KEYS[1], ARGV[2])    else    return 0    end"
+	for true {
+		select {
+		case <-time.Tick(time.Duration(r.expire/3) * time.Second):
+			if res, _ := redis.NewScript(renewalLock).Run(r.context, r.redisClient, []string{r.lockKey}, r.lockValue, r.expire).Int(); res == 0 {
+				break
+			}
+		}
+	}
+}
+
+```
 
 
 
