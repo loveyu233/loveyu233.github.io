@@ -1,13 +1,15 @@
 ---
-title: "Vue"
+title: "Vue2"
 date: 2022-12-04T19:38:37+08:00
 author: ["loveyu"]
 draft: false
 categories: 
+- Vue2
+- 前端
 - other
 tags: 
-- vue
-
+- vue2
+- 前端
 ---
 
 # 指令
