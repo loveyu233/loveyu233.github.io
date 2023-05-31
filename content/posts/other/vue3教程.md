@@ -812,6 +812,252 @@ appear-to-class=""
 
 
 
+# 依赖注入,组件数据传输
+
+>只能传递给有关系的组件,也就是使用过的
+>
+>例如:app使用a,a使用b
+
+```ts
+父组件传递值: provide(value,key)	如果不想让别的组件修改这个key可以使用 readonly(color)
+后代组件接收值: let color = inject<ref<string>>(value, ref("默认值"));
+如果父组件没有设置readonly,后代组件就可以修改值:color.value = "red";直接修改即可
+```
+
+``app.vue``
+
+```vue
+<template>
+    <input v-model="color" value="red" type="radio">红色
+    <input v-model="color" value="green" type="radio">绿色
+    <input v-model="color" value="black" type="radio">黑色
+    <div class="div">
+
+    </div>
+    <AVue/>
+</template>
+
+<script setup lang="ts">
+import {provide, readonly, ref} from "vue";
+import AVue from "./components/AVue.vue";
+
+
+let color = ref<string>("red");
+provide("color", readonly(color));
+
+
+</script>
+
+<style scoped>
+.div {
+    width: 200px;
+    height: 200px;
+    background-color: v-bind(color);
+}
+</style>
+
+```
+
+``a.vue``
+
+```vue
+<template>
+    <div>
+        AVue
+    </div>
+    <div class="div">
+
+    </div>
+    <BVue/>
+</template>
+
+<script setup lang="ts">
+import {inject, Ref} from "vue";
+import BVue from "./BVue.vue";
+
+let color = inject<Ref<string>>("color");
+</script>
+<style scoped>
+.div {
+    width: 200px;
+    height: 200px;
+    background-color: v-bind(color);
+}
+</style>
+
+```
+
+``b.vue``
+
+```vue
+<template>
+    <div>
+        BVue
+    </div>
+    <div class="div">
+
+    </div>
+    <button @click="change">修改颜色</button>
+</template>
+
+<script setup lang="ts">
+
+import {inject, Ref} from "vue";
+
+let color = inject<Ref<string>>("color");
+
+const change = () => {
+    color!.value = "red";
+};
+</script>
+<style scoped>
+.div {
+    width: 200px;
+    height: 200px;
+    background-color: v-bind(color);
+}
+</style>
+
+```
+
+
+
+# 双向数据流
+
+>defineProps和defineEmits实现修改父组件传递的值并返回
+>
+>``传递给子组件的数据如果子组件想要修改并返回值就必须使用v-model不能省略这个前缀``
+>
+>`` v-model:text="text" 如果省略前缀就会导致子组件修改的值无法传递给父组件``
+>
+>子组件修改数据的语法:
+>
+>``let emits = defineEmits(["update:modelValue", "update:text"]);``
+>
+>必须是``update:``开头
+>
+>使用:``emits("update:text", target.value);`` 第二个参数为要修改后的值
+
+``父组件.vue``
+
+```vue
+<template>
+    <button @click="b = !b">change</button>
+    <h1>App -- {{ b }} -- {{ text }}</h1>
+    <AVue v-model="b" v-model:text="text"/>
+</template>
+
+<script setup lang="ts">
+
+import AVue from "./components/AVue.vue";
+import {ref} from "vue";
+
+let b = ref<boolean>(true);
+let text = ref<string>("hello");
+</script>
+```
+
+``子组件``
+
+```vue
+<template>
+    <h1>AVue -- {{ modelValue }} -- {{ text }}</h1>
+    <button @click="change">AVue修改</button>
+    <input :value="text" @input="textChange">
+</template>
+
+<script setup lang="ts">
+let props = defineProps<{
+    modelValue: boolean,
+    text: string
+}>();
+let emits = defineEmits(["update:modelValue", "update:text"]);
+const change = () => {
+    emits("update:modelValue", !props.modelValue);
+};
+const textChange = (e: Event) => {
+    let target = e.target as HTMLInputElement;
+    emits("update:text", target.value);
+};
+</script>
+```
+
+
+
+# 自定义指令
+
+>自定义指令的名称必须是``v自定义名称``,例如:``vDemo``, 多个单词用驼峰方式命名
+>
+>自定义指令语法:``const vDemo: Directive = {生命周期钩子}`` 
+>
+>``Directive<HTMLButtonElement, string> `` Directive接受两个类型,分别为参数一的和参数二的类型
+>
+>每个生命周期钩子都有参数:``el,dir``:为别为:``使用自定义组件的元素,使用自定义组件携带的数据`` 
+>
+>如果只需要mount和update的话不需要声明别的函数,直接赋值一个函数即可,在mount和update时就会执行这个函数
+>
+>```ts
+>const vDemo: Directive = (el: HTMLElement, dir: DirectiveBinding) => {
+>    console.log(el);
+>    console.log(dir);
+>};
+>```
+>
+>
+
+```vue
+<template>
+    <h1 v-demo.qwe:asdas="{name:'zxc'}">helloWorld</h1>
+</template>
+
+<script setup lang="ts">
+import {Directive, DirectiveBinding} from "vue";
+
+const vDemo: Directive = {
+    created() {
+
+    },
+    beforeMount() {
+
+    },
+    mounted(el: HTMLElement, dir: DirectiveBinding) {
+        console.log(el);
+        console.log(dir);
+        console.log(dir.modifiers);
+        console.log(dir.value.name);
+    },
+    updated() {
+
+    },
+    beforeUpdate() {
+
+    },
+    beforeUnmount() {
+
+    },
+    unmounted() {
+
+    }
+};
+</script>
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 # 案例
@@ -1235,13 +1481,160 @@ setInterval(() => {
 
 
 
+## 使用自定义指定实现权限校验
+
+>一般用于对按钮的鉴权,后端返回用户的权限,然后根据用户的权限来判断是否要显示这个按钮
+
+```vue
+<template>
+    <button v-button-auth="'shop:buttonInsert'">添加</button>
+    <button v-button-auth="'shop:buttonDelete'">删除</button>
+    <button v-button-auth="'shop:buttonUpdate'">修改</button>
+</template>
+
+<script setup lang="ts">
+import {Directive} from "vue";
+
+localStorage.setItem("userid", "zs");
+
+let authList = [
+    "zs:shop:buttonInsert",
+    "zs:shop:buttonDelete",
+    "zs:shop:buttonUpdate"
+];
+
+let userid = localStorage.getItem("userid");
+const vButtonAuth: Directive<HTMLButtonElement, string> = (el, {value}) => {
+    if (!authList.includes(userid + ":" + value)) {
+        el.style.display = "none";
+    }
+};
+</script>
+
+<style scoped>
+button {
+    width: 50px;
+    height: 50px;
+    border: 1px solid #ccc;
+    margin-left: 50px;
+}
+</style>
+```
 
 
 
+## 使用自定义指令实现拖拽移动元素
+
+>只要给div添加v-move自定义指令即可实现随意拖拽移动
+
+```vue
+<template>
+    <div class="box" v-move>
+        <div class="header"></div>
+        <div>内容</div>
+    </div>
+</template>
+
+<script setup lang="ts">
+import {Directive, DirectiveBinding} from "vue";
+
+const vMove: Directive<any, void> = (el: HTMLElement, dir: DirectiveBinding) => {
+    let element: HTMLDivElement = el.firstElementChild as HTMLDivElement;
+    const elMove = (e: MouseEvent) => {
+        // el.offsetLeft 返回当前元素距离某个父辈元素左边缘的距离
+        // e.clientX 返回鼠标距离浏览器边框的距离
+        // 相减获取鼠标距离当前元素边框的距离
+        let x = e.clientX - el.offsetLeft;
+        let y = e.clientY - el.offsetTop;
+        const move = (e: MouseEvent) => {
+            // 相减获取元素移动后的位置
+            el.style.left = e.clientX - x + "px";
+            el.style.top = e.clientY - y + "px";
+        };
+        // 添加鼠标移动事件
+        document.addEventListener("mousemove", move);
+        // 添加鼠标松开事件
+        document.addEventListener("mouseup", () => {
+            // 取消鼠标移动事件
+            document.removeEventListener("mousemove", move);
+        });
+    };
+    // 添加鼠标按下事件
+    element.addEventListener("mousedown", elMove);
+};
+</script>
+
+<style>
+
+.box {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 200px;
+    height: 200px;
+    border: 1px solid #ccc;
+}
+
+.header {
+    height: 20px;
+    background: black;
+    cursor: move;
+}
+</style>
+```
 
 
 
+## 使用自定义指令实现图片懒加载
 
+>``IntersectionObserver``: 监视方法
+
+```vue
+<template>
+    <div>
+        <img v-for="i in arr" alt="a" v-lazy="i">
+    </div>
+</template>
+
+<script setup lang="ts">
+import {Directive} from "vue";
+// 获取指定目录下的指定多个文件,eager: true 设置为静态加载,不设置默认为懒加载
+let imageList: Record<string, { default: string }> = import.meta.glob("./images/*.*", {eager: true});
+// 获取到路径
+let arr = Object.values(imageList).map(v => v.default);
+let vLazy: Directive<HTMLImageElement, string> = async (el, dir) => {
+    // 导入默认的图片
+    const icon = await import("./assets/vue.svg");
+    // 设置默认图片
+    el.src = icon.default;
+    // 设置监听回调函数
+    const observer = new IntersectionObserver((entries) => {
+        // intersectionRatio: 返回这个元素的可视比例
+        let intersectionRatio = entries[0].intersectionRatio;
+        // 当这个元素的可视比列大于0说明已经能看到这个元素了,设置为实际要展示的图片即可
+        if (intersectionRatio > 0) {
+            // 凸显效果
+            setTimeout(() => {
+                // 设置src为实际要载入的图片
+                el.src = dir.value;
+            }, 1000);
+            // 取消监听元素
+            observer.unobserve(el);
+        }
+    });
+    // 设置监听哪一个元素
+    observer.observe(el);
+};
+</script>
+
+<style scoped>
+img {
+    width: 400px;
+    height: 500px;
+}
+</style>
+```
 
 
 
@@ -1262,13 +1655,65 @@ setInterval(() => {
 
 
 
+## 非空操作符
+
+```js
+color!.value = "red";
+变量!.属性 = 新值
+```
 
 
 
+## css绑定变量
+
+>``v-bind(color)``: 值为变量名称
+
+```vue
+<template>
+    <div class="div">
+
+    </div>
+</template>
+
+<script setup lang="ts">
+import {ref} from "vue";
+
+let color = ref<string>("red");
+
+</script>
+
+<style scoped>
+.div {
+    width: 200px;
+    height: 200px;
+    background-color: v-bind(color);
+}
+</style>
+```
 
 
 
+## Event类型
 
+>参数为``e: Event`` 指定类型,可以获取target但是无法获取input元素的value,所以需要转一下类型
+>
+>``let target = e.target as HTMLInputElement;`` 即可``target.value`` 
+
+```ts
+const textChange = (e: Event) => {
+    let target = e.target as HTMLInputElement;
+    emits("update:text", target.value);
+};
+```
+
+
+
+## 批量载入静态资源
+
+```ts
+// eager: true 设置为静态载入,不设置默认为懒加载
+let imageList: Record<string, { default: string }> = import.meta.glob("./images/*.*", {eager: true});
+```
 
 
 
