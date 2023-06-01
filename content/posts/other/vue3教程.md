@@ -33,6 +33,21 @@ Done. Now run:
 
 
 
+>解决ts不能识别vue文件
+
+`` vite-env.d.ts ``
+
+```ts
+/// <reference types="vite/client" />
+declare module "*.vue" {
+    import { DefineComponent } from "vue"
+    const component: DefineComponent<{}, {}, any>
+    export default component
+}
+```
+
+
+
 # 组合式Api
 
 >使用``setup`` ,按需引入不再和vue2一样全部导入了
@@ -1044,15 +1059,433 @@ const vDemo: Directive = {
 
 
 
+# 自定义hook
+
+>把重复使用的函数给抽离出来,在每个需要的组件里面再引用,到达代码的复用
+>
+>自定义hook一般以``usr``开头,再接名称
+
+``hook/index.ts``
+
+```ts
+export default function (data: string): string {
+    return data + "====";
+}
+```
 
 
 
+``*.vue``
+
+```vue
+<template>
+
+</template>
+
+<script setup lang="ts">
+import h from "./hook/index.ts";
+
+console.log(h("demo"));
+</script>
+
+<style scoped>
+```
 
 
 
+# 全局属性
+
+## 添加全局属性
+
+>注意点:
+>
+>1. 要先声明出app ``const app = createApp(App);``
+>2. 添加语法: ``app.config.globalProperties.$env = "dev"``
+>3. 如果添加的是方法则用对象方式
+>4. 必须给添加的变量声明出来``declare module "@vue/runtime-core"`` ,否则编辑器会提示错误但运行没问题的
+>5. 必须最后再挂载``app.mount("#app");`` ,不然全局属性无法添加成功
+
+``main.ts``
+
+```ts
+import {createApp} from "vue";
+import App from "./App.vue";
+
+const app = createApp(App);
+
+app.config.globalProperties.$env = "dev";
+app.config.globalProperties.$fun = {
+    f(str: string): string {
+        return `test - ${str}`;
+    }
+};
+type F = {
+    f(str: string): string
+}
+declare module "@vue/runtime-core" {
+    export interface ComponentCustomProperties {
+        $env: string,
+        $fun: F;
+    }
+}
+
+app.mount("#app");
+```
 
 
 
+## 使用
+
+>注意点:
+>
+>1. 可以使用插值语法直接获取全局属性``<div>{{ $env }}</div>`` 
+>2. 可以使用``getCurrentInstance`` 获取到全局属性
+>   1. 必须在onMounted钩子里面才可以成功获取到属性
+>3. 使用``解构``的方式可以更快的获取到属性 ``const {appContext: {config: {globalProperties}}} = getCurrentInstance();`` 
+>   1. ``globalProperties.属性名称`` 
+>4. 不使用``解构``的方式
+>   1. ``let app = getCurrentInstance();
+>      console.log(app?.proxy?.$env);
+>      console.log(app?.proxy?.$fun.f("sad"));`` 
+>   2. vue已经给属性添加到``proxy``中,所以可以直接读取到
+
+``*.vue``
+
+```vue
+<template>
+    <div>{{ $env }}</div>
+    <div>{{ $fun.f("adadada") }}</div>
+</template>
+
+<script setup lang="ts">
+import {getCurrentInstance, onMounted} from "vue";
+
+onMounted(() => {
+    const {appContext: {config: {globalProperties}}} = getCurrentInstance();
+    console.log(globalProperties.$env);
+    console.log(globalProperties.$fun.f("asd"));
+});
+</script>
+```
+
+
+
+# 自定义插件
+
+``loaing/index.vue``
+
+```vue
+<template>
+    <div v-if="isShow">
+        loading...
+    </div>
+</template>
+
+<script setup lang="ts">
+import {ref} from "vue";
+
+let isShow = ref<boolean>(false);
+
+const show = () => isShow.value = true;
+const hide = () => isShow.value = false;
+defineExpose({
+    show,
+    hide,
+    isShow
+});
+</script>
+
+<style scoped>
+div {
+    background-color: black;
+    opacity: 0.8;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    color: white;
+}
+</style>
+```
+
+``loading/index.ts``
+
+```ts
+import {App, createVNode, render} from "vue";
+import Loading from "./index.vue";
+
+export default {
+    // 对象形式写插件必须有install方法
+    install(app: App) {
+        // 把Loading组件转为虚拟节点
+        const vnode = createVNode(Loading);
+        // 把这个虚拟节点挂载到body下
+        render(vnode, document.body);
+        // 添加全局属性让其他组件可以调用
+        app.config.globalProperties._loading = {
+            isShow: vnode.component?.exposed?.isShow,
+            show: vnode.component?.exposed?.show,
+            hide: vnode.component?.exposed?.hide
+        };
+    }
+};
+
+type show = {
+    isShow: string,
+    show: () => void,
+    hide: () => void
+}
+// 声明,不写编辑器报错但不影响运行,写了编辑器就不会报错了
+declare module "@vue/runtime-core" {
+    export interface ComponentCustomProperties {
+        _loading: show;
+    }
+}
+```
+
+## 使用插件
+
+>1. ``main.ts``里面use使用一下
+>
+>2. 其他组件
+>
+>   1. 访问全局属性必须在``onMounted``钩子函数中才可以调用
+>
+>   2. ```vue
+>      onMounted(() => {
+>          const ins = getCurrentInstance();
+>          ins?.proxy?._loading.show();
+>          setTimeout(() => {
+>              ins?.proxy?._loading.hide();
+>          }, 2000);
+>      });
+>      ```
+>
+>      
+
+``main.ts``
+
+```ts
+import {createApp} from "vue";
+import App from "./App.vue";
+import Loading from "./components/loading/index.ts";
+
+const app = createApp(App);
+app.use(Loading);
+app.mount("#app");
+```
+
+
+
+# 样式穿透
+
+## deep
+
+``AVue.vue``
+
+```vue
+<template>
+    <div>
+        第一层
+        <input>
+    </div>
+</template>
+```
+
+``App.vue``
+
+```vue
+<template>
+    <AVue class="avue"/>
+</template>
+
+<script setup lang="ts">
+import AVue from "./components/AVue.vue";
+</script>
+
+<style scoped>
+/*直接添加样式只能添加到组件的最外层*/
+.avue {
+    color: red;
+    background-color: aqua;
+}
+
+/*如果不添加deep是无法添加上样式*/
+.avue :deep(input) {
+    background-color: aquamarine;
+}
+</style>
+```
+
+## slotted
+
+>插件中使用插槽,直接对插槽内的元素添加样式是无法生效的,必须添加``slotted``才可以生效
+
+``*.vue``
+
+```vue
+<template>
+    <div>
+        插槽
+        <slot>
+
+        </slot>
+    </div>
+</template>
+
+<script setup lang="ts">
+
+</script>
+
+<style scoped>
+:slotted(input) {
+    background-color: red;
+}
+</style>
+```
+
+
+
+## global
+
+>``scoped``设置里面直接设置的样式只在本组件生效,添加``global``可以让这个样式在全局中都生效
+
+``*.vue``
+
+```vue
+<style scoped>
+:global(h1) {
+    background-color: skyblue;
+}
+</style>
+```
+
+## v-bind
+
+>让css样式的值设置为一个ts里面的变量
+>
+>基本类型可以直接设置,对象形式需要用引号设置``'style.color'`` 
+
+``*.vue``
+
+```vue
+<script setup lang="ts">
+import AVue from "./components/AVue.vue";
+import {reactive, ref} from "vue";
+
+let color = ref("red");
+
+let style = reactive({
+    "color": "red"
+});
+</script>
+
+<style scoped>
+.div {
+    color: v-bind('style.color');
+}
+</style>
+```
+
+## module
+
+>使用``module`` 可以动态的给元素添加样式``:class="[$style.div,$style.bo]"`` 
+>
+>单个样式不用写成数组形式
+
+``*.vue``
+
+```vue
+<template>
+    <div :class="[$style.div,$style.bo]">
+        asas
+    </div>
+</template>
+
+<script setup lang="ts">
+
+</script>
+
+<style module>
+.div {
+    width: 100px;
+    height: 100px;
+    color: red;
+}
+
+.bo {
+    border: 1px solid red;
+}
+</style>
+```
+
+## module自定义名称
+
+>``module="xy"``: 设置自定义的值,后边使用的时候就不能使用默认的``$style`` 而是使用``xy``自定义的值代替
+
+``*.vue``
+
+```vue
+<template>
+    <div :class="[xy.div,xy.bo]">
+        asas
+    </div>
+</template>
+
+<script setup lang="ts">
+
+</script>
+
+<style module="xy">
+.div {
+    width: 100px;
+    height: 100px;
+    color: red;
+}
+
+.bo {
+    border: 1px solid red;
+}
+</style>
+```
+
+## useCssModule
+
+>``useCssModule``: 获取样式列表
+>
+>如果module没有设置值则直接module()即可,如果module设置了值则需要在参数中指定值
+
+``*.vue``
+
+```vue
+<template>
+    <div :class="[xy.div,xy.bo]">
+        asas
+    </div>
+</template>
+
+<script setup lang="ts">
+import {useCssModule} from "vue";
+
+const um = useCssModule("xy");
+/*
+{div: '_div_1ukg8_2', bo: '_bo_1ukg8_8'}bo: "_bo_1ukg8_8"div: "_div_1ukg8_2"[[Prototype]]: Object
+ */
+console.log(um);
+</script>
+
+<style module="xy">
+.div {
+    width: 100px;
+    height: 100px;
+    color: red;
+}
+
+.bo {
+    border: 1px solid red;
+}
+</style>
+```
 
 
 
@@ -1637,6 +2070,254 @@ img {
 ```
 
 
+
+## 使用自定义hook实现把img转为base64
+
+``hook/index.ts``
+
+```ts
+import {onMounted} from "vue";
+
+type options = {
+    el: string
+}
+export default function (options: options): Promise<{ baseUrl: string }> {
+    return new Promise(resolve => {
+        onMounted(() => {
+            // 获取到元素
+            let img: HTMLImageElement = document.querySelector(options.el) as HTMLImageElement;
+            // 当元素加载完毕
+            img.onload = () => {
+                resolve({
+                    baseUrl: base(img)
+                });
+            };
+        });
+        const base = (img: HTMLImageElement) => {
+            // 创建canvas用来对图片转base64
+            let canvas: HTMLCanvasElement = document.createElement("canvas");
+            let ctx = canvas.getContext("2d");
+            canvas.width = img.width;
+            canvas.height = img.height;
+            // drawImage: 给img的图片绘制上去
+            ctx?.drawImage(img, 0, 0, img.width, img.height);
+            // toDataURL: 转为base64
+            return canvas.toDataURL("image/png");
+        };
+    });
+}
+```
+
+``*.vue``
+
+```vue
+<template>
+    <img src="./assets/vue.svg" id="img">
+</template>
+
+<script setup lang="ts">
+import toBaseUrl from "./hook/index.ts";
+
+toBaseUrl({el: "img"}).then(res => {
+    console.log(res.baseUrl);
+});
+</script>
+```
+
+## 实现自定义hook和自定义指令监听dom的宽高变化并上传到npm
+
+```shell
+1. 创建文件夹: V-RESIZE-XY
+2. 创建文件夹: src
+3. 创建ts文件: src/index.ts
+4. 创建ts声明文件: V-RESIZE-XY/index.d.ts
+5. 创建vite配置文件: V-RESIZE-XY/vite.config.js
+6. 执行命令:
+	// 初始化npm项目
+	npm init
+	// 初始化ts项目
+	tsc --init
+	// 安装vue和vite, 必须使用-D,因为这是给vue项目使用的所以不需要要再次安装vue和vite
+	npm i vue -D
+	npm i vite -D
+7. npm账户命令:
+	// 登录账号 
+	npm adduser
+	// 验证是否登录
+	npm who am i
+8. 发布到npm
+	npm publish
+```
+
+``index.ts``
+
+```ts
+/*
+ResizeObserver: 主要监听元素宽高变化
+MutationObserver: 监听子集的变化和属性的变化以及增删改查
+IntersectionObserver: 监听可视区域的变化
+ */
+import {App} from "vue";
+
+function useResize(el: HTMLElement, callback: Function) {
+    let resize = new ResizeObserver((entries) => {
+        callback(entries[0].contentRect);
+    });
+    resize.observe(el);
+}
+
+const install = (app: App) => {
+    app.directive("resize", (el, binding) => {
+        useResize(el, binding.value);
+    });
+};
+
+useResize.install = install;
+
+export default useResize;
+```
+
+``index.d.ts``
+
+```ts
+import {App} from "vue";
+
+declare const useResize: {
+    (el: HTMLElement, callback: Function): void
+    install: (app: App) => void;
+};
+
+export default useResize;
+```
+
+``vite.config.js``
+
+```js
+import {defineConfig} from "vite";
+
+export default defineConfig({
+    build: {
+        lib: {
+            entry: "src/index.ts",
+            name: "useResize"
+        },
+        rollupOptions: {
+            external: ['vue'],
+            output: {
+                globals: {
+                    useResize: "useResize"
+                }
+            }
+        }
+    }
+})
+```
+
+``package.json``
+
+>main: requery引入需要
+>
+>module: import引入需要
+>
+>files: 配置上传的文件
+
+```json
+{
+  "name": "v-resize-xy",
+  "version": "1.0.0",
+  "description": "使用hook或指令监听dom元素宽高的变化",
+  "main": "dist/v-resize-xy.umd.js",
+  "module": "dist/v-resize-xy.mjs",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "vite build"
+  },
+  "files": [
+    "dist",
+    "index.d.ts"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "vite": "^4.3.9",
+    "vue": "^3.3.4"
+  }
+}
+```
+
+### 在vue项目中引用
+
+```shell
+npm i v-resize-xy
+```
+
+>hook使用
+
+```vue
+<template>
+    <div class="test">
+        asdasda
+    </div>
+</template>
+
+<script setup lang="ts">
+import useResize from "v-resize-xy";
+import {onMounted} from "vue";
+
+// 必须要在onMounted才能使用
+onMounted(() => {
+    useResize(document.querySelector(".test"), (res) => {
+        console.log(res);
+    });
+});
+</script>
+
+<style scoped>
+.test {
+    width: 100px;
+    height: 100px;
+    border: 1px solid red;
+    overflow: hidden;
+    resize: both;
+}
+</style>
+```
+
+>指令使用
+>
+>需要先在``main.ts``中使用一下这个插件,然后在其他组件中就可以直接使用这个指令
+
+``main.ts``
+
+```ts
+import {createApp} from "vue";
+import App from "./App.vue";
+import useResize from "v-resize-xy";
+
+createApp(App).use(useResize).mount("#app");
+```
+
+``*.vue``
+
+```vue
+<template>
+    <div class="test" v-resize="callback">
+        asdasda
+    </div>
+</template>
+
+<script setup lang="ts">
+const callback = (res) => {
+    console.log(res);
+};
+</script>
+```
+
+
+
+
+
+![loveyu](https://www.loveyu.asia//img/loveyu-20230601102614346.png)
 
 
 
