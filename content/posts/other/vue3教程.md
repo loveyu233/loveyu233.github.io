@@ -1489,6 +1489,350 @@ console.log(um);
 
 
 
+# 添加环境变量
+
+## 添加
+
+>创建`` .env.development `` 和 `` .env.production`` 两个文件,分别为开发环境和生产环境
+
+`` .env.development ``
+
+```txt
+VITE_TEST = DEVELOPMENT
+```
+
+`` .env.production`` 
+
+```txt
+VITE_TEST = PRODUCTION
+```
+
+## 使用
+
+>``import.meta.env);`` 可以获取到全部的变量,其中包括设置的
+>
+>根据运行的环境不同分别读取不同环境下的变量文件
+
+```ts
+console.log(import.meta.env);
+```
+
+## vite获取变量
+
+>先安装: ``npm i --save-dev @types/node``
+
+``vite.config.ts``
+
+>先解构出``mode``
+>
+>再使用``loadEnv``获取自定义环境变量
+
+```ts
+import {defineConfig, loadEnv} from "vite";
+import vue from "@vitejs/plugin-vue";
+
+export default defineConfig(({mode}: any) => {
+    console.log(loadEnv(mode, process.cwd()));
+    return {
+        plugins: [vue()]
+    };
+});
+```
+
+
+
+# 自定义组件
+
+## 原生方法
+
+``btn.js``
+
+```js
+class Btn extends HTMLElement {
+    constructor() {
+        super();
+        const shaDom = this.attachShadow({mode: "open"})
+        
+        // 第一种方法
+        // this.p = this.h("p")
+        // this.p.innerText = "测试"
+        // this.p.setAttribute("style", "width:200px;height:200px;border:1px solid red")
+        // shaDom.appendChild(this.p)
+
+        // 第二种方法
+        this.template = this.h("template")
+        this.template.innerHTML = `
+            <style>
+                div{
+                    width: 200px;
+                    height: 200px;
+                    border: 1px solid red;
+                }
+            </style>
+            <div>测试233</div>
+        `
+        shaDom.appendChild(this.template.content.cloneNode(true))
+    }
+
+    h(el) {
+        return document.createElement(el)
+    }
+  
+      /**
+     * 生命周期
+     */
+    //当自定义元素第一次被连接到文档 DOM 时被调用。
+    connectedCallback() {
+        console.log('我已经插入了！！！嗷呜')
+    }
+
+    //当自定义元素与文档 DOM 断开连接时被调用。
+    disconnectedCallback() {
+        console.log('我已经断开了！！！嗷呜')
+    }
+
+    //当自定义元素被移动到新文档时被调用
+    adoptedCallback() {
+        console.log('我被移动了！！！嗷呜')
+    }
+
+    //当自定义元素的一个属性被增加、移除或更改时被调用
+    attributeChangedCallback() {
+        console.log('我被改变了！！！嗷呜')
+    }
+}
+
+window.customElements.define("xy-btn", Btn)
+```
+
+``index.html``
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="btn.js"></script>
+</head>
+<body>
+  <xy-btn></xy-btn>
+</body>
+</html>
+```
+
+![loveyu-5792241](https://www.loveyu.asia//img/loveyu-5792241.png)
+
+## vue中使用
+
+``vite.config.ts``
+
+```ts
+import {defineConfig} from "vite";
+import vue from "@vitejs/plugin-vue";
+
+export default defineConfig(({mode}: any) => {
+    return {
+      	// 添加配置
+        plugins: [vue({
+            template: {
+                compilerOptions: {
+                    // 以 xy- 的都会跳过组件检测
+                    isCustomElement: (tag) => tag.includes("xy-")
+                }
+            }
+        })]
+    };
+});
+
+```
+
+``custom-vue.ce.vue``
+
+>必须是``.ce.vue``结尾, 接受参数时,参数直接在标签上携带
+
+```vue
+<template>
+    <div class="div">
+        <h1>
+            CUSTOM
+        </h1>
+    </div>
+</template>
+
+<script setup lang="ts">
+defineProps<{
+    obj: any
+}>();
+</script>
+
+<style scoped>
+.div {
+    width: 200px;
+    height: 200px;
+    border: 1px solid red;
+}
+</style>
+```
+
+``app.vue``
+
+```vue
+<template>
+    <xy-btn :obj="JSON.stringify(obj)"></xy-btn>
+</template>
+
+<script setup lang="ts">
+import customVueCe from "./components/custom-vue.ce.vue";
+import {defineCustomElement, reactive} from "vue";
+
+const btn = defineCustomElement(customVueCe);
+window.customElements.define("xy-btn", btn);
+
+let obj = {
+    name: "张三"
+};
+
+</script>
+
+<style module="xy">
+
+</style>
+```
+
+``携带参数:`` 
+
+![loveyu-5793242](https://www.loveyu.asia//img/loveyu-5793242.png)
+
+
+
+# pinia
+
+>注册
+
+``main.ts``
+
+```ts
+import {createPinia} from "pinia";
+
+const app = createApp(App);
+
+app.use(createPinia());
+
+```
+
+``store/index.ts``
+
+>``export const useTestStore = defineStore("nameSpace1", { state:()=>{return {} }, getters:{},actions:{} }`` 
+
+```ts
+import {defineStore} from "pinia";
+
+
+type User = {
+    name: string,
+    age: number
+}
+const login = (): Promise<User> => {
+    return new Promise<User>(resolve => {
+        setTimeout(() => {
+            resolve({
+                name: "哈哈哈",
+                age: 13123
+            });
+        }, 2000);
+    });
+};
+export const useTestStore = defineStore("nameSpace1", {
+    state: () => {
+        return {
+            name: "张三",
+            age: 19,
+            user: {}
+        };
+    },
+    getters: {
+        getUser(): string {
+            return `name:${this.name} --- age:${this.age}`;
+        }
+    },
+    actions: {
+        updateName(name: string) {
+            this.name = name;
+        },
+        async login() {
+            const res = await login();
+            this.user = res;
+        }
+    }
+});
+
+```
+
+
+
+``*.vue``
+
+>使用
+
+```vue
+<template>
+    <h1>origin: {{ Test.name }} --- {{ Test.age }} --- {{ Test.user }}</h1>
+    <h1>解构: {{ name }} --- {{ age }}</h1>
+    <h1>getters: {{ Test.getUser }}</h1>
+    <button @click="change">change</button>
+    <button @click="reset">reset重置到原始值</button>
+</template>
+
+<script setup lang="ts">
+import {useTestStore} from "./store";
+import {storeToRefs} from "pinia";
+
+const Test = useTestStore();
+
+/*
+修改state值的五种方式
+1.       Test.age = 123; Test.name = "啊哈哈哈";
+2.       Test.$patch({age: 666, name: "啊哈哈哈"});
+3.       Test.$patch((state) => {
+          state.age = 9999;
+          state.name = "阿莎哈哈";
+         });
+4. 必须全部修改   Test.$state = {
+        age: 123,
+        name: "asadsdsa"
+    };
+5.在action里面定义方法,然后调用  Test.updateName("哈哈哈哈");
+6.通过storeToRefs解构为响应式数据 let {name, age} = storeToRefs(Test);
+ */
+
+let {name, age} = storeToRefs(Test);
+const change = () => {
+    // Test.age++;
+    Test.login();
+};
+
+const reset = () => {
+    Test.$reset();
+};
+
+Test.$subscribe((mutation, state) => {
+    console.log(mutation, state);
+});
+Test.$onAction((args) => {
+    args.after(() => {
+        console.log("after");
+    });
+    console.log(args);
+});
+
+</script>
+
+<style module="xy">
+
+</style>
+```
+
 
 
 
@@ -2398,7 +2742,15 @@ let imageList: Record<string, { default: string }> = import.meta.glob("./images/
 
 
 
+## http-server
+
+```shell
+npm install http-server -g
+http-server -p 端口号
+```
 
 
 
+## 性能优化
 
+``https://xiaoman.blog.csdn.net/article/details/126811832?spm=1001.2014.3001.5502`` 
