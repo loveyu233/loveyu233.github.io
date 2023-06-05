@@ -50,8 +50,8 @@ languages:
             url: posts/java
           - name: 👨🏻‍💻Databases
             url: posts/databases
-          - name: 👨🏻‍💻Middleware
-            url: posts/middleware
+          - name: 👨🏻‍💻FrontEnd
+            url: posts/frontend/
           - name: 👨🏻‍💻Other
             url: posts/other
 

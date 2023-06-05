@@ -4,7 +4,7 @@ date: 2019-06-09T19:38:37+08:00
 author: ["loveyu"]
 draft: false
 categories: 
-- 其他
+- databases
 tags: 
 - ES
 ---

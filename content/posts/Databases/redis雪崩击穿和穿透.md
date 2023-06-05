@@ -4,7 +4,7 @@ date: 2022-10-13T19:38:37+08:00
 author: ["loveyu"]
 draft: false
 categories: 
-- 数据库
+- databases
 tags: 
 - redis
 ---

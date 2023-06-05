@@ -4,8 +4,7 @@ date: 2020-12-04T19:38:37+08:00
 author: ["loveyu"]
 draft: false
 categories: 
-- redis
-- other
+- databases
 tags: 
 - redis
 - nosql
