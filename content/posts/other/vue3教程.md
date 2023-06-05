@@ -1724,6 +1724,8 @@ app.use(createPinia());
 ``store/index.ts``
 
 >``export const useTestStore = defineStore("nameSpace1", { state:()=>{return {} }, getters:{},actions:{} }`` 
+>
+>可以声明多个,pinia不需要显示的注册,只需要声明即可
 
 ```ts
 import {defineStore} from "pinia";
@@ -1834,6 +1836,510 @@ Test.$onAction((args) => {
 ```
 
 
+
+## 自定义持久化插件
+
+``localStore.ts``
+
+```ts
+import {PiniaPluginContext} from "pinia";
+import {toRaw} from "vue";
+
+type O = {
+    key?: string
+}
+export const piniaPlugin = (options: O) => {
+    return (content: PiniaPluginContext) => {
+        const {store} = content;
+        const data = getLocalStore(`${options?.key ?? "default"}-${store.$id}`);
+        store.$subscribe(() => {
+            setLocalStore(`${options?.key ?? "default"}-${store.$id}`, toRaw(store.$state));
+        });
+        return {
+            ...data
+        };
+    };
+
+};
+
+const setLocalStore = (key: string, value: any) => {
+    localStorage.setItem(key, JSON.stringify(value));
+};
+
+const getLocalStore = (key: string) => {
+    return localStorage.getItem(key) ? JSON.parse(localStorage.getItem(key) as string) : {};
+};
+```
+
+``main.ts``
+
+>``store.use``即可使用
+
+```ts
+
+const app = createApp(App);
+const store = createPinia();
+
+
+store.use(piniaPlugin({
+    key: "xy"
+}));
+
+
+app.use(store);
+```
+
+
+
+# Vue-Router
+
+## 安装
+
+```shell
+npm i vue-router
+```
+
+## 声明
+
+``router/index.ts``
+
+```ts
+import {createRouter, createWebHashHistory, RouteRecordRaw} from "vue-router";
+
+const routes: Array<RouteRecordRaw> = [{
+    path: "/a",
+    name: "aVue",
+    component: () => import("../components/A.vue")
+}, {
+    path: "/b",
+    name: "bVue",
+    component: () => import("../components/B.vue")
+}
+];
+export default createRouter({
+    history: createWebHashHistory(),
+    routes
+});
+```
+
+## use使用
+
+``main.ts``
+
+```ts
+import {createApp} from "vue";
+import App from "./App.vue";
+import router from "./router";
+
+const app = createApp(App);
+app.use(router);
+app.mount("#app");
+```
+
+
+
+## 显示/跳转
+
+>``<router-view></router-view>`` 放到哪.就显示在哪
+>
+>不留下历史记录:
+>
+>声明式: ``<router-link replace to="/a">AVue</router-link>`` 添加replace
+>
+>编程式:``vueRouter.replace`` 使用``vueRouter.replace({...})``
+
+``app.vue``
+
+```vue
+<template>
+    <h1>App</h1>
+    <div>
+        <router-link to="/a">AVue</router-link>
+        <router-link to="/b">BVue</router-link>
+    </div>
+    <div>
+        <router-link :to="{name:'aVue'}">AVue</router-link>
+        <router-link :to="{name:'bVue'}">BVue</router-link>
+    </div>
+    <div>
+        <button @click="toPage1('/a')">AVue</button>
+        <button @click="toPage1('/b')">BVue</button>
+    </div>
+    <div>
+        <button @click="toPage2('aVue')">AVue</button>
+        <button @click="toPage2('bVue')">BVue</button>
+    </div>
+
+    <router-view></router-view>
+</template>
+
+<script setup lang="ts">
+import {useRouter} from "vue-router";
+
+const vueRouter = useRouter();
+
+const toPage1 = (url: string) => {
+
+    // vueRouter.push(url);
+
+    vueRouter.push({
+        path: url
+    });
+};
+const toPage2 = (url: string) => {
+    vueRouter.push({
+        name: url
+    });
+};
+</script>
+
+<style scoped>
+
+</style>
+```
+
+
+
+## 前进后退
+
+```ts
+const go = () => {
+    vueRouter.go(1);
+};
+
+const back = () => {
+    vueRouter.back();
+};
+```
+
+
+
+## 参数传递
+
+``index.json``
+
+```json
+{
+  "data": [
+    {
+      "id": 1,
+      "name": "脚踩老坛酸菜",
+      "price": 100
+    },
+    {
+      "id": 2,
+      "name": "伤肺火腿肠",
+      "price": 300
+    },
+    {
+      "id": 3,
+      "name": "翡翠玉石",
+      "price": 200
+    }
+  ]
+}
+```
+
+
+
+### query
+
+``传递.vue``
+
+```vue
+<template>
+    <table>
+        <tr v-for="item in data" :key="item.id">
+            <td>{{ item.id }}</td>
+            <td>{{ item.name }}</td>
+            <td>{{ item.price }}</td>
+            <td>
+                <button @click="info(item)">详情</button>
+            </td>
+        </tr>
+    </table>
+</template>
+
+<script setup lang="ts">
+import {data} from "../data/idnex.json";
+import {useRouter} from "vue-router";
+
+type Item = {
+    id: number,
+    name: string,
+    price: number
+}
+
+const router = useRouter();
+const info = (item: Item) => {
+    router.push({
+        path: "/b",
+        query: item
+    });
+};
+
+</script>
+
+<style scoped>
+
+</style>
+```
+
+``接收.vue``
+
+```vue
+<template>
+    <h1>详情</h1>
+    <h2>ID: {{ route.query.id }}</h2>
+    <h2>Name: {{ route.query.name }}</h2>
+    <h2>Price: {{ route.query.price }}</h2>
+    <button @click="back">返回</button>
+</template>
+
+<script setup lang="ts">
+import {useRoute, useRouter} from "vue-router";
+
+const route = useRoute();
+const router = useRouter();
+const back = () => {
+    router.push("/");
+};
+</script>
+
+<style scoped>
+
+</style>
+```
+
+
+
+## params
+
+>新版本已经不支持直接传递参数,详细:https://github.com/vuejs/router/blob/main/packages/router/CHANGELOG.md#414-2022-08-22
+>
+>使用params必须在url上声明才可以
+
+``router/index.ts``
+
+>``path: "/b/:id",`` 在路径后边声明
+
+```tsx
+import {createRouter, createWebHashHistory, RouteRecordRaw} from "vue-router";
+
+const routes: Array<RouteRecordRaw> = [{
+    path: "/",
+    name: "aVue",
+    component: () => import("../components/A.vue")
+}, {
+    path: "/b/:id",
+    name: "bVue",
+    component: () => import("../components/B.vue")
+}
+];
+export default createRouter({
+    history: createWebHashHistory(),
+    routes
+});
+```
+
+传递
+
+>``params: {id: item.id}`` 必须和path声明的一致
+
+```tsx
+const info = (item: Item) => {
+    router.push({
+        name: "bVue",
+        params: {id: item.id}
+    });
+};
+```
+
+接收
+
+```ts
+const route = useRoute();
+route.params.id
+```
+
+
+
+## 子路由/重定向/别名
+
+>``children``: 主路由,页面跳转时必须携带上父路由
+>
+>``redirect``: 重定向,当页面跳转到这个路由时会重定向到指定的路由,写法可以说字符串也可以是对象
+>
+>``alias``: 别名,可以起多个,这些别名都指向一个组件
+
+```ts
+
+const routes: Array<RouteRecordRaw> = [{
+    path: "/",
+    name: "aVue",
+    redirect: "/a",
+    alias: ["/root", "/root1", "/root2"],
+    component: () => import("../components/A.vue"),
+    children: [{
+        path: "/a",
+        name: "aVue",
+        component: () => import("../components/A.vue")
+    }, {
+        path: "/b",
+        name: "aVue",
+        component: () => import("../components/A.vue")
+    }]
+}, {
+    path: "/b/:id",
+    name: "bVue",
+    component: () => import("../components/B.vue")
+}
+];
+```
+
+
+
+## 前置守卫后置守卫
+
+```ts
+/*
+to: Route， 即将要进入的目标 路由对象；
+from: Route，当前导航正要离开的路由；
+next(): 进行管道中的下一个钩子。如果全部钩子执行完了，则导航的状态就是 confirmed (确认的)。
+next(false): 中断当前的导航。如果浏览器的 URL 改变了 (可能是用户手动或者浏览器后退按钮)，那么 URL 地址会重置到 from 路由对应的地址。
+next('/') 或者 next({ path: '/' }): 跳转到一个不同的地址。当前的导航被中断，然后进行一个新的导航。
+*/
+router.beforeEach((to, form, next) => {
+    console.log(to, form);
+    next()
+})
+
+
+const whileList = ['/']
+router.beforeEach((to, from, next) => {
+    let token = localStorage.getItem('token')
+    //白名单 有值 或者登陆过存储了token信息可以跳转 否则就去登录页面
+    if (whileList.includes(to.path) || token) {
+        next()
+    } else {
+        next({
+            path:'/'
+        })
+    }
+})
+```
+
+
+
+## 路由元信息
+
+>获取: ``直接.mate.key`` 即可
+
+```ts
+const router = createRouter({
+  history: createWebHistory(import.meta.env.BASE_URL),
+  routes: [
+    {
+      path: '/',
+      component: () => import('@/views/Login.vue'),
+      meta: {
+        title: "登录"
+      }
+    },
+    {
+      path: '/index',
+      component: () => import('@/views/Index.vue'),
+      meta: {
+        title: "首页",
+      }
+    }
+  ]
+})
+
+// 声明类型,不然调用的时候编辑器会报错	
+declare module 'vue-router' {
+  interface RouteMeta {
+    title?: string
+  }
+}
+```
+
+
+
+## 添加路由过渡效果
+
+>先下载``animate``css
+
+添加meta信息,用来设置不同的过渡效果
+
+```ts
+declare module 'vue-router'{
+     interface RouteMeta {
+        title:string,
+        transition:string,
+     }
+}
+ 
+const router = createRouter({
+  history: createWebHistory(import.meta.env.BASE_URL),
+  routes: [
+    {
+      path: '/',
+      component: () => import('@/views/Login.vue'),
+      meta:{
+         title:"登录页面",
+         transition:"animate__fadeInUp",
+      }
+    },
+    {
+      path: '/index',
+      component: () => import('@/views/Index.vue'),
+      meta:{
+         title:"首页！！！",
+         transition:"animate__bounceIn",
+      }
+    }
+  ]
+})
+```
+
+
+
+``*.vue``
+
+```vue
+    <router-view #default="{route,Component}">
+        <transition  :enter-active-class="`animate__animated ${route.meta.transition}`">
+            <component :is="Component"></component>
+        </transition>
+    </router-view>
+```
+
+
+
+## 动态路由
+
+>主要就是:``router.addRoute({ path: '/about', component: About })`` 
+>
+>请求后端返回数据,然后使用addRouter添加路由
+>
+>如果添加与现有途径名称相同的途径，会先删除路由，再添加路由：
+
+```ts
+// addRoute有返回值调用就会删除
+const removeRoute = router.addRoute(routeRecord)
+removeRoute() // 删除路由如果存在的话
+
+
+// 删除路由,当路由被删除时，所有的别名和子路由也会被同时删除
+router.removeRoute('about')
+
+router.hasRoute()：检查路由是否存在。
+router.getRoutes()：获取一个包含所有路由记录的数组。
+
+													//这儿不能使用@
+component: () => import(`../views/${v.component}`)
+```
 
 
 
@@ -2754,3 +3260,26 @@ http-server -p 端口号
 ## 性能优化
 
 ``https://xiaoman.blog.csdn.net/article/details/126811832?spm=1001.2014.3001.5502`` 
+
+
+
+## 定义@别名代表src
+
+``vite.config.ts``
+
+>可以定义多个`` "@": fileURLToPath(new URL("./src", import.meta.url))`` 
+
+```ts
+export default defineConfig(({mode}: any) => {
+    console.log(loadEnv(mode, process.cwd()));
+    return {
+        resolve: {
+            alias: {
+                "@": fileURLToPath(new URL("./src", import.meta.url))
+            }
+        }
+    };
+});
+
+```
+
