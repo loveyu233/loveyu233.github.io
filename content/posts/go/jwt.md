@@ -12,79 +12,49 @@ tags:
 
 
 
-1. #### 导入包
+```go
+package jwt
 
->"github.com/dgrijalva/jwt-go"
+import (
+	"github.com/golang-jwt/jwt/v4"
+	"github.com/spf13/viper"
+	"time"
+)
 
-2. #### 声明结构体
+type Claims struct {
+	UserId int
+	jwt.RegisteredClaims
+}
 
->```go
->type MyStandardClaims struct {
->Username string `json:"username"`
->jwt.StandardClaims
->}
->```
->
-> 必须添加属性：jwt.StandardClaims 
->
->可以添加自己需要的如：Username
+func CreateToken(id int) (string, error) {
+	accessJwtKey := []byte(viper.GetString("token.secret"))
+	expirationTime := time.Now().Add(60 * time.Minute) // 5分钟有效
 
-3. #### 设置密钥
+	claims := Claims{
+		UserId: id,
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(expirationTime),
+			Issuer:    "233",
+		},
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &claims)
+	return token.SignedString(accessJwtKey)
+}
 
->myKey := []byte("qwertyuiop") //密钥尽量长一点，过短会报错密钥过短
+func GetPayload(token string) (int, error) {
+	parser := jwt.NewParser()
+	var claims Claims
+	_, _, err := parser.ParseUnverified(token, &claims)
+	return claims.UserId, err
+}
 
-4. #### 创建结构体
+func VerifyToken(token string) error {
+	accessJwtKey := []byte(viper.GetString("token.secret"))
+	_, err := jwt.Parse(token, func(token *jwt.Token) (interface{}, error) {
+		return accessJwtKey, nil
+	})
+	return err
+}
 
->```go
->ms := MyStandardClaims{
->Username: "loveyu",
->StandardClaims: jwt.StandardClaims{
-> ExpiresAt: time.Now().Unix() + 10,
-> Issuer:    "233",
->},
->}
->```
->
-> StandardClaims: jwt.StandardClaims{}  可以添加其他属性
->
->ExpiresAt：过期时间
->
->Issuer：生成jwt的所有者
+```
 
-5. #### 创建token
-
->```go
->token := jwt.NewWithClaims(jwt.SigningMethodHS256, &ms)
->```
->
-> jwt.SigningMethodHS256  加密方式
-
-6. #### 加密token
-
->```go
->signedString, err := token.SignedString(myKey)
->```
->
-> signedString  就是需要的jwt字符串
->
->myKey：密钥
-
-7. #### 解析token
-
->```go
->claims, err := jwt.ParseWithClaims(signedString, &MyStandardClaims{}, func(token *jwt.Token) (interface{}, error) {
->return myKey, nil
->})
->if err != nil {
->fmt.Println(err)
->}
->fmt.Println(claims.Claims.(*MyStandardClaims).Username)
->```
->
-> singnedString  为jwt字符串
->
-> &MyStandardClaims{}  为解析后的结构体
->
-> func(token *jwt.Token)  该函数的返回值为密钥
->
-> claims.Claims.(*MyStandardClaims).Username  断言为对应结构体，并获取对应属性的值

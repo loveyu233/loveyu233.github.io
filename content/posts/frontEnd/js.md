@@ -13,6 +13,7 @@ tags:
 
 
 
+```js
 var let const
 
 声明变量
@@ -404,3 +405,5 @@ Element.remove()  //用于将当前元素节点从DOM中移除
 Element.focus()   //用于将当前页面的焦点，转移到指定元素上
 
 Element.blur()  //用于将焦点从当前元素移除
+```
+
