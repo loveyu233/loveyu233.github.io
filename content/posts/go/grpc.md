@@ -1384,6 +1384,13 @@ func StreamInterceptor(srv interface{}, ss grpc.ServerStream, info *grpc.StreamS
 
 ## 实现多个拦截器
 
->gRPC框架中只能为每个服务一起配置一元和流拦截器，，gRPC 会根据不同方法选择对应类型的拦截器执行，因此所有的工作只能在一个函数中完成。
->
->开源的grpc-ecosystem项目中的go-grpc-middleware包已经基于gRPC对拦截器实现了链式拦截的支持。
+```go
+// 服务端
+grpc.ChainUnaryInterceptor(多个拦截器)
+grpc.ChainStreamInterceptor(多个拦截器)
+
+// 客户端
+grpc.WithChainUnaryInterceptor(多个拦截器)
+grpc.WithChainStreamInterceptor(多个拦截器)
+```
+
