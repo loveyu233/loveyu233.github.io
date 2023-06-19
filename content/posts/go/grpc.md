@@ -94,33 +94,147 @@ func main() {
 
 ## 语法
 
->详细语法百度查看
+>分配字段编号说明:
+>
+>消息定义中的每个字段都有一个唯一的编号。这些字段编号用于在 消息二进制格式中标识您的字段，并且在使用消息类型后不应更改。
+>[1, 15]之内的标识号在编码的时候会占用一个字节。[16, 2047]之内的标识号则占用2个字节。
+>最小的标识号可以从1开始，最大到2^29 - 1, or 536,870,911。不可以使用其中的[19000－19999],因为是预留信息，如果使用，编译时会报错。
+>
+>``singular``：消息中至多存在一个该字段的数据。使用 proto3 语法时，当没有为给定字段指定其他字段规则时，这是默认字段规则。
+>``optional``：与 singular 类似，不同之处在于可以检查该值是否已经显式设置了值。字段有两种可能的状态:
+>该字段已设置，并包含从连接中显式设置或解析的值。它将被序列化到连接上。
+>该字段未设置，将返回默认值。它不会被序列化。
+>``repeated``：该字段类型可以在消息中可以重复设置多次，重复值的顺序将被保留。（设置成为数组类型）
+>``map``：成对的键/值字段类型。
+>
+>`` reserved``:保留标识符, 对于特殊的字段名或者编号通过完全删除字段或将其注释掉来更新消息类型，如果后面出现其他用户对该消息进行更新重用了特殊的字段名或者编号，可能会导致严重的错误，包括数据损坏、出现隐私漏洞等。
+>为了确保这种情况不会发生的一种方法就是用保留标识符指定保留已删除的字段名或者编号。如果有其他用户试图重用这些字段名或编号，protobuf则会报错预警。
 
 ```protobuf
-// 声明版本
+// 指明当前使用proto3语法，如果不指定，编译器会使用proto2
 syntax = "proto3";
 
-// 包
-package pb;
+// package声明符，用来防止消息类型有命名冲突
+package msg;
 
-//  生成go语言所在包
-option go_package = "../pb";
+// 选项信息，对应go的包路径
+option go_package = "server/msg";
 
-// 相当于struct
-message Tea {
-  int32 age = 1;
-  string name = 2;
+// message关键字，像go中的结构体
+message FirstMsg {
+  // 类型 字段名 标识号
+  int32 id = 1;
+  string name=2;
+  string age=3;
 }
 
-//  服务
-service HelloWorld {
-  rpc Test1(Tea) returns (Tea);
+// 在这个消息中标记
+message DemoMsg {
+  // 标示号：1，2，10，11，12，13 都不能用
+  reserved 1, 2, 10 to 13;
+  // 字段名 test、name 不能用
+  reserved "test","name";
+  // 不能使用字段名，提示:Field name 'name' is reserved
+  string name = 3;
+  // 不能使用标示号,提示:Field 'id' uses reserved number 11
+  int32 id = 11;
+}
+
+// 另外一个消息还是可以正常使用
+message Demo2Msg {
+  // 标示号可以正常使用
+  int32 id = 1;
+  // 字段名可以正常使用
+  string name = 2;
 }
 ```
 
 
 
+### 枚举
+
+>每个枚举类型必须将其第一个类型映射为编号0, 原因有两个：
+>
+>1. 必须有一个零值，以便我们可以使用 0 作为数字 默认值。
+>2. 零值必须是第一个元素，以便与第一个枚举值始终为默认值的proto2语义兼容 。
+>
+>枚举：在定义消息类型时，希望其中一个字段只是预定义值列表中的一个值。
+
+```go
+enum Corpus {
+  CORPUS_UNSPECIFIED = 0;
+  CORPUS_UNIVERSAL = 1;
+  CORPUS_WEB = 2;
+  CORPUS_IMAGES = 3;
+  CORPUS_LOCAL = 4;
+  CORPUS_NEWS = 5;
+  CORPUS_PRODUCTS = 6;
+  CORPUS_VIDEO = 7;
+}
+message SearchRequest {
+  string query = 1;
+  int32 page_number = 2;
+  int32 result_per_page = 3;
+  Corpus corpus = 4;
+}
+```
+
+
+
+### 引入其他proto文件
+
+```go
+// 导入其他proto文件
+import "proto/class.proto";
+```
+
+
+
+### map类型
+
+>注意：
+>
+>key_type只能是任何整数或字符串类型(除浮点类型和任何标量bytes类型)。
+>enum 不能作为key_type和value_type定义的类型。
+>map字段不能是repeated。
+
+```go
+map<key_type, value_type> map_field = N;
+```
+
+
+
+### 切片/数组类型
+
+```go
+// repeated允许字段重复，对于Go语言来说，它会编译成数组(slice of type)类型的格式
+message DemoSliceMsg {
+  // 会生成 []int32
+  repeated int32 id = 1;
+  // 会生成 []string
+  repeated string name = 2;
+  // 会生成 []float32
+  repeated float price = 3;
+  // 会生成 []float64
+  repeated double money = 4;
+}
+```
+
+
+
+
+
+
+
+![dy](https://www.loveyu.asia//img/dy.png)
+
+
+
+
+
 ## 命令
+
+>快速生成命令: https://github.com/loveyu233/makefileInit
 
 ### proto编译grpc
 
@@ -141,6 +255,25 @@ protoc \
   --grpc-gateway_out . --grpc-gateway_opt paths=source_relative \
   ./proto/rest.proto
 ```
+
+
+
+## 序列化和反序列化
+
+```go
+	ms := pb.HelloWorld{Msg: "helloWorld"}
+	marshal, err := proto.Marshal(&ms)
+	if err != nil {
+		t.Log(err)
+		return
+	}
+	fmt.Println(marshal)
+	unMs := pb.HelloWorld{}
+	err = proto.Unmarshal(marshal, &unMs)
+	fmt.Println(unMs.Msg)
+```
+
+
 
 
 
@@ -896,7 +1029,7 @@ func main() {
 
 
 
-## 实战篇
+## 证书验证篇
 
 #### 生成证书
 
@@ -1066,3 +1199,191 @@ func main() {
    group.Wait()
 }
 ```
+
+
+
+## 拦截器篇
+
+>GRPC的拦截器类似于HTTP服务的中间件,但又不同于中间件,拦截器既可以在client端也可以在server端,且GRPC的拦截器共两种类型,分别为:``一元 流式`` 一元既一次请求一次回复,流式为建立一次连接后可以通过这次连接发送多次数据.这两种类型的拦截器可以作用于client和server所以共有``四种拦截器`` 
+>
+>``所谓的拦截器其实就是一个函数，可以分为预处理(pre-processing)、调用RPC方法(invoking RPC method)、后处理(post-processing)三个阶段。`` 
+>
+>client使用:
+>
+>``dial, err := grpc.Dial("127.0.0.1:8888",
+>    grpc.WithInsecure(),
+>    grpc.WithUnaryInterceptor(UnaryInterceptor),
+>    grpc.WithStreamInterceptor(StreamInterceptor),
+>)`` 
+>
+>server使用:
+>
+>``server := grpc.NewServer(
+>    grpc.UnaryInterceptor(UnaryInterceptor),
+>    grpc.StreamInterceptor(StreamInterceptor),
+>)`` 
+
+### Client一元拦截器
+
+>client拦截器主要用于发送请求前添加元数据,例如认证数据等...
+>
+>ctx：Go语言中的上下文，一般和 Goroutine 配合使用，起到超时控制的效果
+>method：当前调用的 RPC 方法名
+>req：本次请求的参数，只有在处理前阶段修改才有效
+>reply：本次请求响应，需要在处理后阶段才能获取到
+>cc：gRPC 连接信息
+>invoker：可以看做是当前 RPC 方法，一般在拦截器中调用 invoker 能达到调用 RPC 方法的效果，当然底层也是 gRPC 在处理。
+>opts：本次调用指定的 options 信息
+
+```go
+func UnaryInterceptor(ctx context.Context, method string, req, reply interface{}, cc *grpc.ClientConn, invoker grpc.UnaryInvoker, opts ...grpc.CallOption) error {
+	// 调用前执行
+	log.Println("远程调用的方法:", method)
+	log.Println("客户端发送的数据:", req)
+	// 添加元数据,参数为keyValue可以添加多个, 切记返回值赋值为ctx上下文
+	ctx = metadata.AppendToOutgoingContext(ctx, "token", "1234abcd", "msg", "test")
+	// invoker 发起调用
+	err := invoker(ctx, method, req, reply, cc, opts...)
+	// 调用后执行
+	if err != nil {
+		panic(err)
+	}
+	log.Println("服务器回复的数据:", reply)
+	return err
+}
+```
+
+```shell
+远程调用的方法: /pb.Operate/SayHi
+客户端发送的数据: msg:"hello world"
+服务器回复的数据: msg:"hello world over! "
+```
+
+
+
+### Server一元拦截器
+
+>可以用来校验请求等...
+>
+>ctx：请求上下文
+>req：RPC 方法的请求参数
+>info：RPC 方法的所有信息
+>handler：RPC 方法真正执行的逻辑
+
+```go
+func UnaryInterceptor(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp interface{}, err error) {
+	log.Println("req:", req)
+	log.Println("info:", info.FullMethod)
+	log.Println("info:", info.Server)
+	// 解析客户端携带数据
+	md, b := metadata.FromIncomingContext(ctx)
+	if !b {
+		return nil, errors.New("meta数据读取错误")
+	}
+	// 获取客户端携带的数据
+	token := md.Get("token")
+	msg := md.Get("msg")
+	log.Println("token:", token)
+	log.Println("msg:", msg)
+	//
+	p, ok := peer.FromContext(ctx)
+	if !ok {
+		return nil, errors.New("ip数据读取错误")
+	}
+	ip := p.Addr.String()
+	log.Println("ip:", ip)
+	log.Println("p.AuthInfo.AuthType(): ", p.AuthInfo.AuthType())
+	// 处理请求
+	response, err := handler(ctx, req)
+	if err != nil {
+		panic(err)
+	}
+	// 返回处理后的数据
+	return response, err
+}
+```
+
+```shell
+ req: msg:"hello world"
+ info: /pb.Operate/SayHi
+ info: &{{}}
+ token: [1234abcd]
+ msg: [test]
+ ip: 127.0.0.1:55952
+```
+
+
+
+### Client流式拦截器
+
+>1. 声明结构体
+>2. 实现``RecvMsg`` ``SendMsg``
+>3. 发送请求``stream, err := streamer(ctx, desc, cc, method, opts...)``
+>4. 使用自定义``newStreamClient(stream), err`` 
+>5. 发送和 接收的数据都会经过自定义实现的``RecvMsg和SendMsg`` 可以在这两个方法中做数据处理
+
+```go
+func StreamInterceptor(ctx context.Context, desc *grpc.StreamDesc, cc *grpc.ClientConn, method string, streamer grpc.Streamer, opts ...grpc.CallOption) (grpc.ClientStream, error) {
+	stream, err := streamer(ctx, desc, cc, method, opts...)
+	if err != nil {
+		panic(err)
+	}
+	return newStreamClient(stream), err
+}
+
+type StreamClient struct {
+	grpc.ClientStream
+}
+
+// 对ClientStream进行包装
+func newStreamClient(c grpc.ClientStream) grpc.ClientStream {
+	return &StreamClient{c}
+}
+
+// 可以对发送的消息和传输的消息进行操作
+func (s StreamClient) RecvMsg(m interface{}) error {
+	return s.ClientStream.RecvMsg(m)
+}
+
+func (s StreamClient) SendMsg(m interface{}) error {
+	return s.ClientStream.SendMsg(m)
+}
+```
+
+
+
+### Server流式拦截器
+
+>和client基本一致
+
+```go
+type StreamServer struct {
+	grpc.ServerStream
+}
+
+func newStreamServer(s grpc.ServerStream) *StreamServer {
+	return &StreamServer{s}
+}
+
+func (s StreamServer) RecvMsg(m interface{}) error {
+	log.Println("RecvMsg: ", m)
+	return s.ServerStream.RecvMsg(m)
+}
+
+func (s StreamServer) SendMsg(m interface{}) error {
+	log.Println("SendMsg: ", m)
+	return s.ServerStream.SendMsg(m)
+}
+func StreamInterceptor(srv interface{}, ss grpc.ServerStream, info *grpc.StreamServerInfo, handler grpc.StreamHandler) error {
+	server := newStreamServer(ss)
+	return handler(srv, server)
+}
+```
+
+
+
+## 实现多个拦截器
+
+>gRPC框架中只能为每个服务一起配置一元和流拦截器，，gRPC 会根据不同方法选择对应类型的拦截器执行，因此所有的工作只能在一个函数中完成。
+>
+>开源的grpc-ecosystem项目中的go-grpc-middleware包已经基于gRPC对拦截器实现了链式拦截的支持。
