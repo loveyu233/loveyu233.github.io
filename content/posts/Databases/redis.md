@@ -935,6 +935,8 @@ func checkError(err error) {
    1. 同一个节点的同一个线程获得锁后它也可以再次获得这个锁
    1. 重入锁也叫递归锁
 
+
+
 >不使用setnx因为setnx无法做到可重入,所以使用hset
 
 ```go
