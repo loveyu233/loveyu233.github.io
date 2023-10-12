@@ -242,30 +242,7 @@ kubectl get pod
 
 
 
-# k8s使用
-
-```shell
-kubectl [command] [TYPE] [NAME] [flags]
-```
-
->**command**：指定在一个或多个资源上要执行的操作。例如：create、get、describe、delete、apply等
->
->**TYPE**：指定资源类型（如：pod、node、services、deployments等）。资源类型大小写敏感，可以指定单数、复数或缩写形式。
->
->**NAME**：指定资源的名称。名称大小写敏感。**如果省略名称空间，则显示默认名称空间的资源的详细信息**或者提示：No resources found in default namespace.。
->
->**flags**：指定可选的**命令参数**。例如，可以使用 -s 或 –server标识来指定Kubernetes API服务器的地址和端口；-n指定名称空间等。
-
-## 名称空间
-
-```shell
-kubectl get ns
-kubectl get pod -n ns名称
-kubectl create ns hello
-kubectl delete ns hello
-```
-
-
+# k8s Yaml文件
 
 ## Pod
 
@@ -289,22 +266,24 @@ spec:
           image: redis
 ```
 
-```shell
-// 使用这个配置文件
-kubectl apply -f xxx.yaml
+## deployment
 
-// 查看这个pod
-kubectl get pod -n hello
-
-// 查看这个日志
-kubectl logs -n hello my-pod-redis
-// 查看简略信息
-kubectl get pod -n hello -owide
-// 查看详细信息
-kubectl describe pod -n hello my-pod-redis
-```
-
-# deployment
+>apiVersion: apps/v1 表示使用的 Kubernetes API 版本是 apps/v1。
+>kind: Deployment 表示定义了一个 Deployment 资源对象。
+>metadata 用于定义资源对象的元数据，如标签和名称等。
+>labels 是一个键值对集合，用于标识资源对象的属性。这里的 app: app1 表示将该 Deployment 标记为属于 "app1" 应用程序。
+>name: app1 指定了该 Deployment 的名称为 "app1"。
+>spec 用于定义资源对象的规格，即 Deployment 的具体配置。
+>replicas: 3 表示要创建 3 个副本（Pod）。
+>selector 是用于选择要管理的 Pod 的标签。
+>matchLabels 是匹配 Pod 标签的条件，这里的 app: app1 表示只选择具有 "app: app1" 标签的 Pod。
+>template 定义了要创建的 Pod 的模板。
+>metadata 定义了 Pod 元数据，包括标签。
+>labels 定义了 Pod 的标签，这里同样是 app: app1。
+>spec 定义了 Pod 的规格。
+>containers 定义了要在 Pod 中运行的容器列表。每个容器包含以下信息：
+>name 定义了容器的名称，这里有两个容器，一个是名为 "app1" 的容器，另一个是名为 "nginx" 的容器。
+>image 指定了容器使用的镜像。
 
 ```yaml
 apiVersion: apps/v1
@@ -327,4 +306,35 @@ spec:
                   name: h-d-p-redis
 ```
 
->matchLabels:app: 和 labels:app: 的值需要一样
+
+
+## Service
+
+>apiVersion: v1 表示使用的 Kubernetes API 版本是 v1。
+>kind: Service 表示定义了一个 Service 资源对象。
+>metadata 用于定义资源对象的元数据，包括标签和名称等。
+>labels 是一个键值对集合，用于标识资源对象的属性。这里的 app: app1 表示将该 Service 标记为属于 "app1" 应用程序。
+>name: app1 指定了该 Service 的名称为 "app1"。
+>spec 用于定义资源对象的规格，即 Service 的具体配置。
+>selector 定义了要与之关联的 Pod 的选择器，这里的 app: app1 表示只选择具有 "app: app1" 标签的 Pod。
+>ports 定义了 Service 的端口转发规则。
+>port: 8000 表示 Service 所监听的端口号是 8000。
+>protocol: TCP 表示使用 TCP 协议。
+>targetPort: 80 表示将请求转发到 Pod 内部的 80 端口上。
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: app1
+  name: app1
+spec:
+  selector:
+    app: app1
+  ports:
+    - port: 8000
+      protocol: TCP
+      targetPort: 80
+```
+
