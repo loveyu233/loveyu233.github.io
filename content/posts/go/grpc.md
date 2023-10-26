@@ -239,9 +239,8 @@ message DemoSliceMsg {
 ### proto编译grpc
 
 ```shell
-protoc --go_out=. --go_opt=paths=source_relative \
-    --go-grpc_out=. --go-grpc_opt=paths=source_relative \
-    ./*.proto
+protoc --go_out=. --go-grpc_out=. proto文件地址
+`` protoc --go_out=. --go-grpc_out=. pb/user.proto ``
 ```
 
 
@@ -1392,5 +1391,164 @@ grpc.ChainStreamInterceptor(多个拦截器)
 // 客户端
 grpc.WithChainUnaryInterceptor(多个拦截器)
 grpc.WithChainStreamInterceptor(多个拦截器)
+```
+
+
+
+# 使用etcd服务注册和发现
+
+## Server
+
+```go
+package main
+
+import (
+	"context"
+	"etcd-demo/pb"
+	"fmt"
+	eclient "go.etcd.io/etcd/client/v3"
+	"go.etcd.io/etcd/client/v3/naming/endpoints"
+	"google.golang.org/grpc"
+	"net"
+	"time"
+)
+
+type Demo struct {
+	pb.UnimplementedTestDemoServer
+}
+
+func (d Demo) Demo1(ctx context.Context, in *pb.Req) (*pb.Resp, error) {
+	fmt.Println(in.Msg)
+	return &pb.Resp{Msg: in.Msg + "hello 9001"}, nil
+}
+
+type User struct {
+	pb.UnimplementedUserSerServer
+}
+
+func (u User) Login(ctx context.Context, in *pb.User) (*pb.UserResp, error) {
+	resp := &pb.UserResp{}
+	if in.Username == "a" && in.Password == "b" {
+		resp.Status = 200
+	}
+	resp.Status = 500
+	return resp, nil
+}
+
+const (
+	// grpc 服务名
+	MyService = "xiaoxu/demo"
+	// etcd 端口
+	MyEtcdURL = "http://localhost:2379"
+
+	ServiceAddr = "127.0.0.1:9002"
+)
+
+func main() {
+	server := grpc.NewServer()
+	listen, err := net.Listen("tcp", ServiceAddr)
+	if err != nil {
+		panic(err)
+	}
+	pb.RegisterTestDemoServer(server, &Demo{})
+	pb.RegisterUserSerServer(server, &User{})
+
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	// 注册 grpc 服务节点到 etcd 中
+	go registerEndPointToEtcd(ctx, ServiceAddr)
+
+	err = server.Serve(listen)
+	if err != nil {
+		panic(err)
+	}
+}
+
+func registerEndPointToEtcd(ctx context.Context, addr string) {
+	// 创建 etcd 客户端
+	etcdClient, _ := eclient.NewFromURL(MyEtcdURL)
+	etcdManager, _ := endpoints.NewManager(etcdClient, MyService)
+
+	// 创建一个租约，每隔 10s 需要向 etcd 汇报一次心跳，证明当前节点仍然存活
+	var ttl int64 = 10
+	lease, _ := etcdClient.Grant(ctx, ttl)
+
+	// 添加注册节点到 etcd 中，并且携带上租约 id
+	_ = etcdManager.AddEndpoint(
+		ctx,
+		fmt.Sprintf("%s/%s", MyService, addr),
+		endpoints.Endpoint{Addr: addr},
+		eclient.WithLease(lease.ID),
+	)
+
+	// 每隔 5 s进行一次延续租约的动作
+	for {
+		select {
+		case <-time.After(5 * time.Second):
+			// 续约操作
+			etcdClient.KeepAliveOnce(ctx, lease.ID)
+		case <-ctx.Done():
+			return
+		}
+	}
+}
+
+```
+
+## Client
+
+```go
+package main
+
+import (
+	"context"
+	"etcd-demo/pb"
+	"fmt"
+	clientv3 "go.etcd.io/etcd/client/v3"
+	eresolver "go.etcd.io/etcd/client/v3/naming/resolver"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
+	"time"
+)
+
+const (
+	// grpc 服务名
+	MyService = "xiaoxu/demo"
+	// etcd 端口
+	MyEtcdURL = "http://localhost:2379"
+)
+
+func main() {
+	etcdClient, err2 := clientv3.NewFromURL(MyEtcdURL)
+	if err2 != nil {
+		fmt.Println(err2)
+		return
+	}
+	builder, err2 := eresolver.NewBuilder(etcdClient)
+	if err2 != nil {
+		fmt.Println(err2)
+		return
+	}
+	etcdTarget := fmt.Sprintf("etcd:///%s", MyService)
+	dial, err := grpc.Dial(
+		etcdTarget,
+		grpc.WithResolvers(builder),
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+		grpc.WithDefaultServiceConfig(fmt.Sprintf(`{"LoadBalancingPolicy": "%s"}`, "round_robin")),
+	)
+	if err != nil {
+		panic(err)
+	}
+	client := pb.NewTestDemoClient(dial)
+	for true {
+		resp, err := client.Demo1(context.Background(), &pb.Req{Msg: "abc"})
+		if err != nil {
+			panic(err)
+		}
+		fmt.Println(resp.Msg)
+		time.Sleep(time.Second)
+	}
+}
+
 ```
 
