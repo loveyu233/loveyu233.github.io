@@ -1438,3 +1438,44 @@ docker service scale 名称=个数		效果和update一样
 移除服务
 
 docker service rm 名称
+
+# 其他命令
+
+## 删除所有stop容器
+
+```shel
+docker container prune -f
+```
+
+## 复制本地文件到docker容器中
+
+>如果是文件夹就用`文件夹位置/.`不需要加`-r` 
+
+```shell
+docker cp 文件位置 容器id:容器内文件位置
+```
+
+
+
+# 其他设置
+
+## 设置代理
+
+```shell
+vim /etc/docker/daemon.json
+
+写入:
+https://dockerproxy.cn/
+https://dockerpull.com/
+
+sudo systemctl daemon-reload #重载systemd管理守护进程配置文件
+sudo systemctl restart docker #重启 Docker 服务
+```
+
+# docker原理
+
+>cgroups、namespaces和AUFS都是Linux操作系统中的重要功能，用于实现容器化和资源管理。
+>
+>1. **cgroups（Control Groups）**：cgroups是Linux内核中的一个功能，用于限制、控制和分配系统资源（如CPU、内存、磁盘I/O等）。它允许你将系统资源分组，然后为每个组分配特定的资源限制。这对于容器化应用程序至关重要，因为它允许你确保容器只使用其被分配的资源，从而避免一种应用程序耗尽系统资源而影响其他应用程序的情况发生。
+>2. **Namespaces**：Linux namespaces是一种内核功能，用于隔离进程的视图，使它们看起来像是独立运行在一个独立的系统中。它们允许在同一系统上运行多个进程实例，每个实例都有自己的独立环境，包括进程ID、网络、文件系统等。这种隔离使得容器可以在同一台物理机上运行，但彼此之间彼此隔离，就像是在独立的虚拟机上运行一样。
+>3. **AUFS（Another Union File System）**：AUFS是一种联合文件系统，它允许将多个文件系统联合挂载到单个目录中，使得这些文件系统的内容像是合并在一起的。这种技术对于容器化应用程序非常有用，因为它允许容器在运行时通过叠加文件系统层来修改其文件系统，而不需要复制整个文件系统。这样，容器可以共享基础文件系统的内容，并且可以轻松地进行修改和定制。

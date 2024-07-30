@@ -284,7 +284,7 @@ GET /hzyy/user/_search
 ```react
 PUT /test1/type1/1	
 {
-  "name": "黄振禹",
+  "name": "zhangsan",
   "age": 18
 }
 ```
@@ -306,9 +306,9 @@ PUT /test1/type1/1
 }
 ```
 
-| _index | _type | _id  | ▲_score | name   | age  |      |
-| :----- | :---- | :--- | :------ | :----- | :--- | :--- |
-| test1  | type1 | 1    | 1       | 黄振禹 | 18   |      |
+| _index | _type | _id  | ▲_score | name     | age  |      |
+| :----- | :---- | :--- | :------ | :------- | :--- | :--- |
+| test1  | type1 | 1    | 1       | zhangsan | 18   |      |
 
 
 
@@ -547,7 +547,7 @@ GET test2
 ```react
 PUT /test3/_doc/1
 {
-  "name": "黄振禹",
+  "name": "zhangsan",
   "age": 12,
   "birth": "2000-01-01"
 }
