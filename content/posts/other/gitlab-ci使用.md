@@ -1,6 +1,6 @@
 ---
 title: "gitlab-ci使用"
-date: 2024-08-15T11:18:37+08:00
+date: 2023-08-15T11:18:37+08:00
 author: ["loveyu"]
 draft: false
 categories: 
