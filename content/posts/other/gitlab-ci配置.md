@@ -6,7 +6,7 @@ draft: false
 categories: 
 - go
 tags: 
-- go
+- gitlab
 - cicd
 ---
 
