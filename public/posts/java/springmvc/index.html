@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>SpringMVC | loveyu233</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="概念：
+
+
+前端控制器:DispatcherServlet：调用其他功能组件。
+
+
+处理器映射器:HandlerMapping：地址解析返回对应的执行链。
+
+
+处理器适配器:HandlerAdapter：被前端该控制器调用，执行调用处理器。
+
+
+处理器:Handler：特有行为进行封装的组件。
+
+
+视图解析器:ViewResolver：解析视图。
+
+
+视图:View：视图信息。
+
+
+处理器映射器:HandlerMapping：地址解析返回对应的执行链
+处理器适配器:HandlerAdapter：被前端该控制器调用，执行调用处理器
+视图解析器:ViewResolver：解析视图
+称为mvc的三大组件
+页面跳转
+
+返回字符串
+    @RequestMapping(&#34;/quick&#34;)
+    public String save(){
+        return &#34;redirect:/jsp/success.jsp&#34;;
+    }
+
+返回模型视图
+//可以返回可以是整个ModelAndView
+    @RequestMapping(&#34;/quick&#34;)
+    public ModelAndView save2(){
+        ModelAndView modelAndView = new ModelAndView();
+//        设置视图
+        modelAndView.setViewName(&#34;success&#34;);
+//        设置模型（相当于向域对象添加数据jsp页面可以获取的），object类型不局限于string
+        modelAndView.addObject(&#34;username&#34;,&#34;zhangsan&#34;);
+        return modelAndView;
+    }
+
+//可以直接在方法参数与中获取
+    @RequestMapping(&#34;/quick&#34;)
+    public ModelAndView save2(ModelAndView modelAndView){
+//        设置视图
+        modelAndView.setViewName(&#34;success&#34;);
+//        设置模型（相当于向域对象添加数据jsp页面可以获取的），object类型不局限于string
+        modelAndView.addObject(&#34;username&#34;,&#34;zhangsan&#34;);
+        return modelAndView;
+    }
+
+//可以只获取model，但是返回值必须是字符串
+    @RequestMapping(&#34;/quick&#34;)
+    public String save2(Model model){
+//        设置模型（相当于向域对象添加数据jsp页面可以获取的），object类型不局限于string
+        model.addAttribute(&#34;username&#34;,&#34;zhangsan&#34;);
+        return &#34;success&#34;;
+    }
+/*
+解释：
+    参数中的ModelAndView或者Model在被springMVC执行时都会进行属性注入，所以可以直接使用。
+    参数也可以是一些常用的对象例如
+    request。response。。
+*/
+内部视图解析器
+    &lt;bean id=&#34;viewResolver&#34; class=&#34;org.springframework.web.servlet.view.InternalResourceViewResolver&#34;&gt;
+        &lt;property name=&#34;prefix&#34; value=&#34;/jsp/&#34;&gt;&lt;/property&gt;
+        &lt;property name=&#34;suffix&#34; value=&#34;.jsp&#34;&gt;&lt;/property&gt;
+    &lt;/bean&gt;
+    &lt;!--prefix:前缀--&gt;
+    &lt;!--suffix:后缀--&gt;
+
+解析器使用注意：
+public static final java.lang.String REDIRECT_URL_PREFIX = &ldquo;redirect:&rdquo;;
+public static final java.lang.String FORWARD_URL_PREFIX = &ldquo;forward:&rdquo;;">
+    <meta name="generator" content="Hugo 0.147.7">
+    
+    
+    
+      <meta name="robots" content="noindex, nofollow">
+    
+    <meta name="author" content="loveyu">
+    
+
+    
+<link rel="stylesheet" href="/ananke/css/main.min.css" >
+
+
+
+
+    
+
+
+    
+      
+
+    
+
+    
+
+    
+      <link rel="canonical" href="http://localhost:1313/posts/java/springmvc/">
+    
+
+    <meta property="og:url" content="http://localhost:1313/posts/java/springmvc/">
+  <meta property="og:site_name" content="loveyu233">
+  <meta property="og:title" content="SpringMVC">
+  <meta property="og:description" content="概念： 前端控制器:DispatcherServlet：调用其他功能组件。
+处理器映射器:HandlerMapping：地址解析返回对应的执行链。
+处理器适配器:HandlerAdapter：被前端该控制器调用，执行调用处理器。
+处理器:Handler：特有行为进行封装的组件。
+视图解析器:ViewResolver：解析视图。
+视图:View：视图信息。
+处理器映射器:HandlerMapping：地址解析返回对应的执行链
+处理器适配器:HandlerAdapter：被前端该控制器调用，执行调用处理器
+视图解析器:ViewResolver：解析视图
+称为mvc的三大组件
+页面跳转 返回字符串 @RequestMapping(&#34;/quick&#34;) public String save(){ return &#34;redirect:/jsp/success.jsp&#34;; } 返回模型视图 //可以返回可以是整个ModelAndView @RequestMapping(&#34;/quick&#34;) public ModelAndView save2(){ ModelAndView modelAndView = new ModelAndView(); // 设置视图 modelAndView.setViewName(&#34;success&#34;); // 设置模型（相当于向域对象添加数据jsp页面可以获取的），object类型不局限于string modelAndView.addObject(&#34;username&#34;,&#34;zhangsan&#34;); return modelAndView; } //可以直接在方法参数与中获取 @RequestMapping(&#34;/quick&#34;) public ModelAndView save2(ModelAndView modelAndView){ // 设置视图 modelAndView.setViewName(&#34;success&#34;); // 设置模型（相当于向域对象添加数据jsp页面可以获取的），object类型不局限于string modelAndView.addObject(&#34;username&#34;,&#34;zhangsan&#34;); return modelAndView; } //可以只获取model，但是返回值必须是字符串 @RequestMapping(&#34;/quick&#34;) public String save2(Model model){ // 设置模型（相当于向域对象添加数据jsp页面可以获取的），object类型不局限于string model.addAttribute(&#34;username&#34;,&#34;zhangsan&#34;); return &#34;success&#34;; } /* 解释： 参数中的ModelAndView或者Model在被springMVC执行时都会进行属性注入，所以可以直接使用。 参数也可以是一些常用的对象例如 request。response。。 */ 内部视图解析器 &lt;bean id=&#34;viewResolver&#34; class=&#34;org.springframework.web.servlet.view.InternalResourceViewResolver&#34;&gt; &lt;property name=&#34;prefix&#34; value=&#34;/jsp/&#34;&gt;&lt;/property&gt; &lt;property name=&#34;suffix&#34; value=&#34;.jsp&#34;&gt;&lt;/property&gt; &lt;/bean&gt; &lt;!--prefix:前缀--&gt; &lt;!--suffix:后缀--&gt; 解析器使用注意： public static final java.lang.String REDIRECT_URL_PREFIX = “redirect:”; public static final java.lang.String FORWARD_URL_PREFIX = “forward:”;">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2019-05-14T19:38:37+08:00">
+    <meta property="article:modified_time" content="2019-05-14T19:38:37+08:00">
+    <meta property="article:tag" content="Java">
+    <meta property="article:tag" content="SpringMVC">
+
+  <meta itemprop="name" content="SpringMVC">
+  <meta itemprop="description" content="概念： 前端控制器:DispatcherServlet：调用其他功能组件。
+处理器映射器:HandlerMapping：地址解析返回对应的执行链。
+处理器适配器:HandlerAdapter：被前端该控制器调用，执行调用处理器。
+处理器:Handler：特有行为进行封装的组件。
+视图解析器:ViewResolver：解析视图。
+视图:View：视图信息。
+处理器映射器:HandlerMapping：地址解析返回对应的执行链
+处理器适配器:HandlerAdapter：被前端该控制器调用，执行调用处理器
+视图解析器:ViewResolver：解析视图
+称为mvc的三大组件
+页面跳转 返回字符串 @RequestMapping(&#34;/quick&#34;) public String save(){ return &#34;redirect:/jsp/success.jsp&#34;; } 返回模型视图 //可以返回可以是整个ModelAndView @RequestMapping(&#34;/quick&#34;) public ModelAndView save2(){ ModelAndView modelAndView = new ModelAndView(); // 设置视图 modelAndView.setViewName(&#34;success&#34;); // 设置模型（相当于向域对象添加数据jsp页面可以获取的），object类型不局限于string modelAndView.addObject(&#34;username&#34;,&#34;zhangsan&#34;); return modelAndView; } //可以直接在方法参数与中获取 @RequestMapping(&#34;/quick&#34;) public ModelAndView save2(ModelAndView modelAndView){ // 设置视图 modelAndView.setViewName(&#34;success&#34;); // 设置模型（相当于向域对象添加数据jsp页面可以获取的），object类型不局限于string modelAndView.addObject(&#34;username&#34;,&#34;zhangsan&#34;); return modelAndView; } //可以只获取model，但是返回值必须是字符串 @RequestMapping(&#34;/quick&#34;) public String save2(Model model){ // 设置模型（相当于向域对象添加数据jsp页面可以获取的），object类型不局限于string model.addAttribute(&#34;username&#34;,&#34;zhangsan&#34;); return &#34;success&#34;; } /* 解释： 参数中的ModelAndView或者Model在被springMVC执行时都会进行属性注入，所以可以直接使用。 参数也可以是一些常用的对象例如 request。response。。 */ 内部视图解析器 &lt;bean id=&#34;viewResolver&#34; class=&#34;org.springframework.web.servlet.view.InternalResourceViewResolver&#34;&gt; &lt;property name=&#34;prefix&#34; value=&#34;/jsp/&#34;&gt;&lt;/property&gt; &lt;property name=&#34;suffix&#34; value=&#34;.jsp&#34;&gt;&lt;/property&gt; &lt;/bean&gt; &lt;!--prefix:前缀--&gt; &lt;!--suffix:后缀--&gt; 解析器使用注意： public static final java.lang.String REDIRECT_URL_PREFIX = “redirect:”; public static final java.lang.String FORWARD_URL_PREFIX = “forward:”;">
+  <meta itemprop="datePublished" content="2019-05-14T19:38:37+08:00">
+  <meta itemprop="dateModified" content="2019-05-14T19:38:37+08:00">
+  <meta itemprop="wordCount" content="1278">
+  <meta itemprop="keywords" content="Java,SpringMVC">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="SpringMVC">
+  <meta name="twitter:description" content="概念： 前端控制器:DispatcherServlet：调用其他功能组件。
+处理器映射器:HandlerMapping：地址解析返回对应的执行链。
+处理器适配器:HandlerAdapter：被前端该控制器调用，执行调用处理器。
+处理器:Handler：特有行为进行封装的组件。
+视图解析器:ViewResolver：解析视图。
+视图:View：视图信息。
+处理器映射器:HandlerMapping：地址解析返回对应的执行链
+处理器适配器:HandlerAdapter：被前端该控制器调用，执行调用处理器
+视图解析器:ViewResolver：解析视图
+称为mvc的三大组件
+页面跳转 返回字符串 @RequestMapping(&#34;/quick&#34;) public String save(){ return &#34;redirect:/jsp/success.jsp&#34;; } 返回模型视图 //可以返回可以是整个ModelAndView @RequestMapping(&#34;/quick&#34;) public ModelAndView save2(){ ModelAndView modelAndView = new ModelAndView(); // 设置视图 modelAndView.setViewName(&#34;success&#34;); // 设置模型（相当于向域对象添加数据jsp页面可以获取的），object类型不局限于string modelAndView.addObject(&#34;username&#34;,&#34;zhangsan&#34;); return modelAndView; } //可以直接在方法参数与中获取 @RequestMapping(&#34;/quick&#34;) public ModelAndView save2(ModelAndView modelAndView){ // 设置视图 modelAndView.setViewName(&#34;success&#34;); // 设置模型（相当于向域对象添加数据jsp页面可以获取的），object类型不局限于string modelAndView.addObject(&#34;username&#34;,&#34;zhangsan&#34;); return modelAndView; } //可以只获取model，但是返回值必须是字符串 @RequestMapping(&#34;/quick&#34;) public String save2(Model model){ // 设置模型（相当于向域对象添加数据jsp页面可以获取的），object类型不局限于string model.addAttribute(&#34;username&#34;,&#34;zhangsan&#34;); return &#34;success&#34;; } /* 解释： 参数中的ModelAndView或者Model在被springMVC执行时都会进行属性注入，所以可以直接使用。 参数也可以是一些常用的对象例如 request。response。。 */ 内部视图解析器 &lt;bean id=&#34;viewResolver&#34; class=&#34;org.springframework.web.servlet.view.InternalResourceViewResolver&#34;&gt; &lt;property name=&#34;prefix&#34; value=&#34;/jsp/&#34;&gt;&lt;/property&gt; &lt;property name=&#34;suffix&#34; value=&#34;.jsp&#34;&gt;&lt;/property&gt; &lt;/bean&gt; &lt;!--prefix:前缀--&gt; &lt;!--suffix:后缀--&gt; 解析器使用注意： public static final java.lang.String REDIRECT_URL_PREFIX = “redirect:”; public static final java.lang.String FORWARD_URL_PREFIX = “forward:”;">
+
+	
+  </head><body class="ma0 avenir bg-near-white development">
+
+    
+   
+  
+
+  <header>
+    <div class="bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l center items-center justify-between">
+    <a href="/" class="f3 fw2 hover-white white-90 dib no-underline">
+      
+        loveyu233
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      <div class="ananke-socials"></div>
+
+    </div>
+  </div>
+</nav>
+
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  
+  <article class="flex-l mw8 center ph3 flex-wrap justify-between">
+    <header class="mt4 w-100">
+      <aside class="instapaper_ignoref b helvetica tracked ttu">
+          
+        java
+      </aside><div id="sharing" class="mt3 ananke-socials"></div>
+<h1 class="f1 athelas mt3 mb1">SpringMVC</h1>
+      
+      <p class="tracked"><strong>loveyu</strong>
+      </p>
+      
+      
+      
+      <time class="f6 mv4 dib tracked" datetime="2019-05-14T19:38:37+08:00">May 14, 2019</time>
+      
+
+      
+      
+    </header>
+    <div class="nested-copy-line-height lh-copy serif f4 nested-links mid-gray pr4-l w-two-thirds-l"><h1 id="概念">概念：</h1>
+<ul>
+<li>
+<p>前端控制器:DispatcherServlet：调用其他功能组件。</p>
+</li>
+<li>
+<p>处理器映射器:HandlerMapping：地址解析返回对应的执行链。</p>
+</li>
+<li>
+<p>处理器适配器:HandlerAdapter：被前端该控制器调用，执行调用处理器。</p>
+</li>
+<li>
+<p>处理器:Handler：特有行为进行封装的组件。</p>
+</li>
+<li>
+<p>视图解析器:ViewResolver：解析视图。</p>
+</li>
+<li>
+<p>视图:View：视图信息。</p>
+</li>
+</ul>
+<p>处理器映射器:HandlerMapping：地址解析返回对应的执行链</p>
+<p>处理器适配器:HandlerAdapter：被前端该控制器调用，执行调用处理器</p>
+<p>视图解析器:ViewResolver：解析视图</p>
+<p>称为mvc的三大组件</p>
+<h1 id="页面跳转">页面跳转</h1>
+<blockquote>
+<h3 id="返回字符串">返回字符串</h3></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>    <span style="color:#a6e22e">@RequestMapping</span>(<span style="color:#e6db74">&#34;/quick&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">save</span>(){
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;redirect:/jsp/success.jsp&#34;</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span></code></pre></div><blockquote>
+<h3 id="返回模型视图">返回模型视图</h3></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">//可以返回可以是整个ModelAndView</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@RequestMapping</span>(<span style="color:#e6db74">&#34;/quick&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> ModelAndView <span style="color:#a6e22e">save2</span>(){
+</span></span><span style="display:flex;"><span>        ModelAndView modelAndView <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ModelAndView();
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        设置视图</span>
+</span></span><span style="display:flex;"><span>        modelAndView.<span style="color:#a6e22e">setViewName</span>(<span style="color:#e6db74">&#34;success&#34;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        设置模型（相当于向域对象添加数据jsp页面可以获取的），object类型不局限于string</span>
+</span></span><span style="display:flex;"><span>        modelAndView.<span style="color:#a6e22e">addObject</span>(<span style="color:#e6db74">&#34;username&#34;</span>,<span style="color:#e6db74">&#34;zhangsan&#34;</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> modelAndView;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//可以直接在方法参数与中获取</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@RequestMapping</span>(<span style="color:#e6db74">&#34;/quick&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> ModelAndView <span style="color:#a6e22e">save2</span>(ModelAndView modelAndView){
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        设置视图</span>
+</span></span><span style="display:flex;"><span>        modelAndView.<span style="color:#a6e22e">setViewName</span>(<span style="color:#e6db74">&#34;success&#34;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        设置模型（相当于向域对象添加数据jsp页面可以获取的），object类型不局限于string</span>
+</span></span><span style="display:flex;"><span>        modelAndView.<span style="color:#a6e22e">addObject</span>(<span style="color:#e6db74">&#34;username&#34;</span>,<span style="color:#e6db74">&#34;zhangsan&#34;</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> modelAndView;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//可以只获取model，但是返回值必须是字符串</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@RequestMapping</span>(<span style="color:#e6db74">&#34;/quick&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">save2</span>(Model model){
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        设置模型（相当于向域对象添加数据jsp页面可以获取的），object类型不局限于string</span>
+</span></span><span style="display:flex;"><span>        model.<span style="color:#a6e22e">addAttribute</span>(<span style="color:#e6db74">&#34;username&#34;</span>,<span style="color:#e6db74">&#34;zhangsan&#34;</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;success&#34;</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">解释：
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    参数中的ModelAndView或者Model在被springMVC执行时都会进行属性注入，所以可以直接使用。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    参数也可以是一些常用的对象例如
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    request。response。。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">*/</span>
+</span></span></code></pre></div><h1 id="内部视图解析器">内部视图解析器</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span>    <span style="color:#f92672">&lt;bean</span> <span style="color:#a6e22e">id=</span><span style="color:#e6db74">&#34;viewResolver&#34;</span> <span style="color:#a6e22e">class=</span><span style="color:#e6db74">&#34;org.springframework.web.servlet.view.InternalResourceViewResolver&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;property</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;prefix&#34;</span> <span style="color:#a6e22e">value=</span><span style="color:#e6db74">&#34;/jsp/&#34;</span><span style="color:#f92672">&gt;&lt;/property&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;property</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;suffix&#34;</span> <span style="color:#a6e22e">value=</span><span style="color:#e6db74">&#34;.jsp&#34;</span><span style="color:#f92672">&gt;&lt;/property&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/bean&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">&lt;!--prefix:前缀--&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">&lt;!--suffix:后缀--&gt;</span>
+</span></span></code></pre></div><blockquote>
+<h4 id="解析器使用注意">解析器使用注意：</h4>
+<p>public static final java.lang.String REDIRECT_URL_PREFIX = &ldquo;redirect:&rdquo;;
+public static final java.lang.String FORWARD_URL_PREFIX = &ldquo;forward:&rdquo;;</p>
+<ul>
+<li>redirect跳转</li>
+<li>forward转发默认
+重点:
+在配置内置内部资源视图解析器后如果只进行转发则可以正常操作
+但是：
+如果进行跳转则必须写全路径否则就会404
+例如
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted --><!-- raw HTML omitted -->
+<!-- raw HTML omitted --><!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+只进行转发则可以：
+=&raquo; return &ldquo;success&rdquo;;
+但是如果要跳转则必须写成：
+=&raquo; return &ldquo;redirect:/jsp/success.jsp&rdquo;;
+也就是说如果进行跳转则试图解析器配置无效；</li>
+</ul></blockquote>
+<blockquote>
+<h2 id="回写字符串">回写字符串</h2></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>    <span style="color:#a6e22e">@RequestMapping</span>(<span style="color:#e6db74">&#34;/quick5&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@ResponseBody</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">save5</span>(){
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;hello&#34;</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//重点：@ResponseBody</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//该注解的作用就是告知springMVC改方法不进行页面跳转，只是进行页面的回写</span>
+</span></span></code></pre></div><blockquote>
+<h3 id="不能直接回写字符串外的其他类型会报错解决办法">不能直接回写字符串外的其他类型会报错，解决办法：</h3></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#75715e">&lt;!--    mvc注解驱动--&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;mvc:annotation-driven/&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">&lt;!--添加mvc注解驱动mvc会自动配置json转换的--&gt;</span>
+</span></span></code></pre></div><h1 id="获取视图参数">获取视图参数</h1>
+<blockquote>
+<h3 id="简单参数">简单参数</h3></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>    <span style="color:#a6e22e">@RequestMapping</span>(<span style="color:#e6db74">&#34;/quick8&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@ResponseBody</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">save8</span>(String name,Integer id) {
+</span></span><span style="display:flex;"><span>        System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(name);
+</span></span><span style="display:flex;"><span>        System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(id);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//注意点：</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//@ResponseBody注解不能删除因为这不是页面跳转</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//String name,Integer id形参必须和视图参数名称一致</span>
+</span></span></code></pre></div><blockquote>
+<h3 id="pojo形式的">pojo形式的</h3></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>    <span style="color:#a6e22e">@RequestMapping</span>(<span style="color:#e6db74">&#34;/quick9&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@ResponseBody</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">save9</span>(User user) {
+</span></span><span style="display:flex;"><span>        System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(user);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//注意点：</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//参数类型中的属性必须和视图中的参数一致</span>
+</span></span></code></pre></div><blockquote>
+<h3 id="数组类型">数组类型</h3></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>    <span style="color:#a6e22e">@RequestMapping</span>(<span style="color:#e6db74">&#34;/quick10&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@ResponseBody</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">save10</span>(String<span style="color:#f92672">[]</span> str) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> 0; i <span style="color:#f92672">&lt;</span> str.<span style="color:#a6e22e">length</span>; i<span style="color:#f92672">++</span>) {
+</span></span><span style="display:flex;"><span>            System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(str<span style="color:#f92672">[</span>i<span style="color:#f92672">]</span>);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//注意点：</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//String[] str参数类型中的属性必须和视图中的参数一致</span>
+</span></span></code></pre></div><blockquote>
+<h3 id="集合类型">集合类型</h3></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>    <span style="color:#a6e22e">@RequestMapping</span>(<span style="color:#e6db74">&#34;/quick11&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@ResponseBody</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">save11</span>(VO vo) {
+</span></span><span style="display:flex;"><span>        System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(vo);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">结果:
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">VO{userList=[User{name=&#39;zhangsan&#39;, age=18}, User{name=&#39;lisi&#39;, age=20}]}
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">表单：
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    &lt;form action=&#34;${pageContext.request.contextPath}/quick11&#34; method=&#34;post&#34;&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">        &lt;input name=&#34;userList[0].name&#34; type=&#34;text&#34;&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">        &lt;input name=&#34;userList[0].age&#34; type=&#34;text&#34;&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">        &lt;input name=&#34;userList[1].name&#34; type=&#34;text&#34;&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">        &lt;input name=&#34;userList[1].age&#34; type=&#34;text&#34;&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">        &lt;input type=&#34;submit&#34; value=&#34;ok&#34;&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    &lt;/form&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">注意点:
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">1：action
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">2：表单name属性值：
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">*/</span>
+</span></span></code></pre></div><h1 id="静态资源获取">静态资源获取</h1>
+<blockquote>
+<p>两种方式写一种即可</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#75715e">&lt;!--   开放资源的访问 --&gt;</span> 
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;mvc:resources</span> <span style="color:#a6e22e">mapping=</span><span style="color:#e6db74">&#34;/jsp/**&#34;</span> <span style="color:#a6e22e">location=</span><span style="color:#e6db74">&#34;/jsp/&#34;</span><span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">&lt;!--mapping：要开放的资源
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">location：要开放的资源的具体路径--&gt;</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#f92672">&lt;mvc:default-servlet-handler/&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">&lt;!--表示当mvc找不到资源的时候就交给原始容器（tomcat）去找，tomcat是可以找到静态资源的--&gt;</span>
+</span></span></code></pre></div></blockquote>
+<h2 id="乱码解决">乱码解决</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#75715e">&lt;!--web.xml中配置--&gt;</span>
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">&lt;filter&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;filter-name&gt;</span>characterEncodingFilter<span style="color:#f92672">&lt;/filter-name&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;filter-class&gt;</span>org.springframework.web.filter.CharacterEncodingFilter<span style="color:#f92672">&lt;/filter-class&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;init-param&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&lt;param-name&gt;</span>encoding<span style="color:#f92672">&lt;/param-name&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&lt;param-value&gt;</span>UTF-8<span style="color:#f92672">&lt;/param-value&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/init-param&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;/filter&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;filter-mapping&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;filter-name&gt;</span>characterEncodingFilter<span style="color:#f92672">&lt;/filter-name&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;url-pattern&gt;</span>/*<span style="color:#f92672">&lt;/url-pattern&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;/filter-mapping&gt;</span>
+</span></span></code></pre></div><h1 id="参数绑定">参数绑定</h1>
+<blockquote>
+<p>当视图传递的参数与方法参数不一致时可以使用
+@RequestParam(&ldquo;name&rdquo;)
+该注解有三个参数
+value:绑定的名称，也就是视图传递参数的名称
+required:默认为true，当视图不传递该参数就报错，当设置为false为，视图不传递该参数也不会报错，会是null
+defaultValue:当视图不传递该参数时，默认值是什么</p></blockquote>
+<h1 id="自定义类型转换器">自定义类型转换器</h1>
+<blockquote>
+<p>1.写一个类实现Converter泛型第一个是字符串，第二个是要转换的类型
+2.重写convert方法</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#f92672">package</span> com.xiaoyu.converter;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> org.springframework.core.convert.converter.Converter;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> java.text.ParseException;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> java.text.SimpleDateFormat;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> java.util.Date;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">DateConverter</span> <span style="color:#66d9ef">implements</span> Converter<span style="color:#f92672">&lt;</span>String, Date<span style="color:#f92672">&gt;</span> {
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> Date <span style="color:#a6e22e">convert</span>(String s) {
+</span></span><span style="display:flex;"><span>  SimpleDateFormat format <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> SimpleDateFormat(<span style="color:#e6db74">&#34;yyyy-MM-dd&#34;</span>);
+</span></span><span style="display:flex;"><span>  Date date <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span>;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">try</span> {
+</span></span><span style="display:flex;"><span>      date <span style="color:#f92672">=</span> format.<span style="color:#a6e22e">parse</span>(s);
+</span></span><span style="display:flex;"><span>  } <span style="color:#66d9ef">catch</span> (ParseException e) {
+</span></span><span style="display:flex;"><span>      e.<span style="color:#a6e22e">printStackTrace</span>();
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> date;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>3.在springMVC.xml声明转换器</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#f92672">&lt;bean</span> <span style="color:#a6e22e">id=</span><span style="color:#e6db74">&#34;conversionServiceFactoryBean&#34;</span> <span style="color:#a6e22e">class=</span><span style="color:#e6db74">&#34;org.springframework.context.support.ConversionServiceFactoryBean&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;property</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;converters&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&lt;list&gt;</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">&lt;bean</span> <span style="color:#a6e22e">class=</span><span style="color:#e6db74">&#34;com.xiaoyu.converter.DateConverter&#34;</span><span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&lt;/list&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;/property&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/bean&gt;</span>
+</span></span></code></pre></div><p>4.在mvc注解驱动中添加</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#f92672">&lt;mvc:annotation-driven</span> <span style="color:#a6e22e">conversion-service=</span><span style="color:#e6db74">&#34;conversionServiceFactoryBean&#34;</span><span style="color:#f92672">/&gt;</span>
+</span></span></code></pre></div></blockquote>
+<h1 id="获取请求数据">获取请求数据</h1>
+<blockquote>
+<p>获取请求头
+@RequestHeader
+两个参数：
+value:请求头的名称
+required:是否必须携带此请求头</p>
+<p>@CookieValue
+两个参数：
+value:指定cookie的名称
+required:是否必须携带此cookie</p></blockquote>
+<h1 id="文件上传">文件上传</h1>
+<blockquote>
+<p>文件上传客户端三要素：
+1.表单项type=&ldquo;file&rdquo;
+2.表单的提交方式是post
+3.表单的enctype属性是多部分表单的形式，及enctype=“multiparty/from-data”
+单文件上传步骤：
+1.导入fileupload和io坐标
+2.配置文件上传解析器</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span>  <span style="color:#f92672">&lt;bean</span> <span style="color:#a6e22e">id=</span><span style="color:#e6db74">&#34;multipartResolver&#34;</span> <span style="color:#a6e22e">class=</span><span style="color:#e6db74">&#34;org.springframework.web.multipart.commons.CommonsMultipartResolver&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">&lt;!--        编码格式--&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&lt;property</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;defaultEncoding&#34;</span> <span style="color:#a6e22e">value=</span><span style="color:#e6db74">&#34;utf-8&#34;</span><span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">&lt;!--        最大上传大小--&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&lt;property</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;maxUploadSize&#34;</span> <span style="color:#a6e22e">value=</span><span style="color:#e6db74">&#34;50000&#34;</span><span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">&lt;!--...更多配置--&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;/bean&gt;</span>
+</span></span></code></pre></div><p>3.编写文件上传代码</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@RequestMapping</span>(<span style="color:#e6db74">&#34;/quick12&#34;</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">@ResponseBody</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">save12</span>(<span style="color:#a6e22e">@RequestParam</span>(<span style="color:#e6db74">&#34;username&#34;</span>) String name, MultipartFile uploadFile) {
+</span></span><span style="display:flex;"><span>      System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(name);
+</span></span><span style="display:flex;"><span>      String filename <span style="color:#f92672">=</span> uploadFile.<span style="color:#a6e22e">getOriginalFilename</span>();
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">try</span> {
+</span></span><span style="display:flex;"><span>          uploadFile.<span style="color:#a6e22e">transferTo</span>(<span style="color:#66d9ef">new</span> File(<span style="color:#e6db74">&#34;Y:\\&#34;</span><span style="color:#f92672">+</span>filename));
+</span></span><span style="display:flex;"><span>      } <span style="color:#66d9ef">catch</span> (IOException e) {
+</span></span><span style="display:flex;"><span>          e.<span style="color:#a6e22e">printStackTrace</span>();
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>  }
+</span></span></code></pre></div><p>​        多文件上传：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@RequestMapping</span>(<span style="color:#e6db74">&#34;/quick14&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@ResponseBody</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">save14</span>(<span style="color:#a6e22e">@RequestParam</span>(<span style="color:#e6db74">&#34;username&#34;</span>) String name, MultipartFile<span style="color:#f92672">[]</span> uploadFile) {
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">for</span> (MultipartFile multipartFile : uploadFile) {
+</span></span><span style="display:flex;"><span>      String originalFilename <span style="color:#f92672">=</span> multipartFile.<span style="color:#a6e22e">getOriginalFilename</span>();
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">try</span> {
+</span></span><span style="display:flex;"><span>          multipartFile.<span style="color:#a6e22e">transferTo</span>(<span style="color:#66d9ef">new</span> File(<span style="color:#e6db74">&#34;Y:\\&#34;</span><span style="color:#f92672">+</span>originalFilename));
+</span></span><span style="display:flex;"><span>      } <span style="color:#66d9ef">catch</span> (IOException e) {
+</span></span><span style="display:flex;"><span>          e.<span style="color:#a6e22e">printStackTrace</span>();
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div></blockquote>
+<h1 id="拦截器">拦截器</h1>
+<blockquote>
+<h4 id="作用">作用：</h4>
+<pre tabindex="0"><code>用于对处理器进行预处理和后处理。
+将拦截器按一定的顺序连接成一条链，这条链称为拦截器链(Interceptor Chain)，
+在访问被拦截的方法或字段时，拦截器链中的拦截器就会按其之前
+定义的顺序被调用，拦截器也是aop思想的具体实现。
+</code></pre><h4 id="拦截器和过滤器的区别">拦截器和过滤器的区别</h4>
+<p>区别            过滤器                           拦截器
+使用范围        任何JavaWeb工程都可以使用           只有使用springMVC框架的工程才能用
+拦截范围        可以对所有要访问的资源进行拦截        只会拦截访问的控制器方法
+（js，jsp，html）                  （只有方法可以拦截，资源是不可以的）</p>
+<h4 id="自定义拦截器">自定义拦截器</h4>
+<h4 id="1创建拦截器类实现handlerinterceptor接口">1.创建拦截器类实现HandlerInterceptor接口</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MyInterceptor</span> <span style="color:#66d9ef">implements</span> HandlerInterceptor {
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//    在目标方法执行之前执行</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">preHandle</span>(HttpServletRequest request, HttpServletResponse response, Object handler) <span style="color:#66d9ef">throws</span> Exception {
+</span></span><span style="display:flex;"><span>  System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(<span style="color:#e6db74">&#34;在目标方法执行之前执行preHandle&#34;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        return false;后边则都不能执行</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//    在目标方法执行之后视图返回之前执行</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">postHandle</span>(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) <span style="color:#66d9ef">throws</span> Exception {
+</span></span><span style="display:flex;"><span>  System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(<span style="color:#e6db74">&#34;目标方法执行之后视图返回之前执行postHandle&#34;</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//    在整个流程都执行完毕后执行</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">afterCompletion</span>(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) <span style="color:#66d9ef">throws</span> Exception {
+</span></span><span style="display:flex;"><span>  System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(<span style="color:#e6db74">&#34;在整个流程都执行完毕后执行afterCompletion&#34;</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h4 id="2配置拦截器">2.配置拦截器</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#75715e">&lt;!--配置拦截器--&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;mvc:interceptors&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;mvc:interceptor&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">&lt;!--            对那些资源执行拦截操作--&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&lt;mvc:mapping</span> <span style="color:#a6e22e">path=</span><span style="color:#e6db74">&#34;/**&#34;</span><span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>      对那些资源不执行拦截操作
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&lt;mvc:exclude-mapping</span> <span style="color:#a6e22e">path=</span><span style="color:#e6db74">&#34;&#34;</span><span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&lt;bean</span> <span style="color:#a6e22e">class=</span><span style="color:#e6db74">&#34;com.xiaoyu.interceptor.MyInterceptor&#34;</span><span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;/mvc:interceptor&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/mvc:interceptors&gt;</span>
+</span></span></code></pre></div><h4 id="3测试拦截器的拦截效果">3.测试拦截器的拦截效果</h4>
+<p>效果：</p>
+<pre tabindex="0"><code>&gt;在目标方法执行之前执行preHandle
+&gt;目标资源执行...
+&gt;目标方法执行之后视图返回之前执行postHandle
+&gt;在整个流程都执行完毕后执行afterCompletion
+
+&gt;设置多个拦截器效果（配置循序为1，2）
+&gt;在目标方法执行之前执行preHandle
+&gt;在目标方法执行之前执行preHandle2222
+&gt;目标资源执行...
+&gt;目标方法执行之后视图返回之前执行postHandle2222
+&gt;目标方法执行之后视图返回之前执行postHandle
+&gt;在整个流程都执行完毕后执行afterCompletion2222
+&gt;在整个流程都执行完毕后执行afterCompletion
+</code></pre></blockquote>
+<h1 id="异常处理">异常处理</h1>
+<blockquote>
+<p>1.MVC简单异常处理器</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#75715e">&lt;!--异常处理器--&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;bean</span> <span style="color:#a6e22e">class=</span><span style="color:#e6db74">&#34;org.springframework.web.servlet.handler.SimpleMappingExceptionResolver&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>  默认异常，跳转到error页面
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;property</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;defaultErrorView&#34;</span> <span style="color:#a6e22e">value=</span><span style="color:#e6db74">&#34;error&#34;</span><span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>  具体异常，配置具体异常跳转到具体的页面
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;property</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;exceptionMappings&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&lt;map&gt;</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">&lt;entry</span> <span style="color:#a6e22e">key=</span><span style="color:#e6db74">&#34;java.lang.ClassCastException&#34;</span> <span style="color:#a6e22e">value=</span><span style="color:#e6db74">&#34;error&#34;</span><span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">&lt;!--                ...--&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&lt;/map&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;/property&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/bean&gt;</span>
+</span></span></code></pre></div><p>2.自定义异常处理器</p>
+<p>​	1.创建类实现HandlerExceptionResolver</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ExceptionError</span> <span style="color:#66d9ef">implements</span> HandlerExceptionResolver {
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">public</span> ModelAndView <span style="color:#a6e22e">resolveException</span>(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o, Exception e) {
+</span></span><span style="display:flex;"><span>          ModelAndView modelAndView <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ModelAndView();
+</span></span><span style="display:flex;"><span>          <span style="color:#66d9ef">if</span> (e <span style="color:#66d9ef">instanceof</span> ClassCastException){
+</span></span><span style="display:flex;"><span>              modelAndView.<span style="color:#a6e22e">addObject</span>(<span style="color:#e6db74">&#34;error&#34;</span>,<span style="color:#e6db74">&#34;类转换异常&#34;</span>);
+</span></span><span style="display:flex;"><span>              modelAndView.<span style="color:#a6e22e">setViewName</span>(<span style="color:#e6db74">&#34;error&#34;</span>);
+</span></span><span style="display:flex;"><span>          }
+</span></span><span style="display:flex;"><span>          <span style="color:#66d9ef">return</span> modelAndView;
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>  }
+</span></span></code></pre></div><p>​	2.在MVC.XML中配置</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#f92672">&lt;bean</span> <span style="color:#a6e22e">class=</span><span style="color:#e6db74">&#34;com.xiaoyu.exception.ExceptionError&#34;</span><span style="color:#f92672">/&gt;</span>
+</span></span></code></pre></div></blockquote>
+<h1 id="资源文件">资源文件：</h1>
+<h2 id="web-xml">Web .xml</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#f92672">&lt;web-app</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">xmlns:xsi=</span><span style="color:#e6db74">&#34;http://www.w3.org/2001/XMLSchema-instance&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">xmlns=</span><span style="color:#e6db74">&#34;http://xmlns.jcp.org/xml/ns/javaee&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">xsi:schemaLocation=</span><span style="color:#e6db74">&#34;http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">id=</span><span style="color:#e6db74">&#34;WebApp_ID&#34;</span> <span style="color:#a6e22e">version=</span><span style="color:#e6db74">&#34;3.1&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">&lt;!--  配置全局过滤的(解决乱码问题)--&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;filter&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;filter-name&gt;</span>characterEncodingFilter<span style="color:#f92672">&lt;/filter-name&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;filter-class&gt;</span>org.springframework.web.filter.CharacterEncodingFilter<span style="color:#f92672">&lt;/filter-class&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;init-param&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&lt;param-name&gt;</span>encoding<span style="color:#f92672">&lt;/param-name&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&lt;param-value&gt;</span>UTF-8<span style="color:#f92672">&lt;/param-value&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/init-param&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;/filter&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;filter-mapping&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;filter-name&gt;</span>characterEncodingFilter<span style="color:#f92672">&lt;/filter-name&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;url-pattern&gt;</span>/*<span style="color:#f92672">&lt;/url-pattern&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;/filter-mapping&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">&lt;!--  配置springmvc前端控制器--&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;servlet&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;servlet-name&gt;</span>DispatcherServlet<span style="color:#f92672">&lt;/servlet-name&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;servlet-class&gt;</span>org.springframework.web.servlet.DispatcherServlet<span style="color:#f92672">&lt;/servlet-class&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;init-param&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&lt;param-name&gt;</span>contextConfigLocation<span style="color:#f92672">&lt;/param-name&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&lt;param-value&gt;</span>classpath:spring-mvc.xml<span style="color:#f92672">&lt;/param-value&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/init-param&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;load-on-startup&gt;</span>1<span style="color:#f92672">&lt;/load-on-startup&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;/servlet&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;servlet-mapping&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;servlet-name&gt;</span>DispatcherServlet<span style="color:#f92672">&lt;/servlet-name&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;url-pattern&gt;</span>/<span style="color:#f92672">&lt;/url-pattern&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;/servlet-mapping&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">&lt;!--  全局初始化参数--&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;context-param&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;param-name&gt;</span>contextConfigLocation<span style="color:#f92672">&lt;/param-name&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;param-value&gt;</span>classpath:applicationContext.xml<span style="color:#f92672">&lt;/param-value&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;/context-param&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">&lt;!--  配置监听器--&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;listener&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;listener-class&gt;</span>org.springframework.web.context.ContextLoaderListener<span style="color:#f92672">&lt;/listener-class&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;/listener&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;servlet&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;servlet-name&gt;</span>UserServlet<span style="color:#f92672">&lt;/servlet-name&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;servlet-class&gt;</span>com.xiaoyu.web.UserServlet<span style="color:#f92672">&lt;/servlet-class&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;/servlet&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;servlet-mapping&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;servlet-name&gt;</span>UserServlet<span style="color:#f92672">&lt;/servlet-name&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;url-pattern&gt;</span>/userServlet<span style="color:#f92672">&lt;/url-pattern&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;/servlet-mapping&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/web-app&gt;</span>
+</span></span></code></pre></div><h2 id="spring---mvcxml">Spring - mvc.xml</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#75715e">&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34;?&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;beans</span> <span style="color:#a6e22e">xmlns=</span><span style="color:#e6db74">&#34;http://www.springframework.org/schema/beans&#34;</span>
+</span></span><span style="display:flex;"><span>       <span style="color:#a6e22e">xmlns:xsi=</span><span style="color:#e6db74">&#34;http://www.w3.org/2001/XMLSchema-instance&#34;</span>
+</span></span><span style="display:flex;"><span>       <span style="color:#a6e22e">xmlns:context=</span><span style="color:#e6db74">&#34;http://www.springframework.org/schema/context&#34;</span>
+</span></span><span style="display:flex;"><span>       <span style="color:#a6e22e">xmlns:mvc=</span><span style="color:#e6db74">&#34;http://www.springframework.org/schema/mvc&#34;</span>
+</span></span><span style="display:flex;"><span>       <span style="color:#a6e22e">xsi:schemaLocation=</span><span style="color:#e6db74">&#34;http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">&lt;!--Controller组件扫描--&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;context:component-scan</span> <span style="color:#a6e22e">base-package=</span><span style="color:#e6db74">&#34;com.xiaoyu.controller&#34;</span><span style="color:#f92672">&gt;&lt;/context:component-scan&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">&lt;!--    配置内部资源视图解析器--&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;bean</span> <span style="color:#a6e22e">id=</span><span style="color:#e6db74">&#34;viewResolver&#34;</span> <span style="color:#a6e22e">class=</span><span style="color:#e6db74">&#34;org.springframework.web.servlet.view.InternalResourceViewResolver&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;property</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;prefix&#34;</span> <span style="color:#a6e22e">value=</span><span style="color:#e6db74">&#34;/jsp/&#34;</span><span style="color:#f92672">&gt;&lt;/property&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;property</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;suffix&#34;</span> <span style="color:#a6e22e">value=</span><span style="color:#e6db74">&#34;.jsp&#34;</span><span style="color:#f92672">&gt;&lt;/property&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/bean&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">&lt;!--    配置处理器映射器--&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">&lt;!--    &lt;bean class=&#34;org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter&#34;&gt;--&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">&lt;!--        &lt;property name=&#34;messageConverters&#34;&gt;--&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">&lt;!--            &lt;list&gt;--&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">&lt;!--                &lt;bean class=&#34;org.springframework.http.converter.json.MappingJackson2HttpMessageConverter&#34;/&gt;--&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">&lt;!--            &lt;/list&gt;--&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">&lt;!--        &lt;/property&gt;--&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">&lt;!--    &lt;/bean&gt;--&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">&lt;!--    mvc注解驱动--&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;mvc:annotation-driven</span> <span style="color:#a6e22e">conversion-service=</span><span style="color:#e6db74">&#34;conversionServiceFactoryBean&#34;</span><span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">&lt;!--   开放资源的访问 --&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;mvc:resources</span> <span style="color:#a6e22e">mapping=</span><span style="color:#e6db74">&#34;/jsp/**&#34;</span> <span style="color:#a6e22e">location=</span><span style="color:#e6db74">&#34;/jsp/&#34;</span><span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;mvc:default-servlet-handler/&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">&lt;!--声明转换器--&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;bean</span> <span style="color:#a6e22e">id=</span><span style="color:#e6db74">&#34;conversionServiceFactoryBean&#34;</span> <span style="color:#a6e22e">class=</span><span style="color:#e6db74">&#34;org.springframework.context.support.ConversionServiceFactoryBean&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;property</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;converters&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;list&gt;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&lt;bean</span> <span style="color:#a6e22e">class=</span><span style="color:#e6db74">&#34;com.xiaoyu.converter.DateConverter&#34;</span><span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;/list&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;/property&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/bean&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">&lt;!--配置文件上传解析器--&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;bean</span> <span style="color:#a6e22e">id=</span><span style="color:#e6db74">&#34;multipartResolver&#34;</span> <span style="color:#a6e22e">class=</span><span style="color:#e6db74">&#34;org.springframework.web.multipart.commons.CommonsMultipartResolver&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">&lt;!--        编码格式--&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;property</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;defaultEncoding&#34;</span> <span style="color:#a6e22e">value=</span><span style="color:#e6db74">&#34;utf-8&#34;</span><span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">&lt;!--        最大上传大小--&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;property</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;maxUploadSize&#34;</span> <span style="color:#a6e22e">value=</span><span style="color:#e6db74">&#34;50000000000&#34;</span><span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/bean&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">&lt;!--配置拦截器--&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;mvc:interceptors&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;mvc:interceptor&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">&lt;!--            对那些资源执行拦截操作--&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;mvc:mapping</span> <span style="color:#a6e22e">path=</span><span style="color:#e6db74">&#34;/**&#34;</span><span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;bean</span> <span style="color:#a6e22e">class=</span><span style="color:#e6db74">&#34;com.xiaoyu.interceptor.MyInterceptor&#34;</span><span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;/mvc:interceptor&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;mvc:interceptor&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">&lt;!--            对那些资源执行拦截操作--&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;mvc:mapping</span> <span style="color:#a6e22e">path=</span><span style="color:#e6db74">&#34;/**&#34;</span><span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;bean</span> <span style="color:#a6e22e">class=</span><span style="color:#e6db74">&#34;com.xiaoyu.interceptor.MyInterceptor2&#34;</span><span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;/mvc:interceptor&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/mvc:interceptors&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">&lt;!--异常处理器--&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;bean</span> <span style="color:#a6e22e">class=</span><span style="color:#e6db74">&#34;org.springframework.web.servlet.handler.SimpleMappingExceptionResolver&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;property</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;defaultErrorView&#34;</span> <span style="color:#a6e22e">value=</span><span style="color:#e6db74">&#34;error&#34;</span><span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;property</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;exceptionMappings&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;map&gt;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&lt;entry</span> <span style="color:#a6e22e">key=</span><span style="color:#e6db74">&#34;java.lang.ClassCastException&#34;</span> <span style="color:#a6e22e">value=</span><span style="color:#e6db74">&#34;error&#34;</span><span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">&lt;!--                ...--&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;/map&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;/property&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/bean&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">&lt;!--自定义异常处理器--&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;bean</span> <span style="color:#a6e22e">class=</span><span style="color:#e6db74">&#34;com.xiaoyu.exception.ExceptionError&#34;</span><span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/beans&gt;</span>
+</span></span></code></pre></div><h2 id="controller-java代码">Controller java代码</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#f92672">package</span> com.xiaoyu.controller;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> com.fasterxml.jackson.core.JsonProcessingException;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> com.fasterxml.jackson.databind.ObjectMapper;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> com.xiaoyu.domain.User;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> com.xiaoyu.domain.VO;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> org.springframework.stereotype.Controller;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> org.springframework.web.bind.annotation.CookieValue;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> org.springframework.web.bind.annotation.RequestMapping;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> org.springframework.web.bind.annotation.RequestParam;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> org.springframework.web.bind.annotation.ResponseBody;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> org.springframework.web.multipart.MultipartFile;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> org.springframework.web.servlet.ModelAndView;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> javax.servlet.http.HttpServletRequest;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> javax.servlet.http.HttpServletResponse;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> java.io.File;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> java.io.IOException;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@Controller</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//@RequestMapping(&#34;/userController&#34;)</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//如果在类上边加这个注解访问路径则需要加上/userController/quick</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//RequestMapping作用进行模块间的区分</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">UserController</span> {
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//    请求映射</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@RequestMapping</span>(<span style="color:#e6db74">&#34;/quick&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        @RequestMapping(value = &#34;/xx&#34;,method = RequestMethod.GET,params = {&#34;name&#34;})</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//    参数value:请求地址只写&#34;/xx&#34;默认为value，method:请求方式，枚举类型</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//    params：用于只当限定请求的，加上参数则请求时必须加上该参数才能访问，否则报错，参数具体值随便</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//    请求地址:8080/quick</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">save</span>(){
+</span></span><span style="display:flex;"><span>        System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(<span style="color:#e6db74">&#34;Controller save running..&#34;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        如果在类上边加上RequestMapping注解则需要返回“/success.jsp”</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        如果不加/则会报错404找不到加/表示从当前web应用下边去找资源</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;redirect:/jsp/success.jsp&#34;</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">        *     public static final java.lang.String REDIRECT_URL_PREFIX = &#34;redirect:&#34;;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    public static final java.lang.String FORWARD_URL_PREFIX = &#34;forward:&#34;;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    * redirect跳转
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    * forward转发默认
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    * redirect:success
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">        * */</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@RequestMapping</span>(<span style="color:#e6db74">&#34;/quick2&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> ModelAndView <span style="color:#a6e22e">save2</span>(){
+</span></span><span style="display:flex;"><span>        ModelAndView modelAndView <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ModelAndView();
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        设置视图</span>
+</span></span><span style="display:flex;"><span>        modelAndView.<span style="color:#a6e22e">setViewName</span>(<span style="color:#e6db74">&#34;success&#34;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        设置模型（相当于向域对象添加数据jsp页面可以获取的），object类型不局限于string</span>
+</span></span><span style="display:flex;"><span>        modelAndView.<span style="color:#a6e22e">addObject</span>(<span style="color:#e6db74">&#34;username&#34;</span>,<span style="color:#e6db74">&#34;zhangsan&#34;</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> modelAndView;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@RequestMapping</span>(<span style="color:#e6db74">&#34;/quick3&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">save3</span>(HttpServletRequest request){
+</span></span><span style="display:flex;"><span>        request.<span style="color:#a6e22e">setAttribute</span>(<span style="color:#e6db74">&#34;username&#34;</span>,<span style="color:#e6db74">&#34;zhangsan&#34;</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;success&#34;</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//    可以进行回写，但是不推荐，因为耦合</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@RequestMapping</span>(<span style="color:#e6db74">&#34;/quick4&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">save4</span>(HttpServletResponse response) <span style="color:#66d9ef">throws</span> IOException {
+</span></span><span style="display:flex;"><span>        response.<span style="color:#a6e22e">getWriter</span>().<span style="color:#a6e22e">println</span>(<span style="color:#e6db74">&#34;aaa&#34;</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;success&#34;</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//    推荐方式</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@RequestMapping</span>(<span style="color:#e6db74">&#34;/quick5&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@ResponseBody</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">save5</span>(){
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;hello&#34;</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//    输入json字符串</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@RequestMapping</span>(<span style="color:#e6db74">&#34;/quick6&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@ResponseBody</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">save6</span>() <span style="color:#66d9ef">throws</span> JsonProcessingException {
+</span></span><span style="display:flex;"><span>        User user <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> User(<span style="color:#e6db74">&#34;zhangsan&#34;</span>,20);
+</span></span><span style="display:flex;"><span>        ObjectMapper objectMapper <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ObjectMapper();
+</span></span><span style="display:flex;"><span>        String s <span style="color:#f92672">=</span> objectMapper.<span style="color:#a6e22e">writeValueAsString</span>(user);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> s;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//    输入json字符串 利用处理映射器</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@RequestMapping</span>(<span style="color:#e6db74">&#34;/quick7&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@ResponseBody</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> User <span style="color:#a6e22e">save7</span>() <span style="color:#66d9ef">throws</span> JsonProcessingException {
+</span></span><span style="display:flex;"><span>        User user <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> User(<span style="color:#e6db74">&#34;zhangsan&#34;</span>,20);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> user;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//    获取视图参数</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@RequestMapping</span>(<span style="color:#e6db74">&#34;/quick8&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@ResponseBody</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">save8</span>(String name,Integer id) {
+</span></span><span style="display:flex;"><span>        System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(name);
+</span></span><span style="display:flex;"><span>        System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(id);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//    获取视图参数</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@RequestMapping</span>(<span style="color:#e6db74">&#34;/quick9&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@ResponseBody</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">save9</span>(User user) {
+</span></span><span style="display:flex;"><span>        System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(user);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@RequestMapping</span>(<span style="color:#e6db74">&#34;/quick10&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@ResponseBody</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">save10</span>(String<span style="color:#f92672">[]</span> str) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> 0; i <span style="color:#f92672">&lt;</span> str.<span style="color:#a6e22e">length</span>; i<span style="color:#f92672">++</span>) {
+</span></span><span style="display:flex;"><span>            System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(str<span style="color:#f92672">[</span>i<span style="color:#f92672">]</span>);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@RequestMapping</span>(<span style="color:#e6db74">&#34;/quick11&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@ResponseBody</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">save11</span>(VO vo) {
+</span></span><span style="display:flex;"><span>        System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(vo);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  	<span style="color:#75715e">//单文件上传</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@RequestMapping</span>(<span style="color:#e6db74">&#34;/quick12&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@ResponseBody</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">save12</span>(<span style="color:#a6e22e">@RequestParam</span>(<span style="color:#e6db74">&#34;username&#34;</span>) String name, MultipartFile uploadFile) {
+</span></span><span style="display:flex;"><span>        System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(name);
+</span></span><span style="display:flex;"><span>        String filename <span style="color:#f92672">=</span> uploadFile.<span style="color:#a6e22e">getOriginalFilename</span>();
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">try</span> {
+</span></span><span style="display:flex;"><span>            uploadFile.<span style="color:#a6e22e">transferTo</span>(<span style="color:#66d9ef">new</span> File(<span style="color:#e6db74">&#34;Y:\\&#34;</span><span style="color:#f92672">+</span>filename));
+</span></span><span style="display:flex;"><span>        } <span style="color:#66d9ef">catch</span> (IOException e) {
+</span></span><span style="display:flex;"><span>            e.<span style="color:#a6e22e">printStackTrace</span>();
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  	<span style="color:#75715e">//多文件上传，不推荐</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@RequestMapping</span>(<span style="color:#e6db74">&#34;/quick13&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@ResponseBody</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">save13</span>(<span style="color:#a6e22e">@RequestParam</span>(<span style="color:#e6db74">&#34;username&#34;</span>) String name, MultipartFile uploadFile1,MultipartFile uploadFile2) {
+</span></span><span style="display:flex;"><span>        System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(name);
+</span></span><span style="display:flex;"><span>        String filename1 <span style="color:#f92672">=</span> uploadFile1.<span style="color:#a6e22e">getOriginalFilename</span>();
+</span></span><span style="display:flex;"><span>        String filename2 <span style="color:#f92672">=</span> uploadFile2.<span style="color:#a6e22e">getOriginalFilename</span>();
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">try</span> {
+</span></span><span style="display:flex;"><span>            uploadFile1.<span style="color:#a6e22e">transferTo</span>(<span style="color:#66d9ef">new</span> File(<span style="color:#e6db74">&#34;Y:\\&#34;</span><span style="color:#f92672">+</span>filename1));
+</span></span><span style="display:flex;"><span>            uploadFile2.<span style="color:#a6e22e">transferTo</span>(<span style="color:#66d9ef">new</span> File(<span style="color:#e6db74">&#34;Y:\\&#34;</span><span style="color:#f92672">+</span>filename2));
+</span></span><span style="display:flex;"><span>        } <span style="color:#66d9ef">catch</span> (IOException e) {
+</span></span><span style="display:flex;"><span>            e.<span style="color:#a6e22e">printStackTrace</span>();
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  	<span style="color:#75715e">//多文件上传，推荐</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@RequestMapping</span>(<span style="color:#e6db74">&#34;/quick14&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@ResponseBody</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">save14</span>(<span style="color:#a6e22e">@RequestParam</span>(<span style="color:#e6db74">&#34;username&#34;</span>) String name, MultipartFile<span style="color:#f92672">[]</span> uploadFile) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> (MultipartFile multipartFile : uploadFile) {
+</span></span><span style="display:flex;"><span>            String originalFilename <span style="color:#f92672">=</span> multipartFile.<span style="color:#a6e22e">getOriginalFilename</span>();
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">try</span> {
+</span></span><span style="display:flex;"><span>                multipartFile.<span style="color:#a6e22e">transferTo</span>(<span style="color:#66d9ef">new</span> File(<span style="color:#e6db74">&#34;Y:\\&#34;</span><span style="color:#f92672">+</span>originalFilename));
+</span></span><span style="display:flex;"><span>            } <span style="color:#66d9ef">catch</span> (IOException e) {
+</span></span><span style="display:flex;"><span>                e.<span style="color:#a6e22e">printStackTrace</span>();
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@RequestMapping</span>(<span style="color:#e6db74">&#34;/quick15&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@ResponseBody</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">save15</span>(<span style="color:#a6e22e">@CookieValue</span>(value <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;JSESSIONID&#34;</span>) String name) {
+</span></span><span style="display:flex;"><span>        System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(name);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="拦截器-1">拦截器</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#f92672">package</span> com.xiaoyu.interceptor;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> org.springframework.web.servlet.HandlerInterceptor;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> org.springframework.web.servlet.ModelAndView;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> javax.servlet.http.HttpServletRequest;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> javax.servlet.http.HttpServletResponse;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MyInterceptor</span> <span style="color:#66d9ef">implements</span> HandlerInterceptor {
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//    在目标方法执行之前执行</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">preHandle</span>(HttpServletRequest request, HttpServletResponse response, Object handler) <span style="color:#66d9ef">throws</span> Exception {
+</span></span><span style="display:flex;"><span>        System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(<span style="color:#e6db74">&#34;在目标方法执行之前执行preHandle&#34;</span>);
+</span></span><span style="display:flex;"><span>        String name <span style="color:#f92672">=</span> request.<span style="color:#a6e22e">getParameter</span>(<span style="color:#e6db74">&#34;name&#34;</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (<span style="color:#e6db74">&#34;qwe&#34;</span>.<span style="color:#a6e22e">equals</span>(name)){
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span>;
+</span></span><span style="display:flex;"><span>        }<span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>            request.<span style="color:#a6e22e">getRequestDispatcher</span>(<span style="color:#e6db74">&#34;/jsp/error.jsp&#34;</span>).<span style="color:#a6e22e">forward</span>(request,response);
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span>;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        return false;后边则都不能执行</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        return true;</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//    在目标方法执行之后视图返回之前执行</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">postHandle</span>(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) <span style="color:#66d9ef">throws</span> Exception {
+</span></span><span style="display:flex;"><span>        System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(<span style="color:#e6db74">&#34;目标方法执行之后视图返回之前执行postHandle&#34;</span>);
+</span></span><span style="display:flex;"><span>        modelAndView.<span style="color:#a6e22e">addObject</span>(<span style="color:#e6db74">&#34;name&#34;</span>,<span style="color:#e6db74">&#34;xiaoyu666&#34;</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//    在整个流程都执行完毕后执行</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">afterCompletion</span>(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) <span style="color:#66d9ef">throws</span> Exception {
+</span></span><span style="display:flex;"><span>        System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(<span style="color:#e6db74">&#34;在整个流程都执行完毕后执行afterCompletion&#34;</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="异常处理器">异常处理器</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#f92672">package</span> com.xiaoyu.exception;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> org.springframework.web.servlet.HandlerExceptionResolver;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> org.springframework.web.servlet.ModelAndView;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> javax.servlet.http.HttpServletRequest;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> javax.servlet.http.HttpServletResponse;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ExceptionError</span> <span style="color:#66d9ef">implements</span> HandlerExceptionResolver {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> ModelAndView <span style="color:#a6e22e">resolveException</span>(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o, Exception e) {
+</span></span><span style="display:flex;"><span>        ModelAndView modelAndView <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ModelAndView();
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (e <span style="color:#66d9ef">instanceof</span> ClassCastException){
+</span></span><span style="display:flex;"><span>            modelAndView.<span style="color:#a6e22e">addObject</span>(<span style="color:#e6db74">&#34;error&#34;</span>,<span style="color:#e6db74">&#34;类转换异常&#34;</span>);
+</span></span><span style="display:flex;"><span>            modelAndView.<span style="color:#a6e22e">setViewName</span>(<span style="color:#e6db74">&#34;error&#34;</span>);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> modelAndView;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul class="pa0">
+  
+   <li class="list di">
+     <a href="/tags/java/" class="link f5 grow br-pill ba ph3 pv2 mb2 dib black sans-serif no-underline">Java</a>
+   </li>
+  
+   <li class="list di">
+     <a href="/tags/springmvc/" class="link f5 grow br-pill ba ph3 pv2 mb2 dib black sans-serif no-underline">SpringMVC</a>
+   </li>
+  
+</ul>
+<div class="mt6 instapaper_ignoref">
+      
+      
+      </div>
+    </div>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+  <div class="bg-light-gray pa3 nested-list-reset nested-copy-line-height nested-links">
+    <p class="f5 b mb3">Related</p>
+    <ul class="pa0 list">
+	   
+	     <li  class="mb2">
+          <a href="/posts/java/java-email/">Java Email</a>
+        </li>
+	    
+    </ul>
+</div>
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white white-70 dn dib-ns pv2 ph3 no-underline" href="http://localhost:1313/" >
+    &copy;  loveyu233 2025 
+  </a>
+    <div><div class="ananke-socials"></div>
+</div>
+  </div>
+</footer>
+
+  </body>
+</html>

@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>ES详细使用 | loveyu233</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="Value Count - 类似sql的count函数，统计总数
+Cardinality - 类似SQL的count(DISTINCT 字段)， 统计不重复的数据总数
+Avg - 求平均值
+Sum - 求和
+Max - 求最大值
+Min - 求最小值
+
+
+Terms聚合 - 类似SQL的group by，根据字段唯一值分组
+Histogram聚合 - 根据数值间隔分组，例如: 价格按100间隔分组，0、100、200、300等等
+Date histogram聚合 - 根据时间间隔分组，例如：按月、按天、按小时分组
+Range聚合 - 按数值范围分组，例如: 0-150一组，150-200一组，200-500一组。
+POST /sales/_search?size=0
+{
+    &#34;aggs&#34; : {
+        &#34;prices&#34; : { // 聚合查询名字，随便取一个
+            &#34;histogram&#34; : { // 聚合类型为：histogram
+                &#34;field&#34; : &#34;price&#34;, // 根据price字段分桶
+                &#34;interval&#34; : 50 // 分桶的间隔为50，意思就是price字段值按50间隔分组
+            }
+        }
+    }
+}
+POST /sales/_search?size=0
+{
+    &#34;aggs&#34; : {
+        &#34;sales_over_time&#34; : { // 聚合查询名字，随便取一个
+            &#34;date_histogram&#34; : { // 聚合类型为: date_histogram
+                &#34;field&#34; : &#34;date&#34;, // 根据date字段分组
+                &#34;calendar_interval&#34; : &#34;month&#34;, // 分组间隔：month代表每月、支持minute（每分钟）、hour（每小时）、day（每天）、week（每周）、year（每年）
+                &#34;format&#34; : &#34;yyyy-MM-dd&#34; // 设置返回结果中桶key的时间格式
+            }
+        }
+    }
+}
+GET /_search
+{
+    &#34;aggs&#34; : {
+        &#34;price_ranges&#34; : {
+            &#34;range&#34; : {
+                &#34;field&#34; : &#34;price&#34;,
+                &#34;keyed&#34; : true,
+                &#34;ranges&#34; : [
+                    // 通过key参数，配置每一个分桶的名字
+                    { &#34;key&#34; : &#34;cheap&#34;, &#34;to&#34; : 100 },
+                    { &#34;key&#34; : &#34;average&#34;, &#34;from&#34; : 100, &#34;to&#34; : 200 },
+                    { &#34;key&#34; : &#34;expensive&#34;, &#34;from&#34; : 200 }
+                ]
+            }
+        }
+    }
+}
+聚合后排序
+_count - 按文档数排序。对 terms 、 histogram 、 date_histogram 有效
+_term - 按词项的字符串值的字母顺序排序。只在 terms 内使用
+_key - 按每个桶的键值数值排序, 仅对 histogram 和 date_histogram 有效">
+    <meta name="generator" content="Hugo 0.147.7">
+    
+    
+    
+      <meta name="robots" content="noindex, nofollow">
+    
+    <meta name="author" content="loveyu">
+    
+
+    
+<link rel="stylesheet" href="/ananke/css/main.min.css" >
+
+
+
+
+    
+
+
+    
+      
+
+    
+
+    
+
+    
+      <link rel="canonical" href="http://localhost:1313/posts/databases/es%E8%AF%A6%E7%BB%86%E4%BD%BF%E7%94%A8/">
+    
+
+    <meta property="og:url" content="http://localhost:1313/posts/databases/es%E8%AF%A6%E7%BB%86%E4%BD%BF%E7%94%A8/">
+  <meta property="og:site_name" content="loveyu233">
+  <meta property="og:title" content="ES详细使用">
+  <meta property="og:description" content="Value Count - 类似sql的count函数，统计总数 Cardinality - 类似SQL的count(DISTINCT 字段)， 统计不重复的数据总数 Avg - 求平均值 Sum - 求和 Max - 求最大值 Min - 求最小值 Terms聚合 - 类似SQL的group by，根据字段唯一值分组 Histogram聚合 - 根据数值间隔分组，例如: 价格按100间隔分组，0、100、200、300等等 Date histogram聚合 - 根据时间间隔分组，例如：按月、按天、按小时分组 Range聚合 - 按数值范围分组，例如: 0-150一组，150-200一组，200-500一组。 POST /sales/_search?size=0 { &#34;aggs&#34; : { &#34;prices&#34; : { // 聚合查询名字，随便取一个 &#34;histogram&#34; : { // 聚合类型为：histogram &#34;field&#34; : &#34;price&#34;, // 根据price字段分桶 &#34;interval&#34; : 50 // 分桶的间隔为50，意思就是price字段值按50间隔分组 } } } } POST /sales/_search?size=0 { &#34;aggs&#34; : { &#34;sales_over_time&#34; : { // 聚合查询名字，随便取一个 &#34;date_histogram&#34; : { // 聚合类型为: date_histogram &#34;field&#34; : &#34;date&#34;, // 根据date字段分组 &#34;calendar_interval&#34; : &#34;month&#34;, // 分组间隔：month代表每月、支持minute（每分钟）、hour（每小时）、day（每天）、week（每周）、year（每年） &#34;format&#34; : &#34;yyyy-MM-dd&#34; // 设置返回结果中桶key的时间格式 } } } } GET /_search { &#34;aggs&#34; : { &#34;price_ranges&#34; : { &#34;range&#34; : { &#34;field&#34; : &#34;price&#34;, &#34;keyed&#34; : true, &#34;ranges&#34; : [ // 通过key参数，配置每一个分桶的名字 { &#34;key&#34; : &#34;cheap&#34;, &#34;to&#34; : 100 }, { &#34;key&#34; : &#34;average&#34;, &#34;from&#34; : 100, &#34;to&#34; : 200 }, { &#34;key&#34; : &#34;expensive&#34;, &#34;from&#34; : 200 } ] } } } } 聚合后排序 _count - 按文档数排序。对 terms 、 histogram 、 date_histogram 有效 _term - 按词项的字符串值的字母顺序排序。只在 terms 内使用 _key - 按每个桶的键值数值排序, 仅对 histogram 和 date_histogram 有效">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2019-06-19T19:38:37+08:00">
+    <meta property="article:modified_time" content="2019-06-19T19:38:37+08:00">
+    <meta property="article:tag" content="ES">
+
+  <meta itemprop="name" content="ES详细使用">
+  <meta itemprop="description" content="Value Count - 类似sql的count函数，统计总数 Cardinality - 类似SQL的count(DISTINCT 字段)， 统计不重复的数据总数 Avg - 求平均值 Sum - 求和 Max - 求最大值 Min - 求最小值 Terms聚合 - 类似SQL的group by，根据字段唯一值分组 Histogram聚合 - 根据数值间隔分组，例如: 价格按100间隔分组，0、100、200、300等等 Date histogram聚合 - 根据时间间隔分组，例如：按月、按天、按小时分组 Range聚合 - 按数值范围分组，例如: 0-150一组，150-200一组，200-500一组。 POST /sales/_search?size=0 { &#34;aggs&#34; : { &#34;prices&#34; : { // 聚合查询名字，随便取一个 &#34;histogram&#34; : { // 聚合类型为：histogram &#34;field&#34; : &#34;price&#34;, // 根据price字段分桶 &#34;interval&#34; : 50 // 分桶的间隔为50，意思就是price字段值按50间隔分组 } } } } POST /sales/_search?size=0 { &#34;aggs&#34; : { &#34;sales_over_time&#34; : { // 聚合查询名字，随便取一个 &#34;date_histogram&#34; : { // 聚合类型为: date_histogram &#34;field&#34; : &#34;date&#34;, // 根据date字段分组 &#34;calendar_interval&#34; : &#34;month&#34;, // 分组间隔：month代表每月、支持minute（每分钟）、hour（每小时）、day（每天）、week（每周）、year（每年） &#34;format&#34; : &#34;yyyy-MM-dd&#34; // 设置返回结果中桶key的时间格式 } } } } GET /_search { &#34;aggs&#34; : { &#34;price_ranges&#34; : { &#34;range&#34; : { &#34;field&#34; : &#34;price&#34;, &#34;keyed&#34; : true, &#34;ranges&#34; : [ // 通过key参数，配置每一个分桶的名字 { &#34;key&#34; : &#34;cheap&#34;, &#34;to&#34; : 100 }, { &#34;key&#34; : &#34;average&#34;, &#34;from&#34; : 100, &#34;to&#34; : 200 }, { &#34;key&#34; : &#34;expensive&#34;, &#34;from&#34; : 200 } ] } } } } 聚合后排序 _count - 按文档数排序。对 terms 、 histogram 、 date_histogram 有效 _term - 按词项的字符串值的字母顺序排序。只在 terms 内使用 _key - 按每个桶的键值数值排序, 仅对 histogram 和 date_histogram 有效">
+  <meta itemprop="datePublished" content="2019-06-19T19:38:37+08:00">
+  <meta itemprop="dateModified" content="2019-06-19T19:38:37+08:00">
+  <meta itemprop="wordCount" content="1282">
+  <meta itemprop="keywords" content="ES">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="ES详细使用">
+  <meta name="twitter:description" content="Value Count - 类似sql的count函数，统计总数 Cardinality - 类似SQL的count(DISTINCT 字段)， 统计不重复的数据总数 Avg - 求平均值 Sum - 求和 Max - 求最大值 Min - 求最小值 Terms聚合 - 类似SQL的group by，根据字段唯一值分组 Histogram聚合 - 根据数值间隔分组，例如: 价格按100间隔分组，0、100、200、300等等 Date histogram聚合 - 根据时间间隔分组，例如：按月、按天、按小时分组 Range聚合 - 按数值范围分组，例如: 0-150一组，150-200一组，200-500一组。 POST /sales/_search?size=0 { &#34;aggs&#34; : { &#34;prices&#34; : { // 聚合查询名字，随便取一个 &#34;histogram&#34; : { // 聚合类型为：histogram &#34;field&#34; : &#34;price&#34;, // 根据price字段分桶 &#34;interval&#34; : 50 // 分桶的间隔为50，意思就是price字段值按50间隔分组 } } } } POST /sales/_search?size=0 { &#34;aggs&#34; : { &#34;sales_over_time&#34; : { // 聚合查询名字，随便取一个 &#34;date_histogram&#34; : { // 聚合类型为: date_histogram &#34;field&#34; : &#34;date&#34;, // 根据date字段分组 &#34;calendar_interval&#34; : &#34;month&#34;, // 分组间隔：month代表每月、支持minute（每分钟）、hour（每小时）、day（每天）、week（每周）、year（每年） &#34;format&#34; : &#34;yyyy-MM-dd&#34; // 设置返回结果中桶key的时间格式 } } } } GET /_search { &#34;aggs&#34; : { &#34;price_ranges&#34; : { &#34;range&#34; : { &#34;field&#34; : &#34;price&#34;, &#34;keyed&#34; : true, &#34;ranges&#34; : [ // 通过key参数，配置每一个分桶的名字 { &#34;key&#34; : &#34;cheap&#34;, &#34;to&#34; : 100 }, { &#34;key&#34; : &#34;average&#34;, &#34;from&#34; : 100, &#34;to&#34; : 200 }, { &#34;key&#34; : &#34;expensive&#34;, &#34;from&#34; : 200 } ] } } } } 聚合后排序 _count - 按文档数排序。对 terms 、 histogram 、 date_histogram 有效 _term - 按词项的字符串值的字母顺序排序。只在 terms 内使用 _key - 按每个桶的键值数值排序, 仅对 histogram 和 date_histogram 有效">
+
+	
+  </head><body class="ma0 avenir bg-near-white development">
+
+    
+   
+  
+
+  <header>
+    <div class="bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l center items-center justify-between">
+    <a href="/" class="f3 fw2 hover-white white-90 dib no-underline">
+      
+        loveyu233
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      <div class="ananke-socials"></div>
+
+    </div>
+  </div>
+</nav>
+
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  
+  <article class="flex-l mw8 center ph3 flex-wrap justify-between">
+    <header class="mt4 w-100">
+      <aside class="instapaper_ignoref b helvetica tracked ttu">
+          
+        databases
+      </aside><div id="sharing" class="mt3 ananke-socials"></div>
+<h1 class="f1 athelas mt3 mb1">ES详细使用</h1>
+      
+      <p class="tracked"><strong>loveyu</strong>
+      </p>
+      
+      
+      
+      <time class="f6 mv4 dib tracked" datetime="2019-06-19T19:38:37+08:00">June 19, 2019</time>
+      
+
+      
+      
+    </header>
+    <div class="nested-copy-line-height lh-copy serif f4 nested-links mid-gray pr4-l w-two-thirds-l"><pre tabindex="0"><code>Value Count - 类似sql的count函数，统计总数
+Cardinality - 类似SQL的count(DISTINCT 字段)， 统计不重复的数据总数
+Avg - 求平均值
+Sum - 求和
+Max - 求最大值
+Min - 求最小值
+
+
+Terms聚合 - 类似SQL的group by，根据字段唯一值分组
+Histogram聚合 - 根据数值间隔分组，例如: 价格按100间隔分组，0、100、200、300等等
+Date histogram聚合 - 根据时间间隔分组，例如：按月、按天、按小时分组
+Range聚合 - 按数值范围分组，例如: 0-150一组，150-200一组，200-500一组。
+</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">POST</span> <span style="color:#960050;background-color:#1e0010">/sales/_search?size=</span><span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;aggs&#34;</span> : {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;prices&#34;</span> : { <span style="color:#75715e">// 聚合查询名字，随便取一个
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#f92672">&#34;histogram&#34;</span> : { <span style="color:#75715e">// 聚合类型为：histogram
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                <span style="color:#f92672">&#34;field&#34;</span> : <span style="color:#e6db74">&#34;price&#34;</span>, <span style="color:#75715e">// 根据price字段分桶
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                <span style="color:#f92672">&#34;interval&#34;</span> : <span style="color:#ae81ff">50</span> <span style="color:#75715e">// 分桶的间隔为50，意思就是price字段值按50间隔分组
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">POST</span> <span style="color:#960050;background-color:#1e0010">/sales/_search?size=</span><span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;aggs&#34;</span> : {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;sales_over_time&#34;</span> : { <span style="color:#75715e">// 聚合查询名字，随便取一个
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#f92672">&#34;date_histogram&#34;</span> : { <span style="color:#75715e">// 聚合类型为: date_histogram
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                <span style="color:#f92672">&#34;field&#34;</span> : <span style="color:#e6db74">&#34;date&#34;</span>, <span style="color:#75715e">// 根据date字段分组
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                <span style="color:#f92672">&#34;calendar_interval&#34;</span> : <span style="color:#e6db74">&#34;month&#34;</span>, <span style="color:#75715e">// 分组间隔：month代表每月、支持minute（每分钟）、hour（每小时）、day（每天）、week（每周）、year（每年）
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                <span style="color:#f92672">&#34;format&#34;</span> : <span style="color:#e6db74">&#34;yyyy-MM-dd&#34;</span> <span style="color:#75715e">// 设置返回结果中桶key的时间格式
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">GET</span> <span style="color:#960050;background-color:#1e0010">/_search</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;aggs&#34;</span> : {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;price_ranges&#34;</span> : {
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;range&#34;</span> : {
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;field&#34;</span> : <span style="color:#e6db74">&#34;price&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;keyed&#34;</span> : <span style="color:#66d9ef">true</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;ranges&#34;</span> : [
+</span></span><span style="display:flex;"><span>                    <span style="color:#75715e">// 通过key参数，配置每一个分桶的名字
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                    { <span style="color:#f92672">&#34;key&#34;</span> : <span style="color:#e6db74">&#34;cheap&#34;</span>, <span style="color:#f92672">&#34;to&#34;</span> : <span style="color:#ae81ff">100</span> },
+</span></span><span style="display:flex;"><span>                    { <span style="color:#f92672">&#34;key&#34;</span> : <span style="color:#e6db74">&#34;average&#34;</span>, <span style="color:#f92672">&#34;from&#34;</span> : <span style="color:#ae81ff">100</span>, <span style="color:#f92672">&#34;to&#34;</span> : <span style="color:#ae81ff">200</span> },
+</span></span><span style="display:flex;"><span>                    { <span style="color:#f92672">&#34;key&#34;</span> : <span style="color:#e6db74">&#34;expensive&#34;</span>, <span style="color:#f92672">&#34;from&#34;</span> : <span style="color:#ae81ff">200</span> }
+</span></span><span style="display:flex;"><span>                ]
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="聚合后排序">聚合后排序</h1>
+<p>_count - 按文档数排序。对 terms 、 histogram 、 date_histogram 有效
+_term - 按词项的字符串值的字母顺序排序。只在 terms 内使用
+_key - 按每个桶的键值数值排序, 仅对 histogram 和 date_histogram 有效</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">GET</span> <span style="color:#960050;background-color:#1e0010">/cars/_search</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;size&#34;</span> : <span style="color:#ae81ff">0</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;aggs&#34;</span> : {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;colors&#34;</span> : { <span style="color:#75715e">// 聚合查询名字，随便取一个
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#f92672">&#34;terms&#34;</span> : { <span style="color:#75715e">// 聚合类型为: terms
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>              <span style="color:#f92672">&#34;field&#34;</span> : <span style="color:#e6db74">&#34;color&#34;</span>, 
+</span></span><span style="display:flex;"><span>              <span style="color:#f92672">&#34;order&#34;</span>: { <span style="color:#75715e">// 设置排序参数
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                <span style="color:#f92672">&#34;_count&#34;</span> : <span style="color:#e6db74">&#34;asc&#34;</span>  <span style="color:#75715e">// 根据_count排序，asc升序，desc降序
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>              }
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">通常情况下，我们根据桶聚合分桶后，都会对桶内进行多个维度的指标聚合，所以我们也可以根据桶内指标聚合的结果进行排序</span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">GET</span> <span style="color:#960050;background-color:#1e0010">/cars/_search</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;size&#34;</span> : <span style="color:#ae81ff">0</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;aggs&#34;</span> : {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;colors&#34;</span> : { <span style="color:#75715e">// 聚合查询名字
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#f92672">&#34;terms&#34;</span> : { <span style="color:#75715e">// 聚合类型: terms，先分桶
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>              <span style="color:#f92672">&#34;field&#34;</span> : <span style="color:#e6db74">&#34;color&#34;</span>, <span style="color:#75715e">// 分桶字段为color
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>              <span style="color:#f92672">&#34;order&#34;</span>: { <span style="color:#75715e">// 设置排序参数
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                <span style="color:#f92672">&#34;avg_price&#34;</span> : <span style="color:#e6db74">&#34;asc&#34;</span>  <span style="color:#75715e">// 根据avg_price指标聚合结果，升序排序。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>              }
+</span></span><span style="display:flex;"><span>            },
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;aggs&#34;</span>: { <span style="color:#75715e">// 嵌套聚合查询，设置桶内聚合指标
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                <span style="color:#f92672">&#34;avg_price&#34;</span>: { <span style="color:#75715e">// 聚合查询名字，前面排序引用的就是这个名字
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                    <span style="color:#f92672">&#34;avg&#34;</span>: {<span style="color:#f92672">&#34;field&#34;</span>: <span style="color:#e6db74">&#34;price&#34;</span>} <span style="color:#75715e">// 计算price字段平均值
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                }
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="获取当前es信息">获取当前es信息</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">GET</span> <span style="color:#960050;background-color:#1e0010">/</span>
+</span></span></code></pre></div><h1 id="添加文档如果index不存在则自动创建">添加文档,如果index不存在则自动创建</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">PUT</span> <span style="color:#960050;background-color:#1e0010">twitter/_doc/</span><span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;user&#34;</span>: <span style="color:#e6db74">&#34;GB&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;uid&#34;</span>: <span style="color:#ae81ff">1</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;city&#34;</span>: <span style="color:#e6db74">&#34;Beijing&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;province&#34;</span>: <span style="color:#e6db74">&#34;Beijing&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;country&#34;</span>: <span style="color:#e6db74">&#34;China&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="获取twitter的字段类型">获取Twitter的字段类型</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">GET</span> <span style="color:#960050;background-color:#1e0010">twitter/_mapping</span>
+</span></span></code></pre></div><h1 id="自定义索引字段类型">自定义索引字段类型</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">PUT</span> <span style="color:#960050;background-color:#1e0010">test</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;mappings&#34;</span>: {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;properties&#34;</span>: {
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;id&#34;</span>: {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;keyword&#34;</span>
+</span></span><span style="display:flex;"><span>      },
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;message&#34;</span>: {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;text&#34;</span>
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="在已有索引字段的基础上添加指定类型的字段">在已有索引字段的基础上添加指定类型的字段</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">PUT</span> <span style="color:#960050;background-color:#1e0010">test/_mapping</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;properties&#34;</span>: {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;age&#34;</span>: {
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;long&#34;</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="使用refreshtrue可以立即刷新该文档使其可以被马上搜索到">使用?refresh=true可以立即刷新该文档使其可以被马上搜索到</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">PUT</span> <span style="color:#960050;background-color:#1e0010">twitter/_doc/</span><span style="color:#ae81ff">1</span><span style="color:#960050;background-color:#1e0010">?refresh=</span><span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;user&#34;</span>: <span style="color:#e6db74">&#34;GB&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;uid&#34;</span>: <span style="color:#ae81ff">1</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;city&#34;</span>: <span style="color:#e6db74">&#34;Beijing&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;province&#34;</span>: <span style="color:#e6db74">&#34;Beijing&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;country&#34;</span>: <span style="color:#e6db74">&#34;China&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="refreshtrue">?refresh=true</h1>
+<blockquote>
+<p>这种操作会使Elasticsearch 变得非常慢,通过设置 refresh=wait_for。这样相当于一个同步的操作，它等待下一个 refresh 周期发生完后，才返回</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">PUT</span> <span style="color:#960050;background-color:#1e0010">twitter/_doc/</span><span style="color:#ae81ff">1</span><span style="color:#960050;background-color:#1e0010">?refresh=wait_for</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;user&#34;</span>: <span style="color:#e6db74">&#34;GB&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;uid&#34;</span>: <span style="color:#ae81ff">1</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;city&#34;</span>: <span style="color:#e6db74">&#34;Beijing&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;province&#34;</span>: <span style="color:#e6db74">&#34;Beijing&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;country&#34;</span>: <span style="color:#e6db74">&#34;China&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="使用_doc如果id相同则会更改并把版本号加一使用_create如果存在该id则会报错">使用_doc如果id相同则会更改并把版本号加一,使用_create如果存在该id则会报错</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">PUT</span> <span style="color:#960050;background-color:#1e0010">twitter/_create/</span><span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;user&#34;</span>: <span style="color:#e6db74">&#34;GB&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;uid&#34;</span>: <span style="color:#ae81ff">1</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;city&#34;</span>: <span style="color:#e6db74">&#34;Shenzhen&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;province&#34;</span>: <span style="color:#e6db74">&#34;Guangdong&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;country&#34;</span>: <span style="color:#e6db74">&#34;China&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="通过设置op_typecreate参数可以达到和上边相同结果">通过设置?op_type=create参数可以达到和上边相同结果</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">PUT</span> <span style="color:#960050;background-color:#1e0010">twitter/_doc/</span><span style="color:#ae81ff">1</span><span style="color:#960050;background-color:#1e0010">?op_type=create</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;user&#34;</span>: <span style="color:#e6db74">&#34;GB&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;uid&#34;</span>: <span style="color:#ae81ff">1</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;city&#34;</span>: <span style="color:#e6db74">&#34;Beijing&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;province&#34;</span>: <span style="color:#e6db74">&#34;Beijing&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;country&#34;</span>: <span style="color:#e6db74">&#34;China&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="不指定ides自动生成id只能在post请求下才可以">不指定id,es自动生成id,只能在post请求下才可以</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">POST</span> <span style="color:#960050;background-color:#1e0010">twitter/_doc</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;user&#34;</span>: <span style="color:#e6db74">&#34;MB&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;uid&#34;</span>: <span style="color:#ae81ff">2</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;city&#34;</span>: <span style="color:#e6db74">&#34;Shenzhen&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;province&#34;</span>: <span style="color:#e6db74">&#34;Guangdong&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;country&#34;</span>: <span style="color:#e6db74">&#34;China&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="获取id为1的文档信息">获取id为1的文档信息</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">GET</span> <span style="color:#960050;background-color:#1e0010">twitter/_doc/</span><span style="color:#ae81ff">1</span>
+</span></span></code></pre></div><h1 id="只获取文档id为1的source信息">只获取文档id为1的source信息</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">GET</span> <span style="color:#960050;background-color:#1e0010">twitter/_source/</span><span style="color:#ae81ff">1</span>
+</span></span></code></pre></div><h1 id="获取ids为1和2的">获取ids为1和2的</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">GET</span> <span style="color:#960050;background-color:#1e0010">twitter/_mget</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;ids&#34;</span>:[<span style="color:#e6db74">&#34;1&#34;</span>,<span style="color:#e6db74">&#34;2&#34;</span>]
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="只修改id为1的user字段">只修改id为1的user字段</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">POST</span> <span style="color:#960050;background-color:#1e0010">twitter/_update/</span><span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;doc&#34;</span>:{
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;user&#34;</span>:<span style="color:#e6db74">&#34;abccde&#34;</span>
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="在不知道id的情况下修改user为gb的用户信息">在不知道id的情况下修改user为GB的用户信息</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">POST</span> <span style="color:#960050;background-color:#1e0010">twitter/_update_by_query</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;query&#34;</span>: {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;match&#34;</span>: {
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;user&#34;</span>: <span style="color:#e6db74">&#34;GB&#34;</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;script&#34;</span>: {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;source&#34;</span>: <span style="color:#e6db74">&#34;ctx._source.city = params.city;ctx._source.province = params.province;ctx._source.country = params.country&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;lang&#34;</span>: <span style="color:#e6db74">&#34;painless&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;params&#34;</span>: {
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;city&#34;</span>: <span style="color:#e6db74">&#34;上海&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;province&#34;</span>: <span style="color:#e6db74">&#34;上海&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;country&#34;</span>: <span style="color:#e6db74">&#34;中国&#34;</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="检查id为1的doc是否存在">检查id为1的doc是否存在</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">HEAD</span> <span style="color:#960050;background-color:#1e0010">twitter/_doc/</span><span style="color:#ae81ff">1</span>
+</span></span></code></pre></div><h1 id="检查索引是否存在">检查索引是否存在</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">HEAD</span> <span style="color:#960050;background-color:#1e0010">twitter</span>
+</span></span></code></pre></div><h1 id="删除id为1的doc">删除id为1的doc</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">DELETE</span> <span style="color:#960050;background-color:#1e0010">twitter/_doc/</span><span style="color:#ae81ff">1</span>
+</span></span></code></pre></div><h1 id="删除索引">删除索引</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">DELETE</span> <span style="color:#960050;background-color:#1e0010">twitter</span>
+</span></span></code></pre></div><h1 id="不知道id的情况下删除city为上海的用户">不知道id的情况下删除city为上海的用户</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">POST</span> <span style="color:#960050;background-color:#1e0010">twitter/_delete_by_query</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;query&#34;</span>:{
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;match&#34;</span>:{
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;city&#34;</span>:<span style="color:#e6db74">&#34;上海&#34;</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="批量创建">批量创建</h1>
+<blockquote>
+<p>index可以为create,delete,update</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">POST</span> <span style="color:#960050;background-color:#1e0010">_bulk</span>
+</span></span><span style="display:flex;"><span>{ <span style="color:#f92672">&#34;index&#34;</span> : { <span style="color:#f92672">&#34;_index&#34;</span> : <span style="color:#e6db74">&#34;twitter&#34;</span>, <span style="color:#f92672">&#34;_id&#34;</span>: <span style="color:#ae81ff">1</span>} }
+</span></span><span style="display:flex;"><span>{<span style="color:#f92672">&#34;user&#34;</span>:<span style="color:#e6db74">&#34;双榆树-张三&#34;</span>,<span style="color:#f92672">&#34;message&#34;</span>:<span style="color:#e6db74">&#34;今儿天气不错啊，出去转转去&#34;</span>,<span style="color:#f92672">&#34;uid&#34;</span>:<span style="color:#ae81ff">2</span>,<span style="color:#f92672">&#34;age&#34;</span>:<span style="color:#ae81ff">20</span>,<span style="color:#f92672">&#34;city&#34;</span>:<span style="color:#e6db74">&#34;北京&#34;</span>,<span style="color:#f92672">&#34;province&#34;</span>:<span style="color:#e6db74">&#34;北京&#34;</span>,<span style="color:#f92672">&#34;country&#34;</span>:<span style="color:#e6db74">&#34;中国&#34;</span>,<span style="color:#f92672">&#34;address&#34;</span>:<span style="color:#e6db74">&#34;中国北京市海淀区&#34;</span>,<span style="color:#f92672">&#34;location&#34;</span>:{<span style="color:#f92672">&#34;lat&#34;</span>:<span style="color:#e6db74">&#34;39.970718&#34;</span>,<span style="color:#f92672">&#34;lon&#34;</span>:<span style="color:#e6db74">&#34;116.325747&#34;</span>}}
+</span></span><span style="display:flex;"><span>{ <span style="color:#f92672">&#34;index&#34;</span> : { <span style="color:#f92672">&#34;_index&#34;</span> : <span style="color:#e6db74">&#34;twitter&#34;</span>, <span style="color:#f92672">&#34;_id&#34;</span>: <span style="color:#ae81ff">2</span> }}
+</span></span><span style="display:flex;"><span>{<span style="color:#f92672">&#34;user&#34;</span>:<span style="color:#e6db74">&#34;东城区-老刘&#34;</span>,<span style="color:#f92672">&#34;message&#34;</span>:<span style="color:#e6db74">&#34;出发，下一站云南！&#34;</span>,<span style="color:#f92672">&#34;uid&#34;</span>:<span style="color:#ae81ff">3</span>,<span style="color:#f92672">&#34;age&#34;</span>:<span style="color:#ae81ff">30</span>,<span style="color:#f92672">&#34;city&#34;</span>:<span style="color:#e6db74">&#34;北京&#34;</span>,<span style="color:#f92672">&#34;province&#34;</span>:<span style="color:#e6db74">&#34;北京&#34;</span>,<span style="color:#f92672">&#34;country&#34;</span>:<span style="color:#e6db74">&#34;中国&#34;</span>,<span style="color:#f92672">&#34;address&#34;</span>:<span style="color:#e6db74">&#34;中国北京市东城区台基厂三条3号&#34;</span>,<span style="color:#f92672">&#34;location&#34;</span>:{<span style="color:#f92672">&#34;lat&#34;</span>:<span style="color:#e6db74">&#34;39.904313&#34;</span>,<span style="color:#f92672">&#34;lon&#34;</span>:<span style="color:#e6db74">&#34;116.412754&#34;</span>}}
+</span></span><span style="display:flex;"><span>{ <span style="color:#f92672">&#34;index&#34;</span> : { <span style="color:#f92672">&#34;_index&#34;</span> : <span style="color:#e6db74">&#34;twitter&#34;</span>, <span style="color:#f92672">&#34;_id&#34;</span>: <span style="color:#ae81ff">3</span>} }
+</span></span><span style="display:flex;"><span>{<span style="color:#f92672">&#34;user&#34;</span>:<span style="color:#e6db74">&#34;东城区-李四&#34;</span>,<span style="color:#f92672">&#34;message&#34;</span>:<span style="color:#e6db74">&#34;happy birthday!&#34;</span>,<span style="color:#f92672">&#34;uid&#34;</span>:<span style="color:#ae81ff">4</span>,<span style="color:#f92672">&#34;age&#34;</span>:<span style="color:#ae81ff">30</span>,<span style="color:#f92672">&#34;city&#34;</span>:<span style="color:#e6db74">&#34;北京&#34;</span>,<span style="color:#f92672">&#34;province&#34;</span>:<span style="color:#e6db74">&#34;北京&#34;</span>,<span style="color:#f92672">&#34;country&#34;</span>:<span style="color:#e6db74">&#34;中国&#34;</span>,<span style="color:#f92672">&#34;address&#34;</span>:<span style="color:#e6db74">&#34;中国北京市东城区&#34;</span>,<span style="color:#f92672">&#34;location&#34;</span>:{<span style="color:#f92672">&#34;lat&#34;</span>:<span style="color:#e6db74">&#34;39.893801&#34;</span>,<span style="color:#f92672">&#34;lon&#34;</span>:<span style="color:#e6db74">&#34;116.408986&#34;</span>}}
+</span></span><span style="display:flex;"><span>{ <span style="color:#f92672">&#34;index&#34;</span> : { <span style="color:#f92672">&#34;_index&#34;</span> : <span style="color:#e6db74">&#34;twitter&#34;</span>, <span style="color:#f92672">&#34;_id&#34;</span>: <span style="color:#ae81ff">4</span>} }
+</span></span><span style="display:flex;"><span>{<span style="color:#f92672">&#34;user&#34;</span>:<span style="color:#e6db74">&#34;朝阳区-老贾&#34;</span>,<span style="color:#f92672">&#34;message&#34;</span>:<span style="color:#e6db74">&#34;123,gogogo&#34;</span>,<span style="color:#f92672">&#34;uid&#34;</span>:<span style="color:#ae81ff">5</span>,<span style="color:#f92672">&#34;age&#34;</span>:<span style="color:#ae81ff">35</span>,<span style="color:#f92672">&#34;city&#34;</span>:<span style="color:#e6db74">&#34;北京&#34;</span>,<span style="color:#f92672">&#34;province&#34;</span>:<span style="color:#e6db74">&#34;北京&#34;</span>,<span style="color:#f92672">&#34;country&#34;</span>:<span style="color:#e6db74">&#34;中国&#34;</span>,<span style="color:#f92672">&#34;address&#34;</span>:<span style="color:#e6db74">&#34;中国北京市朝阳区建国门&#34;</span>,<span style="color:#f92672">&#34;location&#34;</span>:{<span style="color:#f92672">&#34;lat&#34;</span>:<span style="color:#e6db74">&#34;39.718256&#34;</span>,<span style="color:#f92672">&#34;lon&#34;</span>:<span style="color:#e6db74">&#34;116.367910&#34;</span>}}
+</span></span><span style="display:flex;"><span>{ <span style="color:#f92672">&#34;index&#34;</span> : { <span style="color:#f92672">&#34;_index&#34;</span> : <span style="color:#e6db74">&#34;twitter&#34;</span>, <span style="color:#f92672">&#34;_id&#34;</span>: <span style="color:#ae81ff">5</span>} }
+</span></span><span style="display:flex;"><span>{<span style="color:#f92672">&#34;user&#34;</span>:<span style="color:#e6db74">&#34;朝阳区-老王&#34;</span>,<span style="color:#f92672">&#34;message&#34;</span>:<span style="color:#e6db74">&#34;Happy BirthDay My Friend!&#34;</span>,<span style="color:#f92672">&#34;uid&#34;</span>:<span style="color:#ae81ff">6</span>,<span style="color:#f92672">&#34;age&#34;</span>:<span style="color:#ae81ff">50</span>,<span style="color:#f92672">&#34;city&#34;</span>:<span style="color:#e6db74">&#34;北京&#34;</span>,<span style="color:#f92672">&#34;province&#34;</span>:<span style="color:#e6db74">&#34;北京&#34;</span>,<span style="color:#f92672">&#34;country&#34;</span>:<span style="color:#e6db74">&#34;中国&#34;</span>,<span style="color:#f92672">&#34;address&#34;</span>:<span style="color:#e6db74">&#34;中国北京市朝阳区国贸&#34;</span>,<span style="color:#f92672">&#34;location&#34;</span>:{<span style="color:#f92672">&#34;lat&#34;</span>:<span style="color:#e6db74">&#34;39.918256&#34;</span>,<span style="color:#f92672">&#34;lon&#34;</span>:<span style="color:#e6db74">&#34;116.467910&#34;</span>}}
+</span></span><span style="display:flex;"><span>{ <span style="color:#f92672">&#34;index&#34;</span> : { <span style="color:#f92672">&#34;_index&#34;</span> : <span style="color:#e6db74">&#34;twitter&#34;</span>, <span style="color:#f92672">&#34;_id&#34;</span>: <span style="color:#ae81ff">6</span>} }
+</span></span><span style="display:flex;"><span>{<span style="color:#f92672">&#34;user&#34;</span>:<span style="color:#e6db74">&#34;虹桥-老吴&#34;</span>,<span style="color:#f92672">&#34;message&#34;</span>:<span style="color:#e6db74">&#34;好友来了都今天我生日，好友来了,什么 birthday happy 就成!&#34;</span>,<span style="color:#f92672">&#34;uid&#34;</span>:<span style="color:#ae81ff">7</span>,<span style="color:#f92672">&#34;age&#34;</span>:<span style="color:#ae81ff">90</span>,<span style="color:#f92672">&#34;city&#34;</span>:<span style="color:#e6db74">&#34;上海&#34;</span>,<span style="color:#f92672">&#34;province&#34;</span>:<span style="color:#e6db74">&#34;上海&#34;</span>,<span style="color:#f92672">&#34;country&#34;</span>:<span style="color:#e6db74">&#34;中国&#34;</span>,<span style="color:#f92672">&#34;address&#34;</span>:<span style="color:#e6db74">&#34;中国上海市闵行区&#34;</span>,<span style="color:#f92672">&#34;location&#34;</span>:{<span style="color:#f92672">&#34;lat&#34;</span>:<span style="color:#e6db74">&#34;31.175927&#34;</span>,<span style="color:#f92672">&#34;lon&#34;</span>:<span style="color:#e6db74">&#34;121.383328&#34;</span>}}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">POST</span> <span style="color:#960050;background-color:#1e0010">_bulk</span>
+</span></span><span style="display:flex;"><span>{ <span style="color:#f92672">&#34;delete&#34;</span> : { <span style="color:#f92672">&#34;_index&#34;</span> : <span style="color:#e6db74">&#34;twitter&#34;</span>, <span style="color:#f92672">&#34;_id&#34;</span>: <span style="color:#ae81ff">1</span> }}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">POST</span> <span style="color:#960050;background-color:#1e0010">_bulk</span>
+</span></span><span style="display:flex;"><span>{ <span style="color:#f92672">&#34;update&#34;</span> : { <span style="color:#f92672">&#34;_index&#34;</span> : <span style="color:#e6db74">&#34;twitter&#34;</span>, <span style="color:#f92672">&#34;_id&#34;</span>: <span style="color:#ae81ff">2</span> }}
+</span></span><span style="display:flex;"><span>{<span style="color:#f92672">&#34;doc&#34;</span>: { <span style="color:#f92672">&#34;city&#34;</span>: <span style="color:#e6db74">&#34;长沙&#34;</span>}}
+</span></span></code></pre></div><h1 id="超找全部doc">超找全部doc</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">POST</span> <span style="color:#960050;background-color:#1e0010">twitter/_search</span>
+</span></span></code></pre></div><h1 id="获取twitter有多少条doc">获取twitter有多少条doc</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">GET</span> <span style="color:#960050;background-color:#1e0010">twitter/_count</span>
+</span></span></code></pre></div><h1 id="索引统计">索引统计</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">GET</span> <span style="color:#960050;background-color:#1e0010">twitter/_stats</span>
+</span></span></code></pre></div><h1 id="同时获得多个索引的统计数据">同时获得多个索引的统计数据</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">GET</span> <span style="color:#960050;background-color:#1e0010">twitter</span><span style="color:#ae81ff">1</span><span style="color:#960050;background-color:#1e0010">,twitter</span><span style="color:#ae81ff">2</span><span style="color:#960050;background-color:#1e0010">,twitter</span><span style="color:#ae81ff">3</span><span style="color:#960050;background-color:#1e0010">/_stats</span>
+</span></span></code></pre></div><h1 id="使用通配符来匹配多个索引">使用通配符来匹配多个索引</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">GET</span> <span style="color:#960050;background-color:#1e0010">twitter*/_stats</span>
+</span></span></code></pre></div><h1 id="分页">分页</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">GET</span> <span style="color:#960050;background-color:#1e0010">twitter/_search</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;size&#34;</span>:<span style="color:#e6db74">&#34;2&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;from&#34;</span>:<span style="color:#e6db74">&#34;2&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">GET</span> <span style="color:#960050;background-color:#1e0010">users/_search</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;size&#34;</span>: <span style="color:#ae81ff">2</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;sort&#34;</span>:{
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;age&#34;</span>:<span style="color:#e6db74">&#34;desc&#34;</span>
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">GET</span> <span style="color:#960050;background-color:#1e0010">users/_search</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;size&#34;</span>: <span style="color:#ae81ff">2</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;sort&#34;</span>:{
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;age&#34;</span>:<span style="color:#e6db74">&#34;desc&#34;</span>
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;search_after&#34;</span>:[<span style="color:#ae81ff">12</span>]
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">POST</span> <span style="color:#960050;background-color:#1e0010">books/_search?scroll=</span><span style="color:#ae81ff">10</span><span style="color:#960050;background-color:#1e0010">m</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;query&#34;</span>: {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;match_all&#34;</span>: {}
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;sort&#34;</span>: { <span style="color:#f92672">&#34;price&#34;</span>: <span style="color:#e6db74">&#34;desc&#34;</span> }, 
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;size&#34;</span>: <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">POST</span> <span style="color:#960050;background-color:#1e0010">/_search/scroll</span>                                                    
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;scroll&#34;</span> : <span style="color:#e6db74">&#34;5m&#34;</span>,   
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;scroll_id&#34;</span> : <span style="color:#e6db74">&#34;FGluY2x1ZGVfY29udGV4dF9......==&#34;</span> 
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="filter_path-过滤返回数据指定需要的数据集">?filter_path 过滤返回数据,指定需要的数据集</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">GET</span> <span style="color:#960050;background-color:#1e0010">twitter/_search?filter_path=hits.hits._source</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;size&#34;</span>:<span style="color:#e6db74">&#34;2&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;from&#34;</span>:<span style="color:#e6db74">&#34;2&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="fields-只要查有指定字段的">fields 只要查有指定字段的</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">GET</span> <span style="color:#960050;background-color:#1e0010">twitter/_search</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;fields&#34;</span>:[<span style="color:#e6db74">&#34;user&#34;</span>,<span style="color:#e6db74">&#34;city&#34;</span>]
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="_sourcefalse-不展示_source资源">_source:false 不展示_source资源</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">GET</span> <span style="color:#960050;background-color:#1e0010">twitter/_search</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;fields&#34;</span>:[<span style="color:#e6db74">&#34;user&#34;</span>,<span style="color:#e6db74">&#34;city&#34;</span>],
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;_source&#34;</span>:<span style="color:#e6db74">&#34;false&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="includes包含和excludes不包含">includes包含和excludes不包含</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">GET</span> <span style="color:#960050;background-color:#1e0010">twitter/_search</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;_source&#34;</span>: {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;includes&#34;</span>: [
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;user*&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;location*&#34;</span>
+</span></span><span style="display:flex;"><span>    ],
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;excludes&#34;</span>: [
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;*.lat&#34;</span>
+</span></span><span style="display:flex;"><span>    ]
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;query&#34;</span>: {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;match_all&#34;</span>: {}
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="想要的-field-可能在-_source-里根本没有可以使用-script-field-来生成这些-field">想要的 field 可能在 _source 里根本没有，可以使用 script field 来生成这些 field</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">GET</span> <span style="color:#960050;background-color:#1e0010">twitter/_search</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;_source&#34;</span>:[],
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;script_fields&#34;</span>: {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;years_to_100&#34;</span>: {
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;script&#34;</span>: {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;lang&#34;</span>: <span style="color:#e6db74">&#34;painless&#34;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;source&#34;</span>: <span style="color:#e6db74">&#34;100-params._source[&#39;age&#39;]&#34;</span>
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;year_of_birth&#34;</span>:{
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;script&#34;</span>: <span style="color:#e6db74">&#34;2023 - params._source[&#39;age&#39;]&#34;</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="查找message中包含-出-的">查找message中包含 出 的</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">GET</span> <span style="color:#960050;background-color:#1e0010">twitter/_search</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;query&#34;</span>:{
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;match&#34;</span>:{
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;message&#34;</span>:<span style="color:#e6db74">&#34;出&#34;</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="查找message中包含-出-的且分数最低为14">查找message中包含 出 的且分数最低为1.4</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">GET</span> <span style="color:#960050;background-color:#1e0010">twitter/_search</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;query&#34;</span>:{
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;match&#34;</span>:{
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;message&#34;</span>:<span style="color:#e6db74">&#34;出&#34;</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;min_score&#34;</span>:<span style="color:#ae81ff">1.4</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="or匹配任意一个字符即可and需要完整匹配全部">or匹配任意一个字符即可,and需要完整匹配全部</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">GET</span> <span style="color:#960050;background-color:#1e0010">twitter/_search</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;query&#34;</span>: {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;match&#34;</span>: {
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;user&#34;</span>: {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;query&#34;</span>: <span style="color:#e6db74">&#34;朝阳区-老贾&#34;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;operator&#34;</span>: <span style="color:#e6db74">&#34;or&#34;</span>
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="高亮显示">高亮显示</h1>
+<blockquote>
+<p>默认为<!-- raw HTML omitted --><!-- raw HTML omitted --></p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">GET</span> <span style="color:#960050;background-color:#1e0010">twitter/_search</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;query&#34;</span>: {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;match&#34;</span>: {
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;address&#34;</span>: <span style="color:#e6db74">&#34;北京&#34;</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;highlight&#34;</span>: {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;fields&#34;</span>: {
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;address&#34;</span>: {}
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="自定义高亮的标签">自定义高亮的标签</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">GET</span> <span style="color:#960050;background-color:#1e0010">twitter/_search</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;query&#34;</span>:{
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;match&#34;</span>: {
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;address&#34;</span>: <span style="color:#e6db74">&#34;北京&#34;</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;highlight&#34;</span>:{
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;fields&#34;</span>:{
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;address&#34;</span>:{}
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;pre_tags&#34;</span>:[<span style="color:#e6db74">&#34;&lt;red&gt;&#34;</span>],
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;post_tags&#34;</span>: [<span style="color:#e6db74">&#34;&lt;/red&gt;&#34;</span>]
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="同时查找多个id">同时查找多个id</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">GET</span> <span style="color:#960050;background-color:#1e0010">twitter/_search</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;query&#34;</span>:{
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;ids&#34;</span>: {
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;values&#34;</span>: [<span style="color:#e6db74">&#34;1&#34;</span>,<span style="color:#e6db74">&#34;2&#34;</span>]
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="权重">权重</h1>
+<blockquote>
+<p>查找字段user,address,message中包含 朝阳 且address分数进行三倍权重,&ldquo;type&rdquo;: &ldquo;best_fields&quot;分数按照最高字段的结算</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">GET</span> <span style="color:#960050;background-color:#1e0010">twitter/_search</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;query&#34;</span>:{
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;multi_match&#34;</span>: {
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;query&#34;</span>: <span style="color:#e6db74">&#34;朝阳&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;fields&#34;</span>: [<span style="color:#e6db74">&#34;user&#34;</span>,<span style="color:#e6db74">&#34;address^3&#34;</span>,<span style="color:#e6db74">&#34;message&#34;</span>],
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;best_fields&#34;</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="prefix超找前缀为指定字符的">prefix超找前缀为指定字符的</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">GET</span> <span style="color:#960050;background-color:#1e0010">twitter/_search</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;query&#34;</span>:{
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;prefix&#34;</span>: {
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;user&#34;</span>: {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;value&#34;</span>: <span style="color:#e6db74">&#34;朝&#34;</span>
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="keyword-指定精准匹配">keyword 指定精准匹配</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">GET</span> <span style="color:#960050;background-color:#1e0010">twitter/_search</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;query&#34;</span>:{
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;term&#34;</span>: {
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;user.keyword&#34;</span>: {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;value&#34;</span>: <span style="color:#e6db74">&#34;朝阳区-老贾&#34;</span>
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="terms-精准匹配多个值">terms 精准匹配多个值</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">GET</span> <span style="color:#960050;background-color:#1e0010">twitter/_search</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;query&#34;</span>:{
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;terms&#34;</span>: {
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;user.keyword&#34;</span>: [
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;朝阳区-老贾&#34;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;东城区-老刘&#34;</span>
+</span></span><span style="display:flex;"><span>      ]
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="复合查询">复合查询</h1>
+<blockquote>
+<p>must:必须匹配,must_not:不得匹配,should:满不满足都行,filter:必须匹配于must区别:分数在过滤子句中是不相关的</p></blockquote>
+<blockquote>
+<p>match 查询：这是Elasticsearch中最基本的查询类型。它根据给定的字段和查询文本进行匹配。它可以是全局的（默认）或局部的（通过在字段名后面添加 ^ 来指定）。
+match_all 查询：这个查询将匹配所有文档，不论其内容如何。它通常用于在不知道具体查询条件或想要匹配所有文档的情况下使用。
+match_phrase 查询：这个查询用于在给定字段中执行精确短语匹配。它确保查询文本作为一个整体出现在匹配的字段中，并且词序与原始查询文本中的词序相同。
+match_phrase_prefix 查询：这个查询用于执行前缀短语匹配。它查找在给定字段中以查询文本开头的短语。
+multi_match 查询：这个查询允许在一个字段或多个字段上执行多个查询。它返回与任何查询匹配的文档。可以通过指定 type 参数来选择要使用的匹配类型（例如 best_fields、most_fields、cross_fields 等）。</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">GET</span> <span style="color:#960050;background-color:#1e0010">twitter/_search</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;query&#34;</span>:{
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;bool&#34;</span>: {
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;must&#34;</span>: [
+</span></span><span style="display:flex;"><span>        {<span style="color:#f92672">&#34;match&#34;</span>: {
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">&#34;user&#34;</span>:<span style="color:#e6db74">&#34;朝阳区-老贾&#34;</span>
+</span></span><span style="display:flex;"><span>        }}
+</span></span><span style="display:flex;"><span>      ]
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// minimum_should_match: 最少需要满足几个should
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#960050;background-color:#1e0010">GET</span> <span style="color:#960050;background-color:#1e0010">twitter/_search</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;query&#34;</span>: {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;bool&#34;</span>: {
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;should&#34;</span>: [
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">&#34;match&#34;</span>: {
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;city&#34;</span>: <span style="color:#e6db74">&#34;北京&#34;</span>
+</span></span><span style="display:flex;"><span>          }
+</span></span><span style="display:flex;"><span>        },
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">&#34;match&#34;</span>: {
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;city&#34;</span>: <span style="color:#e6db74">&#34;武汉&#34;</span>
+</span></span><span style="display:flex;"><span>          }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>      ],
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;minimum_should_match&#34;</span>: <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="sort-排序">sort 排序</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">GET</span> <span style="color:#960050;background-color:#1e0010">twitter/_search</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;query&#34;</span>: {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;range&#34;</span>: {
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;age&#34;</span>: {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;gte&#34;</span>: <span style="color:#ae81ff">30</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;lte&#34;</span>: <span style="color:#ae81ff">40</span>
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;sort&#34;</span>: [
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;age&#34;</span>: {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;order&#34;</span>: <span style="color:#e6db74">&#34;desc&#34;</span>
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  ]
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="es执行sql语句">es执行sql语句</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">GET</span> <span style="color:#960050;background-color:#1e0010">/_sql?</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;query&#34;</span>: <span style="color:#e6db74">&#34;&#34;&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    SELECT * FROM twitter 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    WHERE age = 30
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  &#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><blockquote>
+<ol>
+<li><strong>Term Query（词项查询）</strong>：用于精确匹配某个字段的值，不进行分词，只能匹配完整的词项。例如，搜索一个确切的数字、日期、布尔值或一个确切的词语。</li>
+<li><strong>Match Query（匹配查询）</strong>：根据指定字段进行分词后进行搜索，匹配查询会对搜索词进行分析，然后使用分析器将搜索词转换为一组词项，然后匹配这些词项。这种查询通常用于全文搜索。</li>
+<li><strong>Wildcard Query（通配符查询）</strong>：使用通配符进行模糊匹配。通配符可以是 *（匹配任意多个字符）或 ?（匹配一个字符）。</li>
+<li><strong>Exists Query（存在查询）</strong>：用于查找某个字段存在非空值的文档。</li>
+<li><strong>Terms Query（词项列表查询）</strong>：类似于Term Query，但可以同时匹配多个值。</li>
+<li><strong>Org Match Query（原始匹配查询）</strong>：在Elasticsearch 7.x 中新增的功能，与Match Query类似，但会保留搜索词的原始形式，而不进行分词。</li>
+</ol></blockquote>
+<h1 id="查询索引信息">查询索引信息</h1>
+<h2 id="索引统计信息">索引统计信息</h2>
+<blockquote>
+<p>一般用来获取该索引的存储大小</p></blockquote>
+<h3 id="查询全部索引统计信息">查询全部索引统计信息</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>get /_cat/indices?v
+</span></span></code></pre></div><h3 id="查询一个或多个索引统计信息">查询一个或多个索引统计信息</h3>
+<blockquote>
+<p>多个索引中间用逗号隔开</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>GET /a,b/_stats
+</span></span></code></pre></div><h2 id="索引映射信息">索引映射信息</h2>
+<blockquote>
+<p>一般用来获取索引的字段信息和字段个数</p></blockquote>
+<h3 id="查询一个或多个索引的映射信息">查询一个或多个索引的映射信息</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>GET /a,b/_mapping
+</span></span></code></pre></div><h1 id="数组操作">数组操作</h1>
+<h2 id="array元素是string">array元素是string</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># 创建一条数据</span>
+</span></span><span style="display:flex;"><span>POST test_index/test_type/1
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;tags&#34;</span>:<span style="color:#f92672">[</span><span style="color:#e6db74">&#34;tag1&#34;</span>, <span style="color:#e6db74">&#34;tag2&#34;</span>, <span style="color:#e6db74">&#34;tag3&#34;</span><span style="color:#f92672">]</span>  
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 查看数据</span>
+</span></span><span style="display:flex;"><span>GET test_index/test_type/1
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 给 _id=1 的tags增加一个 tag5</span>
+</span></span><span style="display:flex;"><span>POST test_index/test_type/1/_update
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;script&#34;</span> : <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>       <span style="color:#e6db74">&#34;source&#34;</span>: <span style="color:#e6db74">&#34;ctx._source.tags.add(params.tag)&#34;</span>,
+</span></span><span style="display:flex;"><span>       <span style="color:#e6db74">&#34;params&#34;</span> : <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#e6db74">&#34;tag&#34;</span> : <span style="color:#e6db74">&#34;tag5&#34;</span>
+</span></span><span style="display:flex;"><span>       <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># _id=1 的tags移除 tag5</span>
+</span></span><span style="display:flex;"><span>POST test_index/test_type/1/_update
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;script&#34;</span> : <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>       <span style="color:#e6db74">&#34;source&#34;</span>: <span style="color:#e6db74">&#34;ctx._source.tags.remove(ctx._source.tags.indexOf(params.tag))&#34;</span>,
+</span></span><span style="display:flex;"><span>       <span style="color:#e6db74">&#34;params&#34;</span> : <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#e6db74">&#34;tag&#34;</span> : <span style="color:#e6db74">&#34;tag5&#34;</span>
+</span></span><span style="display:flex;"><span>       <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 查询 tag1 in tags 移除tag2</span>
+</span></span><span style="display:flex;"><span>POST test_index/test_type/_update_by_query
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;query&#34;</span>: <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;term&#34;</span>: <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;tags&#34;</span>: <span style="color:#e6db74">&#34;tag1&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">}</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;script&#34;</span>: <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;source&#34;</span>: <span style="color:#e6db74">&#34;ctx._source.tags.remove(ctx._source.tags.indexOf(params.tag))&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;params&#34;</span>: <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;tag&#34;</span>: <span style="color:#e6db74">&#34;tag2&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><h2 id="array里边包含对象">Array里边包含对象</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># 添加一条数据</span>
+</span></span><span style="display:flex;"><span>POST /blog-test/doc/AXiHn9l3CFuw25Pb9kYM
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;title&#34;</span>: <span style="color:#e6db74">&#34;Invest Money&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;body&#34;</span>: <span style="color:#e6db74">&#34;Please start investing money as soon...&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;tags&#34;</span>: <span style="color:#f92672">[</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;money&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;invest&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">]</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;published_on&#34;</span>: <span style="color:#e6db74">&#34;18 Oct 2017&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;comments&#34;</span>: <span style="color:#f92672">[</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;William&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;age&#34;</span>: 34,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;rating&#34;</span>: 8,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;comment&#34;</span>: <span style="color:#e6db74">&#34;Nice article..&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;commented_on&#34;</span>: <span style="color:#e6db74">&#34;30 Nov 2017&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;John&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;age&#34;</span>: 38,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;rating&#34;</span>: 9,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;comment&#34;</span>: <span style="color:#e6db74">&#34;I started investing after reading this.&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;commented_on&#34;</span>: <span style="color:#e6db74">&#34;25 Nov 2017&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;Smith&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;age&#34;</span>: 33,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;rating&#34;</span>: 7,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;comment&#34;</span>: <span style="color:#e6db74">&#34;Very good post&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;commented_on&#34;</span>: <span style="color:#e6db74">&#34;20 Nov 2017&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 数组添加一条数据</span>
+</span></span><span style="display:flex;"><span>POST /blog-test/doc/AXiHn9l3CFuw25Pb9kYM/_update
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;script&#34;</span>: <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;source&#34;</span>: <span style="color:#e6db74">&#34;ctx._source.comments.add(params.new_comment)&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;params&#34;</span>: <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;new_comment&#34;</span>: <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;xiang&#34;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;age&#34;</span>: 25,
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;rating&#34;</span>: 18,
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;comment&#34;</span>: <span style="color:#e6db74">&#34;very very good article...&#34;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;commented_on&#34;</span>: <span style="color:#e6db74">&#34;3 Nov 2018&#34;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 数组移除一条数据</span>
+</span></span><span style="display:flex;"><span>POST /blog-test/doc/AXiHn9l3CFuw25Pb9kYM/_update
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;script&#34;</span>: <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;lang&#34;</span>: <span style="color:#e6db74">&#34;painless&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;source&#34;</span>: <span style="color:#e6db74">&#34;ctx._source.comments.removeIf(it -&gt; it.name == &#39;John&#39;);&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 数组更新一条数据</span>
+</span></span><span style="display:flex;"><span>POST /blog-test/doc/AXiHn9l3CFuw25Pb9kYM/_update
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;script&#34;</span>: <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;source&#34;</span>: <span style="color:#e6db74">&#34;for(e in ctx._source.comments){if (e.name == &#39;Smith&#39;) {e.age = 25; e.comment= &#39;very very good article...&#39;;}}&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><ul class="pa0">
+  
+   <li class="list di">
+     <a href="/tags/es/" class="link f5 grow br-pill ba ph3 pv2 mb2 dib black sans-serif no-underline">ES</a>
+   </li>
+  
+</ul>
+<div class="mt6 instapaper_ignoref">
+      
+      
+      </div>
+    </div>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+  <div class="bg-light-gray pa3 nested-list-reset nested-copy-line-height nested-links">
+    <p class="f5 b mb3">Related</p>
+    <ul class="pa0 list">
+	   
+	     <li  class="mb2">
+          <a href="/posts/databases/es/">ES安装使用</a>
+        </li>
+	    
+    </ul>
+</div>
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white white-70 dn dib-ns pv2 ph3 no-underline" href="http://localhost:1313/" >
+    &copy;  loveyu233 2025 
+  </a>
+    <div><div class="ananke-socials"></div>
+</div>
+  </div>
+</footer>
+
+  </body>
+</html>

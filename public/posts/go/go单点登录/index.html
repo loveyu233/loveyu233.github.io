@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>Go单点登录 | loveyu233</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="OAuth 是什么
+
+OAuth 引入了一个授权层，用来分离两种不同的角色：客户端和资源所有者。资源所有者同意以后，资源服务器可以向客户端颁发令牌。客户端通过令牌，去请求数据。
+
+oauth2的四种模式
+
+
+授权码（authorization-code）
+
+
+隐藏式（implicit）
+
+
+密码式（password）
+
+
+客户端凭证（client credentials）
+
+
+
+注意，不管哪一种授权方式，第三方应用申请令牌之前，都必须先到系统备案，说明自己的身份，然后会拿到两个身份识别码：客户端 ID（client ID）和客户端密钥（client secret）。这是为了防止令牌被滥用，没有备案过的第三方应用，是不会拿到令牌的。
+clientID和ClientSecret指的就是下面代码中的 idvar： &ldquo;12345&rdquo;，&ldquo;客户端id&rdquo;；secretvar：&ldquo;67890&rdquo;, &ldquo;客户端密码&rdquo;
+授权码
+（authorization code）
+指的是第三方应用先申请一个授权码，然后再用该码获取令牌。
+
+这种方式是最常用的流程，安全性也最高，它适用于那些有后端的 Web 应用。授权码通过前端传送，令牌则是储存在后端，而且所有与资源服务器的通信都在后端完成。这样的前后端分离，可以避免令牌泄漏。
+
+第一步 ，A 网站提供一个链接，用户点击后就会跳转到 B 网站，授权用户数据给 A 网站使用。下面就是 A 网站跳转 B 网站的一个示意链接。
+
+https://b.com/oauth/authorize?
+response_type=code&amp;
+client_id=CLIENT_ID&amp;
+redirect_uri=CALLBACK_URL&amp;
+scope=read
+上面 URL 中，response_type参数表示要求返回授权码（code），client_id参数让 B 知道是谁在请求，redirect_uri参数是 B 接受或拒绝请求后的跳转网址，scope参数表示要求的授权范围（这里是只读）。
+
+第二步 ，用户跳转后，B 网站会要求用户登录，然后询问是否同意给予 A 网站授权。用户表示同意，这时 B 网站就会跳回redirect_uri参数指定的网址。跳转时，会传回一个授权码，就像下面这样。
+URL: http://localhost:9094/oauth2?code=YZBMNGVKODETMWUZZS0ZZTIZLTK5NZGTNZAXOTC5MJQ5YTVJ&amp;state=xyz">
+    <meta name="generator" content="Hugo 0.147.7">
+    
+    
+    
+      <meta name="robots" content="noindex, nofollow">
+    
+    <meta name="author" content="loveyu">
+    
+
+    
+<link rel="stylesheet" href="/ananke/css/main.min.css" >
+
+
+
+
+    
+
+
+    
+      
+
+    
+
+    
+
+    
+      <link rel="canonical" href="http://localhost:1313/posts/go/go%E5%8D%95%E7%82%B9%E7%99%BB%E5%BD%95/">
+    
+
+    <meta property="og:url" content="http://localhost:1313/posts/go/go%E5%8D%95%E7%82%B9%E7%99%BB%E5%BD%95/">
+  <meta property="og:site_name" content="loveyu233">
+  <meta property="og:title" content="Go单点登录">
+  <meta property="og:description" content="OAuth 是什么 OAuth 引入了一个授权层，用来分离两种不同的角色：客户端和资源所有者。资源所有者同意以后，资源服务器可以向客户端颁发令牌。客户端通过令牌，去请求数据。
+oauth2的四种模式 授权码（authorization-code） 隐藏式（implicit） 密码式（password） 客户端凭证（client credentials） 注意，不管哪一种授权方式，第三方应用申请令牌之前，都必须先到系统备案，说明自己的身份，然后会拿到两个身份识别码：客户端 ID（client ID）和客户端密钥（client secret）。这是为了防止令牌被滥用，没有备案过的第三方应用，是不会拿到令牌的。
+clientID和ClientSecret指的就是下面代码中的 idvar： “12345”，“客户端id”；secretvar：“67890”, “客户端密码”
+授权码 （authorization code）
+指的是第三方应用先申请一个授权码，然后再用该码获取令牌。
+这种方式是最常用的流程，安全性也最高，它适用于那些有后端的 Web 应用。授权码通过前端传送，令牌则是储存在后端，而且所有与资源服务器的通信都在后端完成。这样的前后端分离，可以避免令牌泄漏。
+第一步 ，A 网站提供一个链接，用户点击后就会跳转到 B 网站，授权用户数据给 A 网站使用。下面就是 A 网站跳转 B 网站的一个示意链接。
+https://b.com/oauth/authorize? response_type=code&amp; client_id=CLIENT_ID&amp; redirect_uri=CALLBACK_URL&amp; scope=read 上面 URL 中，response_type参数表示要求返回授权码（code），client_id参数让 B 知道是谁在请求，redirect_uri参数是 B 接受或拒绝请求后的跳转网址，scope参数表示要求的授权范围（这里是只读）。
+第二步 ，用户跳转后，B 网站会要求用户登录，然后询问是否同意给予 A 网站授权。用户表示同意，这时 B 网站就会跳回redirect_uri参数指定的网址。跳转时，会传回一个授权码，就像下面这样。
+URL: http://localhost:9094/oauth2?code=YZBMNGVKODETMWUZZS0ZZTIZLTK5NZGTNZAXOTC5MJQ5YTVJ&amp;state=xyz">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2021-04-04T19:38:37+08:00">
+    <meta property="article:modified_time" content="2021-04-04T19:38:37+08:00">
+    <meta property="article:tag" content="Go">
+    <meta property="article:tag" content="Sso">
+    <meta property="article:tag" content="Jwt">
+
+  <meta itemprop="name" content="Go单点登录">
+  <meta itemprop="description" content="OAuth 是什么 OAuth 引入了一个授权层，用来分离两种不同的角色：客户端和资源所有者。资源所有者同意以后，资源服务器可以向客户端颁发令牌。客户端通过令牌，去请求数据。
+oauth2的四种模式 授权码（authorization-code） 隐藏式（implicit） 密码式（password） 客户端凭证（client credentials） 注意，不管哪一种授权方式，第三方应用申请令牌之前，都必须先到系统备案，说明自己的身份，然后会拿到两个身份识别码：客户端 ID（client ID）和客户端密钥（client secret）。这是为了防止令牌被滥用，没有备案过的第三方应用，是不会拿到令牌的。
+clientID和ClientSecret指的就是下面代码中的 idvar： “12345”，“客户端id”；secretvar：“67890”, “客户端密码”
+授权码 （authorization code）
+指的是第三方应用先申请一个授权码，然后再用该码获取令牌。
+这种方式是最常用的流程，安全性也最高，它适用于那些有后端的 Web 应用。授权码通过前端传送，令牌则是储存在后端，而且所有与资源服务器的通信都在后端完成。这样的前后端分离，可以避免令牌泄漏。
+第一步 ，A 网站提供一个链接，用户点击后就会跳转到 B 网站，授权用户数据给 A 网站使用。下面就是 A 网站跳转 B 网站的一个示意链接。
+https://b.com/oauth/authorize? response_type=code&amp; client_id=CLIENT_ID&amp; redirect_uri=CALLBACK_URL&amp; scope=read 上面 URL 中，response_type参数表示要求返回授权码（code），client_id参数让 B 知道是谁在请求，redirect_uri参数是 B 接受或拒绝请求后的跳转网址，scope参数表示要求的授权范围（这里是只读）。
+第二步 ，用户跳转后，B 网站会要求用户登录，然后询问是否同意给予 A 网站授权。用户表示同意，这时 B 网站就会跳回redirect_uri参数指定的网址。跳转时，会传回一个授权码，就像下面这样。
+URL: http://localhost:9094/oauth2?code=YZBMNGVKODETMWUZZS0ZZTIZLTK5NZGTNZAXOTC5MJQ5YTVJ&amp;state=xyz">
+  <meta itemprop="datePublished" content="2021-04-04T19:38:37+08:00">
+  <meta itemprop="dateModified" content="2021-04-04T19:38:37+08:00">
+  <meta itemprop="wordCount" content="241">
+  <meta itemprop="keywords" content="Go,Sso,Jwt">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Go单点登录">
+  <meta name="twitter:description" content="OAuth 是什么 OAuth 引入了一个授权层，用来分离两种不同的角色：客户端和资源所有者。资源所有者同意以后，资源服务器可以向客户端颁发令牌。客户端通过令牌，去请求数据。
+oauth2的四种模式 授权码（authorization-code） 隐藏式（implicit） 密码式（password） 客户端凭证（client credentials） 注意，不管哪一种授权方式，第三方应用申请令牌之前，都必须先到系统备案，说明自己的身份，然后会拿到两个身份识别码：客户端 ID（client ID）和客户端密钥（client secret）。这是为了防止令牌被滥用，没有备案过的第三方应用，是不会拿到令牌的。
+clientID和ClientSecret指的就是下面代码中的 idvar： “12345”，“客户端id”；secretvar：“67890”, “客户端密码”
+授权码 （authorization code）
+指的是第三方应用先申请一个授权码，然后再用该码获取令牌。
+这种方式是最常用的流程，安全性也最高，它适用于那些有后端的 Web 应用。授权码通过前端传送，令牌则是储存在后端，而且所有与资源服务器的通信都在后端完成。这样的前后端分离，可以避免令牌泄漏。
+第一步 ，A 网站提供一个链接，用户点击后就会跳转到 B 网站，授权用户数据给 A 网站使用。下面就是 A 网站跳转 B 网站的一个示意链接。
+https://b.com/oauth/authorize? response_type=code&amp; client_id=CLIENT_ID&amp; redirect_uri=CALLBACK_URL&amp; scope=read 上面 URL 中，response_type参数表示要求返回授权码（code），client_id参数让 B 知道是谁在请求，redirect_uri参数是 B 接受或拒绝请求后的跳转网址，scope参数表示要求的授权范围（这里是只读）。
+第二步 ，用户跳转后，B 网站会要求用户登录，然后询问是否同意给予 A 网站授权。用户表示同意，这时 B 网站就会跳回redirect_uri参数指定的网址。跳转时，会传回一个授权码，就像下面这样。
+URL: http://localhost:9094/oauth2?code=YZBMNGVKODETMWUZZS0ZZTIZLTK5NZGTNZAXOTC5MJQ5YTVJ&amp;state=xyz">
+
+	
+  </head><body class="ma0 avenir bg-near-white development">
+
+    
+   
+  
+
+  <header>
+    <div class="bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l center items-center justify-between">
+    <a href="/" class="f3 fw2 hover-white white-90 dib no-underline">
+      
+        loveyu233
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      <div class="ananke-socials"></div>
+
+    </div>
+  </div>
+</nav>
+
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  
+  <article class="flex-l mw8 center ph3 flex-wrap justify-between">
+    <header class="mt4 w-100">
+      <aside class="instapaper_ignoref b helvetica tracked ttu">
+          
+        go
+      </aside><div id="sharing" class="mt3 ananke-socials"></div>
+<h1 class="f1 athelas mt3 mb1">Go单点登录</h1>
+      
+      <p class="tracked"><strong>loveyu</strong>
+      </p>
+      
+      
+      
+      <time class="f6 mv4 dib tracked" datetime="2021-04-04T19:38:37+08:00">April 4, 2021</time>
+      
+
+      
+      
+    </header>
+    <div class="nested-copy-line-height lh-copy serif f4 nested-links mid-gray pr4-l w-two-thirds-l"><h1 id="oauth-是什么">OAuth 是什么</h1>
+<blockquote>
+<p>OAuth 引入了一个授权层，用来分离两种不同的角色：客户端和资源所有者。资源所有者同意以后，资源服务器可以向客户端颁发令牌。客户端通过令牌，去请求数据。</p></blockquote>
+<!-- raw HTML omitted -->
+<h1 id="oauth2的四种模式">oauth2的四种模式</h1>
+<ul>
+<li>
+<h4 id="授权码authorization-code">授权码（authorization-code）</h4>
+</li>
+<li>
+<h4 id="隐藏式implicit">隐藏式（implicit）</h4>
+</li>
+<li>
+<h4 id="密码式password">密码式（password）</h4>
+</li>
+<li>
+<h4 id="客户端凭证client-credentials">客户端凭证（client credentials）</h4>
+</li>
+</ul>
+<blockquote>
+<p>注意，不管哪一种授权方式，第三方应用申请令牌之前，都必须先到系统备案，说明自己的身份，然后会拿到两个身份识别码：客户端 ID（client ID）和客户端密钥（client secret）。这是为了防止令牌被滥用，没有备案过的第三方应用，是不会拿到令牌的。</p>
+<p>clientID和ClientSecret指的就是下面代码中的 idvar： &ldquo;12345&rdquo;，&ldquo;客户端id&rdquo;；secretvar：&ldquo;67890&rdquo;, &ldquo;客户端密码&rdquo;</p></blockquote>
+<h2 id="授权码"><strong>授权码</strong></h2>
+<p>（authorization code）</p>
+<p>指的是第三方应用先申请一个授权码，然后再用该码获取令牌。</p>
+<blockquote>
+<p>这种方式是最常用的流程，安全性也最高，它适用于那些有后端的 Web 应用。授权码通过前端传送，令牌则是储存在后端，而且所有与资源服务器的通信都在后端完成。这样的前后端分离，可以避免令牌泄漏。</p></blockquote>
+<blockquote>
+<p>第一步 ，A 网站提供一个链接，用户点击后就会跳转到 B 网站，授权用户数据给 A 网站使用。下面就是 A 网站跳转 B 网站的一个示意链接。</p>
+<!-- raw HTML omitted -->
+<pre tabindex="0"><code>https://b.com/oauth/authorize?
+response_type=code&amp;
+client_id=CLIENT_ID&amp;
+redirect_uri=CALLBACK_URL&amp;
+scope=read
+</code></pre><p>上面 URL 中，<code>response_type</code>参数表示要求返回授权码（<code>code</code>），<code>client_id</code>参数让 B 知道是谁在请求，<code>redirect_uri</code>参数是 B 接受或拒绝请求后的跳转网址，<code>scope</code>参数表示要求的授权范围（这里是只读）。</p></blockquote>
+<blockquote>
+<p>第二步 ，用户跳转后，B 网站会要求用户登录，然后询问是否同意给予 A 网站授权。用户表示同意，这时 B 网站就会跳回<code>redirect_uri</code>参数指定的网址。跳转时，会传回一个授权码，就像下面这样。</p>
+<p>URL: http://localhost:9094/oauth2?code=YZBMNGVKODETMWUZZS0ZZTIZLTK5NZGTNZAXOTC5MJQ5YTVJ&amp;state=xyz</p>
+<pre tabindex="0"><code>https://a.com/callback?code=AUTHORIZATION_CODE
+</code></pre><p><code>code</code>参数就是授权码</p></blockquote>
+<blockquote>
+<p>第三步 ，A 网站拿到授权码以后，就可以在后端，向 B 网站请求令牌。</p>
+<pre tabindex="0"><code>https://b.com/oauth/token?
+client_id=CLIENT_ID&amp;
+client_secret=CLIENT_SECRET&amp;
+grant_type=authorization_code&amp;
+code=AUTHORIZATION_CODE&amp;
+redirect_uri=CALLBACK_URL
+</code></pre><p>上面 URL 中，<code>client_id</code>参数和<code>client_secret</code>参数用来让 B 确认 A 的身份（<code>client_secret</code>参数是保密的，因此只能在后端发请求），<code>grant_type</code>参数的值是<code>AUTHORIZATION_CODE</code>，表示采用的授权方式是授权码，<code>code</code>参数是上一步拿到的授权码，<code>redirect_uri</code>参数是令牌颁发后的回调网址。</p></blockquote>
+<blockquote>
+<p>第四步，B 网站收到请求以后，就会颁发令牌。具体做法是向<code>redirect_uri</code>指定的网址，发送一段 JSON 数据。</p>
+<pre tabindex="0"><code>{    
+&#34;access_token&#34;:&#34;ACCESS_TOKEN&#34;,
+&#34;token_type&#34;:&#34;bearer&#34;,
+&#34;expires_in&#34;:2592000,
+&#34;refresh_token&#34;:&#34;REFRESH_TOKEN&#34;,
+&#34;scope&#34;:&#34;read&#34;,
+&#34;uid&#34;:100101,
+&#34;info&#34;:{/Users/aaa.}
+}
+</code></pre><p>上面 JSON 数据中，<code>access_token</code>字段就是令牌，A 网站在后端拿到了</p></blockquote>
+<!-- raw HTML omitted -->
+<h2 id="隐藏式">隐藏式</h2>
+<p>（implicit）</p>
+<blockquote>
+<p>有些 Web 应用是 纯前端应用，没有后端。 这时就不能用上面的方式了，必须将令牌储存在前端。<strong>RFC 6749 就规定了第二种方式，允许直接向前端颁发令牌。这种方式没有授权码这个中间步骤，所以称为（授权码）&ldquo;隐藏式&rdquo;（implicit）。</strong></p>
+<p>这种方式把令牌直接传给前端，是很不安全的。因此，只能用于一些安全要求不高的场景，并且令牌的有效期必须非常短，通常就是会话期间（session）有效，浏览器关掉，令牌就失效了。</p></blockquote>
+<blockquote>
+<p>第一步 ，A 网站提供一个链接，要求用户跳转到 B 网站，授权用户数据给 A 网站使用。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#a6e22e">https</span><span style="color:#f92672">:</span><span style="color:#75715e">//b.com/oauth/authorize?
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">response_type</span><span style="color:#f92672">=</span><span style="color:#a6e22e">token</span><span style="color:#f92672">&amp;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">client_id</span><span style="color:#f92672">=</span><span style="color:#a6e22e">CLIENT_ID</span><span style="color:#f92672">&amp;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">redirect_uri</span><span style="color:#f92672">=</span><span style="color:#a6e22e">CALLBACK_URL</span><span style="color:#f92672">&amp;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">scope</span><span style="color:#f92672">=</span><span style="color:#a6e22e">read</span>
+</span></span></code></pre></div><p>上面 URL 中，<code>response_type</code>参数为<code>token</code>，表示要求直接返回令牌。</p></blockquote>
+<blockquote>
+<p>第二步 ，用户跳转到 B 网站，登录后同意给予 A 网站授权。这时，B 网站就会跳回<code>redirect_uri</code>参数指定的跳转网址，并且把令牌作为 URL 参数，传给 A 网站。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#a6e22e">https</span><span style="color:#f92672">:</span><span style="color:#75715e">//a.com/callback#token=ACCESS_TOKEN
+</span></span></span></code></pre></div><p>上面 URL 中，<code>token</code>参数就是令牌，A 网站因此直接在前端拿到令牌。</p>
+<p>注意，令牌的位置是 URL 锚点（fragment），而不是查询字符串（querystring），这是因为 OAuth 2.0 允许跳转网址是 HTTP 协议，因此存在&quot;中间人攻击&quot;的风险，而浏览器跳转时，锚点不会发到服务器，就减少了泄漏令牌的风险。</p></blockquote>
+<h2 id="密码式">密码式</h2>
+<p>（password）</p>
+<blockquote>
+<p><strong>如果你 高度信任某个应用 ，RFC 6749 也允许用户把用户名和密码，直接告诉该应用。该应用就使用你的密码，申请令牌，这种方式称为&quot;密码式&quot;（password）。</strong> 密码式只需要一步就可以，拿用户的账号和密码直接请求就可以了</p></blockquote>
+<blockquote>
+<p>A 网站要求用户提供 B 网站的用户名和密码。拿到以后，A 就直接向 B 请求令牌。</p>
+<pre tabindex="0"><code>https://oauth.b.com/token?
+grant_type=password&amp;
+username=USERNAME&amp;
+password=PASSWORD&amp;
+client_id=CLIENT_ID
+</code></pre><p>上面 URL 中，<code>grant_type</code>参数是授权方式，这里的<code>password</code>表示&quot;密码式&quot;，<code>username</code>和<code>password</code>是 B 的用户名和密码。</p>
+<p>第二步，B 网站验证身份通过后，直接给出令牌。注意，这时不需要跳转，而是把令牌放在 JSON 数据里面，作为 HTTP 回应，A 因此拿到令牌。</p>
+<p>这种方式需要用户给出自己的用户名/密码，显然风险很大，因此只适用于其他授权方式都无法采用的情况，而且必须是用户高度信任的应用。</p></blockquote>
+<h2 id="客户端凭证">客户端凭证</h2>
+<p>（client credentials）</p>
+<blockquote>
+<p><strong>适用于 没有前端的命令行应用 ，即在命令行下请求令牌。</strong></p></blockquote>
+<blockquote>
+<p>第一步 ,A 应用在命令行向 B 发出请求。</p>
+<pre tabindex="0"><code>https://oauth.b.com/token?
+grant_type=client_credentials&amp;
+client_id=CLIENT_ID&amp;
+client_secret=CLIENT_SECRET
+</code></pre><p>上面 URL 中，<code>grant_type</code>参数等于<code>client_credentials</code>表示采用凭证式，<code>client_id</code>和<code>client_secret</code>用来让 B 确认 A 的身份。</p>
+<p>第二步 ，B 网站验证通过以后，直接返回令牌。</p>
+<p>这种方式给出的令牌，是针对第三方应用的，而不是针对用户的，即有可能多个用户共享同一个令牌。</p></blockquote>
+<h1 id="令牌的使用">令牌的使用</h1>
+<blockquote>
+<p>A 网站拿到令牌以后，就可以向 B 网站的 API 请求数据了。</p>
+<p>此时，每个发到 API 的请求，都必须带有令牌。具体做法是在请求的头信息，加上一个<code>Authorization</code>字段，令牌就放在这个字段里面。</p>
+<blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>curl -H <span style="color:#e6db74">&#34;Authorization: Bearer ACCESS_TOKEN&#34;</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span><span style="color:#e6db74">&#34;https://api.b.com&#34;</span>
+</span></span></code></pre></div></blockquote>
+<p>上面命令中，<code>ACCESS_TOKEN</code>就是拿到的令牌。</p></blockquote>
+<h1 id="更新令牌">更新令牌</h1>
+<blockquote>
+<p>令牌的有效期到了，如果让用户重新走一遍上面的流程，再申请一个新的令牌，很可能体验不好，而且也没有必要。OAuth 2.0 允许用户自动更新令牌。</p>
+<p>具体方法是，B 网站颁发令牌的时候，一次性颁发两个令牌，一个用于获取数据，另一个用于获取新的令牌（refresh token 字段）。令牌到期前，用户使用 refresh token 发一个请求，去更新令牌。</p>
+<blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#a6e22e">https</span><span style="color:#f92672">:</span><span style="color:#75715e">//b.com/oauth/token?
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">grant_type</span><span style="color:#f92672">=</span><span style="color:#a6e22e">refresh_token</span><span style="color:#f92672">&amp;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">client_id</span><span style="color:#f92672">=</span><span style="color:#a6e22e">CLIENT_ID</span><span style="color:#f92672">&amp;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">client_secret</span><span style="color:#f92672">=</span><span style="color:#a6e22e">CLIENT_SECRET</span><span style="color:#f92672">&amp;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">refresh_token</span><span style="color:#f92672">=</span><span style="color:#a6e22e">REFRESH_TOKEN</span>
+</span></span></code></pre></div></blockquote>
+<p>上面 URL 中，<code>grant_type</code>参数为<code>refresh_token</code>表示要求更新令牌，<code>client_id</code>参数和<code>client_secret</code>参数用于确认身份，<code>refresh_token</code>参数就是用于更新令牌的令牌。</p>
+<p>B 网站验证通过以后，就会颁发新的令牌。</p></blockquote>
+<ul class="pa0">
+  
+   <li class="list di">
+     <a href="/tags/go/" class="link f5 grow br-pill ba ph3 pv2 mb2 dib black sans-serif no-underline">Go</a>
+   </li>
+  
+   <li class="list di">
+     <a href="/tags/sso/" class="link f5 grow br-pill ba ph3 pv2 mb2 dib black sans-serif no-underline">Sso</a>
+   </li>
+  
+   <li class="list di">
+     <a href="/tags/jwt/" class="link f5 grow br-pill ba ph3 pv2 mb2 dib black sans-serif no-underline">Jwt</a>
+   </li>
+  
+</ul>
+<div class="mt6 instapaper_ignoref">
+      
+      
+      </div>
+    </div>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+  <div class="bg-light-gray pa3 nested-list-reset nested-copy-line-height nested-links">
+    <p class="f5 b mb3">Related</p>
+    <ul class="pa0 list">
+	   
+	     <li  class="mb2">
+          <a href="/posts/go/jwt/">go使用Jwt</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/go-redis%E4%BD%BF%E7%94%A8lua%E8%84%9A%E6%9C%AC/">Go Redis使用lua脚本</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/gorm/">Gorm</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/gin%E6%96%87%E4%BB%B6%E4%B8%8B%E8%BD%BD%E4%B9%B1%E7%A0%81/">Gin文件下载乱码</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/casbin/">go使用casbin</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/%E9%BC%A0%E6%A0%87%E8%87%AA%E5%8A%A8%E5%8C%96/">鼠标自动化</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/gowebsocket/">GoWebsocket</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/go-email/">Go Email</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/gin%E6%97%A5%E5%BF%97%E8%87%AA%E5%AE%9A%E4%B9%89/">Gin日志自定义</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/go%E4%BD%BF%E7%94%A8%E4%BB%A4%E7%89%8C%E6%A1%B6/">Go使用令牌桶</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/zap/">Zap</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/java/springsecurity%E5%8D%95%E7%82%B9%E7%99%BB%E5%BD%95/">SpringSecurity单点登录</a>
+        </li>
+	    
+    </ul>
+</div>
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white white-70 dn dib-ns pv2 ph3 no-underline" href="http://localhost:1313/" >
+    &copy;  loveyu233 2025 
+  </a>
+    <div><div class="ananke-socials"></div>
+</div>
+  </div>
+</footer>
+
+  </body>
+</html>

@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>loveyu233</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="">
+    <meta name="generator" content="Hugo 0.147.7">
+    
+    
+    
+      <meta name="robots" content="noindex, nofollow">
+    
+    
+
+    
+<link rel="stylesheet" href="/ananke/css/main.min.css" >
+
+
+
+
+    
+
+
+    
+      
+
+    
+
+    
+    
+      <link href="/tags/gitlab/index.xml" rel="alternate" type="application/rss+xml" title="loveyu233" />
+      <link href="/tags/gitlab/index.xml" rel="feed" type="application/rss+xml" title="loveyu233" />
+      
+    
+
+    
+      <link rel="canonical" href="http://localhost:1313/tags/gitlab/">
+    
+
+    <meta property="og:url" content="http://localhost:1313/tags/gitlab/">
+  <meta property="og:site_name" content="loveyu233">
+  <meta property="og:title" content="Gitlab">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="website">
+
+  <meta itemprop="name" content="Gitlab">
+  <meta itemprop="datePublished" content="2024-03-20T19:38:37+08:00">
+  <meta itemprop="dateModified" content="2024-03-20T19:38:37+08:00">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Gitlab">
+
+	
+  </head><body class="ma0 avenir bg-near-white development">
+
+    
+
+  <header>
+    <div class="pb3-m pb6-l bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l center items-center justify-between">
+    <a href="/" class="f3 fw2 hover-white white-90 dib no-underline">
+      
+        loveyu233
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      <div class="ananke-socials"></div>
+
+    </div>
+  </div>
+</nav>
+
+      <div class="tc-l pv3 ph3 ph4-ns">
+        <h1 class="f2 f-subheadline-l fw2 light-silver mb0 lh-title">
+          Gitlab
+        </h1>
+        
+      </div>
+    </div>
+  </header>
+
+
+    <main class="pb7" role="main">
+      
+  <article class="cf pa3 pa4-m pa4-l">
+    <div class="measure-wide-l center f4 lh-copy nested-copy-line-height nested-links mid-gray">
+      <p>Below you will find pages that utilize the taxonomy term “Gitlab”</p>
+    </div>
+  </article>
+  <div class="mw8 center">
+    <section class="flex-ns mt5 flex-wrap justify-around">
+      
+        <div class="w-100 mb4 relative bg-white">
+          <div class="w-100 mb4 nested-copy-line-height relative bg-white">
+  <div class="mb3 pa4 gray overflow-hidden bg-white">
+    <span class="f6 db">go</span>
+    <h1 class="f3 near-black">
+      <a href="/posts/go/go%E9%A1%B9%E7%9B%AE%E4%B8%8A%E4%BC%A0%E8%B0%83%E7%94%A8/" class="link black dim">
+        go项目上传调用
+      </a>
+    </h1>
+    <div class="nested-links f5 lh-copy nested-copy-line-height">
+      <h2 id="gitlabgithub创建仓库">gitlab/github创建仓库</h2>
+<h2 id="创建目录">创建目录</h2>
+<blockquote>
+<p>创建的目录名称要和gitlab/github创建的仓库名称一致</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>mkdir 仓库名称
+</span></span></code></pre></div><h2 id="初始化项目">初始化项目</h2>
+<blockquote>
+<h3 id="如果是gitlab默认用户名有大小写无论大小写统一全部按照小写-zhangsan--zhangsan">如果是gitlab默认用户名有大小写,无论大小写统一全部按照小写 ZhangSan &ndash;&gt; zhangsan</h3>
+<h3 id="初始化的项目名必须格式正确不能只写一个项目名称必须添加上远程仓库地址和用户名群组名"><code>初始化的项目名必须格式正确</code>，不能只写一个项目名称，必须添加上远程仓库地址和用户名/群组名</h3></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>go mod init gitlab地址或github.com/用户名或群组名/仓库名
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 例如</span>
+</span></span><span style="display:flex;"><span>go mod init 123.123.123.123/zhangsan/common-go
+</span></span><span style="display:flex;"><span>go mod init github.com/zhangsan/common-go
+</span></span></code></pre></div><h2 id="创建go文件">创建go文件</h2>
+<blockquote>
+<h3 id="对外的函数记得大写">对外的函数记得<code>大写</code></h3></blockquote>
+<h2 id="上传">上传</h2>
+<blockquote>
+<ol>
+<li>
+<h3 id="标签必须是v开头且是三组例如v100-v123-v222">标签必须是<code>v开头且是三组,例如v1.0.0 v1.2.3 v2.2.2</code></h3>
+</li>
+</ol></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>git init --initial-branch<span style="color:#f92672">=</span>main
+</span></span><span style="display:flex;"><span>git remote add origin ssh://git@123.123.123/zhangsan/common-go.git
+</span></span><span style="display:flex;"><span>git add .
+</span></span><span style="display:flex;"><span>git common -m <span style="color:#e6db74">&#34;init&#34;</span>
+</span></span><span style="display:flex;"><span>git push -u origin main
+</span></span><span style="display:flex;"><span>git tag v1.0.0
+</span></span><span style="display:flex;"><span>git push --tags
+</span></span></code></pre></div><h2 id="调用">调用</h2>
+<blockquote>
+<h3 id="第一次调用某个函数尽量用gitlab或github地址用户名或群组名仓库名要调用的包名--例如-123123123zhangsancommon-goredis">第一次调用某个函数尽量用:<code>gitlab或github地址/用户名或群组名/仓库名/要调用的包名</code>  例如: <code>123.123.123/zhangsan/common-go/redis</code></h3>
+<h3 id="如果在goland的项目中直接import-123123123zhangsancommon-go-然后鼠标悬浮上边点击同步依赖会报错-but-does-not-contain-package">如果在goland的项目中直接<code>import &quot;123.123.123/zhangsan/common-go&quot;</code> 然后鼠标悬浮上边点击同步依赖会<code>报错 but does not contain package</code></h3>
+<h3 id="需要import-123123123zhangsancommon-goredis-然后再鼠标点击同步依赖就没问题了">需要<code>import &quot;123.123.123/zhangsan/common-go/redis&quot;</code> 然后再鼠标点击同步依赖就没问题了</h3></blockquote>
+<h2 id="仓库更新">仓库更新</h2>
+<blockquote>
+<h3 id="正常更新代码然后提交远程仓库然后打tag注意格式">正常更新代码，然后提交远程仓库，然后打tag（注意格式）</h3>
+<h3 id="如果调用方想要使用最新的则使用go-get-123123123zhangsancommon-golatest即可">如果调用方想要使用最新的则使用<code>go get 123.123.123/zhangsan/common-go@latest</code>即可</h3></blockquote>
+    </div>
+    <a href="/posts/go/go%E9%A1%B9%E7%9B%AE%E4%B8%8A%E4%BC%A0%E8%B0%83%E7%94%A8/" class="ba b--moon-gray bg-light-gray br2 color-inherit dib f7 hover-bg-moon-gray link mt2 ph2 pv1">read more</a>
+  </div>
+</div>
+
+        </div>
+      
+        <div class="w-100 mb4 relative bg-white">
+          <div class="w-100 mb4 nested-copy-line-height relative bg-white">
+  <div class="mb3 pa4 gray overflow-hidden bg-white">
+    <span class="f6 db">other</span>
+    <h1 class="f3 near-black">
+      <a href="/posts/other/gitlab-ci%E4%BD%BF%E7%94%A8/" class="link black dim">
+        gitlab-ci使用
+      </a>
+    </h1>
+    <div class="nested-links f5 lh-copy nested-copy-line-height">
+      <h1 id="gitlab预定义变量">GItlab预定义变量</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yml" data-lang="yml"><span style="display:flex;"><span><span style="color:#f92672">before_script</span>:
+</span></span><span style="display:flex;"><span>  - <span style="color:#ae81ff">export SYSTEM_VERSION=$CI_COMMIT_REF_NAME</span>
+</span></span><span style="display:flex;"><span>  - <span style="color:#ae81ff">export CI_PIPELINE_ID=$CI_PIPELINE_ID</span>
+</span></span><span style="display:flex;"><span>  - <span style="color:#ae81ff">export CI_COMMIT_SHA=$CI_COMMIT_SHA</span>
+</span></span><span style="display:flex;"><span>  - <span style="color:#ae81ff">export CI_PROJECT_ID=$CI_PROJECT_ID</span>
+</span></span><span style="display:flex;"><span>  - <span style="color:#ae81ff">export CI_PROJECT_NAME=$CI_PROJECT_NAME</span>
+</span></span><span style="display:flex;"><span>  - <span style="color:#ae81ff">export CI_JOB_ID=$CI_JOB_ID</span>
+</span></span><span style="display:flex;"><span>  - <span style="color:#ae81ff">export CI_RUNNER_DESCRIPTION=$CI_RUNNER_DESCRIPTION</span>
+</span></span><span style="display:flex;"><span>  - <span style="color:#ae81ff">export CI_RUNNER_TAGS=$CI_RUNNER_TAGS</span>
+</span></span><span style="display:flex;"><span>  - <span style="color:#ae81ff">export CI_COMMIT_MESSAGE=$CI_COMMIT_MESSAGE</span>
+</span></span><span style="display:flex;"><span>  - <span style="color:#ae81ff">export CI_PIPELINE_SOURCE=$CI_PIPELINE_SOURCE</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">stages</span>:
+</span></span><span style="display:flex;"><span>  - <span style="color:#ae81ff">build</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">job</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">stage</span>: <span style="color:#ae81ff">build</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">script</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">echo &#34;当前提交的分支或标签名称 $SYSTEM_VERSION&#34;</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">echo &#34;当前流水线的唯一ID $CI_PIPELINE_ID&#34;</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">echo &#34;当前提交的 SHA 标识 $CI_COMMIT_SHA&#34;</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">echo &#34;当前项目的唯一 ID $CI_PROJECT_ID&#34;</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">echo &#34;当前项目的名称 $CI_PROJECT_NAME&#34;</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">echo &#34;当前作业的唯一 ID $CI_JOB_ID&#34;</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">echo &#34;运行作业的 GitLab Runner 的描述 $CI_RUNNER_DESCRIPTION&#34;</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">echo &#34;运行作业的 GitLab Runner 的标签 $CI_RUNNER_TAGS&#34;</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">echo &#34;当前提交的提交信息 $CI_COMMIT_MESSAGE&#34;</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">echo &#34;触发流水线的来源 $CI_PIPELINE_SOURCE&#34;</span>
+</span></span></code></pre></div><h1 id="执行k8s命令">执行k8s命令</h1>
+<blockquote>
+<p>项目<code>设置</code>&gt;<code>变量</code>&gt;<code>添加变量</code> key为<code>KUBECONFIG</code>value为<code>k8s配置文件,minikube的在~/.minikube/</code></p>
+    </div>
+    <a href="/posts/other/gitlab-ci%E4%BD%BF%E7%94%A8/" class="ba b--moon-gray bg-light-gray br2 color-inherit dib f7 hover-bg-moon-gray link mt2 ph2 pv1">read more</a>
+  </div>
+</div>
+
+        </div>
+      
+        <div class="w-100 mb4 relative bg-white">
+          <div class="w-100 mb4 nested-copy-line-height relative bg-white">
+  <div class="mb3 pa4 gray overflow-hidden bg-white">
+    <span class="f6 db">other</span>
+    <h1 class="f3 near-black">
+      <a href="/posts/other/gitlab-ci%E9%85%8D%E7%BD%AE/" class="link black dim">
+        gitlab-ci配置
+      </a>
+    </h1>
+    <div class="nested-links f5 lh-copy nested-copy-line-height">
+      <h1 id="dockerfile报错">Dockerfile报错</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yml" data-lang="yml"><span style="display:flex;"><span><span style="color:#ae81ff">FROM golang:1.20.6-alpine3.18 AS build</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">WORKDIR /app</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">COPY . .</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">ENV GOPROXY=https://goproxy.cn</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">RUN go mod tidy &amp;&amp; go build main.go</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">FROM alpine:3.18</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">WORKDIR /app</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">COPY --from=build /app/main .</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">EXPOSE 9999</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">CMD [&#34;./main&#34;]</span>
+</span></span></code></pre></div><blockquote>
+<p>当使用多阶段构建时且每个阶段的alpine版本不同会产生错误:<code>&quot;xxx no such file or directory&quot;</code></p>
+<p>这里的<code>&quot;no such file or directory&quot;</code> 是指<code>/lib64/ld-linux-x86-64.so.2</code>找不到而不是<code>main</code>文件找不到</p>
+<p>原因是go的<code>net</code>包关于域名解析有两种选项:</p>
+<ol>
+<li>使用纯Go解析器直接发送DNS请求给/etc/resolv.conf文件中的服务器</li>
+<li>使用基于CGo的解析器调用C库程序，例如getaddrinfo和getnameinfo</li>
+</ol>
+<p>默认使用纯Go解析器，因为对于调用一个阻塞的DNS请求，Go仅需要消耗一个goroutine，而C程序需要消耗一个操作系统线程。但当CGo可用时（CGO_ENABLE=1），则会使用基于CGo的解析器，除非有如下情况：</p>
+<ol>
+<li>系统不允许程序直接发起DNS请求（OS X）</li>
+<li>LOCALDOMAIN 环境变量存在，即使值为空</li>
+<li>RES_OPTIONS 或者 HOSTALIASES 环境变量不为空</li>
+<li>ASR_CONFIG 环境变量不为空（仅OpenBSD）</li>
+<li>Go解析器没有实现 /etc/resolv.conf 或 /etc/nsswitch.conf 中指定的特性</li>
+<li>名称以 .local 结尾，或是一个 mDNS 名称</li>
+</ol>
+<p>但有些镜像默认是用cgo所以会导致找不到文件</p>
+    </div>
+    <a href="/posts/other/gitlab-ci%E9%85%8D%E7%BD%AE/" class="ba b--moon-gray bg-light-gray br2 color-inherit dib f7 hover-bg-moon-gray link mt2 ph2 pv1">read more</a>
+  </div>
+</div>
+
+        </div>
+      
+    </section>
+  </div>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white white-70 dn dib-ns pv2 ph3 no-underline" href="http://localhost:1313/" >
+    &copy;  loveyu233 2025 
+  </a>
+    <div><div class="ananke-socials"></div>
+</div>
+  </div>
+</footer>
+
+  </body>
+</html>

@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>loveyu233</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="">
+    <meta name="generator" content="Hugo 0.147.7">
+    
+    
+    
+      <meta name="robots" content="noindex, nofollow">
+    
+    
+
+    
+<link rel="stylesheet" href="/ananke/css/main.min.css" >
+
+
+
+
+    
+
+
+    
+      
+
+    
+
+    
+    
+      <link href="/tags/springsecurity/index.xml" rel="alternate" type="application/rss+xml" title="loveyu233" />
+      <link href="/tags/springsecurity/index.xml" rel="feed" type="application/rss+xml" title="loveyu233" />
+      
+    
+
+    
+      <link rel="canonical" href="http://localhost:1313/tags/springsecurity/">
+    
+
+    <meta property="og:url" content="http://localhost:1313/tags/springsecurity/">
+  <meta property="og:site_name" content="loveyu233">
+  <meta property="og:title" content="SpringSecurity">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="website">
+
+  <meta itemprop="name" content="SpringSecurity">
+  <meta itemprop="datePublished" content="2019-11-29T11:31:34+08:00">
+  <meta itemprop="dateModified" content="2019-11-29T11:31:34+08:00">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="SpringSecurity">
+
+	
+  </head><body class="ma0 avenir bg-near-white development">
+
+    
+
+  <header>
+    <div class="pb3-m pb6-l bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l center items-center justify-between">
+    <a href="/" class="f3 fw2 hover-white white-90 dib no-underline">
+      
+        loveyu233
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      <div class="ananke-socials"></div>
+
+    </div>
+  </div>
+</nav>
+
+      <div class="tc-l pv3 ph3 ph4-ns">
+        <h1 class="f2 f-subheadline-l fw2 light-silver mb0 lh-title">
+          SpringSecurity
+        </h1>
+        
+      </div>
+    </div>
+  </header>
+
+
+    <main class="pb7" role="main">
+      
+  <article class="cf pa3 pa4-m pa4-l">
+    <div class="measure-wide-l center f4 lh-copy nested-copy-line-height nested-links mid-gray">
+      <p>Below you will find pages that utilize the taxonomy term “SpringSecurity”</p>
+    </div>
+  </article>
+  <div class="mw8 center">
+    <section class="flex-ns mt5 flex-wrap justify-around">
+      
+        <div class="w-100 mb4 relative bg-white">
+          <div class="w-100 mb4 nested-copy-line-height relative bg-white">
+  <div class="mb3 pa4 gray overflow-hidden bg-white">
+    <span class="f6 db">java</span>
+    <h1 class="f3 near-black">
+      <a href="/posts/java/springsecurity%E5%8D%95%E7%82%B9%E7%99%BB%E5%BD%95/" class="link black dim">
+        SpringSecurity单点登录
+      </a>
+    </h1>
+    <div class="nested-links f5 lh-copy nested-copy-line-height">
+      <h1 id="spring-security">Spring Security</h1>
+<h2 id="pomxml">pom.xml：</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#f92672">&lt;parent&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;groupId&gt;</span>org.springframework.boot<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;artifactId&gt;</span>spring-boot-starter-parent<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;version&gt;</span>2.5.4<span style="color:#f92672">&lt;/version&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;relativePath/&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/parent&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;dependencies&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;groupId&gt;</span>org.springframework.boot<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;artifactId&gt;</span>spring-boot-starter-security<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;groupId&gt;</span>org.springframework.boot<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;artifactId&gt;</span>spring-boot-starter-web<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;groupId&gt;</span>mysql<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;artifactId&gt;</span>mysql-connector-java<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;scope&gt;</span>runtime<span style="color:#f92672">&lt;/scope&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;groupId&gt;</span>org.projectlombok<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;artifactId&gt;</span>lombok<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;optional&gt;</span>true<span style="color:#f92672">&lt;/optional&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;groupId&gt;</span>org.springframework.boot<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;artifactId&gt;</span>spring-boot-starter-test<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;scope&gt;</span>test<span style="color:#f92672">&lt;/scope&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;groupId&gt;</span>org.springframework.security<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;artifactId&gt;</span>spring-security-test<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;scope&gt;</span>test<span style="color:#f92672">&lt;/scope&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;groupId&gt;</span>com.baomidou<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;artifactId&gt;</span>mybatis-plus-boot-starter<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;version&gt;</span>3.4.2<span style="color:#f92672">&lt;/version&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;groupId&gt;</span>org.slf4j<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;artifactId&gt;</span>slf4j-api<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;groupId&gt;</span>org.thymeleaf.extras<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;artifactId&gt;</span>thymeleaf-extras-springsecurity5<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;groupId&gt;</span>org.springframework.boot<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;artifactId&gt;</span>spring-boot-starter-thymeleaf<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/dependencies&gt;</span>
+</span></span></code></pre></div><blockquote>
+<p>thymeleaf-extras-springsecurity5：thymeleaf和Spring security的整合jar包</p></blockquote>
+<h2 id="applicationyml">application.yml：</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yml" data-lang="yml"><span style="display:flex;"><span><span style="color:#f92672">spring</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">datasource</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">username</span>: <span style="color:#ae81ff">root</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">password</span>: <span style="color:#ae81ff">Hzyy1214</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">driverClassName</span>: <span style="color:#ae81ff">com.mysql.cj.jdbc.Driver</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">url</span>: <span style="color:#ae81ff">jdbc:mysql://localhost:3306/springSecurityTest?useUnicode=true&amp;characterEncoding=utf8&amp;zeroDateTimeBehavior=convertToNull&amp;useSSL=true&amp;serverTimezone=GMT%2B8</span>
+</span></span></code></pre></div><blockquote>
+<p>配置数据库</p></blockquote>
+<h2 id="java">java</h2>
+<h3 id="目录结构">目录结构</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-tex" data-lang="tex"><span style="display:flex;"><span>&lt;B&gt;config
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	&lt;C&gt;securityConfig.java
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>&lt;B&gt;controller
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	&lt;C&gt;UserController.java
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>&lt;B&gt;&gt;hander
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	&lt;C&gt;MyAccessDeniedHandler.java
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	&lt;C&gt;MyAuthenticationFailureHandle.java
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	&lt;C&gt;MyAuthenticationSuccessHandle.java
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>&lt;B&gt;mapper
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	&lt;C&gt;RoleMapper.java
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	&lt;C&gt;UserMapper.java
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>&lt;B&gt;pojo
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	&lt;I&gt;Role.java
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	&lt;I&gt;Users.java
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>&lt;B&gt;service
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	&lt;I&gt;MyAccess.java
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	&lt;C&gt;MyAccessImpl.java
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	&lt;C&gt;RoleService.java
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	&lt;C&gt;UserService.java
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	&lt;C&gt;UserDetailServiceImpl.java
+</span></span></code></pre></div><blockquote>
+<p><!-- raw HTML omitted -->包；<!-- raw HTML omitted -->接口<!-- raw HTML omitted -->普通类</p>
+    </div>
+    <a href="/posts/java/springsecurity%E5%8D%95%E7%82%B9%E7%99%BB%E5%BD%95/" class="ba b--moon-gray bg-light-gray br2 color-inherit dib f7 hover-bg-moon-gray link mt2 ph2 pv1">read more</a>
+  </div>
+</div>
+
+        </div>
+      
+    </section>
+  </div>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white white-70 dn dib-ns pv2 ph3 no-underline" href="http://localhost:1313/" >
+    &copy;  loveyu233 2025 
+  </a>
+    <div><div class="ananke-socials"></div>
+</div>
+  </div>
+</footer>
+
+  </body>
+</html>

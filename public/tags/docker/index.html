@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>loveyu233</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="">
+    <meta name="generator" content="Hugo 0.147.7">
+    
+    
+    
+      <meta name="robots" content="noindex, nofollow">
+    
+    
+
+    
+<link rel="stylesheet" href="/ananke/css/main.min.css" >
+
+
+
+
+    
+
+
+    
+      
+
+    
+
+    
+    
+      <link href="/tags/docker/index.xml" rel="alternate" type="application/rss+xml" title="loveyu233" />
+      <link href="/tags/docker/index.xml" rel="feed" type="application/rss+xml" title="loveyu233" />
+      
+    
+
+    
+      <link rel="canonical" href="http://localhost:1313/tags/docker/">
+    
+
+    <meta property="og:url" content="http://localhost:1313/tags/docker/">
+  <meta property="og:site_name" content="loveyu233">
+  <meta property="og:title" content="Docker">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="website">
+
+  <meta itemprop="name" content="Docker">
+  <meta itemprop="datePublished" content="2024-11-21T11:23:35+08:00">
+  <meta itemprop="dateModified" content="2024-11-21T11:23:35+08:00">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Docker">
+
+	
+  </head><body class="ma0 avenir bg-near-white development">
+
+    
+
+  <header>
+    <div class="pb3-m pb6-l bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l center items-center justify-between">
+    <a href="/" class="f3 fw2 hover-white white-90 dib no-underline">
+      
+        loveyu233
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      <div class="ananke-socials"></div>
+
+    </div>
+  </div>
+</nav>
+
+      <div class="tc-l pv3 ph3 ph4-ns">
+        <h1 class="f2 f-subheadline-l fw2 light-silver mb0 lh-title">
+          Docker
+        </h1>
+        
+      </div>
+    </div>
+  </header>
+
+
+    <main class="pb7" role="main">
+      
+  <article class="cf pa3 pa4-m pa4-l">
+    <div class="measure-wide-l center f4 lh-copy nested-copy-line-height nested-links mid-gray">
+      <p>Below you will find pages that utilize the taxonomy term “Docker”</p>
+    </div>
+  </article>
+  <div class="mw8 center">
+    <section class="flex-ns mt5 flex-wrap justify-around">
+      
+        <div class="w-100 mb4 relative bg-white">
+          <div class="w-100 mb4 nested-copy-line-height relative bg-white">
+  <div class="mb3 pa4 gray overflow-hidden bg-white">
+    <span class="f6 db">databases</span>
+    <h1 class="f3 near-black">
+      <a href="/posts/databases/pgsql_demo/" class="link black dim">
+        pg常用操作
+      </a>
+    </h1>
+    <div class="nested-links f5 lh-copy nested-copy-line-height">
+      <h1 id="删除pgsql的缓存计划">删除pgsql的缓存计划</h1>
+<blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span>discard <span style="color:#66d9ef">all</span>;
+</span></span></code></pre></div></blockquote>
+<h1 id="text模糊查询">text[]模糊查询</h1>
+<blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">select</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">from</span> aaa <span style="color:#66d9ef">where</span> <span style="color:#66d9ef">exists</span>(<span style="color:#66d9ef">select</span> <span style="color:#ae81ff">1</span> <span style="color:#66d9ef">from</span> <span style="color:#66d9ef">unnest</span>(<span style="color:#66d9ef">alias</span>) <span style="color:#66d9ef">as</span> elem <span style="color:#66d9ef">where</span> elem <span style="color:#66d9ef">like</span> <span style="color:#f92672">%</span>a<span style="color:#f92672">%</span>)
+</span></span></code></pre></div></blockquote>
+<h1 id="最近时间">最近时间</h1>
+<blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">select</span> <span style="color:#66d9ef">max</span>(time) <span style="color:#66d9ef">from</span> abc;
+</span></span></code></pre></div></blockquote>
+<h1 id="不为空">不为空</h1>
+<blockquote>
+<p>pgsql中<code>&lt;&gt; 表示 != 不等于</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#75715e">-- 这样子是不对的, 不能把select的字段用到where上, 只能是from中的表字段或者显示声明的字段才可以在where中使用
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">select</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">distinct</span> <span style="color:#66d9ef">unnest</span>(product_type) <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">type</span> 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">from</span> 
+</span></span><span style="display:flex;"><span>  products 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">where</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">type</span> <span style="color:#66d9ef">IS</span> <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">NULL</span> <span style="color:#66d9ef">AND</span> <span style="color:#66d9ef">type</span> <span style="color:#f92672">&lt;&gt;</span> <span style="color:#e6db74">&#39;&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 正确的用法
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">DISTINCT</span> pt 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span> 
+</span></span><span style="display:flex;"><span>  ( <span style="color:#66d9ef">SELECT</span> <span style="color:#66d9ef">unnest</span>(product_type) <span style="color:#66d9ef">AS</span> pt <span style="color:#66d9ef">FROM</span> <span style="color:#e6db74">&#34;products&#34;</span> ) <span style="color:#66d9ef">AS</span> subquery
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">WHERE</span> 
+</span></span><span style="display:flex;"><span>  pt <span style="color:#66d9ef">IS</span> <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">NULL</span> <span style="color:#66d9ef">AND</span> pt <span style="color:#f92672">&lt;&gt;</span> <span style="color:#e6db74">&#39;&#39;</span>;
+</span></span></code></pre></div></blockquote>
+<h1 id="计算比例">计算比例</h1>
+<blockquote>
+<p>语法: <code> sum() over()</code> 必须带over()</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span>
+</span></span><span style="display:flex;"><span>   trade,
+</span></span><span style="display:flex;"><span>   trade_count,
+</span></span><span style="display:flex;"><span>   trade_count::float <span style="color:#f92672">/</span> <span style="color:#66d9ef">SUM</span>(trade_count) OVER () <span style="color:#66d9ef">AS</span> weight_ratio
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span> (
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">SELECT</span>
+</span></span><span style="display:flex;"><span>       <span style="color:#66d9ef">unnest</span>(industry_chain_position) <span style="color:#66d9ef">AS</span> trade,
+</span></span><span style="display:flex;"><span>       <span style="color:#66d9ef">COUNT</span>(id) <span style="color:#66d9ef">AS</span> trade_count
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">FROM</span>
+</span></span><span style="display:flex;"><span>       products
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">WHERE</span>
+</span></span><span style="display:flex;"><span>       enterprise_id <span style="color:#f92672">=</span> <span style="color:#ae81ff">229501</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">GROUP</span> <span style="color:#66d9ef">BY</span>
+</span></span><span style="display:flex;"><span>       trade
+</span></span><span style="display:flex;"><span>) <span style="color:#66d9ef">AS</span> subquery
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">ORDER</span> <span style="color:#66d9ef">BY</span>
+</span></span><span style="display:flex;"><span>   trade_count <span style="color:#66d9ef">DESC</span>;
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">WITH</span> 
+</span></span><span style="display:flex;"><span>   trade_counts <span style="color:#66d9ef">AS</span> (
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">SELECT</span>
+</span></span><span style="display:flex;"><span>       <span style="color:#66d9ef">unnest</span>(belong_trade) <span style="color:#66d9ef">AS</span> trade,
+</span></span><span style="display:flex;"><span>       <span style="color:#66d9ef">COUNT</span>(code) <span style="color:#66d9ef">AS</span> product_total
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">FROM</span>
+</span></span><span style="display:flex;"><span>       products
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">WHERE</span>
+</span></span><span style="display:flex;"><span>       enterprise_id <span style="color:#f92672">=</span> <span style="color:#ae81ff">229501</span>
+</span></span><span style="display:flex;"><span>     <span style="color:#66d9ef">AND</span>
+</span></span><span style="display:flex;"><span>       <span style="color:#ae81ff">1</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">ANY</span>(industry_chain_position)
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">GROUP</span> <span style="color:#66d9ef">BY</span>
+</span></span><span style="display:flex;"><span>       trade
+</span></span><span style="display:flex;"><span>),
+</span></span><span style="display:flex;"><span>total_count <span style="color:#66d9ef">AS</span> (
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">SELECT</span>
+</span></span><span style="display:flex;"><span>       <span style="color:#66d9ef">SUM</span>(product_total) <span style="color:#66d9ef">AS</span> total_product_count
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">FROM</span>
+</span></span><span style="display:flex;"><span>       trade_counts
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span>
+</span></span><span style="display:flex;"><span>   trade,
+</span></span><span style="display:flex;"><span>   product_total,
+</span></span><span style="display:flex;"><span>   (product_total::float <span style="color:#f92672">/</span> total_product_count) <span style="color:#66d9ef">AS</span> proportion
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span>
+</span></span><span style="display:flex;"><span>   trade_counts,
+</span></span><span style="display:flex;"><span>   total_count;
+</span></span></code></pre></div></blockquote>
+<h1 id="case">case</h1>
+<blockquote>
+<p>语法:</p>
+    </div>
+    <a href="/posts/databases/pgsql_demo/" class="ba b--moon-gray bg-light-gray br2 color-inherit dib f7 hover-bg-moon-gray link mt2 ph2 pv1">read more</a>
+  </div>
+</div>
+
+        </div>
+      
+        <div class="w-100 mb4 relative bg-white">
+          <div class="w-100 mb4 nested-copy-line-height relative bg-white">
+  <div class="mb3 pa4 gray overflow-hidden bg-white">
+    <span class="f6 db">other</span>
+    <h1 class="f3 near-black">
+      <a href="/posts/other/k8s%E5%91%BD%E4%BB%A4/" class="link black dim">
+        K8s命令
+      </a>
+    </h1>
+    <div class="nested-links f5 lh-copy nested-copy-line-height">
+      <h1 id="命令">命令</h1>
+<h2 id="kubectl语法">kubectl语法</h2>
+<pre tabindex="0"><code class="language-she" data-lang="she">kubectl [command] [TYPE] [NAME] [flags]
+</code></pre><p><strong>command</strong>：指定在一个或多个资源上要执行的操作。例如：create、get、describe、delete、apply等</p>
+<p><strong>TYPE</strong>：指定资源类型（如：pod、node、services、deployments等）。资源类型大小写敏感，可以指定单数、复数或缩写形式。</p>
+<p><strong>NAME</strong>：指定资源的名称。名称大小写敏感。<strong>如果省略名称空间，则显示默认名称空间的资源的详细信息</strong>或者提示：No resources found in default namespace.。</p>
+<p><strong>flags</strong>：指定可选的<strong>命令参数</strong>。例如，可以使用 -s 或 &ndash;server标识来指定Kubernetes API服务器的地址和端口；-n指定名称空间等。</p>
+<h2 id="查看节点详情">查看节点详情</h2>
+<p>必须在主节点执行才可以</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@k8s-master ~<span style="color:#f92672">]</span><span style="color:#75715e"># kubectl get nodes</span>
+</span></span><span style="display:flex;"><span>NAME         STATUS   ROLES                  AGE   VERSION
+</span></span><span style="display:flex;"><span>k8s-master   Ready    control-plane,master   14h   v1.20.2
+</span></span><span style="display:flex;"><span>k8s-node1    Ready    &lt;none&gt;                 72m   v1.20.2
+</span></span><span style="display:flex;"><span>k8s-node2    Ready    &lt;none&gt;                 72m   v1.20.2
+</span></span></code></pre></div><h2 id="查看已有应用的状态">查看已有应用的状态</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@k8s-master ~<span style="color:#f92672">]</span><span style="color:#75715e"># kubectl get pods -A</span>
+</span></span><span style="display:flex;"><span>NAMESPACE              NAME                                         READY   STATUS             RESTARTS   AGE
+</span></span><span style="display:flex;"><span>kube-system            calico-kube-controllers-56c7cdffc6-ctfpc     1/1     Running            <span style="color:#ae81ff">1</span>          1s
+</span></span><span style="display:flex;"><span>kube-system            calico-node-6fb2l                            1/1     Running            <span style="color:#ae81ff">1</span>          1s
+</span></span><span style="display:flex;"><span>...
+</span></span></code></pre></div><h2 id="子节点加入获取令牌">子节点加入获取令牌</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@k8s-master ~<span style="color:#f92672">]</span><span style="color:#75715e"># kubeadm token create --print-join-command</span>
+</span></span><span style="display:flex;"><span>kubeadm join 10.211.55.10:6443 --token 5frj0r.0g2r1z32yddtgxcq     --discovery-token-ca-cert-hash sha256:98448e33982b3684b0870d543eff9c9490e749588caef088f8bfe144d4f2166f
+</span></span></code></pre></div><h2 id="可视化界面获取令牌">可视化界面获取令牌</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@k8s-master ~<span style="color:#f92672">]</span><span style="color:#75715e"># kubectl -n kubernetes-dashboard get secret $(kubectl -n kubernetes-dashboard get sa/admin-user -o jsonpath=&#34;{.secrets[0].name}&#34;) -o go-template=&#34;{{.data.token | base64decode}}&#34;</span>
+</span></span><span style="display:flex;"><span>eyJhbGciOiJSUzI1NiIsImtpZCI6IjRWVGpqaDZLVGdURnljdzE3OXpNa0JJOXZwaTNPR3pQMGpjU09xUmxfMUEifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJrdWJlcm5ldGVzLWRhc2hib2FyZCIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VjcmV0Lm5hbWUiOiJhZG1pbi11c2VyLXRva2VuLWNydjdnIiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQubmFtZSI6ImFkbWluLXVzZXIiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC51aWQiOiJmOTgwNWVmNi05ZmI3LTRlMDItOTNiNC00ODllOGJjZWJmYzAiLCJzdWIiOiJzeXN0ZW06c2VydmljZWFjY291bnQ6a3ViZXJuZXRlcy1kYXNoYm9hcmQ6YWRtaW4tdXNlciJ9.qroSYwa6isw4BG7VnoPfS-GH1fR5TjCJKJ0eGTXZUJPJZJjNuxtHMvXSf4EwgXsScHpkgLqX0by6CaMwrkzUwHvqYWdheL2_JSzoO7BnCsNGqA03sjzazPZlI8XoVqiy0NVg8rf561EWxZmFpPlAd4t_yjIM80x3draY-hfWcDqZZeYYQcZPJ8_bJ8OXTLeuKlQOn1WeZ7wifmc7njF5hLYMrFUXlPXBm21kis2zVpYF-K-JG1Y3VZurZDqhNIhv-fIJ-TwiEMonTNiGy-wF_uha_bA7NRg4XmXs6NNw0Ykmn3LdQXvfsO2qByiz1Z0lt8d9TrfzBeC-j8oIy0qxjw<span style="color:#f92672">[</span>root@k8s-master ~<span style="color:#f92672">]</span><span style="color:#75715e">#</span>
+</span></span></code></pre></div><h2 id="namespace">NameSpace</h2>
+<blockquote>
+<p>名称空间，用来对集群资源进行隔离划分，默认只隔离资源不隔离网络</p>
+    </div>
+    <a href="/posts/other/k8s%E5%91%BD%E4%BB%A4/" class="ba b--moon-gray bg-light-gray br2 color-inherit dib f7 hover-bg-moon-gray link mt2 ph2 pv1">read more</a>
+  </div>
+</div>
+
+        </div>
+      
+        <div class="w-100 mb4 relative bg-white">
+          <div class="w-100 mb4 nested-copy-line-height relative bg-white">
+  <div class="mb3 pa4 gray overflow-hidden bg-white">
+    <span class="f6 db">other</span>
+    <h1 class="f3 near-black">
+      <a href="/posts/other/docker/" class="link black dim">
+        Docker
+      </a>
+    </h1>
+    <div class="nested-links f5 lh-copy nested-copy-line-height">
+      <h1 id="docker">Docker</h1>
+<h2 id="安装">安装</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>下载需要的安装包
+</span></span><span style="display:flex;"><span>sudo yum install -y yum-utils
+</span></span><span style="display:flex;"><span>配置镜像仓库阿里云的
+</span></span><span style="display:flex;"><span>sudo yum-config-manager <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>--add-repo <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
+</span></span><span style="display:flex;"><span>更新yum软件包索引
+</span></span><span style="display:flex;"><span>yum makecache fast
+</span></span><span style="display:flex;"><span>安装docker，docker-ce社区版
+</span></span><span style="display:flex;"><span>sudo yum install -y docker-ce docker-ce-cli containerd.io
+</span></span><span style="display:flex;"><span>启动docker
+</span></span><span style="display:flex;"><span>sudo systemctl start docker
+</span></span><span style="display:flex;"><span>查看docker
+</span></span><span style="display:flex;"><span>docker version
+</span></span><span style="display:flex;"><span>测试helloworld
+</span></span><span style="display:flex;"><span>sudo docker run hello-wo
+</span></span></code></pre></div><h2 id="卸载">卸载</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>卸载依赖
+</span></span><span style="display:flex;"><span>sudo yum remove docker-ce docker-ce-cli containerd.io
+</span></span><span style="display:flex;"><span>删除资源
+</span></span><span style="display:flex;"><span>sudo rm -rf /var/lib/docker
+</span></span><span style="display:flex;"><span>sudo rm -rf /var/lib/containerd
+</span></span></code></pre></div><h2 id="docker执行run之后做了哪些事情">docker执行run之后做了哪些事情？</h2>
+<p>开始&mdash;&gt;docker会在本机寻找镜像&mdash;&gt;如果有就使用/没有就去dockerHub上下载&mdash;&gt;dockerHub是否可以找到&mdash;&gt;找不到返回错误/找到就下载镜像到本地</p>
+<p>找不到报错：</p>
+<p>[root@iZbp16y4pny75sbune791jZ /]# docker run hzyy
+Unable to find image &lsquo;hzyy:latest&rsquo; locally
+docker: Error response from daemon: pull access denied for hzyy, repository does not exist or may require &lsquo;docker login&rsquo;: denied: requested access to the resource is denied.
+See &lsquo;docker run &ndash;help&rsquo;.</p>
+    </div>
+    <a href="/posts/other/docker/" class="ba b--moon-gray bg-light-gray br2 color-inherit dib f7 hover-bg-moon-gray link mt2 ph2 pv1">read more</a>
+  </div>
+</div>
+
+        </div>
+      
+    </section>
+  </div>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white white-70 dn dib-ns pv2 ph3 no-underline" href="http://localhost:1313/" >
+    &copy;  loveyu233 2025 
+  </a>
+    <div><div class="ananke-socials"></div>
+</div>
+  </div>
+</footer>
+
+  </body>
+</html>

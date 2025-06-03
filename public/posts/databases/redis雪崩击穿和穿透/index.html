@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>Redis雪崩击穿和穿透 | loveyu233</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="1. 缓存击穿
+什么是缓存击穿
+
+缓存击穿也叫热点key问题，就是一个被高并发访问并且缓存重建业务比较复杂的key突然失效，无数的请求访问会在瞬间给数据库带来巨大的冲击。
+
+常见解决办法
+1. 互斥锁
+
+2. 逻辑过期
+
+解决方案对比
+
+  
+      
+          解决办法
+          优点
+          缺点
+      
+  
+  
+      
+          互斥锁
+          1.没有额外内存消耗；2.保证一致性；3.实现简单
+          1.线程需要等待，性能受影响；2.可能有死锁风险
+      
+      
+          逻辑过期
+          线程无需等待，性能较好
+          1.不保证一致性；2.有额外内存消耗；3.实现复杂
+      
+  
+
+2.缓存雪崩
+什么是缓存雪崩
+
+缓存雪崩是指在同一时段大量的缓存key同时失效或者redis服务宕机，导致大量请求直达数据库，带来巨大压力。
+
+常见解决办法
+
+给不同的key的TTL添加随机值，防止同一时间失效
+利用redis集群提高服务的可用性
+给缓存业务添加降级限流策略
+给业务添加多级缓存
+
+缓存穿透
+什么是缓存穿透
+
+缓存穿透是指客户端请求的数据在缓存中和数据库中都不存在，这样缓存永远不会生效，这些请求都会打到数据库。
+
+常见解决办法
+1. 缓存空对象
+
+2. 布隆过滤器
+
+解决方案对比
+
+  
+      
+          解决方案
+          优点
+          缺点
+      
+  
+  
+      
+          缓存空对象
+          实现简单，维护方便
+          额外内存消耗，可能造成短期数据不一致
+      
+      
+          布隆过滤器
+          内存占用少，没有多余key
+          实现复杂，存在误判
+      
+  
+">
+    <meta name="generator" content="Hugo 0.147.7">
+    
+    
+    
+      <meta name="robots" content="noindex, nofollow">
+    
+    <meta name="author" content="loveyu">
+    
+
+    
+<link rel="stylesheet" href="/ananke/css/main.min.css" >
+
+
+
+
+    
+
+
+    
+      
+
+    
+
+    
+
+    
+      <link rel="canonical" href="http://localhost:1313/posts/databases/redis%E9%9B%AA%E5%B4%A9%E5%87%BB%E7%A9%BF%E5%92%8C%E7%A9%BF%E9%80%8F/">
+    
+
+    <meta property="og:url" content="http://localhost:1313/posts/databases/redis%E9%9B%AA%E5%B4%A9%E5%87%BB%E7%A9%BF%E5%92%8C%E7%A9%BF%E9%80%8F/">
+  <meta property="og:site_name" content="loveyu233">
+  <meta property="og:title" content="Redis雪崩击穿和穿透">
+  <meta property="og:description" content="1. 缓存击穿 什么是缓存击穿 缓存击穿也叫热点key问题，就是一个被高并发访问并且缓存重建业务比较复杂的key突然失效，无数的请求访问会在瞬间给数据库带来巨大的冲击。
+常见解决办法 1. 互斥锁 2. 逻辑过期 解决方案对比 解决办法 优点 缺点 互斥锁 1.没有额外内存消耗；2.保证一致性；3.实现简单 1.线程需要等待，性能受影响；2.可能有死锁风险 逻辑过期 线程无需等待，性能较好 1.不保证一致性；2.有额外内存消耗；3.实现复杂 2.缓存雪崩 什么是缓存雪崩 缓存雪崩是指在同一时段大量的缓存key同时失效或者redis服务宕机，导致大量请求直达数据库，带来巨大压力。
+常见解决办法 给不同的key的TTL添加随机值，防止同一时间失效 利用redis集群提高服务的可用性 给缓存业务添加降级限流策略 给业务添加多级缓存 缓存穿透 什么是缓存穿透 缓存穿透是指客户端请求的数据在缓存中和数据库中都不存在，这样缓存永远不会生效，这些请求都会打到数据库。
+常见解决办法 1. 缓存空对象 2. 布隆过滤器 解决方案对比 解决方案 优点 缺点 缓存空对象 实现简单，维护方便 额外内存消耗，可能造成短期数据不一致 布隆过滤器 内存占用少，没有多余key 实现复杂，存在误判">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2022-10-13T19:38:37+08:00">
+    <meta property="article:modified_time" content="2022-10-13T19:38:37+08:00">
+    <meta property="article:tag" content="Redis">
+
+  <meta itemprop="name" content="Redis雪崩击穿和穿透">
+  <meta itemprop="description" content="1. 缓存击穿 什么是缓存击穿 缓存击穿也叫热点key问题，就是一个被高并发访问并且缓存重建业务比较复杂的key突然失效，无数的请求访问会在瞬间给数据库带来巨大的冲击。
+常见解决办法 1. 互斥锁 2. 逻辑过期 解决方案对比 解决办法 优点 缺点 互斥锁 1.没有额外内存消耗；2.保证一致性；3.实现简单 1.线程需要等待，性能受影响；2.可能有死锁风险 逻辑过期 线程无需等待，性能较好 1.不保证一致性；2.有额外内存消耗；3.实现复杂 2.缓存雪崩 什么是缓存雪崩 缓存雪崩是指在同一时段大量的缓存key同时失效或者redis服务宕机，导致大量请求直达数据库，带来巨大压力。
+常见解决办法 给不同的key的TTL添加随机值，防止同一时间失效 利用redis集群提高服务的可用性 给缓存业务添加降级限流策略 给业务添加多级缓存 缓存穿透 什么是缓存穿透 缓存穿透是指客户端请求的数据在缓存中和数据库中都不存在，这样缓存永远不会生效，这些请求都会打到数据库。
+常见解决办法 1. 缓存空对象 2. 布隆过滤器 解决方案对比 解决方案 优点 缺点 缓存空对象 实现简单，维护方便 额外内存消耗，可能造成短期数据不一致 布隆过滤器 内存占用少，没有多余key 实现复杂，存在误判">
+  <meta itemprop="datePublished" content="2022-10-13T19:38:37+08:00">
+  <meta itemprop="dateModified" content="2022-10-13T19:38:37+08:00">
+  <meta itemprop="wordCount" content="45">
+  <meta itemprop="keywords" content="Redis">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Redis雪崩击穿和穿透">
+  <meta name="twitter:description" content="1. 缓存击穿 什么是缓存击穿 缓存击穿也叫热点key问题，就是一个被高并发访问并且缓存重建业务比较复杂的key突然失效，无数的请求访问会在瞬间给数据库带来巨大的冲击。
+常见解决办法 1. 互斥锁 2. 逻辑过期 解决方案对比 解决办法 优点 缺点 互斥锁 1.没有额外内存消耗；2.保证一致性；3.实现简单 1.线程需要等待，性能受影响；2.可能有死锁风险 逻辑过期 线程无需等待，性能较好 1.不保证一致性；2.有额外内存消耗；3.实现复杂 2.缓存雪崩 什么是缓存雪崩 缓存雪崩是指在同一时段大量的缓存key同时失效或者redis服务宕机，导致大量请求直达数据库，带来巨大压力。
+常见解决办法 给不同的key的TTL添加随机值，防止同一时间失效 利用redis集群提高服务的可用性 给缓存业务添加降级限流策略 给业务添加多级缓存 缓存穿透 什么是缓存穿透 缓存穿透是指客户端请求的数据在缓存中和数据库中都不存在，这样缓存永远不会生效，这些请求都会打到数据库。
+常见解决办法 1. 缓存空对象 2. 布隆过滤器 解决方案对比 解决方案 优点 缺点 缓存空对象 实现简单，维护方便 额外内存消耗，可能造成短期数据不一致 布隆过滤器 内存占用少，没有多余key 实现复杂，存在误判">
+
+	
+  </head><body class="ma0 avenir bg-near-white development">
+
+    
+   
+  
+
+  <header>
+    <div class="bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l center items-center justify-between">
+    <a href="/" class="f3 fw2 hover-white white-90 dib no-underline">
+      
+        loveyu233
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      <div class="ananke-socials"></div>
+
+    </div>
+  </div>
+</nav>
+
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  
+  <article class="flex-l mw8 center ph3 flex-wrap justify-between">
+    <header class="mt4 w-100">
+      <aside class="instapaper_ignoref b helvetica tracked ttu">
+          
+        databases
+      </aside><div id="sharing" class="mt3 ananke-socials"></div>
+<h1 class="f1 athelas mt3 mb1">Redis雪崩击穿和穿透</h1>
+      
+      <p class="tracked"><strong>loveyu</strong>
+      </p>
+      
+      
+      
+      <time class="f6 mv4 dib tracked" datetime="2022-10-13T19:38:37+08:00">October 13, 2022</time>
+      
+
+      
+      
+    </header>
+    <div class="nested-copy-line-height lh-copy serif f4 nested-links mid-gray pr4-l w-two-thirds-l"><h1 id="1-缓存击穿">1. 缓存击穿</h1>
+<h2 id="什么是缓存击穿">什么是缓存击穿</h2>
+<blockquote>
+<p>缓存击穿也叫热点key问题，就是一个被<code>高并发访问</code>并且<code>缓存重建业务比较复杂</code>的key突然失效，无数的请求访问会在瞬间给数据库带来巨大的冲击。</p></blockquote>
+<!-- raw HTML omitted -->
+<h2 id="常见解决办法">常见解决办法</h2>
+<h3 id="1-互斥锁">1. 互斥锁</h3>
+<!-- raw HTML omitted -->
+<h3 id="2-逻辑过期">2. 逻辑过期</h3>
+<!-- raw HTML omitted -->
+<h2 id="解决方案对比">解决方案对比</h2>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: center">解决办法</th>
+          <th style="text-align: center">优点</th>
+          <th style="text-align: center">缺点</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: center">互斥锁</td>
+          <td style="text-align: center">1.没有额外内存消耗；2.保证一致性；3.实现简单</td>
+          <td style="text-align: center">1.线程需要等待，性能受影响；2.可能有死锁风险</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">逻辑过期</td>
+          <td style="text-align: center">线程无需等待，性能较好</td>
+          <td style="text-align: center">1.不保证一致性；2.有额外内存消耗；3.实现复杂</td>
+      </tr>
+  </tbody>
+</table>
+<h1 id="2缓存雪崩">2.缓存雪崩</h1>
+<h2 id="什么是缓存雪崩">什么是缓存雪崩</h2>
+<blockquote>
+<p>缓存雪崩是指在同一时段<code>大量的缓存key同时失效或者redis服务宕机</code>，导致大量请求直达数据库，带来巨大压力。</p></blockquote>
+<!-- raw HTML omitted -->
+<h2 id="常见解决办法-1">常见解决办法</h2>
+<ol>
+<li>给不同的key的TTL添加随机值，防止同一时间失效</li>
+<li>利用redis集群提高服务的可用性</li>
+<li>给缓存业务添加降级限流策略</li>
+<li>给业务添加多级缓存</li>
+</ol>
+<h1 id="缓存穿透">缓存穿透</h1>
+<h2 id="什么是缓存穿透">什么是缓存穿透</h2>
+<blockquote>
+<p>缓存穿透是指客户端请求的数据在缓存中和数据库中都不存在，这样缓存永远不会生效，这些请求都会打到数据库。</p></blockquote>
+<!-- raw HTML omitted -->
+<h2 id="常见解决办法-2">常见解决办法</h2>
+<h3 id="1-缓存空对象">1. 缓存空对象</h3>
+<!-- raw HTML omitted -->
+<h3 id="2-布隆过滤器">2. 布隆过滤器</h3>
+<!-- raw HTML omitted -->
+<h2 id="解决方案对比-1">解决方案对比</h2>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: center">解决方案</th>
+          <th style="text-align: center">优点</th>
+          <th style="text-align: center">缺点</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: center">缓存空对象</td>
+          <td style="text-align: center">实现简单，维护方便</td>
+          <td style="text-align: center">额外内存消耗，可能造成短期数据不一致</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">布隆过滤器</td>
+          <td style="text-align: center">内存占用少，没有多余key</td>
+          <td style="text-align: center">实现复杂，存在误判</td>
+      </tr>
+  </tbody>
+</table>
+<ul class="pa0">
+  
+   <li class="list di">
+     <a href="/tags/redis/" class="link f5 grow br-pill ba ph3 pv2 mb2 dib black sans-serif no-underline">Redis</a>
+   </li>
+  
+</ul>
+<div class="mt6 instapaper_ignoref">
+      
+      
+      </div>
+    </div>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+  <div class="bg-light-gray pa3 nested-list-reset nested-copy-line-height nested-links">
+    <p class="f5 b mb3">Related</p>
+    <ul class="pa0 list">
+	   
+	     <li  class="mb2">
+          <a href="/posts/go/go-redis%E4%BD%BF%E7%94%A8lua%E8%84%9A%E6%9C%AC/">Go Redis使用lua脚本</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/databases/redis/">redis</a>
+        </li>
+	    
+    </ul>
+</div>
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white white-70 dn dib-ns pv2 ph3 no-underline" href="http://localhost:1313/" >
+    &copy;  loveyu233 2025 
+  </a>
+    <div><div class="ananke-socials"></div>
+</div>
+  </div>
+</footer>
+
+  </body>
+</html>

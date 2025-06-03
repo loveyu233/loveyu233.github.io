@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>Scrapy | loveyu233</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="一: 创建项目
+1. 创建项目
+scrapy startproject 项目名称
+2. 创建spider
+
+url不需要加http
+scrapy genspider filename &#34;url&#34; 
+3. 运行
+scrapy crawl filename
+二: 代码
+1. settings.py关闭robot
+ROBOTSTXT_OBEY = False
+2. 在生成的文件中
+import scrapy
+
+from scrapydemo1.items import Scrapydemo1Item
+
+
+class BianSpider(scrapy.Spider):
+    name = &#34;bian&#34;
+    # 允许的域,只会在这个域下面获取数据
+    allowed_domains = [&#34;www.netbian.com&#34;]
+    # 起始url,运行后第一次访问的url
+    start_urls = [&#34;http://www.netbian.com/dongman&#34;]
+    # 多页时的url
+    url = &#34;http://www.netbian.com/dongman/index_&#34;
+    # 当前第几页
+    page = 1
+
+    # response页面的源代码
+    def parse(self, response: scrapy.http.Response, *args, **kwargs):
+      	# 解析
+        for d in response.xpath(&#39;//div[@class=&#34;list&#34;]/ul/li/a/img&#39;):
+            name = d.xpath(&#39;./@alt&#39;).extract_first()
+            img = d.xpath(&#39;./@src&#39;).extract_first()
+            item = Scrapydemo1Item()
+            item[&#39;img_src&#39;] = img
+            item[&#39;name_alt&#39;] = name
+            # 返回给pipelines
+            yield item
+        # 下一页
+        if self.page &lt; 5:
+            self.page &#43;= 1
+            url = self.url &#43; str(self.page) &#43; &#34;.htm&#34;
+            # 拼接好url后调用Request
+            yield scrapy.Request(url=url, callback=self.parse)
+3. Items.py
+
+解析后的数据结构类型">
+    <meta name="generator" content="Hugo 0.147.7">
+    
+    
+    
+      <meta name="robots" content="noindex, nofollow">
+    
+    <meta name="author" content="loveyu">
+    
+
+    
+<link rel="stylesheet" href="/ananke/css/main.min.css" >
+
+
+
+
+    
+
+
+    
+      
+
+    
+
+    
+
+    
+      <link rel="canonical" href="http://localhost:1313/posts/other/scrapy/">
+    
+
+    <meta property="og:url" content="http://localhost:1313/posts/other/scrapy/">
+  <meta property="og:site_name" content="loveyu233">
+  <meta property="og:title" content="Scrapy">
+  <meta property="og:description" content="一: 创建项目 1. 创建项目 scrapy startproject 项目名称 2. 创建spider url不需要加http
+scrapy genspider filename &#34;url&#34; 3. 运行 scrapy crawl filename 二: 代码 1. settings.py关闭robot ROBOTSTXT_OBEY = False 2. 在生成的文件中 import scrapy from scrapydemo1.items import Scrapydemo1Item class BianSpider(scrapy.Spider): name = &#34;bian&#34; # 允许的域,只会在这个域下面获取数据 allowed_domains = [&#34;www.netbian.com&#34;] # 起始url,运行后第一次访问的url start_urls = [&#34;http://www.netbian.com/dongman&#34;] # 多页时的url url = &#34;http://www.netbian.com/dongman/index_&#34; # 当前第几页 page = 1 # response页面的源代码 def parse(self, response: scrapy.http.Response, *args, **kwargs): # 解析 for d in response.xpath(&#39;//div[@class=&#34;list&#34;]/ul/li/a/img&#39;): name = d.xpath(&#39;./@alt&#39;).extract_first() img = d.xpath(&#39;./@src&#39;).extract_first() item = Scrapydemo1Item() item[&#39;img_src&#39;] = img item[&#39;name_alt&#39;] = name # 返回给pipelines yield item # 下一页 if self.page &lt; 5: self.page &#43;= 1 url = self.url &#43; str(self.page) &#43; &#34;.htm&#34; # 拼接好url后调用Request yield scrapy.Request(url=url, callback=self.parse) 3. Items.py 解析后的数据结构类型">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2022-04-08T13:18:21+08:00">
+    <meta property="article:modified_time" content="2022-04-08T13:18:21+08:00">
+    <meta property="article:tag" content="Scrapy">
+    <meta property="article:tag" content="Python">
+
+  <meta itemprop="name" content="Scrapy">
+  <meta itemprop="description" content="一: 创建项目 1. 创建项目 scrapy startproject 项目名称 2. 创建spider url不需要加http
+scrapy genspider filename &#34;url&#34; 3. 运行 scrapy crawl filename 二: 代码 1. settings.py关闭robot ROBOTSTXT_OBEY = False 2. 在生成的文件中 import scrapy from scrapydemo1.items import Scrapydemo1Item class BianSpider(scrapy.Spider): name = &#34;bian&#34; # 允许的域,只会在这个域下面获取数据 allowed_domains = [&#34;www.netbian.com&#34;] # 起始url,运行后第一次访问的url start_urls = [&#34;http://www.netbian.com/dongman&#34;] # 多页时的url url = &#34;http://www.netbian.com/dongman/index_&#34; # 当前第几页 page = 1 # response页面的源代码 def parse(self, response: scrapy.http.Response, *args, **kwargs): # 解析 for d in response.xpath(&#39;//div[@class=&#34;list&#34;]/ul/li/a/img&#39;): name = d.xpath(&#39;./@alt&#39;).extract_first() img = d.xpath(&#39;./@src&#39;).extract_first() item = Scrapydemo1Item() item[&#39;img_src&#39;] = img item[&#39;name_alt&#39;] = name # 返回给pipelines yield item # 下一页 if self.page &lt; 5: self.page &#43;= 1 url = self.url &#43; str(self.page) &#43; &#34;.htm&#34; # 拼接好url后调用Request yield scrapy.Request(url=url, callback=self.parse) 3. Items.py 解析后的数据结构类型">
+  <meta itemprop="datePublished" content="2022-04-08T13:18:21+08:00">
+  <meta itemprop="dateModified" content="2022-04-08T13:18:21+08:00">
+  <meta itemprop="wordCount" content="506">
+  <meta itemprop="keywords" content="Scrapy,Python">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Scrapy">
+  <meta name="twitter:description" content="一: 创建项目 1. 创建项目 scrapy startproject 项目名称 2. 创建spider url不需要加http
+scrapy genspider filename &#34;url&#34; 3. 运行 scrapy crawl filename 二: 代码 1. settings.py关闭robot ROBOTSTXT_OBEY = False 2. 在生成的文件中 import scrapy from scrapydemo1.items import Scrapydemo1Item class BianSpider(scrapy.Spider): name = &#34;bian&#34; # 允许的域,只会在这个域下面获取数据 allowed_domains = [&#34;www.netbian.com&#34;] # 起始url,运行后第一次访问的url start_urls = [&#34;http://www.netbian.com/dongman&#34;] # 多页时的url url = &#34;http://www.netbian.com/dongman/index_&#34; # 当前第几页 page = 1 # response页面的源代码 def parse(self, response: scrapy.http.Response, *args, **kwargs): # 解析 for d in response.xpath(&#39;//div[@class=&#34;list&#34;]/ul/li/a/img&#39;): name = d.xpath(&#39;./@alt&#39;).extract_first() img = d.xpath(&#39;./@src&#39;).extract_first() item = Scrapydemo1Item() item[&#39;img_src&#39;] = img item[&#39;name_alt&#39;] = name # 返回给pipelines yield item # 下一页 if self.page &lt; 5: self.page &#43;= 1 url = self.url &#43; str(self.page) &#43; &#34;.htm&#34; # 拼接好url后调用Request yield scrapy.Request(url=url, callback=self.parse) 3. Items.py 解析后的数据结构类型">
+
+	
+  </head><body class="ma0 avenir bg-near-white development">
+
+    
+   
+  
+
+  <header>
+    <div class="bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l center items-center justify-between">
+    <a href="/" class="f3 fw2 hover-white white-90 dib no-underline">
+      
+        loveyu233
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      <div class="ananke-socials"></div>
+
+    </div>
+  </div>
+</nav>
+
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  
+  <article class="flex-l mw8 center ph3 flex-wrap justify-between">
+    <header class="mt4 w-100">
+      <aside class="instapaper_ignoref b helvetica tracked ttu">
+          
+        other
+      </aside><div id="sharing" class="mt3 ananke-socials"></div>
+<h1 class="f1 athelas mt3 mb1">Scrapy</h1>
+      
+      <p class="tracked"><strong>loveyu</strong>
+      </p>
+      
+      
+      
+      <time class="f6 mv4 dib tracked" datetime="2022-04-08T13:18:21+08:00">April 8, 2022</time>
+      
+
+      
+      
+    </header>
+    <div class="nested-copy-line-height lh-copy serif f4 nested-links mid-gray pr4-l w-two-thirds-l"><h1 id="一-创建项目">一: 创建项目</h1>
+<h2 id="1-创建项目">1. 创建项目</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>scrapy startproject 项目名称
+</span></span></code></pre></div><h2 id="2-创建spider">2. 创建spider</h2>
+<blockquote>
+<p>url不需要加http</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>scrapy genspider filename <span style="color:#e6db74">&#34;url&#34;</span> 
+</span></span></code></pre></div><h2 id="3-运行">3. 运行</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>scrapy crawl filename
+</span></span></code></pre></div><h1 id="二-代码">二: 代码</h1>
+<h2 id="1-settingspy关闭robot">1. settings.py关闭robot</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>ROBOTSTXT_OBEY <span style="color:#f92672">=</span> <span style="color:#66d9ef">False</span>
+</span></span></code></pre></div><h2 id="2-在生成的文件中">2. 在生成的文件中</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> scrapy
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> scrapydemo1.items <span style="color:#f92672">import</span> Scrapydemo1Item
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">BianSpider</span>(scrapy<span style="color:#f92672">.</span>Spider):
+</span></span><span style="display:flex;"><span>    name <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;bian&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 允许的域,只会在这个域下面获取数据</span>
+</span></span><span style="display:flex;"><span>    allowed_domains <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#34;www.netbian.com&#34;</span>]
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 起始url,运行后第一次访问的url</span>
+</span></span><span style="display:flex;"><span>    start_urls <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#34;http://www.netbian.com/dongman&#34;</span>]
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 多页时的url</span>
+</span></span><span style="display:flex;"><span>    url <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;http://www.netbian.com/dongman/index_&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 当前第几页</span>
+</span></span><span style="display:flex;"><span>    page <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># response页面的源代码</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">parse</span>(self, response: scrapy<span style="color:#f92672">.</span>http<span style="color:#f92672">.</span>Response, <span style="color:#f92672">*</span>args, <span style="color:#f92672">**</span>kwargs):
+</span></span><span style="display:flex;"><span>      	<span style="color:#75715e"># 解析</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> d <span style="color:#f92672">in</span> response<span style="color:#f92672">.</span>xpath(<span style="color:#e6db74">&#39;//div[@class=&#34;list&#34;]/ul/li/a/img&#39;</span>):
+</span></span><span style="display:flex;"><span>            name <span style="color:#f92672">=</span> d<span style="color:#f92672">.</span>xpath(<span style="color:#e6db74">&#39;./@alt&#39;</span>)<span style="color:#f92672">.</span>extract_first()
+</span></span><span style="display:flex;"><span>            img <span style="color:#f92672">=</span> d<span style="color:#f92672">.</span>xpath(<span style="color:#e6db74">&#39;./@src&#39;</span>)<span style="color:#f92672">.</span>extract_first()
+</span></span><span style="display:flex;"><span>            item <span style="color:#f92672">=</span> Scrapydemo1Item()
+</span></span><span style="display:flex;"><span>            item[<span style="color:#e6db74">&#39;img_src&#39;</span>] <span style="color:#f92672">=</span> img
+</span></span><span style="display:flex;"><span>            item[<span style="color:#e6db74">&#39;name_alt&#39;</span>] <span style="color:#f92672">=</span> name
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e"># 返回给pipelines</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">yield</span> item
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># 下一页</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> self<span style="color:#f92672">.</span>page <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">5</span>:
+</span></span><span style="display:flex;"><span>            self<span style="color:#f92672">.</span>page <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>            url <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>url <span style="color:#f92672">+</span> str(self<span style="color:#f92672">.</span>page) <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;.htm&#34;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e"># 拼接好url后调用Request</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">yield</span> scrapy<span style="color:#f92672">.</span>Request(url<span style="color:#f92672">=</span>url, callback<span style="color:#f92672">=</span>self<span style="color:#f92672">.</span>parse)
+</span></span></code></pre></div><h2 id="3-itemspy">3. Items.py</h2>
+<blockquote>
+<p>解析后的数据结构类型</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Scrapydemo1Item</span>(scrapy<span style="color:#f92672">.</span>Item):
+</span></span><span style="display:flex;"><span>    img_src <span style="color:#f92672">=</span> scrapy<span style="color:#f92672">.</span>Field()
+</span></span><span style="display:flex;"><span>    name_alt <span style="color:#f92672">=</span> scrapy<span style="color:#f92672">.</span>Field()
+</span></span></code></pre></div><h2 id="4-pipelinespy">4. pipelines.py</h2>
+<blockquote>
+<p>spiders解析后返回的数据会到这里, 运行同时有多个管道, 每个管道可以有各自的任务</p>
+<p>需要在settings.py中声明出管道, 数字越小优先级越高</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-py" data-lang="py"><span style="display:flex;"><span>ITEM_PIPELINES <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#39;scrapydemo1.pipelines.ScrapyBianPipeline&#39;</span>: <span style="color:#ae81ff">300</span>,
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#39;scrapydemo1.pipelines.ScrapyBianDownPipeline&#39;</span>: <span style="color:#ae81ff">301</span>,
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> urllib.request
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> itemadapter <span style="color:#f92672">import</span> ItemAdapter
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Scrapydemo1Pipeline</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">process_item</span>(self, item, spider):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> item
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 第一个管道</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ScrapyBianPipeline</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 启动前执行</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">open_spider</span>(self, spider):
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>fp <span style="color:#f92672">=</span> open(<span style="color:#e6db74">&#34;scrapydemo1/resource/bian.json&#34;</span>, <span style="color:#e6db74">&#34;w&#34;</span>, encoding<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;utf-8&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 启动后执行</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">close_sipder</span>(self, spider):
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>fp<span style="color:#f92672">.</span>close()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">process_item</span>(self, item, spider):
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>fp<span style="color:#f92672">.</span>write(str(item))
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> item
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 第二个管道</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ScrapyBianDownPipeline</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">process_item</span>(self, item, spider):
+</span></span><span style="display:flex;"><span>        url <span style="color:#f92672">=</span> item[<span style="color:#e6db74">&#39;img_src&#39;</span>]
+</span></span><span style="display:flex;"><span>        name <span style="color:#f92672">=</span> item[<span style="color:#e6db74">&#39;name_alt&#39;</span>]
+</span></span><span style="display:flex;"><span>        urllib<span style="color:#f92672">.</span>request<span style="color:#f92672">.</span>urlretrieve(url, <span style="color:#e6db74">&#34;scrapydemo1/resource/img/&#34;</span> <span style="color:#f92672">+</span> name <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;.png&#34;</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> item
+</span></span></code></pre></div><h1 id="三-post请求">三: post请求</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">FySpider</span>(scrapy<span style="color:#f92672">.</span>Spider):
+</span></span><span style="display:flex;"><span>    name <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;fy&#34;</span>
+</span></span><span style="display:flex;"><span>    allowed_domains <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#34;fanyi.baidu.com&#34;</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">start_requests</span>(self):
+</span></span><span style="display:flex;"><span>        url <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;https://fanyi.baidu.com/sug&#34;</span>
+</span></span><span style="display:flex;"><span>        data <span style="color:#f92672">=</span> {<span style="color:#e6db74">&#34;kw&#34;</span>: <span style="color:#e6db74">&#34;hello&#34;</span>}
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">yield</span> scrapy<span style="color:#f92672">.</span>FormRequest(url<span style="color:#f92672">=</span>url, formdata<span style="color:#f92672">=</span>data, callback<span style="color:#f92672">=</span>self<span style="color:#f92672">.</span>post_parse)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">post_parse</span>(self, response):
+</span></span><span style="display:flex;"><span>        content <span style="color:#f92672">=</span> response<span style="color:#f92672">.</span>text
+</span></span><span style="display:flex;"><span>        obj <span style="color:#f92672">=</span> json<span style="color:#f92672">.</span>loads(content)
+</span></span><span style="display:flex;"><span>        print(obj)
+</span></span></code></pre></div><h1 id="四-中间件">四: 中间件</h1>
+<blockquote>
+<p>在settings.py中吧中间件注释取消</p>
+<p>执行顺序:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>DownloaderMiddleware: from_crawler
+</span></span><span style="display:flex;"><span>SpiderMiddleware: from_crawler
+</span></span><span style="display:flex;"><span>DownloaderMiddleware: spider_opened
+</span></span><span style="display:flex;"><span>SpiderMiddleware: spider_opened
+</span></span><span style="display:flex;"><span>SpiderMiddleware: process_start_requests
+</span></span><span style="display:flex;"><span>DownloaderMiddleware: process_request
+</span></span><span style="display:flex;"><span>DownloaderMiddleware: process_response
+</span></span><span style="display:flex;"><span>SpiderMiddleware: process_spider_input
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>结果<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>SpiderMiddleware: process_spider_output
+</span></span></code></pre></div></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>DOWNLOADER_MIDDLEWARES <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#39;bdfy.middlewares.BdfyDownloaderMiddleware&#39;</span>: <span style="color:#ae81ff">543</span>,
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">process_request</span>(self, request, spider):
+</span></span><span style="display:flex;"><span>        user_agent <span style="color:#f92672">=</span> random<span style="color:#f92672">.</span>choice(USER_AGENTS_LIST)
+</span></span><span style="display:flex;"><span>        request<span style="color:#f92672">.</span>headers[<span style="color:#e6db74">&#34;User-Agent&#34;</span>] <span style="color:#f92672">=</span> user_agent
+</span></span><span style="display:flex;"><span>        request<span style="color:#f92672">.</span>meta[<span style="color:#e6db74">&#34;proxy&#34;</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;ip&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">None</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">process_response</span>(self, request, response, spider):
+</span></span><span style="display:flex;"><span>        print(request<span style="color:#f92672">.</span>headers[<span style="color:#e6db74">&#34;User-Agent&#34;</span>])
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> response
+</span></span></code></pre></div><h1 id="crawlspider">CrawlSpider</h1>
+<blockquote>
+<p>连接提取器, 快速获取指定格式的链接,一般用于对页数链接的提取, 使用这个就不需要再用page拼接下一页的url</p></blockquote>
+<blockquote>
+<p>创建文件命令</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>scrapy genspider -t crawl filename url
+</span></span></code></pre></div><blockquote>
+<p>代码</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">DsSpider</span>(CrawlSpider):
+</span></span><span style="display:flex;"><span>    name <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;ds&#34;</span>
+</span></span><span style="display:flex;"><span>    allowed_domains <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#34;www.dushu.com&#34;</span>]
+</span></span><span style="display:flex;"><span>    start_urls <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#34;https://www.dushu.com/book/1188_1.html&#34;</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># allow: 正则表达式, 获取所有符合这个正则表达式的链接, follow:从response提取的链接是偶需要跟进</span>
+</span></span><span style="display:flex;"><span>    rules <span style="color:#f92672">=</span> (Rule(LinkExtractor(allow<span style="color:#f92672">=</span><span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;book/1188_\d+\.html&#34;</span>), callback<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;parse_item&#34;</span>, follow<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>),)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">parse_item</span>(self, response: scrapy<span style="color:#f92672">.</span>http<span style="color:#f92672">.</span>Response):
+</span></span><span style="display:flex;"><span>        data <span style="color:#f92672">=</span> response<span style="color:#f92672">.</span>xpath(<span style="color:#e6db74">&#39;//div[@class=&#34;bookslist&#34;]//img&#39;</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> d <span style="color:#f92672">in</span> data:
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">assert</span> isinstance(d, scrapy<span style="color:#f92672">.</span>selector<span style="color:#f92672">.</span>Selector)
+</span></span><span style="display:flex;"><span>            name <span style="color:#f92672">=</span> d<span style="color:#f92672">.</span>xpath(<span style="color:#e6db74">&#34;./@alt&#34;</span>)<span style="color:#f92672">.</span>extract_first()
+</span></span><span style="display:flex;"><span>            img <span style="color:#f92672">=</span> d<span style="color:#f92672">.</span>xpath(<span style="color:#e6db74">&#34;./@data-original&#34;</span>)<span style="color:#f92672">.</span>extract_first()
+</span></span><span style="display:flex;"><span>            item <span style="color:#f92672">=</span> DswItem()
+</span></span><span style="display:flex;"><span>            item[<span style="color:#e6db74">&#39;name&#39;</span>] <span style="color:#f92672">=</span> name
+</span></span><span style="display:flex;"><span>            item[<span style="color:#e6db74">&#39;img&#39;</span>] <span style="color:#f92672">=</span> img
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">yield</span> item
+</span></span></code></pre></div><h1 id="问题">问题</h1>
+<h2 id="1-https-ssl错误">1. https ssl错误</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> ssl
+</span></span><span style="display:flex;"><span>ssl<span style="color:#f92672">.</span>_create_default_https_context <span style="color:#f92672">=</span> ssl<span style="color:#f92672">.</span>_create_unverified_context
+</span></span></code></pre></div><h2 id="2-嵌套页面获取数据">2. 嵌套页面获取数据</h2>
+<blockquote>
+<p><code>yield scrapy.Request(url=img_url, callback=self.two_parse, meta={&quot;name&quot;: name})</code></p>
+<p>不是回调本身而是回调自定义的一个方法</p>
+<p><code>meta={&quot;name&quot;: name}</code></p>
+<p>向回调的自定义方法传递数据,以map的形式传递</p>
+<p><code>name = response.meta[&quot;name&quot;]</code></p>
+<p>取数据的方式</p>
+<p><code>yield scrapy.Request(url=url, callback=self.parse)</code></p>
+<p>获取多页数据不在parse中调用而是在自定义的方法two_parse中调用,但是<code>参数callback依旧是self.parse</code></p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MvSpider</span>(scrapy<span style="color:#f92672">.</span>Spider):
+</span></span><span style="display:flex;"><span>    name <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;mv&#34;</span>
+</span></span><span style="display:flex;"><span>    allowed_domains <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#34;www.ygdy8.net&#34;</span>]
+</span></span><span style="display:flex;"><span>    start_urls <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#34;https://www.ygdy8.net/html/gndy/china/index.html&#34;</span>]
+</span></span><span style="display:flex;"><span>    page <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># url + page.html</span>
+</span></span><span style="display:flex;"><span>    url <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;https://www.ygdy8.net/html/gndy/china/list_4_&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">parse</span>(self, response: scrapy<span style="color:#f92672">.</span>http<span style="color:#f92672">.</span>Response, <span style="color:#f92672">*</span>args, <span style="color:#f92672">**</span>kwargs):
+</span></span><span style="display:flex;"><span>        data <span style="color:#f92672">=</span> response<span style="color:#f92672">.</span>xpath(<span style="color:#e6db74">&#39;//div[@class=&#34;co_content8&#34;]//td[2]//a[2]&#39;</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> d <span style="color:#f92672">in</span> data:
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">assert</span> isinstance(d, scrapy<span style="color:#f92672">.</span>selector<span style="color:#f92672">.</span>Selector)
+</span></span><span style="display:flex;"><span>            img <span style="color:#f92672">=</span> d<span style="color:#f92672">.</span>xpath(<span style="color:#e6db74">&#39;./@href&#39;</span>)<span style="color:#f92672">.</span>extract_first()
+</span></span><span style="display:flex;"><span>            name <span style="color:#f92672">=</span> d<span style="color:#f92672">.</span>xpath(<span style="color:#e6db74">&#39;./text()&#39;</span>)<span style="color:#f92672">.</span>extract_first()
+</span></span><span style="display:flex;"><span>            img_url <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;https://www.ygdy8.net&#34;</span> <span style="color:#f92672">+</span> img
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">yield</span> scrapy<span style="color:#f92672">.</span>Request(url<span style="color:#f92672">=</span>img_url, callback<span style="color:#f92672">=</span>self<span style="color:#f92672">.</span>two_parse, meta<span style="color:#f92672">=</span>{<span style="color:#e6db74">&#34;name&#34;</span>: name})
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">two_parse</span>(self, response: scrapy<span style="color:#f92672">.</span>http<span style="color:#f92672">.</span>Response, <span style="color:#f92672">*</span>args, <span style="color:#f92672">**</span>kwargs):
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># 坑点: span标签无法使用不能加span</span>
+</span></span><span style="display:flex;"><span>        img <span style="color:#f92672">=</span> response<span style="color:#f92672">.</span>xpath(<span style="color:#e6db74">&#39;//*[@id=&#34;Zoom&#34;]//img/@src&#39;</span>)<span style="color:#f92672">.</span>extract_first()
+</span></span><span style="display:flex;"><span>        name <span style="color:#f92672">=</span> response<span style="color:#f92672">.</span>meta[<span style="color:#e6db74">&#34;name&#34;</span>]
+</span></span><span style="display:flex;"><span>        mv <span style="color:#f92672">=</span> DyttItem()
+</span></span><span style="display:flex;"><span>        mv[<span style="color:#e6db74">&#34;img&#34;</span>] <span style="color:#f92672">=</span> img
+</span></span><span style="display:flex;"><span>        mv[<span style="color:#e6db74">&#34;name&#34;</span>] <span style="color:#f92672">=</span> name
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">yield</span> mv
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> self<span style="color:#f92672">.</span>page <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">5</span>:
+</span></span><span style="display:flex;"><span>            self<span style="color:#f92672">.</span>page <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>            url <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>url <span style="color:#f92672">+</span> str(self<span style="color:#f92672">.</span>page) <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;.html&#34;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">yield</span> scrapy<span style="color:#f92672">.</span>Request(url<span style="color:#f92672">=</span>url, callback<span style="color:#f92672">=</span>self<span style="color:#f92672">.</span>parse)
+</span></span></code></pre></div><h2 id="3-span标签无法在xpath中使用">3. span标签无法在xpath中使用</h2>
+<h1 id="命令">命令</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">==</span> 创建项目
+</span></span><span style="display:flex;"><span>scrapy startproject 项目名称
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">==</span> 创建默认spider文件
+</span></span><span style="display:flex;"><span>scrapy genspider filename url
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">==</span> 创建CrawlSpider文件
+</span></span><span style="display:flex;"><span>scrapy genspider -t crawl filename url
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">==</span> 运行
+</span></span><span style="display:flex;"><span>scrapy crawl filename
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">==</span> 命令行工具
+</span></span><span style="display:flex;"><span>scrapy shell
+</span></span></code></pre></div><ul class="pa0">
+  
+   <li class="list di">
+     <a href="/tags/scrapy/" class="link f5 grow br-pill ba ph3 pv2 mb2 dib black sans-serif no-underline">Scrapy</a>
+   </li>
+  
+   <li class="list di">
+     <a href="/tags/python/" class="link f5 grow br-pill ba ph3 pv2 mb2 dib black sans-serif no-underline">Python</a>
+   </li>
+  
+</ul>
+<div class="mt6 instapaper_ignoref">
+      
+      
+      </div>
+    </div>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white white-70 dn dib-ns pv2 ph3 no-underline" href="http://localhost:1313/" >
+    &copy;  loveyu233 2025 
+  </a>
+    <div><div class="ananke-socials"></div>
+</div>
+  </div>
+</footer>
+
+  </body>
+</html>

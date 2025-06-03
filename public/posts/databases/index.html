@@ -1,0 +1,1266 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>databases | loveyu233</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="">
+    <meta name="generator" content="Hugo 0.147.7">
+    
+    
+    
+      <meta name="robots" content="noindex, nofollow">
+    
+    
+
+    
+<link rel="stylesheet" href="/ananke/css/main.min.css" >
+
+
+
+
+    
+
+
+    
+      
+
+    
+
+    
+    
+      <link href="/posts/databases/index.xml" rel="alternate" type="application/rss+xml" title="loveyu233" />
+      <link href="/posts/databases/index.xml" rel="feed" type="application/rss+xml" title="loveyu233" />
+      
+    
+
+    
+      <link rel="canonical" href="http://localhost:1313/posts/databases/">
+    
+
+    <meta property="og:url" content="http://localhost:1313/posts/databases/">
+  <meta property="og:site_name" content="loveyu233">
+  <meta property="og:title" content="databases">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="website">
+
+  <meta itemprop="name" content="databases">
+  <meta itemprop="datePublished" content="2018-09-18T23:51:34+08:00">
+  <meta itemprop="dateModified" content="2018-09-18T23:51:34+08:00">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="databases">
+
+	
+  </head><body class="ma0 avenir bg-near-white development">
+
+    
+
+  <header>
+    <div class="pb3-m pb6-l bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l center items-center justify-between">
+    <a href="/" class="f3 fw2 hover-white white-90 dib no-underline">
+      
+        loveyu233
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      <div class="ananke-socials"></div>
+
+    </div>
+  </div>
+</nav>
+
+      <div class="tc-l pv3 ph3 ph4-ns">
+        <h1 class="f2 f-subheadline-l fw2 light-silver mb0 lh-title">
+          databases
+        </h1>
+        
+      </div>
+    </div>
+  </header>
+
+
+    <main class="pb7" role="main">
+      
+  <article class="pa3 pa4-ns nested-copy-line-height">
+    <section class="cf ph3 ph5-l pv3 pv4-l f4 tc-l center measure-wide lh-copy nested-links mid-gray"></section>
+    <section class="flex-ns mt5 flex-wrap justify-around">
+      
+        <div class="w-100 w-30-l mb4 relative bg-white">
+          <div class="w-100 mb4 nested-copy-line-height relative bg-white">
+  <div class="mb3 pa4 gray overflow-hidden bg-white">
+    <span class="f6 db">databases</span>
+    <h1 class="f3 near-black">
+      <a href="/posts/databases/mysql_connection_info_guide/" class="link black dim">
+        查询mysql连接信息
+      </a>
+    </h1>
+    <div class="nested-links f5 lh-copy nested-copy-line-height">
+      <h1 id="mysql-连接信息查看完整指南">MySQL 连接信息查看完整指南</h1>
+<h2 id="概述">概述</h2>
+<p>在MySQL数据库管理中，查看当前连接信息是监控数据库性能、排查问题和管理连接的重要手段。本文档详细介绍了各种查看连接信息的SQL命令及其返回结果的含义。</p>
+<h2 id="常用查看连接信息的sql命令">常用查看连接信息的SQL命令</h2>
+<h3 id="1-基础连接查看命令">1. 基础连接查看命令</h3>
+<h4 id="查看所有连接">查看所有连接</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">SHOW</span> PROCESSLIST;
+</span></span></code></pre></div><p>显示当前所有连接的基本信息，SQL语句会被截断到前100个字符。</p>
+<h4 id="查看完整连接信息">查看完整连接信息</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">SHOW</span> <span style="color:#66d9ef">FULL</span> PROCESSLIST;
+</span></span></code></pre></div><p>与上面命令功能相同，但显示完整的SQL语句，不会被截断。</p>
+<h3 id="2-通过系统表查询">2. 通过系统表查询</h3>
+<h4 id="基础查询">基础查询</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> INFORMATION_SCHEMA.PROCESSLIST;
+</span></span></code></pre></div><p>通过系统表获取详细的连接信息，支持WHERE条件过滤。</p>
+<h4 id="查看当前用户连接">查看当前用户连接</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> INFORMATION_SCHEMA.PROCESSLIST <span style="color:#66d9ef">WHERE</span> <span style="color:#66d9ef">USER</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">USER</span>();
+</span></span></code></pre></div><h4 id="查看特定数据库连接">查看特定数据库连接</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> INFORMATION_SCHEMA.PROCESSLIST <span style="color:#66d9ef">WHERE</span> DB <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;数据库名&#39;</span>;
+</span></span></code></pre></div><h3 id="3-连接统计信息">3. 连接统计信息</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#75715e">-- 当前连接数
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SHOW</span> STATUS <span style="color:#66d9ef">LIKE</span> <span style="color:#e6db74">&#39;Threads_connected&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 当前活跃连接数
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SHOW</span> STATUS <span style="color:#66d9ef">LIKE</span> <span style="color:#e6db74">&#39;Threads_running&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 历史最大连接数
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SHOW</span> STATUS <span style="color:#66d9ef">LIKE</span> <span style="color:#e6db74">&#39;Max_used_connections&#39;</span>;
+</span></span></code></pre></div><h2 id="返回字段详细说明">返回字段详细说明</h2>
+<h3 id="processlist-核心字段">PROCESSLIST 核心字段</h3>
+<table>
+  <thead>
+      <tr>
+          <th>字段名</th>
+          <th>数据类型</th>
+          <th>说明</th>
+          <th>示例值</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>Id</strong></td>
+          <td>整数</td>
+          <td>连接的唯一标识符（线程ID），可用于KILL命令</td>
+          <td>1, 2, 3&hellip;</td>
+      </tr>
+      <tr>
+          <td><strong>User</strong></td>
+          <td>字符串</td>
+          <td>发起连接的MySQL用户名</td>
+          <td>root, app_user</td>
+      </tr>
+      <tr>
+          <td><strong>Host</strong></td>
+          <td>字符串</td>
+          <td>客户端主机名或IP地址及端口号</td>
+          <td>localhost:3306, 192.168.1.100:52341</td>
+      </tr>
+      <tr>
+          <td><strong>db</strong></td>
+          <td>字符串</td>
+          <td>当前连接使用的数据库名，NULL表示未选择数据库</td>
+          <td>my_database, NULL</td>
+      </tr>
+      <tr>
+          <td><strong>Command</strong></td>
+          <td>字符串</td>
+          <td>当前连接正在执行的命令类型</td>
+          <td>Query, Sleep, Connect</td>
+      </tr>
+      <tr>
+          <td><strong>Time</strong></td>
+          <td>整数</td>
+          <td>当前状态持续的时间（秒）</td>
+          <td>0, 30, 120</td>
+      </tr>
+      <tr>
+          <td><strong>State</strong></td>
+          <td>字符串</td>
+          <td>连接的详细状态信息</td>
+          <td>Sending data, NULL</td>
+      </tr>
+      <tr>
+          <td><strong>Info</strong></td>
+          <td>文本</td>
+          <td>正在执行的SQL语句，NULL表示无查询</td>
+          <td>SELECT * FROM users</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="command-字段常见值">Command 字段常见值</h3>
+<table>
+  <thead>
+      <tr>
+          <th>值</th>
+          <th>含义</th>
+          <th>说明</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>Query</strong></td>
+          <td>正在执行查询</td>
+          <td>连接正在处理SQL语句</td>
+      </tr>
+      <tr>
+          <td><strong>Sleep</strong></td>
+          <td>连接空闲</td>
+          <td>等待客户端发送新命令</td>
+      </tr>
+      <tr>
+          <td><strong>Connect</strong></td>
+          <td>正在连接</td>
+          <td>客户端正在建立连接</td>
+      </tr>
+      <tr>
+          <td><strong>Quit</strong></td>
+          <td>正在断开连接</td>
+          <td>连接正在关闭</td>
+      </tr>
+      <tr>
+          <td><strong>Init DB</strong></td>
+          <td>切换数据库</td>
+          <td>正在执行USE database命令</td>
+      </tr>
+      <tr>
+          <td><strong>Field List</strong></td>
+          <td>获取字段列表</td>
+          <td>获取表结构信息</td>
+      </tr>
+      <tr>
+          <td><strong>Statistics</strong></td>
+          <td>获取统计信息</td>
+          <td>收集或计算统计数据</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="state-字段常见值">State 字段常见值</h3>
+<table>
+  <thead>
+      <tr>
+          <th>状态</th>
+          <th>含义</th>
+          <th>解释</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>NULL</strong> 或 空</td>
+          <td>空闲状态</td>
+          <td>连接未执行任何操作</td>
+      </tr>
+      <tr>
+          <td><strong>Sending data</strong></td>
+          <td>发送数据</td>
+          <td>正在向客户端发送查询结果</td>
+      </tr>
+      <tr>
+          <td><strong>Waiting for table level lock</strong></td>
+          <td>等待表级锁</td>
+          <td>查询被表锁阻塞</td>
+      </tr>
+      <tr>
+          <td><strong>Copying to tmp table</strong></td>
+          <td>复制到临时表</td>
+          <td>创建临时表处理复杂查询</td>
+      </tr>
+      <tr>
+          <td><strong>Sorting result</strong></td>
+          <td>排序结果</td>
+          <td>正在对查询结果排序</td>
+      </tr>
+      <tr>
+          <td><strong>Opening tables</strong></td>
+          <td>打开表</td>
+          <td>正在打开和初始化表</td>
+      </tr>
+      <tr>
+          <td><strong>Locked</strong></td>
+          <td>被锁定</td>
+          <td>连接被某种锁机制阻塞</td>
+      </tr>
+      <tr>
+          <td><strong>Statistics</strong></td>
+          <td>计算统计信息</td>
+          <td>优化器正在收集表统计信息</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="information_schemaprocesslist-额外字段">INFORMATION_SCHEMA.PROCESSLIST 额外字段</h3>
+<table>
+  <thead>
+      <tr>
+          <th>字段名</th>
+          <th>说明</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>TIME_MS</strong></td>
+          <td>状态持续时间的毫秒精度版本</td>
+      </tr>
+      <tr>
+          <td><strong>STAGE</strong></td>
+          <td>查询执行的当前阶段信息</td>
+      </tr>
+      <tr>
+          <td><strong>MAX_STAGE</strong></td>
+          <td>查询执行的最大阶段数</td>
+      </tr>
+      <tr>
+          <td><strong>PROGRESS</strong></td>
+          <td>当前阶段的完成进度（百分比）</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="连接状态统计说明">连接状态统计说明</h2>
+<h3 id="重要统计指标">重要统计指标</h3>
+<table>
+  <thead>
+      <tr>
+          <th>统计项</th>
+          <th>命令</th>
+          <th>含义</th>
+          <th>用途</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>当前连接数</strong></td>
+          <td><code>SHOW STATUS LIKE 'Threads_connected'</code></td>
+          <td>当前已连接的线程总数</td>
+          <td>监控当前连接负载</td>
+      </tr>
+      <tr>
+          <td><strong>活跃连接数</strong></td>
+          <td><code>SHOW STATUS LIKE 'Threads_running'</code></td>
+          <td>当前正在运行的线程数（非Sleep状态）</td>
+          <td>监控数据库活跃度</td>
+      </tr>
+      <tr>
+          <td><strong>历史最大连接数</strong></td>
+          <td><code>SHOW STATUS LIKE 'Max_used_connections'</code></td>
+          <td>自MySQL启动以来的最大同时连接数</td>
+          <td>了解连接峰值，规划容量</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="实际应用示例">实际应用示例</h2>
+<h3 id="性能监控查询">性能监控查询</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#75715e">-- 查找长时间运行的查询（超过60秒）
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> Id, <span style="color:#66d9ef">User</span>, <span style="color:#66d9ef">Host</span>, DB, Time, <span style="color:#66d9ef">State</span>, Info 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span> INFORMATION_SCHEMA.PROCESSLIST 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">WHERE</span> COMMAND <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;Query&#39;</span> <span style="color:#66d9ef">AND</span> TIME <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">60</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">ORDER</span> <span style="color:#66d9ef">BY</span> TIME <span style="color:#66d9ef">DESC</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 查找占用CPU的活跃连接
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> Id, <span style="color:#66d9ef">User</span>, <span style="color:#66d9ef">Host</span>, DB, Time, <span style="color:#66d9ef">State</span>, <span style="color:#66d9ef">LEFT</span>(Info, <span style="color:#ae81ff">50</span>) <span style="color:#66d9ef">AS</span> Query_Preview
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span> INFORMATION_SCHEMA.PROCESSLIST 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">WHERE</span> COMMAND <span style="color:#f92672">!=</span> <span style="color:#e6db74">&#39;Sleep&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">ORDER</span> <span style="color:#66d9ef">BY</span> TIME <span style="color:#66d9ef">DESC</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 统计各用户的连接数
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> <span style="color:#66d9ef">User</span>, <span style="color:#66d9ef">COUNT</span>(<span style="color:#f92672">*</span>) <span style="color:#66d9ef">AS</span> Connection_Count
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span> INFORMATION_SCHEMA.PROCESSLIST 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">GROUP</span> <span style="color:#66d9ef">BY</span> <span style="color:#66d9ef">User</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">ORDER</span> <span style="color:#66d9ef">BY</span> Connection_Count <span style="color:#66d9ef">DESC</span>;
+</span></span></code></pre></div><h3 id="问题排查查询">问题排查查询</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#75715e">-- 查找被锁定的连接
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> INFORMATION_SCHEMA.PROCESSLIST 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">WHERE</span> <span style="color:#66d9ef">State</span> <span style="color:#66d9ef">LIKE</span> <span style="color:#e6db74">&#39;%lock%&#39;</span> <span style="color:#66d9ef">OR</span> <span style="color:#66d9ef">State</span> <span style="color:#66d9ef">LIKE</span> <span style="color:#e6db74">&#39;%Lock%&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 查找特定数据库的所有连接
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> Id, <span style="color:#66d9ef">User</span>, <span style="color:#66d9ef">Host</span>, Command, Time, <span style="color:#66d9ef">State</span> 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span> INFORMATION_SCHEMA.PROCESSLIST 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">WHERE</span> DB <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;your_database_name&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 查找来自特定IP的连接
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> INFORMATION_SCHEMA.PROCESSLIST 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">WHERE</span> <span style="color:#66d9ef">Host</span> <span style="color:#66d9ef">LIKE</span> <span style="color:#e6db74">&#39;192.168.1.%&#39;</span>;
+</span></span></code></pre></div><h3 id="连接管理操作">连接管理操作</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#75715e">-- 终止特定连接（谨慎使用）
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>KILL <span style="color:#ae81ff">123</span>;  <span style="color:#75715e">-- 123是连接ID
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 终止特定用户的所有连接（批量操作，极其谨慎）
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> CONCAT(<span style="color:#e6db74">&#39;KILL &#39;</span>, Id, <span style="color:#e6db74">&#39;;&#39;</span>) <span style="color:#66d9ef">AS</span> kill_command
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span> INFORMATION_SCHEMA.PROCESSLIST 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">WHERE</span> <span style="color:#66d9ef">User</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;problematic_user&#39;</span> <span style="color:#66d9ef">AND</span> Command <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;Sleep&#39;</span>;
+</span></span></code></pre></div><h2 id="最佳实践建议">最佳实践建议</h2>
+<h3 id="1-定期监控">1. 定期监控</h3>
+<ul>
+<li>建议定期检查长时间运行的查询</li>
+<li>监控连接数是否接近最大连接限制</li>
+<li>观察Sleep状态连接的累积情况</li>
+</ul>
+<h3 id="2-性能优化">2. 性能优化</h3>
+<ul>
+<li>Time值较大的Query状态连接需要重点关注</li>
+<li>频繁出现的等锁状态需要优化查询或索引</li>
+<li>合理设置连接超时参数</li>
+</ul>
+<h3 id="3-安全考虑">3. 安全考虑</h3>
+<ul>
+<li>定期检查异常的连接来源</li>
+<li>监控特权用户的连接活动</li>
+<li>及时清理异常或可疑连接</li>
+</ul>
+<h3 id="4-故障排除">4. 故障排除</h3>
+<ul>
+<li>结合慢查询日志分析长时间运行的查询</li>
+<li>使用EXPLAIN分析有问题的SQL语句</li>
+<li>监控锁等待和死锁情况</li>
+</ul>
+<h2 id="注意事项">注意事项</h2>
+<ol>
+<li><strong>权限要求</strong>：查看连接信息需要PROCESS权限</li>
+<li><strong>性能影响</strong>：频繁执行SHOW PROCESSLIST对性能影响很小</li>
+<li><strong>KILL命令</strong>：使用KILL命令终止连接时要格外谨慎</li>
+<li><strong>连接限制</strong>：注意max_connections参数设置，避免连接数耗尽</li>
+<li><strong>监控频率</strong>：建议结合监控工具定期自动检查连接状态</li>
+</ol>
+<p>通过掌握这些连接信息查看和分析技能，可以更好地管理MySQL数据库，及时发现和解决性能问题。</p>
+    </div>
+    <a href="/posts/databases/mysql_connection_info_guide/" class="ba b--moon-gray bg-light-gray br2 color-inherit dib f7 hover-bg-moon-gray link mt2 ph2 pv1">read more</a>
+  </div>
+</div>
+
+        </div>
+      
+        <div class="w-100 w-30-l mb4 relative bg-white">
+          <div class="w-100 mb4 nested-copy-line-height relative bg-white">
+  <div class="mb3 pa4 gray overflow-hidden bg-white">
+    <span class="f6 db">databases</span>
+    <h1 class="f3 near-black">
+      <a href="/posts/databases/sql-functions/" class="link black dim">
+        sql常用函数
+      </a>
+    </h1>
+    <div class="nested-links f5 lh-copy nested-copy-line-height">
+      <h1 id="sql常用函数大全">SQL常用函数大全</h1>
+<p>SQL提供了丰富的函数集合，可以用于数据处理、分析和转换。本指南整理了常见的SQL函数类别及其用法示例。</p>
+<h2 id="目录">目录</h2>
+<ul>
+<li><a href="#1-%E7%AA%97%E5%8F%A3%E5%87%BD%E6%95%B0">1. 窗口函数</a></li>
+<li><a href="#2-%E8%81%9A%E5%90%88%E5%87%BD%E6%95%B0">2. 聚合函数</a></li>
+<li><a href="#3-%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%87%BD%E6%95%B0">3. 字符串函数</a></li>
+<li><a href="#4-%E6%97%A5%E6%9C%9F%E5%92%8C%E6%97%B6%E9%97%B4%E5%87%BD%E6%95%B0">4. 日期和时间函数</a></li>
+<li><a href="#5-%E6%95%B0%E5%80%BC%E5%87%BD%E6%95%B0">5. 数值函数</a></li>
+<li><a href="#6-%E6%9D%A1%E4%BB%B6%E5%87%BD%E6%95%B0">6. 条件函数</a></li>
+<li><a href="#7-%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2%E5%87%BD%E6%95%B0">7. 类型转换函数</a></li>
+<li><a href="#8-json%E5%87%BD%E6%95%B0">8. JSON函数</a></li>
+<li><a href="#9-%E5%85%A8%E6%96%87%E6%90%9C%E7%B4%A2%E5%87%BD%E6%95%B0">9. 全文搜索函数</a></li>
+<li><a href="#10-%E5%8A%A0%E5%AF%86%E5%92%8C%E5%AE%89%E5%85%A8%E5%87%BD%E6%95%B0">10. 加密和安全函数</a></li>
+<li><a href="#11-%E7%B3%BB%E7%BB%9F%E5%92%8C%E5%85%83%E6%95%B0%E6%8D%AE%E5%87%BD%E6%95%B0">11. 系统和元数据函数</a></li>
+<li><a href="#12-%E5%B8%B8%E8%A7%81%E5%A4%8D%E5%90%88sql%E7%A4%BA%E4%BE%8B">12. 常见复合SQL示例</a></li>
+</ul>
+<h2 id="1-窗口函数">1. 窗口函数</h2>
+<p>窗口函数允许对结果集中的行进行计算，同时保留每行的独立性。</p>
+<h3 id="基本语法">基本语法</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#f92672">&lt;</span><span style="color:#960050;background-color:#1e0010">窗口函数</span><span style="color:#f92672">&gt;</span> OVER ([PARTITION <span style="color:#66d9ef">BY</span> <span style="color:#f92672">&lt;</span><span style="color:#960050;background-color:#1e0010">分区列</span><span style="color:#f92672">&gt;</span>] [<span style="color:#66d9ef">ORDER</span> <span style="color:#66d9ef">BY</span> <span style="color:#f92672">&lt;</span><span style="color:#960050;background-color:#1e0010">排序列</span><span style="color:#f92672">&gt;</span>] [<span style="color:#f92672">&lt;</span><span style="color:#960050;background-color:#1e0010">窗口子句</span><span style="color:#f92672">&gt;</span>])
+</span></span></code></pre></div><h3 id="排名函数">排名函数</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#75715e">-- ROW_NUMBER(): 为每行分配唯一序号
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> name, score, ROW_NUMBER() OVER (<span style="color:#66d9ef">ORDER</span> <span style="color:#66d9ef">BY</span> score <span style="color:#66d9ef">DESC</span>) <span style="color:#66d9ef">AS</span> row_num
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span> students;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- RANK(): 相同值获得相同排名，跳过下一个排名
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> name, score, RANK() OVER (<span style="color:#66d9ef">ORDER</span> <span style="color:#66d9ef">BY</span> score <span style="color:#66d9ef">DESC</span>) <span style="color:#66d9ef">AS</span> rank
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span> students;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- DENSE_RANK(): 相同值获得相同排名，不跳过排名
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> name, score, DENSE_RANK() OVER (<span style="color:#66d9ef">ORDER</span> <span style="color:#66d9ef">BY</span> score <span style="color:#66d9ef">DESC</span>) <span style="color:#66d9ef">AS</span> dense_rank
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span> students;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- NTILE(): 将分区数据分成指定数量的组
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> name, score, NTILE(<span style="color:#ae81ff">4</span>) OVER (<span style="color:#66d9ef">ORDER</span> <span style="color:#66d9ef">BY</span> score <span style="color:#66d9ef">DESC</span>) <span style="color:#66d9ef">AS</span> quartile
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span> students;
+</span></span></code></pre></div><h3 id="聚合窗口函数">聚合窗口函数</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> 
+</span></span><span style="display:flex;"><span>    department,
+</span></span><span style="display:flex;"><span>    name,
+</span></span><span style="display:flex;"><span>    salary,
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">AVG</span>(salary) OVER (PARTITION <span style="color:#66d9ef">BY</span> department) <span style="color:#66d9ef">AS</span> dept_avg,
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">SUM</span>(salary) OVER (PARTITION <span style="color:#66d9ef">BY</span> department) <span style="color:#66d9ef">AS</span> dept_sum,
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">COUNT</span>(<span style="color:#f92672">*</span>) OVER (PARTITION <span style="color:#66d9ef">BY</span> department) <span style="color:#66d9ef">AS</span> dept_count
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span> employees;
+</span></span></code></pre></div><h3 id="偏移函数">偏移函数</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#75715e">-- LAG(): 获取前面行的值
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> date, sales, LAG(sales) OVER (<span style="color:#66d9ef">ORDER</span> <span style="color:#66d9ef">BY</span> date) <span style="color:#66d9ef">AS</span> prev_day_sales
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span> daily_sales;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- LEAD(): 获取后面行的值
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> date, sales, LEAD(sales) OVER (<span style="color:#66d9ef">ORDER</span> <span style="color:#66d9ef">BY</span> date) <span style="color:#66d9ef">AS</span> next_day_sales
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span> daily_sales;
+</span></span></code></pre></div><h3 id="分析函数">分析函数</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#75715e">-- FIRST_VALUE(): 窗口中第一个值
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> date, product, sales,
+</span></span><span style="display:flex;"><span>       FIRST_VALUE(sales) OVER (PARTITION <span style="color:#66d9ef">BY</span> product <span style="color:#66d9ef">ORDER</span> <span style="color:#66d9ef">BY</span> date) <span style="color:#66d9ef">AS</span> first_sale
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span> product_sales;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- LAST_VALUE(): 窗口中最后一个值
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> date, product, sales,
+</span></span><span style="display:flex;"><span>       LAST_VALUE(sales) OVER (
+</span></span><span style="display:flex;"><span>           PARTITION <span style="color:#66d9ef">BY</span> product 
+</span></span><span style="display:flex;"><span>           <span style="color:#66d9ef">ORDER</span> <span style="color:#66d9ef">BY</span> date 
+</span></span><span style="display:flex;"><span>           <span style="color:#66d9ef">ROWS</span> <span style="color:#66d9ef">BETWEEN</span> UNBOUNDED PRECEDING <span style="color:#66d9ef">AND</span> UNBOUNDED FOLLOWING
+</span></span><span style="display:flex;"><span>       ) <span style="color:#66d9ef">AS</span> last_sale
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span> product_sales;
+</span></span></code></pre></div><h3 id="窗口子句">窗口子句</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#75715e">-- 计算3天移动平均值
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> date, sales,
+</span></span><span style="display:flex;"><span>       <span style="color:#66d9ef">AVG</span>(sales) OVER (
+</span></span><span style="display:flex;"><span>           <span style="color:#66d9ef">ORDER</span> <span style="color:#66d9ef">BY</span> date 
+</span></span><span style="display:flex;"><span>           <span style="color:#66d9ef">ROWS</span> <span style="color:#66d9ef">BETWEEN</span> <span style="color:#ae81ff">1</span> PRECEDING <span style="color:#66d9ef">AND</span> <span style="color:#ae81ff">1</span> FOLLOWING
+</span></span><span style="display:flex;"><span>       ) <span style="color:#66d9ef">AS</span> moving_avg
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span> daily_sales;
+</span></span></code></pre></div><h2 id="2-聚合函数">2. 聚合函数</h2>
+<p>聚合函数对一组值执行计算并返回单个值。</p>
+    </div>
+    <a href="/posts/databases/sql-functions/" class="ba b--moon-gray bg-light-gray br2 color-inherit dib f7 hover-bg-moon-gray link mt2 ph2 pv1">read more</a>
+  </div>
+</div>
+
+        </div>
+      
+        <div class="w-100 w-30-l mb4 relative bg-white">
+          <div class="w-100 mb4 nested-copy-line-height relative bg-white">
+  <div class="mb3 pa4 gray overflow-hidden bg-white">
+    <span class="f6 db">databases</span>
+    <h1 class="f3 near-black">
+      <a href="/posts/databases/pgsql_demo/" class="link black dim">
+        pg常用操作
+      </a>
+    </h1>
+    <div class="nested-links f5 lh-copy nested-copy-line-height">
+      <h1 id="删除pgsql的缓存计划">删除pgsql的缓存计划</h1>
+<blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span>discard <span style="color:#66d9ef">all</span>;
+</span></span></code></pre></div></blockquote>
+<h1 id="text模糊查询">text[]模糊查询</h1>
+<blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">select</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">from</span> aaa <span style="color:#66d9ef">where</span> <span style="color:#66d9ef">exists</span>(<span style="color:#66d9ef">select</span> <span style="color:#ae81ff">1</span> <span style="color:#66d9ef">from</span> <span style="color:#66d9ef">unnest</span>(<span style="color:#66d9ef">alias</span>) <span style="color:#66d9ef">as</span> elem <span style="color:#66d9ef">where</span> elem <span style="color:#66d9ef">like</span> <span style="color:#f92672">%</span>a<span style="color:#f92672">%</span>)
+</span></span></code></pre></div></blockquote>
+<h1 id="最近时间">最近时间</h1>
+<blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">select</span> <span style="color:#66d9ef">max</span>(time) <span style="color:#66d9ef">from</span> abc;
+</span></span></code></pre></div></blockquote>
+<h1 id="不为空">不为空</h1>
+<blockquote>
+<p>pgsql中<code>&lt;&gt; 表示 != 不等于</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#75715e">-- 这样子是不对的, 不能把select的字段用到where上, 只能是from中的表字段或者显示声明的字段才可以在where中使用
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">select</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">distinct</span> <span style="color:#66d9ef">unnest</span>(product_type) <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">type</span> 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">from</span> 
+</span></span><span style="display:flex;"><span>  products 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">where</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">type</span> <span style="color:#66d9ef">IS</span> <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">NULL</span> <span style="color:#66d9ef">AND</span> <span style="color:#66d9ef">type</span> <span style="color:#f92672">&lt;&gt;</span> <span style="color:#e6db74">&#39;&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 正确的用法
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">DISTINCT</span> pt 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span> 
+</span></span><span style="display:flex;"><span>  ( <span style="color:#66d9ef">SELECT</span> <span style="color:#66d9ef">unnest</span>(product_type) <span style="color:#66d9ef">AS</span> pt <span style="color:#66d9ef">FROM</span> <span style="color:#e6db74">&#34;products&#34;</span> ) <span style="color:#66d9ef">AS</span> subquery
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">WHERE</span> 
+</span></span><span style="display:flex;"><span>  pt <span style="color:#66d9ef">IS</span> <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">NULL</span> <span style="color:#66d9ef">AND</span> pt <span style="color:#f92672">&lt;&gt;</span> <span style="color:#e6db74">&#39;&#39;</span>;
+</span></span></code></pre></div></blockquote>
+<h1 id="计算比例">计算比例</h1>
+<blockquote>
+<p>语法: <code> sum() over()</code> 必须带over()</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span>
+</span></span><span style="display:flex;"><span>   trade,
+</span></span><span style="display:flex;"><span>   trade_count,
+</span></span><span style="display:flex;"><span>   trade_count::float <span style="color:#f92672">/</span> <span style="color:#66d9ef">SUM</span>(trade_count) OVER () <span style="color:#66d9ef">AS</span> weight_ratio
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span> (
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">SELECT</span>
+</span></span><span style="display:flex;"><span>       <span style="color:#66d9ef">unnest</span>(industry_chain_position) <span style="color:#66d9ef">AS</span> trade,
+</span></span><span style="display:flex;"><span>       <span style="color:#66d9ef">COUNT</span>(id) <span style="color:#66d9ef">AS</span> trade_count
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">FROM</span>
+</span></span><span style="display:flex;"><span>       products
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">WHERE</span>
+</span></span><span style="display:flex;"><span>       enterprise_id <span style="color:#f92672">=</span> <span style="color:#ae81ff">229501</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">GROUP</span> <span style="color:#66d9ef">BY</span>
+</span></span><span style="display:flex;"><span>       trade
+</span></span><span style="display:flex;"><span>) <span style="color:#66d9ef">AS</span> subquery
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">ORDER</span> <span style="color:#66d9ef">BY</span>
+</span></span><span style="display:flex;"><span>   trade_count <span style="color:#66d9ef">DESC</span>;
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">WITH</span> 
+</span></span><span style="display:flex;"><span>   trade_counts <span style="color:#66d9ef">AS</span> (
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">SELECT</span>
+</span></span><span style="display:flex;"><span>       <span style="color:#66d9ef">unnest</span>(belong_trade) <span style="color:#66d9ef">AS</span> trade,
+</span></span><span style="display:flex;"><span>       <span style="color:#66d9ef">COUNT</span>(code) <span style="color:#66d9ef">AS</span> product_total
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">FROM</span>
+</span></span><span style="display:flex;"><span>       products
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">WHERE</span>
+</span></span><span style="display:flex;"><span>       enterprise_id <span style="color:#f92672">=</span> <span style="color:#ae81ff">229501</span>
+</span></span><span style="display:flex;"><span>     <span style="color:#66d9ef">AND</span>
+</span></span><span style="display:flex;"><span>       <span style="color:#ae81ff">1</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">ANY</span>(industry_chain_position)
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">GROUP</span> <span style="color:#66d9ef">BY</span>
+</span></span><span style="display:flex;"><span>       trade
+</span></span><span style="display:flex;"><span>),
+</span></span><span style="display:flex;"><span>total_count <span style="color:#66d9ef">AS</span> (
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">SELECT</span>
+</span></span><span style="display:flex;"><span>       <span style="color:#66d9ef">SUM</span>(product_total) <span style="color:#66d9ef">AS</span> total_product_count
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">FROM</span>
+</span></span><span style="display:flex;"><span>       trade_counts
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span>
+</span></span><span style="display:flex;"><span>   trade,
+</span></span><span style="display:flex;"><span>   product_total,
+</span></span><span style="display:flex;"><span>   (product_total::float <span style="color:#f92672">/</span> total_product_count) <span style="color:#66d9ef">AS</span> proportion
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span>
+</span></span><span style="display:flex;"><span>   trade_counts,
+</span></span><span style="display:flex;"><span>   total_count;
+</span></span></code></pre></div></blockquote>
+<h1 id="case">case</h1>
+<blockquote>
+<p>语法:</p>
+    </div>
+    <a href="/posts/databases/pgsql_demo/" class="ba b--moon-gray bg-light-gray br2 color-inherit dib f7 hover-bg-moon-gray link mt2 ph2 pv1">read more</a>
+  </div>
+</div>
+
+        </div>
+      
+        <div class="w-100 w-30-l mb4 relative bg-white">
+          <div class="w-100 mb4 nested-copy-line-height relative bg-white">
+  <div class="mb3 pa4 gray overflow-hidden bg-white">
+    <span class="f6 db">databases</span>
+    <h1 class="f3 near-black">
+      <a href="/posts/databases/nebula/" class="link black dim">
+        nebula
+      </a>
+    </h1>
+    <div class="nested-links f5 lh-copy nested-copy-line-height">
+      <blockquote>
+<p><a href="https://docs.nebula-graph.com.cn/3.6.0/2.quick-start/3.quick-start-on-premise/4.nebula-graph-crud/#_10">官网文档</a></p></blockquote>
+<h1 id="初始化">初始化</h1>
+<h2 id="添加storage-主机">添加Storage 主机</h2>
+<blockquote>
+<p>刚部署好不添加主机<code>有可能</code>会报错</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>ADD HOSTS <span style="color:#e6db74">&#34;storaged0&#34;</span>:9779,<span style="color:#e6db74">&#34;storaged1&#34;</span>:9779,<span style="color:#e6db74">&#34;storaged2&#34;</span>:9779
+</span></span></code></pre></div><h1 id="图">图</h1>
+<h2 id="创建">创建</h2>
+<blockquote>
+<p>必须指定vid_type,partition_num:分区数，通常为全集群硬盘数量的 5 倍;replica_factor：指定集群中副本的数量，通常生产环境为 3，测试环境为 1</p>
+<p>如果报错提示<code>[ERROR (-1005)]: Host not enough!</code>，请检查是否已添加 Storage 主机。</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>CREATE SPACE <span style="color:#f92672">[</span>IF NOT EXISTS<span style="color:#f92672">]</span> &lt;graph_space_name&gt; <span style="color:#f92672">(</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>partition_num <span style="color:#f92672">=</span> &lt;partition_number&gt;,<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>replica_factor <span style="color:#f92672">=</span> &lt;replica_number&gt;,<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>vid_type <span style="color:#f92672">=</span> <span style="color:#f92672">{</span>FIXED_STRING<span style="color:#f92672">(</span>&lt;N&gt;<span style="color:#f92672">)</span> | INT64<span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>COMMENT <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;&lt;comment&gt;&#39;</span><span style="color:#f92672">]</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 实例</span>
+</span></span><span style="display:flex;"><span>CREATE SPACE IF NOT EXISTS hzy <span style="color:#f92672">(</span>partition_num <span style="color:#f92672">=</span> 1, replica_factor<span style="color:#f92672">=</span>1, vid_type<span style="color:#f92672">=</span>fixed_string<span style="color:#f92672">(</span>30<span style="color:#f92672">))</span> COMMENT<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;测试图&#39;</span>;
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>nebula&gt; CREATE SPACE basketballplayer<span style="color:#f92672">(</span>partition_num<span style="color:#f92672">=</span>15, replica_factor<span style="color:#f92672">=</span>1, vid_type<span style="color:#f92672">=</span>fixed_string<span style="color:#f92672">(</span>30<span style="color:#f92672">))</span>;
+</span></span></code></pre></div><h2 id="查看">查看</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>SHOW SPACES;
+</span></span></code></pre></div><h2 id="检查分片分布">检查分片分布</h2>
+<blockquote>
+<p>如果 <strong>Leader distribution</strong> 分布不均匀，请执行命令<code>BALANCE LEADER</code>重新分配。</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>SHOW HOSTS
+</span></span></code></pre></div><h2 id="使用">使用</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>USE space_name;
+</span></span></code></pre></div><h1 id="tagedge-type">Tag/Edge type</h1>
+<h2 id="创建-1">创建</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>CREATE <span style="color:#f92672">{</span>TAG | EDGE<span style="color:#f92672">}</span> <span style="color:#f92672">[</span>IF NOT EXISTS<span style="color:#f92672">]</span> <span style="color:#f92672">{</span>&lt;tag_name&gt; | &lt;edge_type_name&gt;<span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">(</span>
+</span></span><span style="display:flex;"><span>      &lt;prop_name&gt; &lt;data_type&gt; <span style="color:#f92672">[</span>NULL | NOT NULL<span style="color:#f92672">]</span> <span style="color:#f92672">[</span>DEFAULT &lt;default_value&gt;<span style="color:#f92672">]</span> <span style="color:#f92672">[</span>COMMENT <span style="color:#e6db74">&#39;&lt;comment&gt;&#39;</span><span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">[{</span>, &lt;prop_name&gt; &lt;data_type&gt; <span style="color:#f92672">[</span>NULL | NOT NULL<span style="color:#f92672">]</span> <span style="color:#f92672">[</span>DEFAULT &lt;default_value&gt;<span style="color:#f92672">]</span> <span style="color:#f92672">[</span>COMMENT <span style="color:#e6db74">&#39;&lt;comment&gt;&#39;</span><span style="color:#f92672">]}</span> ...<span style="color:#f92672">]</span> 
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">[</span>TTL_DURATION <span style="color:#f92672">=</span> &lt;ttl_duration&gt;<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">[</span>TTL_COL <span style="color:#f92672">=</span> &lt;prop_name&gt;<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">[</span>COMMENT <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;&lt;comment&gt;&#39;</span><span style="color:#f92672">]</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 实例</span>
+</span></span><span style="display:flex;"><span>create tag <span style="color:#66d9ef">if</span> not exists tag1 <span style="color:#f92672">(</span>name string not null default <span style="color:#e6db74">&#39;default_value&#39;</span> comment <span style="color:#e6db74">&#39;测试tag1&#39;</span><span style="color:#f92672">)</span>;
+</span></span><span style="display:flex;"><span>create edge <span style="color:#66d9ef">if</span> not exists dege1 <span style="color:#f92672">(</span>start int comment <span style="color:#e6db74">&#39;测试dege1&#39;</span><span style="color:#f92672">)</span>;
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>nebula&gt; CREATE TAG player<span style="color:#f92672">(</span>name string, age int<span style="color:#f92672">)</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>nebula&gt; CREATE TAG team<span style="color:#f92672">(</span>name string<span style="color:#f92672">)</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>nebula&gt; CREATE EDGE follow<span style="color:#f92672">(</span>degree int<span style="color:#f92672">)</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>nebula&gt; CREATE EDGE serve<span style="color:#f92672">(</span>start_year int, end_year int<span style="color:#f92672">)</span>;
+</span></span></code></pre></div><h2 id="插入数据">插入数据</h2>
+<h3 id="点">点</h3>
+<blockquote>
+<p><code>vid</code>是 Vertex ID 的缩写，<code>vid</code>在一个图空间中是唯一的。</p>
+    </div>
+    <a href="/posts/databases/nebula/" class="ba b--moon-gray bg-light-gray br2 color-inherit dib f7 hover-bg-moon-gray link mt2 ph2 pv1">read more</a>
+  </div>
+</div>
+
+        </div>
+      
+        <div class="w-100 w-30-l mb4 relative bg-white">
+          <div class="w-100 mb4 nested-copy-line-height relative bg-white">
+  <div class="mb3 pa4 gray overflow-hidden bg-white">
+    <span class="f6 db">databases</span>
+    <h1 class="f3 near-black">
+      <a href="/posts/databases/es%E5%8F%8A%E6%8E%A5%E5%8F%A3/" class="link black dim">
+        ES接口
+      </a>
+    </h1>
+    <div class="nested-links f5 lh-copy nested-copy-line-height">
+      <h1 id="es及接口">ES及接口</h1>
+<blockquote>
+<p>v1.0.0</p></blockquote>
+<p>Base URLs:</p>
+<ul>
+<li><!-- raw HTML omitted -->测试环境: http://127.0.0.1:9200<!-- raw HTML omitted --></li>
+</ul>
+<h1 id="索引">索引</h1>
+<h2 id="put-创建索引">PUT 创建索引</h2>
+<p>PUT /test1</p>
+<blockquote>
+<p>返回示例</p></blockquote>
+<blockquote>
+<p>200 Response</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;acknowledged&#34;</span>: <span style="color:#66d9ef">true</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;shards_acknowledged&#34;</span>: <span style="color:#66d9ef">true</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;index&#34;</span>: <span style="color:#e6db74">&#34;string&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="返回结果">返回结果</h3>
+<table>
+  <thead>
+      <tr>
+          <th>状态码</th>
+          <th>状态码含义</th>
+          <th>说明</th>
+          <th>数据模型</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>200</td>
+          <td><a href="https://tools.ietf.org/html/rfc7231#section-6.3.1">OK</a></td>
+          <td>成功</td>
+          <td>Inline</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="返回数据结构">返回数据结构</h3>
+<p>状态码 <strong>200</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>名称</th>
+          <th>类型</th>
+          <th>必选</th>
+          <th>约束</th>
+          <th>中文名</th>
+          <th>说明</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>» acknowledged</td>
+          <td>boolean</td>
+          <td>true</td>
+          <td>none</td>
+          <td>响应结果</td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>» shards_acknowledged</td>
+          <td>boolean</td>
+          <td>true</td>
+          <td>none</td>
+          <td>分片结果</td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>» index</td>
+          <td>string</td>
+          <td>true</td>
+          <td>none</td>
+          <td>索引名称</td>
+          <td>none</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="delete-删除索引">DELETE 删除索引</h2>
+<p>DELETE /test1</p>
+    </div>
+    <a href="/posts/databases/es%E5%8F%8A%E6%8E%A5%E5%8F%A3/" class="ba b--moon-gray bg-light-gray br2 color-inherit dib f7 hover-bg-moon-gray link mt2 ph2 pv1">read more</a>
+  </div>
+</div>
+
+        </div>
+      
+        <div class="w-100 w-30-l mb4 relative bg-white">
+          <div class="w-100 mb4 nested-copy-line-height relative bg-white">
+  <div class="mb3 pa4 gray overflow-hidden bg-white">
+    <span class="f6 db">databases</span>
+    <h1 class="f3 near-black">
+      <a href="/posts/databases/gorm/" class="link black dim">
+        Gorm
+      </a>
+    </h1>
+    <div class="nested-links f5 lh-copy nested-copy-line-height">
+      <h1 id="一对多">一对多</h1>
+<blockquote>
+<p>gorm:&ldquo;column:a;unique&rdquo;</p>
+<p><code>unique:</code> 唯一约束</p>
+<p>gorm:&ldquo;foreignKey:C;references:A&rdquo;</p>
+<p><code>foreignKey:</code> 设置外键</p>
+<p><code>references:</code> 重写引用</p>
+<ol>
+<li>
+<p>引用的字段必须是唯一约束,不然使用<code>AutoMigrate</code> 创建表会报错, 这里的引用意思是查询Stu时会查询出Demo中C和A相同的数据</p>
+</li>
+<li>
+<p><code>D []Demo</code> 不会创建为表字段,不用设置<code>gorm:&quot;-&quot;</code></p>
+</li>
+<li>
+<p>在查询时必须使用<code>Preload(&quot;外键字段名称,这里为D&quot;)</code> 加载,不然查询出的结果中没有该数据</p>
+</li>
+<li>
+<p>如果有多重引用例如Demo中的E则<code>Preload(&quot;D.E&quot;)</code></p>
+</li>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#a6e22e">opt</span>.<span style="color:#a6e22e">DB</span>.<span style="color:#a6e22e">Model</span>(<span style="color:#a6e22e">project</span>).
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">Preload</span>(<span style="color:#e6db74">&#34;Lists&#34;</span>).
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">Preload</span>(<span style="color:#e6db74">&#34;Lists.HTTPS&#34;</span>).<span style="color:#a6e22e">Preload</span>(<span style="color:#e6db74">&#34;Lists.GRPCS&#34;</span>).
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">Where</span>(<span style="color:#e6db74">&#34;id = ?&#34;</span>, <span style="color:#ae81ff">1</span>).<span style="color:#a6e22e">Take</span>(<span style="color:#a6e22e">project</span>)
+</span></span></code></pre></div></li>
+</ol>
+<pre tabindex="0"><code></code></pre></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Stu</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">A</span> <span style="color:#66d9ef">string</span> <span style="color:#e6db74">`json:&#34;a,omitempty&#34; gorm:&#34;column:a;unique&#34;`</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">B</span> <span style="color:#66d9ef">string</span> <span style="color:#e6db74">`json:&#34;b,omitempty&#34; gorm:&#34;column:b&#34;`</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">D</span> []<span style="color:#a6e22e">Demo</span> <span style="color:#e6db74">`json:&#34;d,omitempty&#34; gorm:&#34;foreignKey:C;references:A&#34;`</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Demo</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">C</span> <span style="color:#66d9ef">string</span> <span style="color:#e6db74">`json:&#34;c,omitempty&#34; gorm:&#34;column:c&#34;`</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">D</span> <span style="color:#66d9ef">string</span> <span style="color:#e6db74">`json:&#34;d,omitempty&#34; gorm:&#34;column:d&#34;`</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="多态关联">多态关联</h1>
+<blockquote>
+<p><code>gorm:&quot;polymorphic:Owner;polymorphicValue:master&quot;</code> 使用<code>polymorphicValue</code>更改多态类型的值,这里指定为<code>master</code>则Type字段的值就为<code>master</code></p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Comment</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">ID</span>              <span style="color:#66d9ef">uint</span>        <span style="color:#e6db74">`json:&#34;id,omitempty&#34; gorm:&#34;column:id;unique&#34;`</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Body</span>            <span style="color:#66d9ef">string</span>      <span style="color:#e6db74">`json:&#34;body,omitempty&#34; gorm:&#34;column:body&#34;`</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">CommentableID</span>   <span style="color:#66d9ef">uint</span>        <span style="color:#e6db74">`json:&#34;commentable_id,omitempty&#34; gorm:&#34;column:commentable_id&#34;`</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">CommentableType</span> <span style="color:#66d9ef">string</span>      <span style="color:#e6db74">`json:&#34;commentable_type,omitempty&#34; gorm:&#34;column:commentable_type&#34;`</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Commentable</span>     <span style="color:#66d9ef">interface</span>{} <span style="color:#e6db74">`json:&#34;commentable,omitempty&#34; gorm:&#34;-&#34;`</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Post</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">ID</span>       <span style="color:#66d9ef">uint</span>       <span style="color:#e6db74">`json:&#34;id,omitempty&#34; gorm:&#34;column:id;unique&#34;`</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Title</span>    <span style="color:#66d9ef">string</span>     <span style="color:#e6db74">`json:&#34;title,omitempty&#34; gorm:&#34;column:title&#34;`</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Comments</span> []<span style="color:#f92672">*</span><span style="color:#a6e22e">Comment</span> <span style="color:#e6db74">`gorm:&#34;polymorphic:Commentable;&#34; json:&#34;comments,omitempty&#34;`</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Video</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">ID</span>       <span style="color:#66d9ef">uint</span>       <span style="color:#e6db74">`json:&#34;id,omitempty&#34; gorm:&#34;column:id;unique&#34;`</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Title</span>    <span style="color:#66d9ef">string</span>     <span style="color:#e6db74">`json:&#34;title,omitempty&#34; gorm:&#34;column:title&#34;`</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Comments</span> []<span style="color:#f92672">*</span><span style="color:#a6e22e">Comment</span> <span style="color:#e6db74">`gorm:&#34;polymorphic:Commentable;&#34; json:&#34;comments,omitempty&#34;`</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">==============</span> <span style="color:#a6e22e">创建数据</span> <span style="color:#f92672">==================</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">opt</span>.<span style="color:#a6e22e">DB</span>.<span style="color:#a6e22e">AutoMigrate</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">Comment</span>{}, <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">Post</span>{}, <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">Video</span>{})
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">post</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">Post</span>{
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">Title</span>: <span style="color:#e6db74">&#34;帖子1&#34;</span>,
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">c</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">Comment</span>{
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">Body</span>: <span style="color:#e6db74">&#34;评论2&#34;</span>,
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">post</span>.<span style="color:#a6e22e">Comments</span> = append(<span style="color:#a6e22e">post</span>.<span style="color:#a6e22e">Comments</span>, <span style="color:#a6e22e">c</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">opt</span>.<span style="color:#a6e22e">DB</span>.<span style="color:#a6e22e">Create</span>(<span style="color:#a6e22e">post</span>)
+</span></span><span style="display:flex;"><span><span style="color:#f92672">==============</span> <span style="color:#a6e22e">添加数据</span> <span style="color:#f92672">==================</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">post</span> <span style="color:#f92672">:=</span> new(<span style="color:#a6e22e">Post</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">opt</span>.<span style="color:#a6e22e">DB</span>.<span style="color:#a6e22e">Preload</span>(<span style="color:#e6db74">&#34;Comments&#34;</span>).<span style="color:#a6e22e">Where</span>(<span style="color:#e6db74">&#34;id = ?&#34;</span>, <span style="color:#ae81ff">1</span>).<span style="color:#a6e22e">Find</span>(<span style="color:#a6e22e">post</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">post</span>.<span style="color:#a6e22e">Comments</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">t</span>.<span style="color:#a6e22e">Log</span>(<span style="color:#a6e22e">post</span>.<span style="color:#a6e22e">Comments</span>[<span style="color:#a6e22e">i</span>])
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">post</span>.<span style="color:#a6e22e">Comments</span> = append(<span style="color:#a6e22e">post</span>.<span style="color:#a6e22e">Comments</span>, <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">Comment</span>{<span style="color:#a6e22e">Body</span>: <span style="color:#e6db74">&#34;新的评论&#34;</span>})
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">opt</span>.<span style="color:#a6e22e">DB</span>.<span style="color:#a6e22e">Save</span>(<span style="color:#a6e22e">post</span>)
+</span></span></code></pre></div><h1 id="save和create区别">Save和Create区别</h1>
+<blockquote>
+<p><code>Create:</code>只能用于创建新的数据</p>
+    </div>
+    <a href="/posts/databases/gorm/" class="ba b--moon-gray bg-light-gray br2 color-inherit dib f7 hover-bg-moon-gray link mt2 ph2 pv1">read more</a>
+  </div>
+</div>
+
+        </div>
+      
+        <div class="w-100 w-30-l mb4 relative bg-white">
+          <div class="w-100 mb4 nested-copy-line-height relative bg-white">
+  <div class="mb3 pa4 gray overflow-hidden bg-white">
+    <span class="f6 db">databases</span>
+    <h1 class="f3 near-black">
+      <a href="/posts/databases/pgsql/" class="link black dim">
+        pgsql
+      </a>
+    </h1>
+    <div class="nested-links f5 lh-copy nested-copy-line-height">
+      <h1 id="命令行">命令行</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#75715e">-- 登录
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>psql <span style="color:#f92672">-</span>U username <span style="color:#f92672">-</span>d dbname <span style="color:#f92672">-</span>h hostname
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 查看用户权限
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#960050;background-color:#1e0010">\</span>du
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 查看有哪些库
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#960050;background-color:#1e0010">\</span>l
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 切换库
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#960050;background-color:#1e0010">\</span><span style="color:#66d9ef">c</span> dbname
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 查看当前库有哪些表
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#960050;background-color:#1e0010">\</span>dt
+</span></span></code></pre></div><h1 id="用户管理">用户管理</h1>
+<blockquote>
+<p>登录权限（LOGIN）：允许角色登录到数据库。
+超级用户权限（SUPERUSER）：赋予角色超级用户权限，使其可以执行任何操作，包括修改系统表。
+创建数据库权限（CREATEDB）：允许角色创建新的数据库。
+创建角色权限（CREATEROLE）：允许角色创建新的数据库角色。
+创建临时表权限（TEMPORARY）：允许角色创建临时表。
+连接限制（CONNECTION LIMIT）：限制角色同时连接到数据库的最大数量。
+继承权限（INHERIT）：允许角色继承其他角色的权限。
+授权权限（GRANT）：允许角色授权给其他角色权限。
+修改其他角色权限（ALTER ANY ROLE）：允许角色修改其他角色的属性。
+删除其他角色权限（DROP ANY ROLE）：允许角色删除其他角色。
+超时限制（PASSWORD EXPIRY）：设置角色密码的过期时间。
+加密方式（ENCRYPTED）：指定角色密码是否加密存储。</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#75715e">-- 创建用户
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">create</span> <span style="color:#66d9ef">role</span> <span style="color:#960050;background-color:#1e0010">用户名</span> <span style="color:#66d9ef">with</span> superuser login password <span style="color:#e6db74">&#39;密码&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 删除用户
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">drop</span> <span style="color:#66d9ef">role</span> <span style="color:#960050;background-color:#1e0010">用户名</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 修改用户密码
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">alter</span> <span style="color:#66d9ef">role</span> <span style="color:#960050;background-color:#1e0010">用户名</span> <span style="color:#66d9ef">with</span> password <span style="color:#e6db74">&#39;新密码&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">REVOKE</span> privilege_name <span style="color:#66d9ef">ON</span> object_name <span style="color:#66d9ef">FROM</span> username;
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">如：</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">#</span> <span style="color:#960050;background-color:#1e0010">撤销数据库权限</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">revoke</span> <span style="color:#66d9ef">all</span> <span style="color:#66d9ef">privileges</span> <span style="color:#66d9ef">on</span> <span style="color:#66d9ef">database</span> mydata <span style="color:#66d9ef">from</span> jinjin;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">#</span> <span style="color:#960050;background-color:#1e0010">撤销表权限</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">revoke</span> <span style="color:#66d9ef">all</span> <span style="color:#66d9ef">privileges</span> <span style="color:#66d9ef">on</span> <span style="color:#66d9ef">all</span> tables <span style="color:#66d9ef">in</span> <span style="color:#66d9ef">schema</span> <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">from</span> jinjin;
+</span></span></code></pre></div><h1 id="时区管理">时区管理</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#75715e">-- 显示当前数据库使用的时区
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">show</span> time <span style="color:#66d9ef">zone</span> ;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 查看当前时间
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">select</span> now();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 查看可以设置的时区有哪些
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">select</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">from</span> pg_timezone_names;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 设置当前时区为PRC
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">set</span> timezone <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;PRC&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 设置全部用户的时区
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">alter</span> <span style="color:#66d9ef">role</span> <span style="color:#66d9ef">all</span> <span style="color:#66d9ef">set</span> timezone <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;PRC&#39;</span>;
+</span></span></code></pre></div><h1 id="序列">序列</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">CREATE</span> SEQUENCE my_sequence
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">START</span> <span style="color:#ae81ff">1</span>  <span style="color:#960050;background-color:#1e0010">序列从</span> <span style="color:#ae81ff">1</span> <span style="color:#960050;background-color:#1e0010">开始</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">INCREMENT</span> <span style="color:#66d9ef">BY</span> <span style="color:#ae81ff">1</span> <span style="color:#960050;background-color:#1e0010">每次递增</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">MINVALUE</span> <span style="color:#ae81ff">1</span>  <span style="color:#960050;background-color:#1e0010">序列的最小值是</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">MAXVALUE</span> <span style="color:#ae81ff">10000</span> <span style="color:#960050;background-color:#1e0010">序列的最大值是</span> <span style="color:#ae81ff">10000</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">CYCLE</span>; <span style="color:#960050;background-color:#1e0010">当序列到达最大值后，循环回到最小值</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 创建了一个名为 user_id_seq 的简单序列，未指定起始值或者增量等属性，默认情况下会从 1 开始，每次增加 1。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">create</span> sequence user_id_seq;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 将 user_id_seq 序列的所有权修改为 pgsql 用户。只有序列的所有者（或超级用户）可以修改序列的属性。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">alter</span> sequence user_id_seq <span style="color:#66d9ef">owner</span> <span style="color:#66d9ef">to</span> pgsql;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 指定了 user_id_seq 序列由 users.id 列拥有。这通常用于确保序列与特定表的列相关联，以便自动管理默认值。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">alter</span> sequence user_id_seq owned <span style="color:#66d9ef">by</span> users.id;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 将 users 表的 id 列设置默认值为 user_id_seq 序列的下一个值。这意味着每次插入新行时，如果不提供 id 列的值，则会自动使用序列生成的下一个值。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">alter</span> <span style="color:#66d9ef">table</span> users <span style="color:#66d9ef">alter</span> <span style="color:#66d9ef">column</span> id <span style="color:#66d9ef">set</span> <span style="color:#66d9ef">default</span> nextval(<span style="color:#e6db74">&#39;user_id_seq&#39;</span>::regclass);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 向 users 表中插入一行数据，设置 username 列的值为 &#39;a&#39;。由于 id 列已经设置为序列 user_id_seq 的默认值，它会自动为 id 列生成一个递增的唯一值。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">select</span> setval(<span style="color:#e6db74">&#39;user_id_seq&#39;</span>,(<span style="color:#66d9ef">select</span> <span style="color:#66d9ef">max</span>(id) <span style="color:#66d9ef">from</span> users));
+</span></span></code></pre></div><h1 id="错误码">错误码</h1>
+<h2 id="sqlstate-23505">SQLSTATE 23505</h2>
+<blockquote>
+<p><code>SQLSTATE 23505</code>: 发生在尝试向数据库中插入一条记录时，违反了表中的唯一约束。例如，如果尝试插入一个已经在表中存在的唯一键值，就会触发 SQLSTATE 23505 错误。</p>
+    </div>
+    <a href="/posts/databases/pgsql/" class="ba b--moon-gray bg-light-gray br2 color-inherit dib f7 hover-bg-moon-gray link mt2 ph2 pv1">read more</a>
+  </div>
+</div>
+
+        </div>
+      
+        <div class="w-100 w-30-l mb4 relative bg-white">
+          <div class="w-100 mb4 nested-copy-line-height relative bg-white">
+  <div class="mb3 pa4 gray overflow-hidden bg-white">
+    <span class="f6 db">databases</span>
+    <h1 class="f3 near-black">
+      <a href="/posts/databases/redis%E9%9B%AA%E5%B4%A9%E5%87%BB%E7%A9%BF%E5%92%8C%E7%A9%BF%E9%80%8F/" class="link black dim">
+        Redis雪崩击穿和穿透
+      </a>
+    </h1>
+    <div class="nested-links f5 lh-copy nested-copy-line-height">
+      <h1 id="1-缓存击穿">1. 缓存击穿</h1>
+<h2 id="什么是缓存击穿">什么是缓存击穿</h2>
+<blockquote>
+<p>缓存击穿也叫热点key问题，就是一个被<code>高并发访问</code>并且<code>缓存重建业务比较复杂</code>的key突然失效，无数的请求访问会在瞬间给数据库带来巨大的冲击。</p></blockquote>
+<!-- raw HTML omitted -->
+<h2 id="常见解决办法">常见解决办法</h2>
+<h3 id="1-互斥锁">1. 互斥锁</h3>
+<!-- raw HTML omitted -->
+<h3 id="2-逻辑过期">2. 逻辑过期</h3>
+<!-- raw HTML omitted -->
+<h2 id="解决方案对比">解决方案对比</h2>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: center">解决办法</th>
+          <th style="text-align: center">优点</th>
+          <th style="text-align: center">缺点</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: center">互斥锁</td>
+          <td style="text-align: center">1.没有额外内存消耗；2.保证一致性；3.实现简单</td>
+          <td style="text-align: center">1.线程需要等待，性能受影响；2.可能有死锁风险</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">逻辑过期</td>
+          <td style="text-align: center">线程无需等待，性能较好</td>
+          <td style="text-align: center">1.不保证一致性；2.有额外内存消耗；3.实现复杂</td>
+      </tr>
+  </tbody>
+</table>
+<h1 id="2缓存雪崩">2.缓存雪崩</h1>
+<h2 id="什么是缓存雪崩">什么是缓存雪崩</h2>
+<blockquote>
+<p>缓存雪崩是指在同一时段<code>大量的缓存key同时失效或者redis服务宕机</code>，导致大量请求直达数据库，带来巨大压力。</p></blockquote>
+<!-- raw HTML omitted -->
+<h2 id="常见解决办法-1">常见解决办法</h2>
+<ol>
+<li>给不同的key的TTL添加随机值，防止同一时间失效</li>
+<li>利用redis集群提高服务的可用性</li>
+<li>给缓存业务添加降级限流策略</li>
+<li>给业务添加多级缓存</li>
+</ol>
+<h1 id="缓存穿透">缓存穿透</h1>
+<h2 id="什么是缓存穿透">什么是缓存穿透</h2>
+<blockquote>
+<p>缓存穿透是指客户端请求的数据在缓存中和数据库中都不存在，这样缓存永远不会生效，这些请求都会打到数据库。</p></blockquote>
+<!-- raw HTML omitted -->
+<h2 id="常见解决办法-2">常见解决办法</h2>
+<h3 id="1-缓存空对象">1. 缓存空对象</h3>
+<!-- raw HTML omitted -->
+<h3 id="2-布隆过滤器">2. 布隆过滤器</h3>
+<!-- raw HTML omitted -->
+<h2 id="解决方案对比-1">解决方案对比</h2>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: center">解决方案</th>
+          <th style="text-align: center">优点</th>
+          <th style="text-align: center">缺点</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: center">缓存空对象</td>
+          <td style="text-align: center">实现简单，维护方便</td>
+          <td style="text-align: center">额外内存消耗，可能造成短期数据不一致</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">布隆过滤器</td>
+          <td style="text-align: center">内存占用少，没有多余key</td>
+          <td style="text-align: center">实现复杂，存在误判</td>
+      </tr>
+  </tbody>
+</table>
+    </div>
+    <a href="/posts/databases/redis%E9%9B%AA%E5%B4%A9%E5%87%BB%E7%A9%BF%E5%92%8C%E7%A9%BF%E9%80%8F/" class="ba b--moon-gray bg-light-gray br2 color-inherit dib f7 hover-bg-moon-gray link mt2 ph2 pv1">read more</a>
+  </div>
+</div>
+
+        </div>
+      
+        <div class="w-100 w-30-l mb4 relative bg-white">
+          <div class="w-100 mb4 nested-copy-line-height relative bg-white">
+  <div class="mb3 pa4 gray overflow-hidden bg-white">
+    <span class="f6 db">databases</span>
+    <h1 class="f3 near-black">
+      <a href="/posts/databases/mysql%E6%97%A5%E5%BF%97/" class="link black dim">
+        mysql日志
+      </a>
+    </h1>
+    <div class="nested-links f5 lh-copy nested-copy-line-height">
+      <h1 id="undolog">UndoLog</h1>
+<blockquote>
+<p>悔做日志（Undo Log）是数据库事务管理的一个关键组成部分，尤其是在支持事务的存储引擎（如 MySQL 的 InnoDB 存储引擎）中。Undo Log 主要用于记录事务对数据的修改操作的反向操作，以便在事务回滚时撤销这些修改。在 InnoDB 存储引擎中，Undo Log 用于实现事务的原子性（Atomicity）和隔离性（Isolation）。</p></blockquote>
+<h2 id="功能">功能</h2>
+<ol>
+<li>
+<p><strong>事务回滚</strong>：当一个事务需要回滚时（例如，事务执行过程中遇到错误或用户手动执行 ROLLBACK 命令），Undo Log 中存储的反向操作会被用来撤销事务对数据的所有更改，从而实现事务的原子性。</p>
+</li>
+<li>
+<p><strong>多版本并发控制（MVCC）</strong>：InnoDB 存储引擎使用多版本并发控制（MVCC）技术来实现事务的隔离性。在 MVCC 模型中，不同事务对相同数据的修改不会直接覆盖数据，而是在 Undo Log 中生成一个数据的旧版本。这使得在同一时间点，不同事务可以看到数据的不同版本，从而实现事务的隔离性。</p>
+</li>
+</ol>
+<h2 id="工作流程">工作流程</h2>
+<ol>
+<li>
+<p>当一个事务开始执行时，InnoDB 会为该事务分配一个新的 Undo Log。如果该事务修改了数据，InnoDB 会将修改前的数据存储在 Undo Log 中。</p>
+</li>
+<li>
+<p>如果事务正常提交，Undo Log 中的记录会在一段时间后被清理。这个过程通常在下一个检查点（Checkpoint）时发生，因为检查点会确保所有相关的数据更改已经被持久化到磁盘。</p>
+</li>
+<li>
+<p>如果事务需要回滚，InnoDB 会使用 Undo Log 中的记录来撤销事务所做的所有更改。这样，数据可以恢复到事务开始前的状态，从而实现事务的原子性。</p>
+</li>
+<li>
+<p>在并发事务的情况下，Undo Log 中存储的数据旧版本用于实现多版本并发控制。当一个事务需要读取数据时，InnoDB 会根据该事务的隔离级别和 Undo Log 中的记录来确定应该返回哪个版本的数据。</p>
+</li>
+</ol>
+<h1 id="binarylog">BinaryLog</h1>
+<blockquote>
+<p>binlog 用于记录数据库执行的写入性操作(不包括查询)信息，以二进制的形式保存在磁盘中。由MySQL 的 Server 层实现的，所有引擎都可以使用</p>
+<p>BinLog是逻辑日志，记录的是这个语句的原始逻辑，比如“给 ID=2 这一行的 c 字段加 1 ”。</p>
+<p>binlog 是可以追加写入的。“追加写”是指 binlog 文件写到一定大小后会切换到下一个，并不会覆盖以前的日志。</p>
+<p>使用场景：主从复制和数据恢复</p>
+<p>查看BinLog日志模式: <code>select @@binlog_format</code></p>
+    </div>
+    <a href="/posts/databases/mysql%E6%97%A5%E5%BF%97/" class="ba b--moon-gray bg-light-gray br2 color-inherit dib f7 hover-bg-moon-gray link mt2 ph2 pv1">read more</a>
+  </div>
+</div>
+
+        </div>
+      
+        <div class="w-100 w-30-l mb4 relative bg-white">
+          <div class="w-100 mb4 nested-copy-line-height relative bg-white">
+  <div class="mb3 pa4 gray overflow-hidden bg-white">
+    <span class="f6 db">databases</span>
+    <h1 class="f3 near-black">
+      <a href="/posts/databases/kafka/" class="link black dim">
+        kafka
+      </a>
+    </h1>
+    <div class="nested-links f5 lh-copy nested-copy-line-height">
+      <h1 id="指令">指令</h1>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: center">参数</th>
+          <th style="text-align: center">描述</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: center">&ndash;bootstrap-server</td>
+          <td style="text-align: center">连接Kafka主机名称和端口</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">&ndash;alter</td>
+          <td style="text-align: center">修改主题</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">&ndash;create</td>
+          <td style="text-align: center">创建主题</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">&ndash;delete</td>
+          <td style="text-align: center">删除主题</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">&ndash;describe</td>
+          <td style="text-align: center">主题详细信息</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">&ndash;partitions</td>
+          <td style="text-align: center">设置分区数，分区数修改只能大于当前分区数</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">&ndash;replication-factor</td>
+          <td style="text-align: center">设置分数副本，无法直接修改</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">&ndash;list</td>
+          <td style="text-align: center">查看全部主题</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">&ndash; topic</td>
+          <td style="text-align: center">操作的主题名称</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="创建topic">创建topic</h2>
+<blockquote>
+<p>&ndash;bootstrap-server：指定链接的Kafka，多个用逗号隔开</p>
+<p>&ndash;topic：指定topic名称</p>
+<p>&ndash;create：指定为创建topic</p>
+<p>&ndash;partitions：分区数</p>
+<p>&ndash;replication-factor：备份数，不能大于当前集群数，单节点就是1</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>~ &gt; kafka-topics --bootstrap-server 127.0.0.1:9092 --topic first --create --partitions <span style="color:#ae81ff">1</span> --replication-factor <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>Created topic first.
+</span></span></code></pre></div><h2 id="查看topic">查看topic</h2>
+<blockquote>
+<p>&ndash;list：查看有哪些topic</p>
+<p>&ndash;describe：查看某一个topic的信息</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>~ &gt; kafka-topics --bootstrap-server 127.0.0.1:9092 --list
+</span></span><span style="display:flex;"><span>first
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>~ &gt; kafka-topics --bootstrap-server 127.0.0.1:9092 --topic first --describe
+</span></span><span style="display:flex;"><span>Topic: first	TopicId: XMyZmRawTo6_DGxtYS7v1A	PartitionCount: 1	ReplicationFactor: 1	Configs: segment.bytes<span style="color:#f92672">=</span><span style="color:#ae81ff">1073741824</span>
+</span></span><span style="display:flex;"><span>	Topic: first	Partition: 0	Leader: 0	Replicas: 0	Isr: <span style="color:#ae81ff">0</span>
+</span></span></code></pre></div><h2 id="修改分区数">修改分区数</h2>
+<blockquote>
+<p>修改的分区数只能大于原来的分区数</p>
+    </div>
+    <a href="/posts/databases/kafka/" class="ba b--moon-gray bg-light-gray br2 color-inherit dib f7 hover-bg-moon-gray link mt2 ph2 pv1">read more</a>
+  </div>
+</div>
+
+        </div>
+      
+    </section>
+    <ul class="pagination pagination-default">
+      <li class="page-item disabled">
+        <a aria-disabled="true" aria-label="First" class="page-link" role="button" tabindex="-1"><span aria-hidden="true">&laquo;&laquo;</span></a>
+      </li>
+      <li class="page-item disabled">
+        <a aria-disabled="true" aria-label="Previous" class="page-link" role="button" tabindex="-1"><span aria-hidden="true">&laquo;</span></a>
+      </li>
+      <li class="page-item active">
+        <a aria-current="page" aria-label="Page 1" class="page-link" role="button">1</a>
+      </li>
+      <li class="page-item">
+        <a href="/posts/databases/page/2/" aria-label="Page 2" class="page-link" role="button">2</a>
+      </li>
+      <li class="page-item">
+        <a href="/posts/databases/page/2/" aria-label="Next" class="page-link" role="button"><span aria-hidden="true">&raquo;</span></a>
+      </li>
+      <li class="page-item">
+        <a href="/posts/databases/page/2/" aria-label="Last" class="page-link" role="button"><span aria-hidden="true">&raquo;&raquo;</span></a>
+      </li>
+    </ul></article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white white-70 dn dib-ns pv2 ph3 no-underline" href="http://localhost:1313/" >
+    &copy;  loveyu233 2025 
+  </a>
+    <div><div class="ananke-socials"></div>
+</div>
+  </div>
+</footer>
+
+  </body>
+</html>

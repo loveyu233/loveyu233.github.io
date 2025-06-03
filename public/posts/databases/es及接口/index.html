@@ -1,0 +1,1884 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>ES接口 | loveyu233</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="ES及接口
+
+v1.0.0
+Base URLs:
+
+测试环境: http://127.0.0.1:9200
+
+索引
+PUT 创建索引
+PUT /test1
+
+返回示例
+
+200 Response
+{
+  &#34;acknowledged&#34;: true,
+  &#34;shards_acknowledged&#34;: true,
+  &#34;index&#34;: &#34;string&#34;
+}
+返回结果
+
+  
+      
+          状态码
+          状态码含义
+          说明
+          数据模型
+      
+  
+  
+      
+          200
+          OK
+          成功
+          Inline
+      
+  
+
+返回数据结构
+状态码 200
+
+  
+      
+          名称
+          类型
+          必选
+          约束
+          中文名
+          说明
+      
+  
+  
+      
+          » acknowledged
+          boolean
+          true
+          none
+          响应结果
+          none
+      
+      
+          » shards_acknowledged
+          boolean
+          true
+          none
+          分片结果
+          none
+      
+      
+          » index
+          string
+          true
+          none
+          索引名称
+          none
+      
+  
+
+DELETE 删除索引
+DELETE /test1">
+    <meta name="generator" content="Hugo 0.147.7">
+    
+    
+    
+      <meta name="robots" content="noindex, nofollow">
+    
+    <meta name="author" content="loveyu">
+    
+
+    
+<link rel="stylesheet" href="/ananke/css/main.min.css" >
+
+
+
+
+    
+
+
+    
+      
+
+    
+
+    
+
+    
+      <link rel="canonical" href="http://localhost:1313/posts/databases/es%E5%8F%8A%E6%8E%A5%E5%8F%A3/">
+    
+
+    <meta property="og:url" content="http://localhost:1313/posts/databases/es%E5%8F%8A%E6%8E%A5%E5%8F%A3/">
+  <meta property="og:site_name" content="loveyu233">
+  <meta property="og:title" content="ES接口">
+  <meta property="og:description" content="ES及接口 v1.0.0
+Base URLs:
+测试环境: http://127.0.0.1:9200 索引 PUT 创建索引 PUT /test1
+返回示例
+200 Response
+{ &#34;acknowledged&#34;: true, &#34;shards_acknowledged&#34;: true, &#34;index&#34;: &#34;string&#34; } 返回结果 状态码 状态码含义 说明 数据模型 200 OK 成功 Inline 返回数据结构 状态码 200
+名称 类型 必选 约束 中文名 说明 » acknowledged boolean true none 响应结果 none » shards_acknowledged boolean true none 分片结果 none » index string true none 索引名称 none DELETE 删除索引 DELETE /test1">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2023-08-11T11:18:37+08:00">
+    <meta property="article:modified_time" content="2023-08-11T11:18:37+08:00">
+    <meta property="article:tag" content="Go">
+    <meta property="article:tag" content="ES">
+
+  <meta itemprop="name" content="ES接口">
+  <meta itemprop="description" content="ES及接口 v1.0.0
+Base URLs:
+测试环境: http://127.0.0.1:9200 索引 PUT 创建索引 PUT /test1
+返回示例
+200 Response
+{ &#34;acknowledged&#34;: true, &#34;shards_acknowledged&#34;: true, &#34;index&#34;: &#34;string&#34; } 返回结果 状态码 状态码含义 说明 数据模型 200 OK 成功 Inline 返回数据结构 状态码 200
+名称 类型 必选 约束 中文名 说明 » acknowledged boolean true none 响应结果 none » shards_acknowledged boolean true none 分片结果 none » index string true none 索引名称 none DELETE 删除索引 DELETE /test1">
+  <meta itemprop="datePublished" content="2023-08-11T11:18:37+08:00">
+  <meta itemprop="dateModified" content="2023-08-11T11:18:37+08:00">
+  <meta itemprop="wordCount" content="1253">
+  <meta itemprop="keywords" content="Go,ES">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="ES接口">
+  <meta name="twitter:description" content="ES及接口 v1.0.0
+Base URLs:
+测试环境: http://127.0.0.1:9200 索引 PUT 创建索引 PUT /test1
+返回示例
+200 Response
+{ &#34;acknowledged&#34;: true, &#34;shards_acknowledged&#34;: true, &#34;index&#34;: &#34;string&#34; } 返回结果 状态码 状态码含义 说明 数据模型 200 OK 成功 Inline 返回数据结构 状态码 200
+名称 类型 必选 约束 中文名 说明 » acknowledged boolean true none 响应结果 none » shards_acknowledged boolean true none 分片结果 none » index string true none 索引名称 none DELETE 删除索引 DELETE /test1">
+
+	
+  </head><body class="ma0 avenir bg-near-white development">
+
+    
+   
+  
+
+  <header>
+    <div class="bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l center items-center justify-between">
+    <a href="/" class="f3 fw2 hover-white white-90 dib no-underline">
+      
+        loveyu233
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      <div class="ananke-socials"></div>
+
+    </div>
+  </div>
+</nav>
+
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  
+  <article class="flex-l mw8 center ph3 flex-wrap justify-between">
+    <header class="mt4 w-100">
+      <aside class="instapaper_ignoref b helvetica tracked ttu">
+          
+        databases
+      </aside><div id="sharing" class="mt3 ananke-socials"></div>
+<h1 class="f1 athelas mt3 mb1">ES接口</h1>
+      
+      <p class="tracked"><strong>loveyu</strong>
+      </p>
+      
+      
+      
+      <time class="f6 mv4 dib tracked" datetime="2023-08-11T11:18:37+08:00">August 11, 2023</time>
+      
+
+      
+      
+    </header>
+    <div class="nested-copy-line-height lh-copy serif f4 nested-links mid-gray pr4-l w-two-thirds-l"><h1 id="es及接口">ES及接口</h1>
+<blockquote>
+<p>v1.0.0</p></blockquote>
+<p>Base URLs:</p>
+<ul>
+<li><!-- raw HTML omitted -->测试环境: http://127.0.0.1:9200<!-- raw HTML omitted --></li>
+</ul>
+<h1 id="索引">索引</h1>
+<h2 id="put-创建索引">PUT 创建索引</h2>
+<p>PUT /test1</p>
+<blockquote>
+<p>返回示例</p></blockquote>
+<blockquote>
+<p>200 Response</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;acknowledged&#34;</span>: <span style="color:#66d9ef">true</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;shards_acknowledged&#34;</span>: <span style="color:#66d9ef">true</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;index&#34;</span>: <span style="color:#e6db74">&#34;string&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="返回结果">返回结果</h3>
+<table>
+  <thead>
+      <tr>
+          <th>状态码</th>
+          <th>状态码含义</th>
+          <th>说明</th>
+          <th>数据模型</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>200</td>
+          <td><a href="https://tools.ietf.org/html/rfc7231#section-6.3.1">OK</a></td>
+          <td>成功</td>
+          <td>Inline</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="返回数据结构">返回数据结构</h3>
+<p>状态码 <strong>200</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>名称</th>
+          <th>类型</th>
+          <th>必选</th>
+          <th>约束</th>
+          <th>中文名</th>
+          <th>说明</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>» acknowledged</td>
+          <td>boolean</td>
+          <td>true</td>
+          <td>none</td>
+          <td>响应结果</td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>» shards_acknowledged</td>
+          <td>boolean</td>
+          <td>true</td>
+          <td>none</td>
+          <td>分片结果</td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>» index</td>
+          <td>string</td>
+          <td>true</td>
+          <td>none</td>
+          <td>索引名称</td>
+          <td>none</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="delete-删除索引">DELETE 删除索引</h2>
+<p>DELETE /test1</p>
+<blockquote>
+<p>返回示例</p></blockquote>
+<blockquote>
+<p>200 Response</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{}
+</span></span></code></pre></div><h3 id="返回结果-1">返回结果</h3>
+<table>
+  <thead>
+      <tr>
+          <th>状态码</th>
+          <th>状态码含义</th>
+          <th>说明</th>
+          <th>数据模型</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>200</td>
+          <td><a href="https://tools.ietf.org/html/rfc7231#section-6.3.1">OK</a></td>
+          <td>成功</td>
+          <td>Inline</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="返回数据结构-1">返回数据结构</h3>
+<h2 id="get-查询索引">GET 查询索引</h2>
+<p>GET /test</p>
+<blockquote>
+<p>返回示例</p></blockquote>
+<blockquote>
+<p>200 Response</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;test&#34;</span>: {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;aliases&#34;</span>: {},
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;mappings&#34;</span>: {},
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;settings&#34;</span>: {
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;index&#34;</span>: {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;routing&#34;</span>: {
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">&#34;allocation&#34;</span>: <span style="color:#66d9ef">null</span>
+</span></span><span style="display:flex;"><span>        },
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;number_of_shards&#34;</span>: <span style="color:#e6db74">&#34;string&#34;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;provided_name&#34;</span>: <span style="color:#e6db74">&#34;string&#34;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;creation_date&#34;</span>: <span style="color:#e6db74">&#34;string&#34;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;number_of_replicas&#34;</span>: <span style="color:#e6db74">&#34;string&#34;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;uuid&#34;</span>: <span style="color:#e6db74">&#34;string&#34;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;version&#34;</span>: {
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">&#34;created&#34;</span>: <span style="color:#66d9ef">null</span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="返回结果-2">返回结果</h3>
+<table>
+  <thead>
+      <tr>
+          <th>状态码</th>
+          <th>状态码含义</th>
+          <th>说明</th>
+          <th>数据模型</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>200</td>
+          <td><a href="https://tools.ietf.org/html/rfc7231#section-6.3.1">OK</a></td>
+          <td>成功</td>
+          <td>Inline</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="返回数据结构-2">返回数据结构</h3>
+<p>状态码 <strong>200</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>名称</th>
+          <th>类型</th>
+          <th>必选</th>
+          <th>约束</th>
+          <th>中文名</th>
+          <th>说明</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>» test</td>
+          <td>object</td>
+          <td>true</td>
+          <td>none</td>
+          <td>索引名</td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>»» aliases</td>
+          <td>object</td>
+          <td>true</td>
+          <td>none</td>
+          <td>别名</td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>»» mappings</td>
+          <td>object</td>
+          <td>true</td>
+          <td>none</td>
+          <td>映射</td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>»» settings</td>
+          <td>object</td>
+          <td>true</td>
+          <td>none</td>
+          <td>设置</td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>»»» index</td>
+          <td>object</td>
+          <td>true</td>
+          <td>none</td>
+          <td>索引</td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>»»»» routing</td>
+          <td>object</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>»»»»» allocation</td>
+          <td>object</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>»»»»»» include</td>
+          <td>object</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>»»»»»»» _tier_preference</td>
+          <td>string</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>»»»» number_of_shards</td>
+          <td>string</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>»»»» provided_name</td>
+          <td>string</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>»»»» creation_date</td>
+          <td>string</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>»»»» number_of_replicas</td>
+          <td>string</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>»»»» uuid</td>
+          <td>string</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>»»»» version</td>
+          <td>object</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>»»»»» created</td>
+          <td>string</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="get-查看全部索引">GET 查看全部索引</h2>
+<p>GET /_cat/indices</p>
+<blockquote>
+<p>返回示例</p></blockquote>
+<blockquote>
+<p>成功</p></blockquote>
+<h3 id="返回结果-3">返回结果</h3>
+<table>
+  <thead>
+      <tr>
+          <th>状态码</th>
+          <th>状态码含义</th>
+          <th>说明</th>
+          <th>数据模型</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>200</td>
+          <td><a href="https://tools.ietf.org/html/rfc7231#section-6.3.1">OK</a></td>
+          <td>成功</td>
+          <td>Inline</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="返回数据结构-3">返回数据结构</h3>
+<h2 id="put-索引映射相当于指定字段的类型keyword为不可分割类型查询时必须全部满足才可以查询到结果index为false的字段不能单独查询">PUT 索引映射(相当于指定字段的类型,keyword为不可分割类型,查询时必须全部满足才可以查询到结果,index为false的字段不能单独查询)</h2>
+<p>PUT /user/_mapping</p>
+<blockquote>
+<p>Body 请求参数</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;properties&#34;</span>: {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;name&#34;</span>: {
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;text&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;index&#34;</span>: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;sex&#34;</span>: {
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;keyword&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;index&#34;</span>: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;tel&#34;</span>: {
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;keyword&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;index&#34;</span>: <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="请求参数">请求参数</h3>
+<table>
+  <thead>
+      <tr>
+          <th>名称</th>
+          <th>位置</th>
+          <th>类型</th>
+          <th>必选</th>
+          <th>说明</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>body</td>
+          <td>body</td>
+          <td>object</td>
+          <td>否</td>
+          <td>none</td>
+      </tr>
+  </tbody>
+</table>
+<blockquote>
+<p>返回示例</p></blockquote>
+<blockquote>
+<p>成功</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;acknowledged&#34;</span>: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="返回结果-4">返回结果</h3>
+<table>
+  <thead>
+      <tr>
+          <th>状态码</th>
+          <th>状态码含义</th>
+          <th>说明</th>
+          <th>数据模型</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>200</td>
+          <td><a href="https://tools.ietf.org/html/rfc7231#section-6.3.1">OK</a></td>
+          <td>成功</td>
+          <td>Inline</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="返回数据结构-4">返回数据结构</h3>
+<p>状态码 <strong>200</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>名称</th>
+          <th>类型</th>
+          <th>必选</th>
+          <th>约束</th>
+          <th>中文名</th>
+          <th>说明</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>» acknowledged</td>
+          <td>boolean</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="get-查看指定索引的映射规则">GET 查看指定索引的映射规则</h2>
+<p>GET /user/_mapping</p>
+<blockquote>
+<p>返回示例</p></blockquote>
+<blockquote>
+<p>成功</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;user&#34;</span>: {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;mappings&#34;</span>: {
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;properties&#34;</span>: {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;name&#34;</span>: {
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;text&#34;</span>
+</span></span><span style="display:flex;"><span>        },
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;sex&#34;</span>: {
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;keyword&#34;</span>
+</span></span><span style="display:flex;"><span>        },
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;tel&#34;</span>: {
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;keyword&#34;</span>,
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">&#34;index&#34;</span>: <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="返回结果-5">返回结果</h3>
+<table>
+  <thead>
+      <tr>
+          <th>状态码</th>
+          <th>状态码含义</th>
+          <th>说明</th>
+          <th>数据模型</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>200</td>
+          <td><a href="https://tools.ietf.org/html/rfc7231#section-6.3.1">OK</a></td>
+          <td>成功</td>
+          <td>Inline</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="返回数据结构-5">返回数据结构</h3>
+<p>状态码 <strong>200</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>名称</th>
+          <th>类型</th>
+          <th>必选</th>
+          <th>约束</th>
+          <th>中文名</th>
+          <th>说明</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>» user</td>
+          <td>object</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>»» mappings</td>
+          <td>object</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>»»» properties</td>
+          <td>object</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>»»»» name</td>
+          <td>object</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>»»»»» type</td>
+          <td>string</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>»»»» sex</td>
+          <td>object</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>»»»»» type</td>
+          <td>string</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>»»»» tel</td>
+          <td>object</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>»»»»» type</td>
+          <td>string</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>»»»»» index</td>
+          <td>boolean</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+  </tbody>
+</table>
+<h1 id="文档">文档</h1>
+<h2 id="post-创建文档">POST 创建文档</h2>
+<p>POST /shopping/_doc</p>
+<blockquote>
+<p>Body 请求参数</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;title&#34;</span>: <span style="color:#e6db74">&#34;小米手机&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;category&#34;</span>: <span style="color:#e6db74">&#34;小米&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;image&#34;</span>: <span style="color:#e6db74">&#34;http://abc.com/a.jpg&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;price&#34;</span>: <span style="color:#ae81ff">2999.99</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="请求参数-1">请求参数</h3>
+<table>
+  <thead>
+      <tr>
+          <th>名称</th>
+          <th>位置</th>
+          <th>类型</th>
+          <th>必选</th>
+          <th>说明</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>body</td>
+          <td>body</td>
+          <td>object</td>
+          <td>否</td>
+          <td>none</td>
+      </tr>
+  </tbody>
+</table>
+<blockquote>
+<p>返回示例</p></blockquote>
+<blockquote>
+<p>成功</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;_index&#34;</span>: <span style="color:#e6db74">&#34;shopping&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;_id&#34;</span>: <span style="color:#e6db74">&#34;PAGtQ4kBKLdwdVo2W1at&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;_version&#34;</span>: <span style="color:#ae81ff">1</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;result&#34;</span>: <span style="color:#e6db74">&#34;created&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;_shards&#34;</span>: {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;total&#34;</span>: <span style="color:#ae81ff">2</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;successful&#34;</span>: <span style="color:#ae81ff">1</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;failed&#34;</span>: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;_seq_no&#34;</span>: <span style="color:#ae81ff">0</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;_primary_term&#34;</span>: <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="返回结果-6">返回结果</h3>
+<table>
+  <thead>
+      <tr>
+          <th>状态码</th>
+          <th>状态码含义</th>
+          <th>说明</th>
+          <th>数据模型</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>201</td>
+          <td><a href="https://tools.ietf.org/html/rfc7231#section-6.3.2">Created</a></td>
+          <td>成功</td>
+          <td>Inline</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="返回数据结构-6">返回数据结构</h3>
+<p>状态码 <strong>201</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>名称</th>
+          <th>类型</th>
+          <th>必选</th>
+          <th>约束</th>
+          <th>中文名</th>
+          <th>说明</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>» _index</td>
+          <td>string</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>» _id</td>
+          <td>string</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>» _version</td>
+          <td>integer</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>» result</td>
+          <td>string</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>» _shards</td>
+          <td>object</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>»» total</td>
+          <td>integer</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>»» successful</td>
+          <td>integer</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>»» failed</td>
+          <td>integer</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>» _seq_no</td>
+          <td>integer</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>» _primary_term</td>
+          <td>integer</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="get-获取指定字段的平均值">GET 获取指定字段的平均值</h2>
+<p>GET /shopping/_search</p>
+<blockquote>
+<p>Body 请求参数</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;aggs&#34;</span>: {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;suibianqide&#34;</span>: {
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;avg&#34;</span>: {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;field&#34;</span>: <span style="color:#e6db74">&#34;price&#34;</span>
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;size&#34;</span>: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="请求参数-2">请求参数</h3>
+<table>
+  <thead>
+      <tr>
+          <th>名称</th>
+          <th>位置</th>
+          <th>类型</th>
+          <th>必选</th>
+          <th>说明</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>body</td>
+          <td>body</td>
+          <td>object</td>
+          <td>否</td>
+          <td>none</td>
+      </tr>
+  </tbody>
+</table>
+<blockquote>
+<p>返回示例</p></blockquote>
+<blockquote>
+<p>成功</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;took&#34;</span>: <span style="color:#ae81ff">1</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;timed_out&#34;</span>: <span style="color:#66d9ef">false</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;_shards&#34;</span>: {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;total&#34;</span>: <span style="color:#ae81ff">1</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;successful&#34;</span>: <span style="color:#ae81ff">1</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;skipped&#34;</span>: <span style="color:#ae81ff">0</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;failed&#34;</span>: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;hits&#34;</span>: {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;total&#34;</span>: {
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;value&#34;</span>: <span style="color:#ae81ff">7</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;relation&#34;</span>: <span style="color:#e6db74">&#34;eq&#34;</span>
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;max_score&#34;</span>: <span style="color:#66d9ef">null</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;hits&#34;</span>: []
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;aggregations&#34;</span>: {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;suibianqide&#34;</span>: {
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;value&#34;</span>: <span style="color:#ae81ff">3142.8471330915177</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="返回结果-7">返回结果</h3>
+<table>
+  <thead>
+      <tr>
+          <th>状态码</th>
+          <th>状态码含义</th>
+          <th>说明</th>
+          <th>数据模型</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>200</td>
+          <td><a href="https://tools.ietf.org/html/rfc7231#section-6.3.1">OK</a></td>
+          <td>成功</td>
+          <td>Inline</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="返回数据结构-7">返回数据结构</h3>
+<p>状态码 <strong>200</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>名称</th>
+          <th>类型</th>
+          <th>必选</th>
+          <th>约束</th>
+          <th>中文名</th>
+          <th>说明</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>» took</td>
+          <td>integer</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>» timed_out</td>
+          <td>boolean</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>» _shards</td>
+          <td>object</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>»» total</td>
+          <td>integer</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>»» successful</td>
+          <td>integer</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>»» skipped</td>
+          <td>integer</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>»» failed</td>
+          <td>integer</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>» hits</td>
+          <td>object</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>»» total</td>
+          <td>object</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>»»» value</td>
+          <td>integer</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>»»» relation</td>
+          <td>string</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>»» max_score</td>
+          <td>null</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>»» hits</td>
+          <td>[string]</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>» aggregations</td>
+          <td>object</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>»» suibianqide</td>
+          <td>object</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>»»» value</td>
+          <td>number</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="get-根据文档id查询信息">GET 根据文档id查询信息</h2>
+<p>GET /shopping/_doc/PAGtQ4kBKLdwdVo2W1at</p>
+<blockquote>
+<p>返回示例</p></blockquote>
+<blockquote>
+<p>成功</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;_index&#34;</span>: <span style="color:#e6db74">&#34;shopping&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;_id&#34;</span>: <span style="color:#e6db74">&#34;PAGtQ4kBKLdwdVo2W1at&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;_version&#34;</span>: <span style="color:#ae81ff">1</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;_seq_no&#34;</span>: <span style="color:#ae81ff">0</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;_primary_term&#34;</span>: <span style="color:#ae81ff">1</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;found&#34;</span>: <span style="color:#66d9ef">true</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;_source&#34;</span>: {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;title&#34;</span>: <span style="color:#e6db74">&#34;小米手机&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;category&#34;</span>: <span style="color:#e6db74">&#34;小米&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;image&#34;</span>: <span style="color:#e6db74">&#34;http://abc.com/a.jpg&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;price&#34;</span>: <span style="color:#ae81ff">2999.99</span>
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="返回结果-8">返回结果</h3>
+<table>
+  <thead>
+      <tr>
+          <th>状态码</th>
+          <th>状态码含义</th>
+          <th>说明</th>
+          <th>数据模型</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>200</td>
+          <td><a href="https://tools.ietf.org/html/rfc7231#section-6.3.1">OK</a></td>
+          <td>成功</td>
+          <td>Inline</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="返回数据结构-8">返回数据结构</h3>
+<p>状态码 <strong>200</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>名称</th>
+          <th>类型</th>
+          <th>必选</th>
+          <th>约束</th>
+          <th>中文名</th>
+          <th>说明</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>» _index</td>
+          <td>string</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>» _id</td>
+          <td>string</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>» _version</td>
+          <td>integer</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>» _seq_no</td>
+          <td>integer</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>» _primary_term</td>
+          <td>integer</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>» found</td>
+          <td>boolean</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>» _source</td>
+          <td>object</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>»» title</td>
+          <td>string</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>»» category</td>
+          <td>string</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>»» image</td>
+          <td>string</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>»» price</td>
+          <td>number</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="delete-根据文档id删除该文档">DELETE 根据文档id删除该文档</h2>
+<p>DELETE /shopping/_doc/PAGtQ4kBKLdwdVo2W1at</p>
+<blockquote>
+<p>Body 请求参数</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{}
+</span></span></code></pre></div><h3 id="请求参数-3">请求参数</h3>
+<table>
+  <thead>
+      <tr>
+          <th>名称</th>
+          <th>位置</th>
+          <th>类型</th>
+          <th>必选</th>
+          <th>说明</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>body</td>
+          <td>body</td>
+          <td>object</td>
+          <td>否</td>
+          <td>none</td>
+      </tr>
+  </tbody>
+</table>
+<blockquote>
+<p>返回示例</p></blockquote>
+<blockquote>
+<p>成功</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;_index&#34;</span>: <span style="color:#e6db74">&#34;shopping&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;_id&#34;</span>: <span style="color:#e6db74">&#34;PAGtQ4kBKLdwdVo2W1at&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;_version&#34;</span>: <span style="color:#ae81ff">2</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;result&#34;</span>: <span style="color:#e6db74">&#34;deleted&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;_shards&#34;</span>: {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;total&#34;</span>: <span style="color:#ae81ff">2</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;successful&#34;</span>: <span style="color:#ae81ff">1</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;failed&#34;</span>: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;_seq_no&#34;</span>: <span style="color:#ae81ff">1</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;_primary_term&#34;</span>: <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="返回结果-9">返回结果</h3>
+<table>
+  <thead>
+      <tr>
+          <th>状态码</th>
+          <th>状态码含义</th>
+          <th>说明</th>
+          <th>数据模型</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>200</td>
+          <td><a href="https://tools.ietf.org/html/rfc7231#section-6.3.1">OK</a></td>
+          <td>成功</td>
+          <td>Inline</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="返回数据结构-9">返回数据结构</h3>
+<p>状态码 <strong>200</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>名称</th>
+          <th>类型</th>
+          <th>必选</th>
+          <th>约束</th>
+          <th>中文名</th>
+          <th>说明</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>» _index</td>
+          <td>string</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>» _id</td>
+          <td>string</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>» _version</td>
+          <td>integer</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>» result</td>
+          <td>string</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>» _shards</td>
+          <td>object</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>»» total</td>
+          <td>integer</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>»» successful</td>
+          <td>integer</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>»» failed</td>
+          <td>integer</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>» _seq_no</td>
+          <td>integer</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>» _primary_term</td>
+          <td>integer</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="post-修改文档和创建文档一样如要创建文档的id已存在就会覆盖掉原有的文档">POST 修改文档(和创建文档一样,如要创建文档的id已存在就会覆盖掉原有的文档)</h2>
+<p>POST /shopping/_doc/PAGtQ4kBKLdwdVo2W1at</p>
+<blockquote>
+<p>Body 请求参数</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;title&#34;</span>: <span style="color:#e6db74">&#34;小米手机123&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;category&#34;</span>: <span style="color:#e6db74">&#34;小米&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;image&#34;</span>: <span style="color:#e6db74">&#34;http://abc.com/a.jpg&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;price&#34;</span>: <span style="color:#ae81ff">2999.99</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="请求参数-4">请求参数</h3>
+<table>
+  <thead>
+      <tr>
+          <th>名称</th>
+          <th>位置</th>
+          <th>类型</th>
+          <th>必选</th>
+          <th>说明</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>body</td>
+          <td>body</td>
+          <td>object</td>
+          <td>否</td>
+          <td>none</td>
+      </tr>
+  </tbody>
+</table>
+<blockquote>
+<p>返回示例</p></blockquote>
+<blockquote>
+<p>成功</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;_index&#34;</span>: <span style="color:#e6db74">&#34;shopping&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;_id&#34;</span>: <span style="color:#e6db74">&#34;PAGtQ4kBKLdwdVo2W1at&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;_version&#34;</span>: <span style="color:#ae81ff">3</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;result&#34;</span>: <span style="color:#e6db74">&#34;updated&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;_shards&#34;</span>: {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;total&#34;</span>: <span style="color:#ae81ff">2</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;successful&#34;</span>: <span style="color:#ae81ff">1</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;failed&#34;</span>: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;_seq_no&#34;</span>: <span style="color:#ae81ff">5</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;_primary_term&#34;</span>: <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="返回结果-10">返回结果</h3>
+<table>
+  <thead>
+      <tr>
+          <th>状态码</th>
+          <th>状态码含义</th>
+          <th>说明</th>
+          <th>数据模型</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>200</td>
+          <td><a href="https://tools.ietf.org/html/rfc7231#section-6.3.1">OK</a></td>
+          <td>成功</td>
+          <td>Inline</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="返回数据结构-10">返回数据结构</h3>
+<p>状态码 <strong>200</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>名称</th>
+          <th>类型</th>
+          <th>必选</th>
+          <th>约束</th>
+          <th>中文名</th>
+          <th>说明</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>» _index</td>
+          <td>string</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>» _id</td>
+          <td>string</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>» _version</td>
+          <td>integer</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>» result</td>
+          <td>string</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>» _shards</td>
+          <td>object</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>»» total</td>
+          <td>integer</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>»» successful</td>
+          <td>integer</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>»» failed</td>
+          <td>integer</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>» _seq_no</td>
+          <td>integer</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>» _primary_term</td>
+          <td>integer</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="post-修改文档局部数据">POST 修改文档局部数据</h2>
+<p>POST /shopping/_update/PQGyQ4kBKLdwdVo2G1Zr</p>
+<blockquote>
+<p>Body 请求参数</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;doc&#34;</span>: {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;price&#34;</span>: <span style="color:#ae81ff">3999.99</span>
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="请求参数-5">请求参数</h3>
+<table>
+  <thead>
+      <tr>
+          <th>名称</th>
+          <th>位置</th>
+          <th>类型</th>
+          <th>必选</th>
+          <th>说明</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>body</td>
+          <td>body</td>
+          <td>object</td>
+          <td>否</td>
+          <td>none</td>
+      </tr>
+  </tbody>
+</table>
+<blockquote>
+<p>返回示例</p></blockquote>
+<blockquote>
+<p>成功</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;_index&#34;</span>: <span style="color:#e6db74">&#34;shopping&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;_id&#34;</span>: <span style="color:#e6db74">&#34;PAGtQ4kBKLdwdVo2W1at&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;_version&#34;</span>: <span style="color:#ae81ff">7</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;result&#34;</span>: <span style="color:#e6db74">&#34;created&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;_shards&#34;</span>: {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;total&#34;</span>: <span style="color:#ae81ff">2</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;successful&#34;</span>: <span style="color:#ae81ff">1</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;failed&#34;</span>: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;_seq_no&#34;</span>: <span style="color:#ae81ff">10</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;_primary_term&#34;</span>: <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="返回结果-11">返回结果</h3>
+<table>
+  <thead>
+      <tr>
+          <th>状态码</th>
+          <th>状态码含义</th>
+          <th>说明</th>
+          <th>数据模型</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>201</td>
+          <td><a href="https://tools.ietf.org/html/rfc7231#section-6.3.2">Created</a></td>
+          <td>成功</td>
+          <td>Inline</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="返回数据结构-11">返回数据结构</h3>
+<p>状态码 <strong>201</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>名称</th>
+          <th>类型</th>
+          <th>必选</th>
+          <th>约束</th>
+          <th>中文名</th>
+          <th>说明</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>» _index</td>
+          <td>string</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>» _id</td>
+          <td>string</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>» _version</td>
+          <td>integer</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>» result</td>
+          <td>string</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>» _shards</td>
+          <td>object</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>»» total</td>
+          <td>integer</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>»» successful</td>
+          <td>integer</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>»» failed</td>
+          <td>integer</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>» _seq_no</td>
+          <td>integer</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+      <tr>
+          <td>» _primary_term</td>
+          <td>integer</td>
+          <td>true</td>
+          <td>none</td>
+          <td></td>
+          <td>none</td>
+      </tr>
+  </tbody>
+</table>
+<h1 id="数据模型">数据模型</h1>
+<ul class="pa0">
+  
+   <li class="list di">
+     <a href="/tags/go/" class="link f5 grow br-pill ba ph3 pv2 mb2 dib black sans-serif no-underline">Go</a>
+   </li>
+  
+   <li class="list di">
+     <a href="/tags/es/" class="link f5 grow br-pill ba ph3 pv2 mb2 dib black sans-serif no-underline">ES</a>
+   </li>
+  
+</ul>
+<div class="mt6 instapaper_ignoref">
+      
+      
+      </div>
+    </div>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+  <div class="bg-light-gray pa3 nested-list-reset nested-copy-line-height nested-links">
+    <p class="f5 b mb3">Related</p>
+    <ul class="pa0 list">
+	   
+	     <li  class="mb2">
+          <a href="/posts/databases/gorm/">Gorm</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/gotoolpprof%E4%BD%BF%E7%94%A8/">pprof</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/other/git%E9%A1%B9%E7%9B%AE%E4%BD%BF%E7%94%A8/">git项目使用</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/fiber%E7%AC%94%E8%AE%B0/">fiber基础</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/other/%E9%93%BE%E8%B7%AF%E8%BF%BD%E8%B8%AA%E7%9B%91%E6%8E%A7/">链路追踪</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/go%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86%E4%BD%BF%E7%94%A8/">Go非对称加密使用</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/interview/">面试指南</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/%E5%AE%9E%E6%88%98%E6%8A%80%E5%B7%A7/">实战技巧</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/%E6%BB%91%E5%9D%97%E9%AA%8C%E8%AF%81%E7%A0%81%E5%AE%9E%E7%8E%B0/">滑块验证码实现</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/go-redis%E9%A1%B9%E7%9B%AE%E4%BD%BF%E7%94%A8/">Go Redis项目使用</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/grpc/">go GRPC使用</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/go-swagger/">Go Swagger</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/go%E5%8D%95%E7%82%B9%E7%99%BB%E5%BD%95/">Go单点登录</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/go-redis%E4%BD%BF%E7%94%A8lua%E8%84%9A%E6%9C%AC/">Go Redis使用lua脚本</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/gorm/">Gorm</a>
+        </li>
+	    
+    </ul>
+</div>
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white white-70 dn dib-ns pv2 ph3 no-underline" href="http://localhost:1313/" >
+    &copy;  loveyu233 2025 
+  </a>
+    <div><div class="ananke-socials"></div>
+</div>
+  </div>
+</footer>
+
+  </body>
+</html>

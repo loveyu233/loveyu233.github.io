@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>SpringSecurity单点登录 | loveyu233</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="Spring Security
+pom.xml：
+&lt;parent&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-parent&lt;/artifactId&gt;
+    &lt;version&gt;2.5.4&lt;/version&gt;
+    &lt;relativePath/&gt;
+&lt;/parent&gt;
+&lt;dependencies&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-boot-starter-security&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;mysql&lt;/groupId&gt;
+        &lt;artifactId&gt;mysql-connector-java&lt;/artifactId&gt;
+        &lt;scope&gt;runtime&lt;/scope&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.projectlombok&lt;/groupId&gt;
+        &lt;artifactId&gt;lombok&lt;/artifactId&gt;
+        &lt;optional&gt;true&lt;/optional&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-boot-starter-test&lt;/artifactId&gt;
+        &lt;scope&gt;test&lt;/scope&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.springframework.security&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-security-test&lt;/artifactId&gt;
+        &lt;scope&gt;test&lt;/scope&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;com.baomidou&lt;/groupId&gt;
+        &lt;artifactId&gt;mybatis-plus-boot-starter&lt;/artifactId&gt;
+        &lt;version&gt;3.4.2&lt;/version&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.slf4j&lt;/groupId&gt;
+        &lt;artifactId&gt;slf4j-api&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.thymeleaf.extras&lt;/groupId&gt;
+        &lt;artifactId&gt;thymeleaf-extras-springsecurity5&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-boot-starter-thymeleaf&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+&lt;/dependencies&gt;
+
+thymeleaf-extras-springsecurity5：thymeleaf和Spring security的整合jar包
+application.yml：
+spring:
+  datasource:
+    username: root
+    password: Hzyy1214
+    driverClassName: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/springSecurityTest?useUnicode=true&amp;characterEncoding=utf8&amp;zeroDateTimeBehavior=convertToNull&amp;useSSL=true&amp;serverTimezone=GMT%2B8
+
+配置数据库
+java
+目录结构
+&lt;B&gt;config
+
+	&lt;C&gt;securityConfig.java
+
+&lt;B&gt;controller
+
+	&lt;C&gt;UserController.java
+
+&lt;B&gt;&gt;hander
+
+	&lt;C&gt;MyAccessDeniedHandler.java
+
+	&lt;C&gt;MyAuthenticationFailureHandle.java
+
+	&lt;C&gt;MyAuthenticationSuccessHandle.java
+
+&lt;B&gt;mapper
+
+	&lt;C&gt;RoleMapper.java
+
+	&lt;C&gt;UserMapper.java
+
+&lt;B&gt;pojo
+
+	&lt;I&gt;Role.java
+
+	&lt;I&gt;Users.java
+
+&lt;B&gt;service
+
+	&lt;I&gt;MyAccess.java
+
+	&lt;C&gt;MyAccessImpl.java
+
+	&lt;C&gt;RoleService.java
+
+	&lt;C&gt;UserService.java
+
+	&lt;C&gt;UserDetailServiceImpl.java
+
+包；接口普通类">
+    <meta name="generator" content="Hugo 0.147.7">
+    
+    
+    
+      <meta name="robots" content="noindex, nofollow">
+    
+    <meta name="author" content="loveyu">
+    
+
+    
+<link rel="stylesheet" href="/ananke/css/main.min.css" >
+
+
+
+
+    
+
+
+    
+      
+
+    
+
+    
+
+    
+      <link rel="canonical" href="http://localhost:1313/posts/java/springsecurity%E5%8D%95%E7%82%B9%E7%99%BB%E5%BD%95/">
+    
+
+    <meta property="og:url" content="http://localhost:1313/posts/java/springsecurity%E5%8D%95%E7%82%B9%E7%99%BB%E5%BD%95/">
+  <meta property="og:site_name" content="loveyu233">
+  <meta property="og:title" content="SpringSecurity单点登录">
+  <meta property="og:description" content="Spring Security pom.xml： &lt;parent&gt; &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt; &lt;artifactId&gt;spring-boot-starter-parent&lt;/artifactId&gt; &lt;version&gt;2.5.4&lt;/version&gt; &lt;relativePath/&gt; &lt;/parent&gt; &lt;dependencies&gt; &lt;dependency&gt; &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt; &lt;artifactId&gt;spring-boot-starter-security&lt;/artifactId&gt; &lt;/dependency&gt; &lt;dependency&gt; &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt; &lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt; &lt;/dependency&gt; &lt;dependency&gt; &lt;groupId&gt;mysql&lt;/groupId&gt; &lt;artifactId&gt;mysql-connector-java&lt;/artifactId&gt; &lt;scope&gt;runtime&lt;/scope&gt; &lt;/dependency&gt; &lt;dependency&gt; &lt;groupId&gt;org.projectlombok&lt;/groupId&gt; &lt;artifactId&gt;lombok&lt;/artifactId&gt; &lt;optional&gt;true&lt;/optional&gt; &lt;/dependency&gt; &lt;dependency&gt; &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt; &lt;artifactId&gt;spring-boot-starter-test&lt;/artifactId&gt; &lt;scope&gt;test&lt;/scope&gt; &lt;/dependency&gt; &lt;dependency&gt; &lt;groupId&gt;org.springframework.security&lt;/groupId&gt; &lt;artifactId&gt;spring-security-test&lt;/artifactId&gt; &lt;scope&gt;test&lt;/scope&gt; &lt;/dependency&gt; &lt;dependency&gt; &lt;groupId&gt;com.baomidou&lt;/groupId&gt; &lt;artifactId&gt;mybatis-plus-boot-starter&lt;/artifactId&gt; &lt;version&gt;3.4.2&lt;/version&gt; &lt;/dependency&gt; &lt;dependency&gt; &lt;groupId&gt;org.slf4j&lt;/groupId&gt; &lt;artifactId&gt;slf4j-api&lt;/artifactId&gt; &lt;/dependency&gt; &lt;dependency&gt; &lt;groupId&gt;org.thymeleaf.extras&lt;/groupId&gt; &lt;artifactId&gt;thymeleaf-extras-springsecurity5&lt;/artifactId&gt; &lt;/dependency&gt; &lt;dependency&gt; &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt; &lt;artifactId&gt;spring-boot-starter-thymeleaf&lt;/artifactId&gt; &lt;/dependency&gt; &lt;/dependencies&gt; thymeleaf-extras-springsecurity5：thymeleaf和Spring security的整合jar包
+application.yml： spring: datasource: username: root password: Hzyy1214 driverClassName: com.mysql.cj.jdbc.Driver url: jdbc:mysql://localhost:3306/springSecurityTest?useUnicode=true&amp;characterEncoding=utf8&amp;zeroDateTimeBehavior=convertToNull&amp;useSSL=true&amp;serverTimezone=GMT%2B8 配置数据库
+java 目录结构 &lt;B&gt;config &lt;C&gt;securityConfig.java &lt;B&gt;controller &lt;C&gt;UserController.java &lt;B&gt;&gt;hander &lt;C&gt;MyAccessDeniedHandler.java &lt;C&gt;MyAuthenticationFailureHandle.java &lt;C&gt;MyAuthenticationSuccessHandle.java &lt;B&gt;mapper &lt;C&gt;RoleMapper.java &lt;C&gt;UserMapper.java &lt;B&gt;pojo &lt;I&gt;Role.java &lt;I&gt;Users.java &lt;B&gt;service &lt;I&gt;MyAccess.java &lt;C&gt;MyAccessImpl.java &lt;C&gt;RoleService.java &lt;C&gt;UserService.java &lt;C&gt;UserDetailServiceImpl.java 包；接口普通类">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2019-11-29T11:31:34+08:00">
+    <meta property="article:modified_time" content="2019-11-29T11:31:34+08:00">
+    <meta property="article:tag" content="Java">
+    <meta property="article:tag" content="SpringSecurity">
+    <meta property="article:tag" content="Sso">
+
+  <meta itemprop="name" content="SpringSecurity单点登录">
+  <meta itemprop="description" content="Spring Security pom.xml： &lt;parent&gt; &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt; &lt;artifactId&gt;spring-boot-starter-parent&lt;/artifactId&gt; &lt;version&gt;2.5.4&lt;/version&gt; &lt;relativePath/&gt; &lt;/parent&gt; &lt;dependencies&gt; &lt;dependency&gt; &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt; &lt;artifactId&gt;spring-boot-starter-security&lt;/artifactId&gt; &lt;/dependency&gt; &lt;dependency&gt; &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt; &lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt; &lt;/dependency&gt; &lt;dependency&gt; &lt;groupId&gt;mysql&lt;/groupId&gt; &lt;artifactId&gt;mysql-connector-java&lt;/artifactId&gt; &lt;scope&gt;runtime&lt;/scope&gt; &lt;/dependency&gt; &lt;dependency&gt; &lt;groupId&gt;org.projectlombok&lt;/groupId&gt; &lt;artifactId&gt;lombok&lt;/artifactId&gt; &lt;optional&gt;true&lt;/optional&gt; &lt;/dependency&gt; &lt;dependency&gt; &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt; &lt;artifactId&gt;spring-boot-starter-test&lt;/artifactId&gt; &lt;scope&gt;test&lt;/scope&gt; &lt;/dependency&gt; &lt;dependency&gt; &lt;groupId&gt;org.springframework.security&lt;/groupId&gt; &lt;artifactId&gt;spring-security-test&lt;/artifactId&gt; &lt;scope&gt;test&lt;/scope&gt; &lt;/dependency&gt; &lt;dependency&gt; &lt;groupId&gt;com.baomidou&lt;/groupId&gt; &lt;artifactId&gt;mybatis-plus-boot-starter&lt;/artifactId&gt; &lt;version&gt;3.4.2&lt;/version&gt; &lt;/dependency&gt; &lt;dependency&gt; &lt;groupId&gt;org.slf4j&lt;/groupId&gt; &lt;artifactId&gt;slf4j-api&lt;/artifactId&gt; &lt;/dependency&gt; &lt;dependency&gt; &lt;groupId&gt;org.thymeleaf.extras&lt;/groupId&gt; &lt;artifactId&gt;thymeleaf-extras-springsecurity5&lt;/artifactId&gt; &lt;/dependency&gt; &lt;dependency&gt; &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt; &lt;artifactId&gt;spring-boot-starter-thymeleaf&lt;/artifactId&gt; &lt;/dependency&gt; &lt;/dependencies&gt; thymeleaf-extras-springsecurity5：thymeleaf和Spring security的整合jar包
+application.yml： spring: datasource: username: root password: Hzyy1214 driverClassName: com.mysql.cj.jdbc.Driver url: jdbc:mysql://localhost:3306/springSecurityTest?useUnicode=true&amp;characterEncoding=utf8&amp;zeroDateTimeBehavior=convertToNull&amp;useSSL=true&amp;serverTimezone=GMT%2B8 配置数据库
+java 目录结构 &lt;B&gt;config &lt;C&gt;securityConfig.java &lt;B&gt;controller &lt;C&gt;UserController.java &lt;B&gt;&gt;hander &lt;C&gt;MyAccessDeniedHandler.java &lt;C&gt;MyAuthenticationFailureHandle.java &lt;C&gt;MyAuthenticationSuccessHandle.java &lt;B&gt;mapper &lt;C&gt;RoleMapper.java &lt;C&gt;UserMapper.java &lt;B&gt;pojo &lt;I&gt;Role.java &lt;I&gt;Users.java &lt;B&gt;service &lt;I&gt;MyAccess.java &lt;C&gt;MyAccessImpl.java &lt;C&gt;RoleService.java &lt;C&gt;UserService.java &lt;C&gt;UserDetailServiceImpl.java 包；接口普通类">
+  <meta itemprop="datePublished" content="2019-11-29T11:31:34+08:00">
+  <meta itemprop="dateModified" content="2019-11-29T11:31:34+08:00">
+  <meta itemprop="wordCount" content="1384">
+  <meta itemprop="keywords" content="Java,SpringSecurity,Sso">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="SpringSecurity单点登录">
+  <meta name="twitter:description" content="Spring Security pom.xml： &lt;parent&gt; &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt; &lt;artifactId&gt;spring-boot-starter-parent&lt;/artifactId&gt; &lt;version&gt;2.5.4&lt;/version&gt; &lt;relativePath/&gt; &lt;/parent&gt; &lt;dependencies&gt; &lt;dependency&gt; &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt; &lt;artifactId&gt;spring-boot-starter-security&lt;/artifactId&gt; &lt;/dependency&gt; &lt;dependency&gt; &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt; &lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt; &lt;/dependency&gt; &lt;dependency&gt; &lt;groupId&gt;mysql&lt;/groupId&gt; &lt;artifactId&gt;mysql-connector-java&lt;/artifactId&gt; &lt;scope&gt;runtime&lt;/scope&gt; &lt;/dependency&gt; &lt;dependency&gt; &lt;groupId&gt;org.projectlombok&lt;/groupId&gt; &lt;artifactId&gt;lombok&lt;/artifactId&gt; &lt;optional&gt;true&lt;/optional&gt; &lt;/dependency&gt; &lt;dependency&gt; &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt; &lt;artifactId&gt;spring-boot-starter-test&lt;/artifactId&gt; &lt;scope&gt;test&lt;/scope&gt; &lt;/dependency&gt; &lt;dependency&gt; &lt;groupId&gt;org.springframework.security&lt;/groupId&gt; &lt;artifactId&gt;spring-security-test&lt;/artifactId&gt; &lt;scope&gt;test&lt;/scope&gt; &lt;/dependency&gt; &lt;dependency&gt; &lt;groupId&gt;com.baomidou&lt;/groupId&gt; &lt;artifactId&gt;mybatis-plus-boot-starter&lt;/artifactId&gt; &lt;version&gt;3.4.2&lt;/version&gt; &lt;/dependency&gt; &lt;dependency&gt; &lt;groupId&gt;org.slf4j&lt;/groupId&gt; &lt;artifactId&gt;slf4j-api&lt;/artifactId&gt; &lt;/dependency&gt; &lt;dependency&gt; &lt;groupId&gt;org.thymeleaf.extras&lt;/groupId&gt; &lt;artifactId&gt;thymeleaf-extras-springsecurity5&lt;/artifactId&gt; &lt;/dependency&gt; &lt;dependency&gt; &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt; &lt;artifactId&gt;spring-boot-starter-thymeleaf&lt;/artifactId&gt; &lt;/dependency&gt; &lt;/dependencies&gt; thymeleaf-extras-springsecurity5：thymeleaf和Spring security的整合jar包
+application.yml： spring: datasource: username: root password: Hzyy1214 driverClassName: com.mysql.cj.jdbc.Driver url: jdbc:mysql://localhost:3306/springSecurityTest?useUnicode=true&amp;characterEncoding=utf8&amp;zeroDateTimeBehavior=convertToNull&amp;useSSL=true&amp;serverTimezone=GMT%2B8 配置数据库
+java 目录结构 &lt;B&gt;config &lt;C&gt;securityConfig.java &lt;B&gt;controller &lt;C&gt;UserController.java &lt;B&gt;&gt;hander &lt;C&gt;MyAccessDeniedHandler.java &lt;C&gt;MyAuthenticationFailureHandle.java &lt;C&gt;MyAuthenticationSuccessHandle.java &lt;B&gt;mapper &lt;C&gt;RoleMapper.java &lt;C&gt;UserMapper.java &lt;B&gt;pojo &lt;I&gt;Role.java &lt;I&gt;Users.java &lt;B&gt;service &lt;I&gt;MyAccess.java &lt;C&gt;MyAccessImpl.java &lt;C&gt;RoleService.java &lt;C&gt;UserService.java &lt;C&gt;UserDetailServiceImpl.java 包；接口普通类">
+
+	
+  </head><body class="ma0 avenir bg-near-white development">
+
+    
+   
+  
+
+  <header>
+    <div class="bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l center items-center justify-between">
+    <a href="/" class="f3 fw2 hover-white white-90 dib no-underline">
+      
+        loveyu233
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      <div class="ananke-socials"></div>
+
+    </div>
+  </div>
+</nav>
+
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  
+  <article class="flex-l mw8 center ph3 flex-wrap justify-between">
+    <header class="mt4 w-100">
+      <aside class="instapaper_ignoref b helvetica tracked ttu">
+          
+        java
+      </aside><div id="sharing" class="mt3 ananke-socials"></div>
+<h1 class="f1 athelas mt3 mb1">SpringSecurity单点登录</h1>
+      
+      <p class="tracked"><strong>loveyu</strong>
+      </p>
+      
+      
+      
+      <time class="f6 mv4 dib tracked" datetime="2019-11-29T11:31:34+08:00">November 29, 2019</time>
+      
+
+      
+      
+    </header>
+    <div class="nested-copy-line-height lh-copy serif f4 nested-links mid-gray pr4-l w-two-thirds-l"><h1 id="spring-security">Spring Security</h1>
+<h2 id="pomxml">pom.xml：</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#f92672">&lt;parent&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;groupId&gt;</span>org.springframework.boot<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;artifactId&gt;</span>spring-boot-starter-parent<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;version&gt;</span>2.5.4<span style="color:#f92672">&lt;/version&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;relativePath/&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/parent&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;dependencies&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;groupId&gt;</span>org.springframework.boot<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;artifactId&gt;</span>spring-boot-starter-security<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;groupId&gt;</span>org.springframework.boot<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;artifactId&gt;</span>spring-boot-starter-web<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;groupId&gt;</span>mysql<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;artifactId&gt;</span>mysql-connector-java<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;scope&gt;</span>runtime<span style="color:#f92672">&lt;/scope&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;groupId&gt;</span>org.projectlombok<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;artifactId&gt;</span>lombok<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;optional&gt;</span>true<span style="color:#f92672">&lt;/optional&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;groupId&gt;</span>org.springframework.boot<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;artifactId&gt;</span>spring-boot-starter-test<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;scope&gt;</span>test<span style="color:#f92672">&lt;/scope&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;groupId&gt;</span>org.springframework.security<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;artifactId&gt;</span>spring-security-test<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;scope&gt;</span>test<span style="color:#f92672">&lt;/scope&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;groupId&gt;</span>com.baomidou<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;artifactId&gt;</span>mybatis-plus-boot-starter<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;version&gt;</span>3.4.2<span style="color:#f92672">&lt;/version&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;groupId&gt;</span>org.slf4j<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;artifactId&gt;</span>slf4j-api<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;groupId&gt;</span>org.thymeleaf.extras<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;artifactId&gt;</span>thymeleaf-extras-springsecurity5<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;groupId&gt;</span>org.springframework.boot<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;artifactId&gt;</span>spring-boot-starter-thymeleaf<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/dependencies&gt;</span>
+</span></span></code></pre></div><blockquote>
+<p>thymeleaf-extras-springsecurity5：thymeleaf和Spring security的整合jar包</p></blockquote>
+<h2 id="applicationyml">application.yml：</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yml" data-lang="yml"><span style="display:flex;"><span><span style="color:#f92672">spring</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">datasource</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">username</span>: <span style="color:#ae81ff">root</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">password</span>: <span style="color:#ae81ff">Hzyy1214</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">driverClassName</span>: <span style="color:#ae81ff">com.mysql.cj.jdbc.Driver</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">url</span>: <span style="color:#ae81ff">jdbc:mysql://localhost:3306/springSecurityTest?useUnicode=true&amp;characterEncoding=utf8&amp;zeroDateTimeBehavior=convertToNull&amp;useSSL=true&amp;serverTimezone=GMT%2B8</span>
+</span></span></code></pre></div><blockquote>
+<p>配置数据库</p></blockquote>
+<h2 id="java">java</h2>
+<h3 id="目录结构">目录结构</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-tex" data-lang="tex"><span style="display:flex;"><span>&lt;B&gt;config
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	&lt;C&gt;securityConfig.java
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>&lt;B&gt;controller
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	&lt;C&gt;UserController.java
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>&lt;B&gt;&gt;hander
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	&lt;C&gt;MyAccessDeniedHandler.java
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	&lt;C&gt;MyAuthenticationFailureHandle.java
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	&lt;C&gt;MyAuthenticationSuccessHandle.java
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>&lt;B&gt;mapper
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	&lt;C&gt;RoleMapper.java
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	&lt;C&gt;UserMapper.java
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>&lt;B&gt;pojo
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	&lt;I&gt;Role.java
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	&lt;I&gt;Users.java
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>&lt;B&gt;service
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	&lt;I&gt;MyAccess.java
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	&lt;C&gt;MyAccessImpl.java
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	&lt;C&gt;RoleService.java
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	&lt;C&gt;UserService.java
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	&lt;C&gt;UserDetailServiceImpl.java
+</span></span></code></pre></div><blockquote>
+<p><!-- raw HTML omitted -->包；<!-- raw HTML omitted -->接口<!-- raw HTML omitted -->普通类</p></blockquote>
+<h3 id="pojo">pojo</h3>
+<blockquote>
+<p>对应数据库的实体类</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@Data</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@AllArgsConstructor</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@NoArgsConstructor</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Role</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> String uid;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> String roleName;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> String roleDesc;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@Data</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@NoArgsConstructor</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@AllArgsConstructor</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Users</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> Integer id;
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@TableId</span>(type <span style="color:#f92672">=</span> IdType.<span style="color:#a6e22e">ASSIGN_UUID</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> String uid;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> String username;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> String password;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><blockquote>
+<p>@TableId(type = IdType.ASSIGN_UUID)：使用uid</p></blockquote>
+<h3 id="mapper">mapper</h3>
+<blockquote>
+<p>使用mybatisPlus操作数据库</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@Mapper</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">RoleMapper</span> <span style="color:#66d9ef">extends</span> BaseMapper<span style="color:#f92672">&lt;</span>Role<span style="color:#f92672">&gt;</span> {
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@Mapper</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">UsersMapper</span> <span style="color:#66d9ef">extends</span> BaseMapper<span style="color:#f92672">&lt;</span>Users<span style="color:#f92672">&gt;</span> {
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="service">service</h3>
+<blockquote>
+<p>查询用户表的用户uid，username，paddword信息，再根据uid查询角色表对应用户角色权限</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@Service</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">RoleService</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Autowired</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> RoleMapper roleMapper;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> List<span style="color:#f92672">&lt;</span>Role<span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">selectRole</span>(String uid) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> roleMapper.<span style="color:#a6e22e">selectList</span>(<span style="color:#66d9ef">new</span> QueryWrapper<span style="color:#f92672">&lt;</span>Role<span style="color:#f92672">&gt;</span>().<span style="color:#a6e22e">eq</span>(<span style="color:#e6db74">&#34;uid&#34;</span>,uid));
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@Service</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">UsersService</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Autowired</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> UsersMapper usersMapper;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> Users <span style="color:#a6e22e">selectUsername</span>(String username) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> usersMapper.<span style="color:#a6e22e">selectOne</span>(<span style="color:#66d9ef">new</span> QueryWrapper<span style="color:#f92672">&lt;</span>Users<span style="color:#f92672">&gt;</span>().<span style="color:#a6e22e">eq</span>(<span style="color:#e6db74">&#34;username&#34;</span>, username));
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>自定义登录认证逻辑</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@Service</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@Slf4j</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">UserDetailServiceImpl</span> <span style="color:#66d9ef">implements</span> UserDetailsService {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Autowired</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> UsersService usersService;
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Autowired</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> RoleService roleService;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> UserDetails <span style="color:#a6e22e">loadUserByUsername</span>(String s) <span style="color:#66d9ef">throws</span> UsernameNotFoundException {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//根据用户名去数据库查询，不存在就抛异常UsernameNotFoundException</span>
+</span></span><span style="display:flex;"><span>        Users user <span style="color:#f92672">=</span> usersService.<span style="color:#a6e22e">selectUsername</span>(s);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (user   <span style="color:#66d9ef">null</span>) {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> UsernameNotFoundException(<span style="color:#e6db74">&#34;用户名不存在&#34;</span>);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        List<span style="color:#f92672">&lt;</span>Role<span style="color:#f92672">&gt;</span> roles <span style="color:#f92672">=</span> roleService.<span style="color:#a6e22e">selectRole</span>(user.<span style="color:#a6e22e">getUid</span>());
+</span></span><span style="display:flex;"><span>      	<span style="color:#75715e">//创建list集合用来存储用户的权限角色</span>
+</span></span><span style="display:flex;"><span>        ArrayList<span style="color:#f92672">&lt;</span>SimpleGrantedAuthority<span style="color:#f92672">&gt;</span> authorities <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ArrayList<span style="color:#f92672">&lt;&gt;</span>();
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (roles.<span style="color:#a6e22e">size</span>() <span style="color:#f92672">&gt;=</span> 1) {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">for</span> (Role role : roles) {
+</span></span><span style="display:flex;"><span>                authorities.<span style="color:#a6e22e">add</span>(<span style="color:#66d9ef">new</span> SimpleGrantedAuthority(role.<span style="color:#a6e22e">getRoleName</span>()));
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        log.<span style="color:#a6e22e">info</span>(<span style="color:#e6db74">&#34;执行自定义登录逻辑&#34;</span>);
+</span></span><span style="display:flex;"><span>        log.<span style="color:#a6e22e">info</span>(<span style="color:#e6db74">&#34;角色权限:&#34;</span> <span style="color:#f92672">+</span> authorities);
+</span></span><span style="display:flex;"><span>      	<span style="color:#75715e">//这个User是Security包下的User，第一个参数username，第二个参数passowrd(已加密过的)，第三个参数角色权限</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> User(s, user.<span style="color:#a6e22e">getPassword</span>(), authorities);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><blockquote>
+<p>自定义access</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">MyAccess</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">hasPermission</span>(HttpServletRequest request, Authentication authentication);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@Service</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MyAccessImpl</span> <span style="color:#66d9ef">implements</span> MyAccess {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">hasPermission</span>(HttpServletRequest request, Authentication authentication) {
+</span></span><span style="display:flex;"><span>        Object obj <span style="color:#f92672">=</span> authentication.<span style="color:#a6e22e">getPrincipal</span>();
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (obj <span style="color:#66d9ef">instanceof</span> UserDetails) {
+</span></span><span style="display:flex;"><span>            UserDetails userDetails <span style="color:#f92672">=</span> (UserDetails) obj;
+</span></span><span style="display:flex;"><span>            Collection<span style="color:#f92672">&lt;?</span> <span style="color:#66d9ef">extends</span> GrantedAuthority<span style="color:#f92672">&gt;</span> authorities <span style="color:#f92672">=</span> userDetails.<span style="color:#a6e22e">getAuthorities</span>();
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> authorities.<span style="color:#a6e22e">contains</span>(<span style="color:#66d9ef">new</span> SimpleGrantedAuthority(request.<span style="color:#a6e22e">getRequestURI</span>()));
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="config">config</h3>
+<blockquote>
+<p>设置访问权限</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@Configuration</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SecurityConfig</span> <span style="color:#66d9ef">extends</span> WebSecurityConfigurerAdapter {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Autowired</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> MyAccessDeniedHandler myAccessDeniedHandler;
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Autowired</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> DataSource dataSource;
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Autowired</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> PersistentTokenRepository persistentTokenRepository;
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Autowired</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> UserDetailServiceImpl userDetailService;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">configure</span>(HttpSecurity http) <span style="color:#66d9ef">throws</span> Exception {
+</span></span><span style="display:flex;"><span>        http.<span style="color:#a6e22e">formLogin</span>()
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">//登录页面</span>
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">loginPage</span>(<span style="color:#e6db74">&#34;/toLogin&#34;</span>)
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">//登录表单提交的求情</span>
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">loginProcessingUrl</span>(<span style="color:#e6db74">&#34;/login&#34;</span>)
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">//登录成功跳转页面，这个是一个请求必须是post</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//                .successForwardUrl(&#34;/index&#34;)</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">//自定义登录成功的处理器</span>
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">successHandler</span>(<span style="color:#66d9ef">new</span> MyAuthenticationSuccessHandler(<span style="color:#e6db74">&#34;/index.html&#34;</span>))
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">//登录错误跳转页面，这个是一个请求必须是post</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//                .failureForwardUrl(&#34;/toError&#34;)</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">//自定义登录失败的处理器</span>
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">failureHandler</span>(<span style="color:#66d9ef">new</span> MyAuthenticationFailureHandler(<span style="color:#e6db74">&#34;/error.html&#34;</span>))
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">//自定义表单的name，默认就是username和password</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//                .usernameParameter(&#34;username&#34;)</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//                .passwordParameter(&#34;password&#34;)</span>
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">and</span>()
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">logout</span>()
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">logoutUrl</span>(<span style="color:#e6db74">&#34;/logout&#34;</span>)
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">logoutSuccessUrl</span>(<span style="color:#e6db74">&#34;/toLogin&#34;</span>)
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">and</span>()
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">//认证</span>
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">authorizeRequests</span>()
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">//登录页面和错误页面放行不拦截</span>
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">antMatchers</span>(<span style="color:#e6db74">&#34;/loginPage.html&#34;</span>,<span style="color:#e6db74">&#34;/error.html&#34;</span>,<span style="color:#e6db74">&#34;/toLogin&#34;</span>)
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">permitAll</span>()
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">//权限访问,权限是随便的比如lv1,lv2等,可以设置多个权限或角色比如既是lv1又是lv2</span>
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">antMatchers</span>(<span style="color:#e6db74">&#34;/lv1.html&#34;</span>).<span style="color:#a6e22e">hasAnyAuthority</span>(<span style="color:#e6db74">&#34;lv1&#34;</span>)
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">antMatchers</span>(<span style="color:#e6db74">&#34;/lv2.html&#34;</span>).<span style="color:#a6e22e">hasAnyAuthority</span>(<span style="color:#e6db74">&#34;lv2&#34;</span>)
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">antMatchers</span>(<span style="color:#e6db74">&#34;/lv3.html&#34;</span>).<span style="color:#a6e22e">hasAnyAuthority</span>(<span style="color:#e6db74">&#34;lv3&#34;</span>)
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">//角色访问必须是ROLE_xxx形式</span>
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">antMatchers</span>(<span style="color:#e6db74">&#34;/lv4.html&#34;</span>).<span style="color:#a6e22e">hasRole</span>(<span style="color:#e6db74">&#34;hzyy&#34;</span>)
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">//ip地址</span>
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">antMatchers</span>(<span style="color:#e6db74">&#34;/ip.html&#34;</span>).<span style="color:#a6e22e">hasIpAddress</span>(<span style="color:#e6db74">&#34;127.0.0.1&#34;</span>)
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">//自定义access,使用自定义的access就不能使用anyxxx的方法</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//                .anyRequest().access(&#34;@myAccessImpl.hasPermission(request,authentication)&#34;)</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">//其余所有请求</span>
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">anyRequest</span>()
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">//需要认证</span>
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">authenticated</span>()
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">and</span>()
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">exceptionHandling</span>()
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">accessDeniedHandler</span>(myAccessDeniedHandler);
+</span></span><span style="display:flex;"><span>        http.<span style="color:#a6e22e">rememberMe</span>()
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">tokenRepository</span>(persistentTokenRepository)
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">//默认就是remember-me</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">//.rememberMeParameter(&#34;remember-me&#34;)</span>
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">tokenValiditySeconds</span>(60)
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">userDetailsService</span>(userDetailService);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * 密码加密和匹配
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * @return 加密
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Bean</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> PasswordEncoder <span style="color:#a6e22e">getPW</span>() {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> BCryptPasswordEncoder();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Bean</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> PersistentTokenRepository <span style="color:#a6e22e">persistentTokenRepository</span>() {
+</span></span><span style="display:flex;"><span>        JdbcTokenRepositoryImpl jdbcTokenRepository <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> JdbcTokenRepositoryImpl();
+</span></span><span style="display:flex;"><span>        jdbcTokenRepository.<span style="color:#a6e22e">setDataSource</span>(dataSource);
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//第一次需要打开会自动创建一张表</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//jdbcTokenRepository.setCreateTableOnStartup(true);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> jdbcTokenRepository;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="handler">handler</h3>
+<blockquote>
+<p>没有权限跳转的页面也就是403页面</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@Component</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MyAccessDeniedHandler</span> <span style="color:#66d9ef">implements</span> AccessDeniedHandler {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">handle</span>(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AccessDeniedException e) <span style="color:#66d9ef">throws</span> IOException, ServletException {
+</span></span><span style="display:flex;"><span>        httpServletResponse.<span style="color:#a6e22e">setStatus</span>(HttpServletResponse.<span style="color:#a6e22e">SC_ACCEPTED</span>);
+</span></span><span style="display:flex;"><span>        httpServletResponse.<span style="color:#a6e22e">setHeader</span>(<span style="color:#e6db74">&#34;Content-Type&#34;</span>,<span style="color:#e6db74">&#34;application/json;charset=utf-8&#34;</span>);
+</span></span><span style="display:flex;"><span>        PrintWriter writer <span style="color:#f92672">=</span> httpServletResponse.<span style="color:#a6e22e">getWriter</span>();
+</span></span><span style="display:flex;"><span>        writer.<span style="color:#a6e22e">write</span>(<span style="color:#e6db74">&#34;{\&#34;status\&#34;:\&#34;error403\&#34;,\&#34;msg:权限不足\&#34;}&#34;</span>);
+</span></span><span style="display:flex;"><span>        writer.<span style="color:#a6e22e">flush</span>();
+</span></span><span style="display:flex;"><span>        writer.<span style="color:#a6e22e">close</span>();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><blockquote>
+<p>自定义登录失败的逻辑，也可以使用自带的</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MyAuthenticationFailureHandler</span> <span style="color:#66d9ef">implements</span> AuthenticationFailureHandler {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> String url;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">MyAuthenticationFailureHandler</span>(String url) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">url</span> <span style="color:#f92672">=</span> url;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">onAuthenticationFailure</span>(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AuthenticationException e) <span style="color:#66d9ef">throws</span> IOException, ServletException {
+</span></span><span style="display:flex;"><span>        httpServletResponse.<span style="color:#a6e22e">sendRedirect</span>(url);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><blockquote>
+<p>自定义登录成功的逻辑，也可以使用自带的</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MyAuthenticationSuccessHandler</span> <span style="color:#66d9ef">implements</span> AuthenticationSuccessHandler {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> String url;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">MyAuthenticationSuccessHandler</span>(String url) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">url</span> <span style="color:#f92672">=</span> url;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">onAuthenticationSuccess</span>(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) <span style="color:#66d9ef">throws</span> IOException, ServletException {
+</span></span><span style="display:flex;"><span>        User user <span style="color:#f92672">=</span> (User) authentication.<span style="color:#a6e22e">getPrincipal</span>();
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">         * org.springframework.security.core.userdetails.User
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">         * [Username=hzyy, Password=[PROTECTED], Enabled=true,
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">         * AccountNonExpired=true, credentialsNonExpired=true,
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">         * AccountNonLocked=true, Granted Authorities=[lv2, lv3]]
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">         */</span>
+</span></span><span style="display:flex;"><span>        log.<span style="color:#a6e22e">info</span>(<span style="color:#e6db74">&#34;security的user:&#34;</span> <span style="color:#f92672">+</span> user);
+</span></span><span style="display:flex;"><span>        log.<span style="color:#a6e22e">info</span>(<span style="color:#e6db74">&#34;ip:&#34;</span> <span style="color:#f92672">+</span> httpServletRequest.<span style="color:#a6e22e">getRemoteAddr</span>());
+</span></span><span style="display:flex;"><span>        httpServletResponse.<span style="color:#a6e22e">sendRedirect</span>(url);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="other">Other</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@EnableGlobalMethodSecurity</span>(securedEnabled <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span>,prePostEnabled <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span>,proxyTargetClass <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span>,jsr250Enabled <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span>)
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@SpringBootApplication</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SpringSecuritySeniorApplication</span> {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>(String<span style="color:#f92672">[]</span> args) {
+</span></span><span style="display:flex;"><span>        SpringApplication.<span style="color:#a6e22e">run</span>(SpringSecuritySeniorApplication.<span style="color:#a6e22e">class</span>, args);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><blockquote>
+<p>启动类使用注解@EnableGlobalMethodSecurity开启security的注解使用 ，参数有四个分别对应一个注解，最好用的一个：</p>
+<p>prePostEnabled：对应注解为@PreAuthorize，参数为表达式，可以设置权限角色</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@PreAuthorize</span>(<span style="color:#e6db74">&#34;hasAnyAuthority(&#39;lv1&#39;)&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@RequestMapping</span>(<span style="color:#e6db74">&#34;/toAnn&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">annotation</span>() {
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;redirect:annotation.html&#34;</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div></blockquote>
+<blockquote>
+<p>密码加密，使用的security默认的加密方式</p>
+<p>PasswordEncoder是个接口，但在config里面已经进行了bean注入</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@Bean</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> PasswordEncoder <span style="color:#a6e22e">passwordEncoder</span>() {
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> BCryptPasswordEncoder();
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@Autowired</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">private</span> PasswordEncoder passwordEncoder;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@Test</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">contextLoads</span>() {
+</span></span><span style="display:flex;"><span>    System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(passwordEncoder.<span style="color:#a6e22e">encode</span>(<span style="color:#e6db74">&#34;hahha&#34;</span>));
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><blockquote>
+<p>自定义错误页面的展示</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ErrorPageConfig</span> <span style="color:#66d9ef">implements</span> ErrorPageRegistrar {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">registerErrorPages</span>(ErrorPageRegistry registry) {
+</span></span><span style="display:flex;"><span>        ErrorPage page404 <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ErrorPage(HttpStatus.<span style="color:#a6e22e">NOT_FOUND</span>, <span style="color:#e6db74">&#34;/404&#34;</span>);
+</span></span><span style="display:flex;"><span>        ErrorPage page403 <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ErrorPage(HttpStatus.<span style="color:#a6e22e">FORBIDDEN</span>, <span style="color:#e6db74">&#34;/403&#34;</span>);
+</span></span><span style="display:flex;"><span>        ErrorPage page500 <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ErrorPage(HttpStatus.<span style="color:#a6e22e">INTERNAL_SERVER_ERROR</span>, <span style="color:#e6db74">&#34;/500&#34;</span>);
+</span></span><span style="display:flex;"><span>        registry.<span style="color:#a6e22e">addErrorPages</span>(page403,page404,page500);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@Configuration</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ErrorBean</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Bean</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> ErrorPageConfig <span style="color:#a6e22e">errorPageConfig</span> (){
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> ErrorPageConfig();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><blockquote>
+<p>JsonWebToken</p></blockquote>
+<h1 id="jwt">JWT</h1>
+<h2 id="pomxml-1">pom.xml</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;groupId&gt;</span>io.jsonwebtoken<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;artifactId&gt;</span>jjwt<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;version&gt;</span>0.9.1<span style="color:#f92672">&lt;/version&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/dependency&gt;</span>
+</span></span></code></pre></div><h2 id="java-1">java</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#f92672">package</span> com.xiaoyu;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> io.jsonwebtoken.Claims;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> io.jsonwebtoken.JwtBuilder;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> io.jsonwebtoken.Jwts;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> io.jsonwebtoken.SignatureAlgorithm;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> io.jsonwebtoken.impl.Base64Codec;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> org.junit.jupiter.api.Test;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> org.springframework.boot.test.context.SpringBootTest;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> sun.misc.BASE64Decoder;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> java.util.Date;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@SpringBootTest</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SpringSecurityJwtApplicationTests</span> {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Test</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">creatToken</span>() {
+</span></span><span style="display:flex;"><span>        JwtBuilder jwtBuilder <span style="color:#f92672">=</span> Jwts.<span style="color:#a6e22e">builder</span>()
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">//唯一id</span>
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">setId</span>(<span style="color:#e6db74">&#34;666&#34;</span>)
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">//接受的用户</span>
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">setSubject</span>(<span style="color:#e6db74">&#34;Rose&#34;</span>)
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">//签发时间</span>
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">setIssuedAt</span>(<span style="color:#66d9ef">new</span> Date())
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">//签名算法+密钥</span>
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">signWith</span>(SignatureAlgorithm.<span style="color:#a6e22e">HS256</span>, <span style="color:#e6db74">&#34;hzyyyyyyyy&#34;</span>);
+</span></span><span style="display:flex;"><span>        String token <span style="color:#f92672">=</span> jwtBuilder.<span style="color:#a6e22e">compact</span>();
+</span></span><span style="display:flex;"><span>        System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(token);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(<span style="color:#e6db74">&#34;     &#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        String<span style="color:#f92672">[]</span> split <span style="color:#f92672">=</span> token.<span style="color:#a6e22e">split</span>(<span style="color:#e6db74">&#34;\\.&#34;</span>);
+</span></span><span style="display:flex;"><span>        System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(Base64Codec.<span style="color:#a6e22e">BASE64</span>.<span style="color:#a6e22e">decodeToString</span>(split<span style="color:#f92672">[</span>0<span style="color:#f92672">]</span>));
+</span></span><span style="display:flex;"><span>        System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(Base64Codec.<span style="color:#a6e22e">BASE64</span>.<span style="color:#a6e22e">decodeToString</span>(split<span style="color:#f92672">[</span>1<span style="color:#f92672">]</span>));
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Test</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">AnalysisToken</span>() {
+</span></span><span style="display:flex;"><span>        String token <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiI2NjYiLCJzdWIiOiJSb3NlIiwiaWF0IjoxNjMxMjgxNTUxfQ.cWEbwr3FjzM8oyQgEEEG3-M1Im6JJ1bpSxol00WHrpY&#34;</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//Claims JWT的荷载对象</span>
+</span></span><span style="display:flex;"><span>        Claims claims <span style="color:#f92672">=</span> (Claims) Jwts.<span style="color:#a6e22e">parser</span>()
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">setSigningKey</span>(<span style="color:#e6db74">&#34;hzyyyyyyy&#34;</span>)
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">parse</span>(token)
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">getBody</span>();
+</span></span><span style="display:flex;"><span>        System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(<span style="color:#e6db74">&#34;id&#34;</span> <span style="color:#f92672">+</span> claims.<span style="color:#a6e22e">getId</span>());
+</span></span><span style="display:flex;"><span>        System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(<span style="color:#e6db74">&#34;rose&#34;</span> <span style="color:#f92672">+</span> claims.<span style="color:#a6e22e">getSubject</span>());
+</span></span><span style="display:flex;"><span>        System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(<span style="color:#e6db74">&#34;date&#34;</span> <span style="color:#f92672">+</span> claims.<span style="color:#a6e22e">getIssuedAt</span>());
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//设置失效时间</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Test</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">creatTokenTimeout</span>() {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">long</span> data <span style="color:#f92672">=</span> System.<span style="color:#a6e22e">currentTimeMillis</span>();
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">long</span> exp <span style="color:#f92672">=</span> data<span style="color:#f92672">+</span>60<span style="color:#f92672">*</span>1000;
+</span></span><span style="display:flex;"><span>        JwtBuilder jwtBuilder <span style="color:#f92672">=</span> Jwts.<span style="color:#a6e22e">builder</span>()
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">//唯一id</span>
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">setId</span>(<span style="color:#e6db74">&#34;666&#34;</span>)
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">//接受的用户</span>
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">setSubject</span>(<span style="color:#e6db74">&#34;Rose&#34;</span>)
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">//签发时间</span>
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">setIssuedAt</span>(<span style="color:#66d9ef">new</span> Date())
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">//设置失效时间</span>
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">setExpiration</span>(<span style="color:#66d9ef">new</span> Date(exp))
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">//签名算法+密钥</span>
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">signWith</span>(SignatureAlgorithm.<span style="color:#a6e22e">HS256</span>, <span style="color:#e6db74">&#34;hzyyyyyyyy&#34;</span>);
+</span></span><span style="display:flex;"><span>        String token <span style="color:#f92672">=</span> jwtBuilder.<span style="color:#a6e22e">compact</span>();
+</span></span><span style="display:flex;"><span>        System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(token);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(<span style="color:#e6db74">&#34;     &#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        String<span style="color:#f92672">[]</span> split <span style="color:#f92672">=</span> token.<span style="color:#a6e22e">split</span>(<span style="color:#e6db74">&#34;\\.&#34;</span>);
+</span></span><span style="display:flex;"><span>        System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(Base64Codec.<span style="color:#a6e22e">BASE64</span>.<span style="color:#a6e22e">decodeToString</span>(split<span style="color:#f92672">[</span>0<span style="color:#f92672">]</span>));
+</span></span><span style="display:flex;"><span>        System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(Base64Codec.<span style="color:#a6e22e">BASE64</span>.<span style="color:#a6e22e">decodeToString</span>(split<span style="color:#f92672">[</span>1<span style="color:#f92672">]</span>));
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Test</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">AnalysisTokenTimeout</span>() {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">        解析失效会报错
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">        io.jsonwebtoken.ExpiredJwtException
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">         */</span>
+</span></span><span style="display:flex;"><span>        String token <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;eyJhbGciOiJIUzI1NiJ9.&#34;</span> <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#34;eyJqdGkiOiI2NjYiLCJzdWIiOiJSb3NlIiwiaWF0IjoxNjMxMjgyMDQ2LCJleHAiOjE2MzEyODIxMDZ9.&#34;</span> <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#34;qSG3daBcCRQ92-p564daNgN7UPbquVz85c14zcj8rdQ&#34;</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//Claims JWT的荷载对象</span>
+</span></span><span style="display:flex;"><span>        Claims claims <span style="color:#f92672">=</span> (Claims) Jwts.<span style="color:#a6e22e">parser</span>()
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">setSigningKey</span>(<span style="color:#e6db74">&#34;hzyyyyyyyy&#34;</span>)
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">parse</span>(token)
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">getBody</span>();
+</span></span><span style="display:flex;"><span>        System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(<span style="color:#e6db74">&#34;id&#34;</span> <span style="color:#f92672">+</span> claims.<span style="color:#a6e22e">getId</span>());
+</span></span><span style="display:flex;"><span>        System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(<span style="color:#e6db74">&#34;rose&#34;</span> <span style="color:#f92672">+</span> claims.<span style="color:#a6e22e">getSubject</span>());
+</span></span><span style="display:flex;"><span>        System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(<span style="color:#e6db74">&#34;date&#34;</span> <span style="color:#f92672">+</span> claims.<span style="color:#a6e22e">getIssuedAt</span>());
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//自定义声明</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Test</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">creatTokenZDY</span>() {
+</span></span><span style="display:flex;"><span>        JwtBuilder jwtBuilder <span style="color:#f92672">=</span> Jwts.<span style="color:#a6e22e">builder</span>()
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">//唯一id</span>
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">setId</span>(<span style="color:#e6db74">&#34;666&#34;</span>)
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">//接受的用户</span>
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">setSubject</span>(<span style="color:#e6db74">&#34;Rose&#34;</span>)
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">//签发时间</span>
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">setIssuedAt</span>(<span style="color:#66d9ef">new</span> Date())
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">//添加自定义</span>
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">claim</span>(<span style="color:#e6db74">&#34;name&#34;</span>,<span style="color:#e6db74">&#34;zhangsan&#34;</span>)
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">claim</span>(<span style="color:#e6db74">&#34;logo&#34;</span>,<span style="color:#e6db74">&#34;xxx.jpg&#34;</span>)
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">//签名算法+密钥</span>
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">signWith</span>(SignatureAlgorithm.<span style="color:#a6e22e">HS256</span>, <span style="color:#e6db74">&#34;hzyyyyyyyy&#34;</span>);
+</span></span><span style="display:flex;"><span>        String token <span style="color:#f92672">=</span> jwtBuilder.<span style="color:#a6e22e">compact</span>();
+</span></span><span style="display:flex;"><span>        System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(token);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(<span style="color:#e6db74">&#34;     &#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        String<span style="color:#f92672">[]</span> split <span style="color:#f92672">=</span> token.<span style="color:#a6e22e">split</span>(<span style="color:#e6db74">&#34;\\.&#34;</span>);
+</span></span><span style="display:flex;"><span>        System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(Base64Codec.<span style="color:#a6e22e">BASE64</span>.<span style="color:#a6e22e">decodeToString</span>(split<span style="color:#f92672">[</span>0<span style="color:#f92672">]</span>));
+</span></span><span style="display:flex;"><span>        System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(Base64Codec.<span style="color:#a6e22e">BASE64</span>.<span style="color:#a6e22e">decodeToString</span>(split<span style="color:#f92672">[</span>1<span style="color:#f92672">]</span>));
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Test</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">AnalysisTokenZDY</span>() {
+</span></span><span style="display:flex;"><span>        String token <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiI2NjYiLCJzdWIiOiJSb3NlIiwiaWF0IjoxNjMxMjgyMzc3LCJuYW1lIjoiemhhbmdzYW4iLCJsb2dvIjoieHh4LmpwZyJ9.QuI6RAqoZ88nHrih3xA5dcT3SaWNFYrkobhGpNR5YEw&#34;</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//Claims JWT的荷载对象</span>
+</span></span><span style="display:flex;"><span>        Claims claims <span style="color:#f92672">=</span> (Claims) Jwts.<span style="color:#a6e22e">parser</span>()
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">setSigningKey</span>(<span style="color:#e6db74">&#34;hzyyyyyyyy&#34;</span>)
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">parse</span>(token)
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">getBody</span>();
+</span></span><span style="display:flex;"><span>        System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(<span style="color:#e6db74">&#34;id:&#34;</span> <span style="color:#f92672">+</span> claims.<span style="color:#a6e22e">getId</span>());
+</span></span><span style="display:flex;"><span>        System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(<span style="color:#e6db74">&#34;rose:&#34;</span> <span style="color:#f92672">+</span> claims.<span style="color:#a6e22e">getSubject</span>());
+</span></span><span style="display:flex;"><span>        System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(<span style="color:#e6db74">&#34;date:&#34;</span> <span style="color:#f92672">+</span> claims.<span style="color:#a6e22e">getIssuedAt</span>());
+</span></span><span style="display:flex;"><span>        System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(<span style="color:#e6db74">&#34;name:&#34;</span> <span style="color:#f92672">+</span> claims.<span style="color:#a6e22e">get</span>(<span style="color:#e6db74">&#34;name&#34;</span>));
+</span></span><span style="display:flex;"><span>        System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(<span style="color:#e6db74">&#34;logo:&#34;</span> <span style="color:#f92672">+</span> claims.<span style="color:#a6e22e">get</span>(<span style="color:#e6db74">&#34;logo&#34;</span>));
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="oauth2">OAuth2</h1>
+<blockquote>
+<p>OAuth是一个协议有很多对应语言的实现，这使用的spring的实现</p>
+<p>Oauth2有四种模式</p>
+<p>1.授权码模式 ：例如登录页面的其他账号登录中使用微信登录</p>
+<p>2.简化版的授权码模式</p>
+<p>3.密码模式 ：使用密码登录获取token</p>
+<p>4.客户端模式</p></blockquote>
+<!-- raw HTML omitted -->
+<h2 id="pomxml-2">pom.xml</h2>
+<blockquote>
+<p>注意Spring boot和Spring cloud的版本对应</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#f92672">&lt;parent&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;groupId&gt;</span>org.springframework.boot<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;artifactId&gt;</span>spring-boot-starter-parent<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;version&gt;</span>2.3.5.RELEASE<span style="color:#f92672">&lt;/version&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;relativePath/&gt;</span> <span style="color:#75715e">&lt;!-- lookup parent from repository --&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/parent&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;properties&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;java.version&gt;</span>1.8<span style="color:#f92672">&lt;/java.version&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;spring-cloud.version&gt;</span>Hoxton.SR9<span style="color:#f92672">&lt;/spring-cloud.version&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/properties&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;dependencies&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;groupId&gt;</span>org.springframework.cloud<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;artifactId&gt;</span>spring-cloud-starter-oauth2<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;groupId&gt;</span>org.springframework.cloud<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;artifactId&gt;</span>spring-cloud-starter-security<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;groupId&gt;</span>org.springframework.boot<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;artifactId&gt;</span>spring-boot-starter-web<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;groupId&gt;</span>org.springframework.boot<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;artifactId&gt;</span>spring-boot-starter-test<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;scope&gt;</span>test<span style="color:#f92672">&lt;/scope&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;groupId&gt;</span>org.springframework.boot<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;artifactId&gt;</span>spring-boot-starter-data-redis<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;groupId&gt;</span>io.jsonwebtoken<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;artifactId&gt;</span>jjwt<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;version&gt;</span>0.9.1<span style="color:#f92672">&lt;/version&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/dependencies&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;dependencyManagement&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;dependencies&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;groupId&gt;</span>org.springframework.cloud<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;artifactId&gt;</span>spring-cloud-dependencies<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;version&gt;</span>${spring-cloud.version}<span style="color:#f92672">&lt;/version&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;type&gt;</span>pom<span style="color:#f92672">&lt;/type&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;scope&gt;</span>import<span style="color:#f92672">&lt;/scope&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/dependencies&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/dependencyManagement&gt;</span>
+</span></span></code></pre></div><h2 id="java-2">java</h2>
+<p>创建认证类继承UserDetailsService，重写loadUserByUsername()方法</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@Service</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">UserService</span> <span style="color:#66d9ef">implements</span> UserDetailsService {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Autowired</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> PasswordEncoder passwordEncoder;
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> UserDetails <span style="color:#a6e22e">loadUserByUsername</span>(String s) <span style="color:#66d9ef">throws</span> UsernameNotFoundException {
+</span></span><span style="display:flex;"><span>        String password <span style="color:#f92672">=</span> passwordEncoder.<span style="color:#a6e22e">encode</span>(<span style="color:#e6db74">&#34;123&#34;</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> User(s,password, AuthorityUtils.<span style="color:#a6e22e">commaSeparatedStringToAuthorityList</span>(<span style="color:#e6db74">&#34;admin&#34;</span>));
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>创建权限类继承WebSecurityConfigurerAdapter,重写configure(HttpSecurity http)方法</p>
+<p>bean注入PasswordEncoder，返回为BCryptPasswordEncoder()：密码加密</p>
+<p>AuthenticationManager，返回为super.authenticationManager()：jwt自添加内容时要用到</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@Configuration</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@EnableWebSecurity</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SecurityConfig</span> <span style="color:#66d9ef">extends</span> WebSecurityConfigurerAdapter {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">configure</span>(HttpSecurity http) <span style="color:#66d9ef">throws</span> Exception {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        http.<span style="color:#a6e22e">authorizeRequests</span>()
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">antMatchers</span>(<span style="color:#e6db74">&#34;/oauth/**&#34;</span>,<span style="color:#e6db74">&#34;/login/**&#34;</span>).<span style="color:#a6e22e">permitAll</span>().<span style="color:#a6e22e">anyRequest</span>()
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">authenticated</span>().<span style="color:#a6e22e">and</span>().<span style="color:#a6e22e">formLogin</span>().<span style="color:#a6e22e">permitAll</span>().<span style="color:#a6e22e">and</span>()
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">csrf</span>().<span style="color:#a6e22e">disable</span>();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Bean</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> PasswordEncoder <span style="color:#a6e22e">passwordEncoder</span>() {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> BCryptPasswordEncoder();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Bean</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">protected</span> AuthenticationManager <span style="color:#a6e22e">authenticationManager</span>() <span style="color:#66d9ef">throws</span> Exception {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">super</span>.<span style="color:#a6e22e">authenticationManager</span>();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>创建jwt存储类</p>
+<p>TokenStore：声明存储token为jwt</p>
+<p>JwtAccessTokenConverter：添加jwt密钥</p>
+<p>JwtTokenEnhancer：后面jwt添加自定义内容要用到</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@Configuration</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">JwtTokenStoreConfig</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Bean</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> TokenStore <span style="color:#a6e22e">jwtTokenStore</span>() {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> JwtTokenStore(jwtAccessTokenConverter());
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Bean</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> JwtAccessTokenConverter <span style="color:#a6e22e">jwtAccessTokenConverter</span>() {
+</span></span><span style="display:flex;"><span>        JwtAccessTokenConverter jwtAccessTokenConverter <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> JwtAccessTokenConverter();
+</span></span><span style="display:flex;"><span>        jwtAccessTokenConverter.<span style="color:#a6e22e">setSigningKey</span>(<span style="color:#e6db74">&#34;miyaonamelenght&#34;</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> jwtAccessTokenConverter;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Bean</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> JwtTokenEnhancer <span style="color:#a6e22e">jwtTokenEnhancer</span>() {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> JwtTokenEnhancer();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>jwt添加自定义内容类，继承TokenEnhancer重写enhance(OAuth2AccessToken oAuth2AccessToken, OAuth2Authentication oAuth2Authentication)方法</p>
+<p>map类型可以添加多个</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">JwtTokenEnhancer</span> <span style="color:#66d9ef">implements</span> TokenEnhancer {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> OAuth2AccessToken <span style="color:#a6e22e">enhance</span>(OAuth2AccessToken oAuth2AccessToken, OAuth2Authentication oAuth2Authentication) {
+</span></span><span style="display:flex;"><span>        Map<span style="color:#f92672">&lt;</span>String,Object<span style="color:#f92672">&gt;</span> map <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> HashMap<span style="color:#f92672">&lt;&gt;</span>();
+</span></span><span style="display:flex;"><span>        map.<span style="color:#a6e22e">put</span>(<span style="color:#e6db74">&#34;uid&#34;</span>,<span style="color:#e6db74">&#34;hzyy&#34;</span>);
+</span></span><span style="display:flex;"><span>        ((DefaultOAuth2AccessToken)oAuth2AccessToken).<span style="color:#a6e22e">setAdditionalInformation</span>(map);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> oAuth2AccessToken;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>授权服务器类，继承AuthorizationServerConfigurerAdapter</p>
+<p>必须加注解@EnableAuthorizationServer开启授权服务</p>
+<p>passwordEncoder：密码加密</p>
+<p>authenticationManager：认证管理</p>
+<p>userService：认证服务</p>
+<p>jwtTokenStore：jwtToken存储</p>
+<p>JwtTokenEnhancer：jwtToken增加自定义内容用</p>
+<p>jwtAccessTokenConverter：jwtToken转换器</p>
+<p>configure(ClientDetailsServiceConfigurer clients)：配置授权服务器</p>
+<p>configure(AuthorizationServerEndpointsConfigurer endpoints)：配置jwt自定义内容</p>
+<p>configure(AuthorizationServerSecurityConfigurer security)：获取密钥要认证，单点登录需要</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@Configuration</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//开启授权服务器</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@EnableAuthorizationServer</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">AuthorizationServerConfig</span> <span style="color:#66d9ef">extends</span> AuthorizationServerConfigurerAdapter {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Autowired</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> PasswordEncoder passwordEncoder;
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Autowired</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> AuthenticationManager authenticationManager;
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Autowired</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> UserService userService;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Autowired</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Qualifier</span>(<span style="color:#e6db74">&#34;jwtTokenStore&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> TokenStore jwtTokenStore;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Autowired</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> JwtTokenEnhancer jwtTokenEnhancer;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Autowired</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> JwtAccessTokenConverter jwtAccessTokenConverter;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//http://localhost:8080/oauth/authorize?response_type=code&amp;client_id=client&amp;redirct_url=http://localhost:8080/getCode&amp;scope=all</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">configure</span>(ClientDetailsServiceConfigurer clients) <span style="color:#66d9ef">throws</span> Exception {
+</span></span><span style="display:flex;"><span>        clients.<span style="color:#a6e22e">inMemory</span>()
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">//客户端id</span>
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">withClient</span>(<span style="color:#e6db74">&#34;client&#34;</span>)
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">//密钥</span>
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">secret</span>(passwordEncoder.<span style="color:#a6e22e">encode</span>(<span style="color:#e6db74">&#34;112233&#34;</span>))
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">//重定向地址</span>
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">redirectUris</span>(<span style="color:#e6db74">&#34;http://localhost:8080/getCode&#34;</span>)
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">//授权范围</span>
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">scopes</span>(<span style="color:#e6db74">&#34;all&#34;</span>)
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">//token失效时间</span>
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">accessTokenValiditySeconds</span>(600)
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">//授权类型  authorization_code：授权吗模式;password 密码模式 refresh_token刷新令牌</span>
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">authorizedGrantTypes</span>(<span style="color:#e6db74">&#34;authorization_code&#34;</span>,<span style="color:#e6db74">&#34;password&#34;</span>,<span style="color:#e6db74">&#34;refresh_token&#34;</span>)
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">//刷新令牌的失效时间</span>
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">refreshTokenValiditySeconds</span>(6000)
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">//自动授权不需要点击确定</span>
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">autoApprove</span>(<span style="color:#66d9ef">true</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">configure</span>(AuthorizationServerEndpointsConfigurer endpoints) <span style="color:#66d9ef">throws</span> Exception {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//设置增强内容</span>
+</span></span><span style="display:flex;"><span>        TokenEnhancerChain chain <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> TokenEnhancerChain();
+</span></span><span style="display:flex;"><span>        List<span style="color:#f92672">&lt;</span>TokenEnhancer<span style="color:#f92672">&gt;</span> delegates <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ArrayList<span style="color:#f92672">&lt;&gt;</span>();
+</span></span><span style="display:flex;"><span>        delegates.<span style="color:#a6e22e">add</span>(jwtTokenEnhancer);
+</span></span><span style="display:flex;"><span>        delegates.<span style="color:#a6e22e">add</span>(jwtAccessTokenConverter);
+</span></span><span style="display:flex;"><span>        chain.<span style="color:#a6e22e">setTokenEnhancers</span>(delegates);
+</span></span><span style="display:flex;"><span>        endpoints.<span style="color:#a6e22e">authenticationManager</span>(authenticationManager)
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">userDetailsService</span>(userService)
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">tokenStore</span>(jwtTokenStore)
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">accessTokenConverter</span>(jwtAccessTokenConverter)
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">tokenEnhancer</span>(chain);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">configure</span>(AuthorizationServerSecurityConfigurer security) <span style="color:#66d9ef">throws</span> Exception {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//获取密钥必须要身份认证，单点登录必须要配置</span>
+</span></span><span style="display:flex;"><span>        security.<span style="color:#a6e22e">tokenKeyAccess</span>(<span style="color:#e6db74">&#34;isAuthenticated()&#34;</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>资源服务器类，继承ResourceServerConfigurerAdapter，重写configure(HttpSecurity http)</p>
+<p>需要注意的是：</p>
+<ol>
+<li>加注解@EnableResourceServer开启资源服务</li>
+<li>一定要先全部拦截然后认证进行放行</li>
+</ol>
+<p>必须先.authorizeRequests().anyRequest().authenticated()再.requestMatchers().antMatchers(&quot;/user/**&quot;);不然会报错</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@Configuration</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@EnableResourceServer</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ResourceServerConfig</span> <span style="color:#66d9ef">extends</span> ResourceServerConfigurerAdapter {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">configure</span>(HttpSecurity http) <span style="color:#66d9ef">throws</span> Exception {
+</span></span><span style="display:flex;"><span>        http.<span style="color:#a6e22e">csrf</span>().<span style="color:#a6e22e">disable</span>()
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">authorizeRequests</span>()
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">anyRequest</span>().<span style="color:#a6e22e">authenticated</span>()
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">and</span>()
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">requestMatchers</span>()
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">antMatchers</span>(<span style="color:#e6db74">&#34;/user/**&#34;</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>如果资源服务器和授权服务器分离的话需要多两个步骤</p>
+<ol>
+<li>jwtToken存储配置</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@Configuration</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">JwtTokenStoreConfig</span> {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Bean</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> TokenStore <span style="color:#a6e22e">jwtTokenStore</span>() {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> JwtTokenStore(jwtAccessTokenConverter());
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Bean</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> JwtAccessTokenConverter <span style="color:#a6e22e">jwtAccessTokenConverter</span>() {
+</span></span><span style="display:flex;"><span>        JwtAccessTokenConverter jwtAccessTokenConverter <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> JwtAccessTokenConverter();
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//设置jwt密钥</span>
+</span></span><span style="display:flex;"><span>        jwtAccessTokenConverter.<span style="color:#a6e22e">setSigningKey</span>(<span style="color:#e6db74">&#34;miyaonamelenght&#34;</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> jwtAccessTokenConverter;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ol start="2">
+<li>
+<p>添加jwt验证</p>
+<p>和授权服务器资源服务器在一起的区别就是要添加jwtToken认证</p>
+<pre><code>@Autowired
+@Qualifier(&quot;jwtTokenStore&quot;)
+private TokenStore jwtToken;
+@Override
+public void configure(ResourceServerSecurityConfigurer resources) throws Exception {
+    resources.tokenStore(jwtToken);
+}
+</code></pre>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@Configuration</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@EnableResourceServer</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ResourceConfig</span> <span style="color:#66d9ef">extends</span> ResourceServerConfigurerAdapter {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Autowired</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Qualifier</span>(<span style="color:#e6db74">&#34;jwtTokenStore&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> TokenStore jwtToken;
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">configure</span>(ResourceServerSecurityConfigurer resources) <span style="color:#66d9ef">throws</span> Exception {
+</span></span><span style="display:flex;"><span>        resources.<span style="color:#a6e22e">tokenStore</span>(jwtToken);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">configure</span>(HttpSecurity http) <span style="color:#66d9ef">throws</span> Exception {
+</span></span><span style="display:flex;"><span>        http.<span style="color:#a6e22e">csrf</span>().<span style="color:#a6e22e">disable</span>()
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">authorizeRequests</span>()
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">anyRequest</span>().<span style="color:#a6e22e">authenticated</span>()
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">and</span>()
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">requestMatchers</span>()
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">antMatchers</span>(<span style="color:#e6db74">&#34;/user/**&#34;</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div></li>
+</ol>
+<ul class="pa0">
+  
+   <li class="list di">
+     <a href="/tags/java/" class="link f5 grow br-pill ba ph3 pv2 mb2 dib black sans-serif no-underline">Java</a>
+   </li>
+  
+   <li class="list di">
+     <a href="/tags/springsecurity/" class="link f5 grow br-pill ba ph3 pv2 mb2 dib black sans-serif no-underline">SpringSecurity</a>
+   </li>
+  
+   <li class="list di">
+     <a href="/tags/sso/" class="link f5 grow br-pill ba ph3 pv2 mb2 dib black sans-serif no-underline">Sso</a>
+   </li>
+  
+</ul>
+<div class="mt6 instapaper_ignoref">
+      
+      
+      </div>
+    </div>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+  <div class="bg-light-gray pa3 nested-list-reset nested-copy-line-height nested-links">
+    <p class="f5 b mb3">Related</p>
+    <ul class="pa0 list">
+	   
+	     <li  class="mb2">
+          <a href="/posts/java/springboot%E6%95%B4%E5%90%88rabbitmq/">springBoot整合rabbitMQ</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/java/java-rabbitmq/">Java RabbitMQ</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/java/shiro/">Shiro</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/java/java-swagger/">Java Swagger</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/java/springmvc/">SpringMVC</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/java/java-email/">Java Email</a>
+        </li>
+	    
+    </ul>
+</div>
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white white-70 dn dib-ns pv2 ph3 no-underline" href="http://localhost:1313/" >
+    &copy;  loveyu233 2025 
+  </a>
+    <div><div class="ananke-socials"></div>
+</div>
+  </div>
+</footer>
+
+  </body>
+</html>

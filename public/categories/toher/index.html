@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>loveyu233</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="">
+    <meta name="generator" content="Hugo 0.147.7">
+    
+    
+    
+      <meta name="robots" content="noindex, nofollow">
+    
+    
+
+    
+<link rel="stylesheet" href="/ananke/css/main.min.css" >
+
+
+
+
+    
+
+
+    
+      
+
+    
+
+    
+    
+      <link href="/categories/toher/index.xml" rel="alternate" type="application/rss+xml" title="loveyu233" />
+      <link href="/categories/toher/index.xml" rel="feed" type="application/rss+xml" title="loveyu233" />
+      
+    
+
+    
+      <link rel="canonical" href="http://localhost:1313/categories/toher/">
+    
+
+    <meta property="og:url" content="http://localhost:1313/categories/toher/">
+  <meta property="og:site_name" content="loveyu233">
+  <meta property="og:title" content="Toher">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="website">
+
+  <meta itemprop="name" content="Toher">
+  <meta itemprop="datePublished" content="2023-02-12T07:56:49+08:00">
+  <meta itemprop="dateModified" content="2023-02-12T07:56:49+08:00">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Toher">
+
+	
+  </head><body class="ma0 avenir bg-near-white development">
+
+    
+
+  <header>
+    <div class="pb3-m pb6-l bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l center items-center justify-between">
+    <a href="/" class="f3 fw2 hover-white white-90 dib no-underline">
+      
+        loveyu233
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      <div class="ananke-socials"></div>
+
+    </div>
+  </div>
+</nav>
+
+      <div class="tc-l pv3 ph3 ph4-ns">
+        <h1 class="f2 f-subheadline-l fw2 light-silver mb0 lh-title">
+          Toher
+        </h1>
+        
+      </div>
+    </div>
+  </header>
+
+
+    <main class="pb7" role="main">
+      
+  <article class="cf pa3 pa4-m pa4-l">
+    <div class="measure-wide-l center f4 lh-copy nested-copy-line-height nested-links mid-gray">
+      <p>Below you will find pages that utilize the taxonomy term “Toher”</p>
+    </div>
+  </article>
+  <div class="mw8 center">
+    <section class="flex-ns mt5 flex-wrap justify-around">
+      
+        <div class="w-100 mb4 relative bg-white">
+          <div class="w-100 mb4 nested-copy-line-height relative bg-white">
+  <div class="mb3 pa4 gray overflow-hidden bg-white">
+    <span class="f6 db">other</span>
+    <h1 class="f3 near-black">
+      <a href="/posts/other/ffmpeg/" class="link black dim">
+        Ffmpeg
+      </a>
+    </h1>
+    <div class="nested-links f5 lh-copy nested-copy-line-height">
+      <ol>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>ffprobe -i test.mp4 -v quiet -print_format json -show_format -show_streams
+</span></span></code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">VideoInfoData</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">Stream</span> []<span style="color:#a6e22e">Streams</span> <span style="color:#e6db74">`json:&#34;streams&#34;`</span> <span style="color:#75715e">//视频数据流,包括视频音频字幕</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">Format</span> <span style="color:#a6e22e">Format</span>    <span style="color:#e6db74">`json:&#34;format&#34;`</span>  <span style="color:#75715e">//格式化</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Streams</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">CodecName</span> <span style="color:#66d9ef">string</span> <span style="color:#e6db74">`json:&#34;codec_name&#34;`</span>        <span style="color:#75715e">//编码</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">Width</span>     <span style="color:#66d9ef">int</span>    <span style="color:#e6db74">`json:&#34;width,omitempty&#34;`</span>   <span style="color:#75715e">//宽</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">Height</span>    <span style="color:#66d9ef">int</span>    <span style="color:#e6db74">`json:&#34;height,omitempty&#34;`</span>  <span style="color:#75715e">//高</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">PixFmt</span>    <span style="color:#66d9ef">string</span> <span style="color:#e6db74">`json:&#34;pix_fmt,omitempty&#34;`</span> <span style="color:#75715e">// 分辨率</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">Duration</span>  <span style="color:#66d9ef">string</span> <span style="color:#e6db74">`json:&#34;duration&#34;`</span>          <span style="color:#75715e">//视频时长</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Format</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">BitRate</span> <span style="color:#66d9ef">string</span> <span style="color:#e6db74">`json:&#34;bit_rate&#34;`</span> <span style="color:#75715e">//速率</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>把json数据反序列化为结构体</p></blockquote>
+</li>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>提取test.mp4的音频文件保存为audio.m4a
+</span></span><span style="display:flex;"><span>ffmpeg -hide_banner -i test.mp4 -vn -c copy audio.m4a
+</span></span></code></pre></div></li>
+<li></li>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>视频分辨率转换,把test.mp4转化为1920x1080分辨率3000k码率的视频
+</span></span><span style="display:flex;"><span>ffmpeg -hide_banner -i test.mp4 -crf <span style="color:#ae81ff">20</span> -c:v libx264 -an -s 1920x1080 -r <span style="color:#ae81ff">300</span>
+</span></span><span style="display:flex;"><span>00/1001 -b:v 3000k tmp_1080p_3000k.mp4
+</span></span></code></pre></div></li>
+<li>
+<blockquote>
+<p>分辨率对应:</p>
+<p>1080: &ldquo;1920x1080&rdquo;, &ldquo;-r&rdquo;, &ldquo;30000/1001&rdquo;, &ldquo;-b:v&rdquo;, &ldquo;3000k&rdquo;</p>
+<p>720: &ldquo;1080x720&rdquo;, &ldquo;-r&rdquo;, &ldquo;30000/1001&rdquo;, &ldquo;-b:v&rdquo;, &ldquo;2000k&rdquo;</p>
+    </div>
+    <a href="/posts/other/ffmpeg/" class="ba b--moon-gray bg-light-gray br2 color-inherit dib f7 hover-bg-moon-gray link mt2 ph2 pv1">read more</a>
+  </div>
+</div>
+
+        </div>
+      
+    </section>
+  </div>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white white-70 dn dib-ns pv2 ph3 no-underline" href="http://localhost:1313/" >
+    &copy;  loveyu233 2025 
+  </a>
+    <div><div class="ananke-socials"></div>
+</div>
+  </div>
+</footer>
+
+  </body>
+</html>

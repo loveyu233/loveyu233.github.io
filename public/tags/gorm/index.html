@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>loveyu233</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="">
+    <meta name="generator" content="Hugo 0.147.7">
+    
+    
+    
+      <meta name="robots" content="noindex, nofollow">
+    
+    
+
+    
+<link rel="stylesheet" href="/ananke/css/main.min.css" >
+
+
+
+
+    
+
+
+    
+      
+
+    
+
+    
+    
+      <link href="/tags/gorm/index.xml" rel="alternate" type="application/rss+xml" title="loveyu233" />
+      <link href="/tags/gorm/index.xml" rel="feed" type="application/rss+xml" title="loveyu233" />
+      
+    
+
+    
+      <link rel="canonical" href="http://localhost:1313/tags/gorm/">
+    
+
+    <meta property="og:url" content="http://localhost:1313/tags/gorm/">
+  <meta property="og:site_name" content="loveyu233">
+  <meta property="og:title" content="Gorm">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="website">
+
+  <meta itemprop="name" content="Gorm">
+  <meta itemprop="datePublished" content="2023-07-21T11:18:37+08:00">
+  <meta itemprop="dateModified" content="2023-07-21T11:18:37+08:00">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Gorm">
+
+	
+  </head><body class="ma0 avenir bg-near-white development">
+
+    
+
+  <header>
+    <div class="pb3-m pb6-l bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l center items-center justify-between">
+    <a href="/" class="f3 fw2 hover-white white-90 dib no-underline">
+      
+        loveyu233
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      <div class="ananke-socials"></div>
+
+    </div>
+  </div>
+</nav>
+
+      <div class="tc-l pv3 ph3 ph4-ns">
+        <h1 class="f2 f-subheadline-l fw2 light-silver mb0 lh-title">
+          Gorm
+        </h1>
+        
+      </div>
+    </div>
+  </header>
+
+
+    <main class="pb7" role="main">
+      
+  <article class="cf pa3 pa4-m pa4-l">
+    <div class="measure-wide-l center f4 lh-copy nested-copy-line-height nested-links mid-gray">
+      <p>Below you will find pages that utilize the taxonomy term “Gorm”</p>
+    </div>
+  </article>
+  <div class="mw8 center">
+    <section class="flex-ns mt5 flex-wrap justify-around">
+      
+        <div class="w-100 mb4 relative bg-white">
+          <div class="w-100 mb4 nested-copy-line-height relative bg-white">
+  <div class="mb3 pa4 gray overflow-hidden bg-white">
+    <span class="f6 db">databases</span>
+    <h1 class="f3 near-black">
+      <a href="/posts/databases/gorm/" class="link black dim">
+        Gorm
+      </a>
+    </h1>
+    <div class="nested-links f5 lh-copy nested-copy-line-height">
+      <h1 id="一对多">一对多</h1>
+<blockquote>
+<p>gorm:&ldquo;column:a;unique&rdquo;</p>
+<p><code>unique:</code> 唯一约束</p>
+<p>gorm:&ldquo;foreignKey:C;references:A&rdquo;</p>
+<p><code>foreignKey:</code> 设置外键</p>
+<p><code>references:</code> 重写引用</p>
+<ol>
+<li>
+<p>引用的字段必须是唯一约束,不然使用<code>AutoMigrate</code> 创建表会报错, 这里的引用意思是查询Stu时会查询出Demo中C和A相同的数据</p>
+</li>
+<li>
+<p><code>D []Demo</code> 不会创建为表字段,不用设置<code>gorm:&quot;-&quot;</code></p>
+</li>
+<li>
+<p>在查询时必须使用<code>Preload(&quot;外键字段名称,这里为D&quot;)</code> 加载,不然查询出的结果中没有该数据</p>
+</li>
+<li>
+<p>如果有多重引用例如Demo中的E则<code>Preload(&quot;D.E&quot;)</code></p>
+</li>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#a6e22e">opt</span>.<span style="color:#a6e22e">DB</span>.<span style="color:#a6e22e">Model</span>(<span style="color:#a6e22e">project</span>).
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">Preload</span>(<span style="color:#e6db74">&#34;Lists&#34;</span>).
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">Preload</span>(<span style="color:#e6db74">&#34;Lists.HTTPS&#34;</span>).<span style="color:#a6e22e">Preload</span>(<span style="color:#e6db74">&#34;Lists.GRPCS&#34;</span>).
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">Where</span>(<span style="color:#e6db74">&#34;id = ?&#34;</span>, <span style="color:#ae81ff">1</span>).<span style="color:#a6e22e">Take</span>(<span style="color:#a6e22e">project</span>)
+</span></span></code></pre></div></li>
+</ol>
+<pre tabindex="0"><code></code></pre></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Stu</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">A</span> <span style="color:#66d9ef">string</span> <span style="color:#e6db74">`json:&#34;a,omitempty&#34; gorm:&#34;column:a;unique&#34;`</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">B</span> <span style="color:#66d9ef">string</span> <span style="color:#e6db74">`json:&#34;b,omitempty&#34; gorm:&#34;column:b&#34;`</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">D</span> []<span style="color:#a6e22e">Demo</span> <span style="color:#e6db74">`json:&#34;d,omitempty&#34; gorm:&#34;foreignKey:C;references:A&#34;`</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Demo</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">C</span> <span style="color:#66d9ef">string</span> <span style="color:#e6db74">`json:&#34;c,omitempty&#34; gorm:&#34;column:c&#34;`</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">D</span> <span style="color:#66d9ef">string</span> <span style="color:#e6db74">`json:&#34;d,omitempty&#34; gorm:&#34;column:d&#34;`</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="多态关联">多态关联</h1>
+<blockquote>
+<p><code>gorm:&quot;polymorphic:Owner;polymorphicValue:master&quot;</code> 使用<code>polymorphicValue</code>更改多态类型的值,这里指定为<code>master</code>则Type字段的值就为<code>master</code></p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Comment</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">ID</span>              <span style="color:#66d9ef">uint</span>        <span style="color:#e6db74">`json:&#34;id,omitempty&#34; gorm:&#34;column:id;unique&#34;`</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Body</span>            <span style="color:#66d9ef">string</span>      <span style="color:#e6db74">`json:&#34;body,omitempty&#34; gorm:&#34;column:body&#34;`</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">CommentableID</span>   <span style="color:#66d9ef">uint</span>        <span style="color:#e6db74">`json:&#34;commentable_id,omitempty&#34; gorm:&#34;column:commentable_id&#34;`</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">CommentableType</span> <span style="color:#66d9ef">string</span>      <span style="color:#e6db74">`json:&#34;commentable_type,omitempty&#34; gorm:&#34;column:commentable_type&#34;`</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Commentable</span>     <span style="color:#66d9ef">interface</span>{} <span style="color:#e6db74">`json:&#34;commentable,omitempty&#34; gorm:&#34;-&#34;`</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Post</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">ID</span>       <span style="color:#66d9ef">uint</span>       <span style="color:#e6db74">`json:&#34;id,omitempty&#34; gorm:&#34;column:id;unique&#34;`</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Title</span>    <span style="color:#66d9ef">string</span>     <span style="color:#e6db74">`json:&#34;title,omitempty&#34; gorm:&#34;column:title&#34;`</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Comments</span> []<span style="color:#f92672">*</span><span style="color:#a6e22e">Comment</span> <span style="color:#e6db74">`gorm:&#34;polymorphic:Commentable;&#34; json:&#34;comments,omitempty&#34;`</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Video</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">ID</span>       <span style="color:#66d9ef">uint</span>       <span style="color:#e6db74">`json:&#34;id,omitempty&#34; gorm:&#34;column:id;unique&#34;`</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Title</span>    <span style="color:#66d9ef">string</span>     <span style="color:#e6db74">`json:&#34;title,omitempty&#34; gorm:&#34;column:title&#34;`</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Comments</span> []<span style="color:#f92672">*</span><span style="color:#a6e22e">Comment</span> <span style="color:#e6db74">`gorm:&#34;polymorphic:Commentable;&#34; json:&#34;comments,omitempty&#34;`</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">==============</span> <span style="color:#a6e22e">创建数据</span> <span style="color:#f92672">==================</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">opt</span>.<span style="color:#a6e22e">DB</span>.<span style="color:#a6e22e">AutoMigrate</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">Comment</span>{}, <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">Post</span>{}, <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">Video</span>{})
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">post</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">Post</span>{
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">Title</span>: <span style="color:#e6db74">&#34;帖子1&#34;</span>,
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">c</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">Comment</span>{
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">Body</span>: <span style="color:#e6db74">&#34;评论2&#34;</span>,
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">post</span>.<span style="color:#a6e22e">Comments</span> = append(<span style="color:#a6e22e">post</span>.<span style="color:#a6e22e">Comments</span>, <span style="color:#a6e22e">c</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">opt</span>.<span style="color:#a6e22e">DB</span>.<span style="color:#a6e22e">Create</span>(<span style="color:#a6e22e">post</span>)
+</span></span><span style="display:flex;"><span><span style="color:#f92672">==============</span> <span style="color:#a6e22e">添加数据</span> <span style="color:#f92672">==================</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">post</span> <span style="color:#f92672">:=</span> new(<span style="color:#a6e22e">Post</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">opt</span>.<span style="color:#a6e22e">DB</span>.<span style="color:#a6e22e">Preload</span>(<span style="color:#e6db74">&#34;Comments&#34;</span>).<span style="color:#a6e22e">Where</span>(<span style="color:#e6db74">&#34;id = ?&#34;</span>, <span style="color:#ae81ff">1</span>).<span style="color:#a6e22e">Find</span>(<span style="color:#a6e22e">post</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">post</span>.<span style="color:#a6e22e">Comments</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">t</span>.<span style="color:#a6e22e">Log</span>(<span style="color:#a6e22e">post</span>.<span style="color:#a6e22e">Comments</span>[<span style="color:#a6e22e">i</span>])
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">post</span>.<span style="color:#a6e22e">Comments</span> = append(<span style="color:#a6e22e">post</span>.<span style="color:#a6e22e">Comments</span>, <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">Comment</span>{<span style="color:#a6e22e">Body</span>: <span style="color:#e6db74">&#34;新的评论&#34;</span>})
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">opt</span>.<span style="color:#a6e22e">DB</span>.<span style="color:#a6e22e">Save</span>(<span style="color:#a6e22e">post</span>)
+</span></span></code></pre></div><h1 id="save和create区别">Save和Create区别</h1>
+<blockquote>
+<p><code>Create:</code>只能用于创建新的数据</p>
+    </div>
+    <a href="/posts/databases/gorm/" class="ba b--moon-gray bg-light-gray br2 color-inherit dib f7 hover-bg-moon-gray link mt2 ph2 pv1">read more</a>
+  </div>
+</div>
+
+        </div>
+      
+        <div class="w-100 mb4 relative bg-white">
+          <div class="w-100 mb4 nested-copy-line-height relative bg-white">
+  <div class="mb3 pa4 gray overflow-hidden bg-white">
+    <span class="f6 db">go</span>
+    <h1 class="f3 near-black">
+      <a href="/posts/go/gorm/" class="link black dim">
+        Gorm
+      </a>
+    </h1>
+    <div class="nested-links f5 lh-copy nested-copy-line-height">
+      <h1 id="关联关系">关联关系</h1>
+<blockquote>
+<p>关联关系必须要求外键</p></blockquote>
+<h2 id="关联标签">关联标签</h2>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">标签</th>
+          <th style="text-align: left">描述</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">foreignKey</td>
+          <td style="text-align: left">指定当前模型的列作为连接表的外键</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">references</td>
+          <td style="text-align: left">指定引用表的列名，其将被映射为连接表外键</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">polymorphic</td>
+          <td style="text-align: left">指定多态类型，比如模型名</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">polymorphicValue</td>
+          <td style="text-align: left">指定多态值、默认表名</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">many2many</td>
+          <td style="text-align: left">指定连接表表名</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">joinForeignKey</td>
+          <td style="text-align: left">指定连接表的外键列名，其将被映射到当前表</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">joinReferences</td>
+          <td style="text-align: left">指定连接表的外键列名，其将被映射到引用表</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">constraint</td>
+          <td style="text-align: left">关系约束，例如：<code>OnUpdate</code>、<code>OnDelete</code></td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="无关联">无关联</h2>
+<h3 id="crud">CRUD</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>	<span style="color:#a6e22e">DB</span>.<span style="color:#a6e22e">Where</span>(<span style="color:#e6db74">&#34;id &gt; ?&#34;</span>, <span style="color:#ae81ff">2</span>).<span style="color:#a6e22e">Select</span>(<span style="color:#e6db74">&#34;id&#34;</span>, <span style="color:#e6db74">&#34;name&#34;</span>).<span style="color:#a6e22e">Order</span>(<span style="color:#e6db74">&#34;id&#34;</span>).<span style="color:#a6e22e">Find</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">users</span>)
+</span></span></code></pre></div><h2 id="belongs-to属于">BeLongs To：属于</h2>
+<blockquote>
+<p><code> belongs to</code> 会与另一个模型建立了一对一的连接。 这种模型的每一个实例都“属于”另一个模型的一个实例。</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">// `User` 属于 `Company`，`CompanyID` 是外键</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">User</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">gorm</span>.<span style="color:#a6e22e">Model</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Name</span>      <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">CompanyID</span> <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Company</span>   <span style="color:#a6e22e">Company</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Company</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">ID</span>   <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Name</span> <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="重写外键">重写外键</h3>
+<blockquote>
+<p><code>foreignKey</code>：重写外键，可以不用外键表+ID这种形式</p>
+<p>默认外键是外键表的名称+ID，创建顺序为先创建User后创建CreditCard；DB.AutoMigrate(&amp;User{}, &amp;CreditCard{})</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">User</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">gorm</span>.<span style="color:#a6e22e">Model</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">Name</span>         <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">CompanyRefer</span> <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">Company</span>      <span style="color:#a6e22e">Company</span> <span style="color:#e6db74">`gorm:&#34;foreignKey:CompanyRefer&#34;`</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 使用 CompanyRefer 作为外键</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Company</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">ID</span>   <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">Name</span> <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="重写引用">重写引用</h3>
+<blockquote>
+<p><code>references</code>：重写引用，默认引用的是ID，使用references可以更改引用；</p>
+    </div>
+    <a href="/posts/go/gorm/" class="ba b--moon-gray bg-light-gray br2 color-inherit dib f7 hover-bg-moon-gray link mt2 ph2 pv1">read more</a>
+  </div>
+</div>
+
+        </div>
+      
+    </section>
+  </div>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white white-70 dn dib-ns pv2 ph3 no-underline" href="http://localhost:1313/" >
+    &copy;  loveyu233 2025 
+  </a>
+    <div><div class="ananke-socials"></div>
+</div>
+  </div>
+</footer>
+
+  </body>
+</html>

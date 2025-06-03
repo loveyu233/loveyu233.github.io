@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>Vue实战技巧 | loveyu233</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="params为空
+
+params为空url错误问题,在path最后加上问号即可解决
+path: &#34;/search/:keyword?&#34;
+params为空字符串
+
+当为空字符串url一样会有错误
+this.keyword || undefined 解决
+this.$router.push({
+  name: &#34;search&#34;,
+  params: {
+      &#34;keyword&#34;: this.keyword || undefined
+  	}
+	}
+)
+重复路由报错问题
+
+重写push和replace
+// 重写push和replace方法,解决重复点击路由报错问题
+// call 和 apply的区别就是call传递参数是用逗号隔开,apply是用数组,相同点都可以改变this指向
+let originPush = VueRouter.prototype.push;
+// resolve:成功调用的方法,reject:失败调用的方法; replace重写方式和push一样
+VueRouter.prototype.push = function (obj, resolve, reject) {
+    if (resolve &amp;&amp; reject) {
+        originPush.call(this, obj, resolve, reject)
+    } else {
+        originPush.call(this, obj, () =&gt; {
+        }, () =&gt; {
+        })
+    }
+}
+axios二次封装和请求进度条
+api/requests.js
+import axios from &#34;axios&#34;;
+import nprogress from &#34;nprogress&#34;
+import &#34;nprogress/nprogress.css&#34;
+
+const requests = axios.create({
+    baseURL: &#34;http://localhost:9888&#34;,
+    timeout: 5000
+})
+requests.interceptors.request.use((config) =&gt; {
+    nprogress.start()
+    return config
+})
+requests.interceptors.response.use((res) =&gt; {
+    nprogress.done()
+    return {status: res.status, data: res.data}
+}, (error) =&gt; {
+    nprogress.done()
+    console.log(error)
+    return {status: error.response.status, err: error.response.data}
+})
+export default requests
+api/index.js">
+    <meta name="generator" content="Hugo 0.147.7">
+    
+    
+    
+      <meta name="robots" content="noindex, nofollow">
+    
+    <meta name="author" content="loveyu">
+    
+
+    
+<link rel="stylesheet" href="/ananke/css/main.min.css" >
+
+
+
+
+    
+
+
+    
+      
+
+    
+
+    
+
+    
+      <link rel="canonical" href="http://localhost:1313/posts/frontend/vue%E5%AE%9E%E6%88%98%E6%8A%80%E5%B7%A7/">
+    
+
+    <meta property="og:url" content="http://localhost:1313/posts/frontend/vue%E5%AE%9E%E6%88%98%E6%8A%80%E5%B7%A7/">
+  <meta property="og:site_name" content="loveyu233">
+  <meta property="og:title" content="Vue实战技巧">
+  <meta property="og:description" content="params为空 params为空url错误问题,在path最后加上问号即可解决
+path: &#34;/search/:keyword?&#34; params为空字符串 当为空字符串url一样会有错误
+this.keyword || undefined 解决
+this.$router.push({ name: &#34;search&#34;, params: { &#34;keyword&#34;: this.keyword || undefined } } ) 重复路由报错问题 重写push和replace
+// 重写push和replace方法,解决重复点击路由报错问题 // call 和 apply的区别就是call传递参数是用逗号隔开,apply是用数组,相同点都可以改变this指向 let originPush = VueRouter.prototype.push; // resolve:成功调用的方法,reject:失败调用的方法; replace重写方式和push一样 VueRouter.prototype.push = function (obj, resolve, reject) { if (resolve &amp;&amp; reject) { originPush.call(this, obj, resolve, reject) } else { originPush.call(this, obj, () =&gt; { }, () =&gt; { }) } } axios二次封装和请求进度条 api/requests.js
+import axios from &#34;axios&#34;; import nprogress from &#34;nprogress&#34; import &#34;nprogress/nprogress.css&#34; const requests = axios.create({ baseURL: &#34;http://localhost:9888&#34;, timeout: 5000 }) requests.interceptors.request.use((config) =&gt; { nprogress.start() return config }) requests.interceptors.response.use((res) =&gt; { nprogress.done() return {status: res.status, data: res.data} }, (error) =&gt; { nprogress.done() console.log(error) return {status: error.response.status, err: error.response.data} }) export default requests api/index.js">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2023-04-04T19:38:37+08:00">
+    <meta property="article:modified_time" content="2023-04-04T19:38:37+08:00">
+    <meta property="article:tag" content="Vue">
+
+  <meta itemprop="name" content="Vue实战技巧">
+  <meta itemprop="description" content="params为空 params为空url错误问题,在path最后加上问号即可解决
+path: &#34;/search/:keyword?&#34; params为空字符串 当为空字符串url一样会有错误
+this.keyword || undefined 解决
+this.$router.push({ name: &#34;search&#34;, params: { &#34;keyword&#34;: this.keyword || undefined } } ) 重复路由报错问题 重写push和replace
+// 重写push和replace方法,解决重复点击路由报错问题 // call 和 apply的区别就是call传递参数是用逗号隔开,apply是用数组,相同点都可以改变this指向 let originPush = VueRouter.prototype.push; // resolve:成功调用的方法,reject:失败调用的方法; replace重写方式和push一样 VueRouter.prototype.push = function (obj, resolve, reject) { if (resolve &amp;&amp; reject) { originPush.call(this, obj, resolve, reject) } else { originPush.call(this, obj, () =&gt; { }, () =&gt; { }) } } axios二次封装和请求进度条 api/requests.js
+import axios from &#34;axios&#34;; import nprogress from &#34;nprogress&#34; import &#34;nprogress/nprogress.css&#34; const requests = axios.create({ baseURL: &#34;http://localhost:9888&#34;, timeout: 5000 }) requests.interceptors.request.use((config) =&gt; { nprogress.start() return config }) requests.interceptors.response.use((res) =&gt; { nprogress.done() return {status: res.status, data: res.data} }, (error) =&gt; { nprogress.done() console.log(error) return {status: error.response.status, err: error.response.data} }) export default requests api/index.js">
+  <meta itemprop="datePublished" content="2023-04-04T19:38:37+08:00">
+  <meta itemprop="dateModified" content="2023-04-04T19:38:37+08:00">
+  <meta itemprop="wordCount" content="446">
+  <meta itemprop="keywords" content="Vue">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Vue实战技巧">
+  <meta name="twitter:description" content="params为空 params为空url错误问题,在path最后加上问号即可解决
+path: &#34;/search/:keyword?&#34; params为空字符串 当为空字符串url一样会有错误
+this.keyword || undefined 解决
+this.$router.push({ name: &#34;search&#34;, params: { &#34;keyword&#34;: this.keyword || undefined } } ) 重复路由报错问题 重写push和replace
+// 重写push和replace方法,解决重复点击路由报错问题 // call 和 apply的区别就是call传递参数是用逗号隔开,apply是用数组,相同点都可以改变this指向 let originPush = VueRouter.prototype.push; // resolve:成功调用的方法,reject:失败调用的方法; replace重写方式和push一样 VueRouter.prototype.push = function (obj, resolve, reject) { if (resolve &amp;&amp; reject) { originPush.call(this, obj, resolve, reject) } else { originPush.call(this, obj, () =&gt; { }, () =&gt; { }) } } axios二次封装和请求进度条 api/requests.js
+import axios from &#34;axios&#34;; import nprogress from &#34;nprogress&#34; import &#34;nprogress/nprogress.css&#34; const requests = axios.create({ baseURL: &#34;http://localhost:9888&#34;, timeout: 5000 }) requests.interceptors.request.use((config) =&gt; { nprogress.start() return config }) requests.interceptors.response.use((res) =&gt; { nprogress.done() return {status: res.status, data: res.data} }, (error) =&gt; { nprogress.done() console.log(error) return {status: error.response.status, err: error.response.data} }) export default requests api/index.js">
+
+	
+  </head><body class="ma0 avenir bg-near-white development">
+
+    
+   
+  
+
+  <header>
+    <div class="bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l center items-center justify-between">
+    <a href="/" class="f3 fw2 hover-white white-90 dib no-underline">
+      
+        loveyu233
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      <div class="ananke-socials"></div>
+
+    </div>
+  </div>
+</nav>
+
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  
+  <article class="flex-l mw8 center ph3 flex-wrap justify-between">
+    <header class="mt4 w-100">
+      <aside class="instapaper_ignoref b helvetica tracked ttu">
+          
+        frontEnd
+      </aside><div id="sharing" class="mt3 ananke-socials"></div>
+<h1 class="f1 athelas mt3 mb1">Vue实战技巧</h1>
+      
+      <p class="tracked"><strong>loveyu</strong>
+      </p>
+      
+      
+      
+      <time class="f6 mv4 dib tracked" datetime="2023-04-04T19:38:37+08:00">April 4, 2023</time>
+      
+
+      
+      
+    </header>
+    <div class="nested-copy-line-height lh-copy serif f4 nested-links mid-gray pr4-l w-two-thirds-l"><h1 id="params为空">params为空</h1>
+<blockquote>
+<p>params为空url错误问题,在path最后加上问号即可解决</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#a6e22e">path</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;/search/:keyword?&#34;</span>
+</span></span></code></pre></div><h1 id="params为空字符串">params为空字符串</h1>
+<blockquote>
+<p>当为空字符串url一样会有错误</p>
+<p><code>this.keyword || undefined</code> 解决</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">$router</span>.<span style="color:#a6e22e">push</span>({
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;search&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">params</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;keyword&#34;</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">keyword</span> <span style="color:#f92672">||</span> <span style="color:#66d9ef">undefined</span>
+</span></span><span style="display:flex;"><span>  	}
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>)
+</span></span></code></pre></div><h1 id="重复路由报错问题">重复路由报错问题</h1>
+<blockquote>
+<p>重写push和replace</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#75715e">// 重写push和replace方法,解决重复点击路由报错问题
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">// call 和 apply的区别就是call传递参数是用逗号隔开,apply是用数组,相同点都可以改变this指向
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">let</span> <span style="color:#a6e22e">originPush</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">VueRouter</span>.<span style="color:#a6e22e">prototype</span>.<span style="color:#a6e22e">push</span>;
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// resolve:成功调用的方法,reject:失败调用的方法; replace重写方式和push一样
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">VueRouter</span>.<span style="color:#a6e22e">prototype</span>.<span style="color:#a6e22e">push</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">function</span> (<span style="color:#a6e22e">obj</span>, <span style="color:#a6e22e">resolve</span>, <span style="color:#a6e22e">reject</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">resolve</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">reject</span>) {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">originPush</span>.<span style="color:#a6e22e">call</span>(<span style="color:#66d9ef">this</span>, <span style="color:#a6e22e">obj</span>, <span style="color:#a6e22e">resolve</span>, <span style="color:#a6e22e">reject</span>)
+</span></span><span style="display:flex;"><span>    } <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">originPush</span>.<span style="color:#a6e22e">call</span>(<span style="color:#66d9ef">this</span>, <span style="color:#a6e22e">obj</span>, () =&gt; {
+</span></span><span style="display:flex;"><span>        }, () =&gt; {
+</span></span><span style="display:flex;"><span>        })
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="axios二次封装和请求进度条">axios二次封装和请求进度条</h1>
+<p><code>api/requests.js</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">import</span> <span style="color:#a6e22e">axios</span> <span style="color:#a6e22e">from</span> <span style="color:#e6db74">&#34;axios&#34;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">import</span> <span style="color:#a6e22e">nprogress</span> <span style="color:#a6e22e">from</span> <span style="color:#e6db74">&#34;nprogress&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">import</span> <span style="color:#e6db74">&#34;nprogress/nprogress.css&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">requests</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">axios</span>.<span style="color:#a6e22e">create</span>({
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">baseURL</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;http://localhost:9888&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">timeout</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">5000</span>
+</span></span><span style="display:flex;"><span>})
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">requests</span>.<span style="color:#a6e22e">interceptors</span>.<span style="color:#a6e22e">request</span>.<span style="color:#a6e22e">use</span>((<span style="color:#a6e22e">config</span>) =&gt; {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">nprogress</span>.<span style="color:#a6e22e">start</span>()
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">config</span>
+</span></span><span style="display:flex;"><span>})
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">requests</span>.<span style="color:#a6e22e">interceptors</span>.<span style="color:#a6e22e">response</span>.<span style="color:#a6e22e">use</span>((<span style="color:#a6e22e">res</span>) =&gt; {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">nprogress</span>.<span style="color:#a6e22e">done</span>()
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> {<span style="color:#a6e22e">status</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">res</span>.<span style="color:#a6e22e">status</span>, <span style="color:#a6e22e">data</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">res</span>.<span style="color:#a6e22e">data</span>}
+</span></span><span style="display:flex;"><span>}, (<span style="color:#a6e22e">error</span>) =&gt; {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">nprogress</span>.<span style="color:#a6e22e">done</span>()
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">error</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> {<span style="color:#a6e22e">status</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">error</span>.<span style="color:#a6e22e">response</span>.<span style="color:#a6e22e">status</span>, <span style="color:#a6e22e">err</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">error</span>.<span style="color:#a6e22e">response</span>.<span style="color:#a6e22e">data</span>}
+</span></span><span style="display:flex;"><span>})
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">export</span> <span style="color:#66d9ef">default</span> <span style="color:#a6e22e">requests</span>
+</span></span></code></pre></div><p><code>api/index.js</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">import</span> <span style="color:#a6e22e">requests</span> <span style="color:#a6e22e">from</span> <span style="color:#e6db74">&#34;@/api/requests&#34;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">export</span> <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">test</span> <span style="color:#f92672">=</span> () =&gt; {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">requests</span>({
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">url</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;/&#34;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">method</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;get&#34;</span>
+</span></span><span style="display:flex;"><span>    })
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>使用</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#75715e">// 在组件中使用
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">import</span> {<span style="color:#a6e22e">test</span>} <span style="color:#a6e22e">from</span> <span style="color:#e6db74">&#34;@/api&#34;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">test</span>().<span style="color:#a6e22e">then</span>(
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// res的信息就是上边封装后返回的信息
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">res</span> =&gt; {
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">res</span>[<span style="color:#e6db74">&#34;status&#34;</span>] <span style="color:#f92672">!==</span> <span style="color:#ae81ff">200</span>) {
+</span></span><span style="display:flex;"><span>          <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">res</span>[<span style="color:#e6db74">&#34;err&#34;</span>])
+</span></span><span style="display:flex;"><span>      } <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>          <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">res</span>[<span style="color:#e6db74">&#34;data&#34;</span>])
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 在vuex中使用,必须使用async和await
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">actions</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">async</span> <span style="color:#a6e22e">getBannerList</span>({<span style="color:#a6e22e">commit</span>}) {
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">result</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">getBaseCategoryList</span>()
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">result</span>[<span style="color:#e6db74">&#34;status&#34;</span>] <span style="color:#f92672">===</span> <span style="color:#ae81ff">200</span>) {
+</span></span><span style="display:flex;"><span>          <span style="color:#a6e22e">commit</span>(<span style="color:#e6db74">&#34;BANNERLIST&#34;</span>, <span style="color:#a6e22e">result</span>[<span style="color:#e6db74">&#34;data&#34;</span>])
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>},
+</span></span></code></pre></div><h1 id="鼠标悬浮事件">鼠标悬浮事件</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">@</span><span style="color:#a6e22e">mouseenter</span> <span style="color:#a6e22e">鼠标悬浮</span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">@</span><span style="color:#a6e22e">mouseleave</span> <span style="color:#a6e22e">鼠标离开</span>
+</span></span></code></pre></div><h1 id="防抖和节流">防抖和节流</h1>
+<blockquote>
+<p>防抖: 前面的所有触发都取消,最后一次执行结束一定时间后再触发,也就是连续的触发只会执行一次.例如:<code>搜索提示</code>,不能输入框每次变化就会发送请求,使用防抖让输入框不发生变化后的一定时间后再触发函数</p>
+<p>节流: 在规定时间内不会重复触发,只有大于设定的时间间隔才会触发,把频繁触发变为少量触发,例如:<code>二三级联动展示,轮播图</code>,鼠标的快速悬浮通过和快速点击都会频繁触发回调,使用节流可以在指定时间内只触发一次,例如轮播图设置节流事件为1秒,那么在这1秒内无论用户点击多少次只会触发一次,下一次触发要在下一个1s</p></blockquote>
+<p>实现</p>
+<p><code>使用lodash.js,lodash.js在vue项目中默认就有不需要再下载</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#75715e">// 按需引入
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">import</span> <span style="color:#a6e22e">throttle</span> <span style="color:#a6e22e">from</span> <span style="color:#e6db74">&#34;lodash/throttle&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">import</span> <span style="color:#a6e22e">debounce</span> <span style="color:#a6e22e">from</span> <span style="color:#e6db74">&#34;lodash/debounce&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 防抖
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">let</span> <span style="color:#a6e22e">res1</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">debounce</span>(<span style="color:#66d9ef">function</span> () {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#34;处理逻辑&#34;</span>)
+</span></span><span style="display:flex;"><span>}, <span style="color:#ae81ff">1000</span>)
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 执行
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">res1</span>()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 节流
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">let</span> <span style="color:#a6e22e">res2</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">throttle</span>(<span style="color:#66d9ef">function</span> () {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#34;处理逻辑&#34;</span>)
+</span></span><span style="display:flex;"><span>}, <span style="color:#ae81ff">50</span>)
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">res2</span>()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 在vue中使用
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">methods</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>  	<span style="color:#75715e">// 使用key:value的方式,index为mouse方法的参数
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">mouse</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">throttle</span>(<span style="color:#66d9ef">function</span> (<span style="color:#a6e22e">index</span>) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">isBack</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">index</span>
+</span></span><span style="display:flex;"><span>    }, <span style="color:#ae81ff">50</span>),
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="事件委派">事件委派</h1>
+<blockquote>
+<p>给一二三级联动展示内的a标签添加路由跳转</p>
+<ol>
+<li>
+<p>使用router-link,会产生卡顿,因为当标签过多router-link创建的实例也多</p>
+</li>
+<li>
+<p>给a标签添加@click,同理a标签过多添加的@click也会过多,性能不好</p>
+</li>
+<li>
+<p>使用时间委派,只需要添加一个@click解决问题</p>
+</li>
+<li>
+<p>在一二三级的共同父标签上添加@click</p>
+<ol>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-html" data-lang="html"><span style="display:flex;"><span>&lt;<span style="color:#f92672">div</span> <span style="color:#960050;background-color:#1e0010">@</span><span style="color:#a6e22e">click</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;toSearch&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>  一二三级标签
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">div</span>&gt;
+</span></span></code></pre></div></li>
+<li></li>
+</ol>
+</li>
+<li>
+<p>在一二三级的a标签添加自定义属性,<code>自定义属性一定要加上data-前缀不然dataset无法解析出来</code></p>
+<ol>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-html" data-lang="html"><span style="display:flex;"><span>&lt;<span style="color:#f92672">a</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">:data-categoryName</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;c1.categoryName&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">:data-categoryId</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;c1.categoryId&#34;</span>
+</span></span><span style="display:flex;"><span>&gt;
+</span></span><span style="display:flex;"><span>{{ c1.categoryName }}
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">a</span>&gt;
+</span></span></code></pre></div></li>
+</ol>
+</li>
+<li>
+<p>通过event解析出来</p>
+</li>
+</ol></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#a6e22e">toSearch</span>(<span style="color:#a6e22e">event</span>) {
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 获取点击的标签
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">el</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">event</span>.<span style="color:#a6e22e">target</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 解构出来自定义标签
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">let</span> {<span style="color:#a6e22e">categoryname</span>, <span style="color:#a6e22e">categoryid</span>} <span style="color:#f92672">=</span> <span style="color:#a6e22e">el</span>.<span style="color:#a6e22e">dataset</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// categoryname存在说明是a标签
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">categoryname</span>) {
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">location</span> <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>          <span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;search&#34;</span>,
+</span></span><span style="display:flex;"><span>          <span style="color:#a6e22e">query</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>              <span style="color:#e6db74">&#34;categoryname&#34;</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">categoryname</span>,
+</span></span><span style="display:flex;"><span>              <span style="color:#e6db74">&#34;categoryid&#34;</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">categoryid</span>
+</span></span><span style="display:flex;"><span>          }
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">// 路由跳转
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">$router</span>.<span style="color:#a6e22e">push</span>(<span style="color:#a6e22e">location</span>)
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="swiper实现轮播图">swiper实现轮播图</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#a6e22e">npm</span> <span style="color:#a6e22e">i</span> <span style="color:#a6e22e">swiper</span><span style="color:#960050;background-color:#1e0010">@</span><span style="color:#ae81ff">5</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">npm</span> <span style="color:#a6e22e">install</span> <span style="color:#a6e22e">sass</span><span style="color:#f92672">-</span><span style="color:#a6e22e">loader</span><span style="color:#960050;background-color:#1e0010">@</span><span style="color:#ae81ff">8.0</span>.<span style="color:#ae81ff">2</span> <span style="color:#a6e22e">sass</span><span style="color:#960050;background-color:#1e0010">@</span><span style="color:#ae81ff">1.26</span>.<span style="color:#ae81ff">5</span>  <span style="color:#f92672">--</span><span style="color:#a6e22e">save</span><span style="color:#f92672">-</span><span style="color:#a6e22e">dev</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 如果包deep错误:
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">原因是在scss里面</span>   <span style="color:#f92672">/</span><span style="color:#a6e22e">deep</span><span style="color:#f92672">/</span>  <span style="color:#a6e22e">想要使用样式穿透</span><span style="color:#960050;background-color:#1e0010">，</span><span style="color:#a6e22e">让子组件匹配上这个样式</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">在</span> <span style="color:#a6e22e">less</span> <span style="color:#a6e22e">中</span> <span style="color:#a6e22e">将</span> <span style="color:#f92672">/</span><span style="color:#a6e22e">deep</span><span style="color:#f92672">/</span> <span style="color:#a6e22e">替换成</span> <span style="color:#f92672">::</span><span style="color:#a6e22e">v</span><span style="color:#f92672">-</span><span style="color:#a6e22e">deep</span> <span style="color:#a6e22e">即可</span>
+</span></span></code></pre></div><blockquote>
+<p>在<code>main.js</code>引入swiper的css样式,因为轮播图在多个组件都有用,如果只在一个组件用则在呢个组件中引入即可</p></blockquote>
+<p><code>main.js</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#75715e">// 是css目录下的css样式不是直接引用swiper/下的css
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">import</span> <span style="color:#e6db74">&#34;swiper/css/swiper.min.css&#34;</span>
+</span></span></code></pre></div><p><code>.vue</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-vue" data-lang="vue"><span style="display:flex;"><span>&lt;<span style="color:#f92672">div</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;swiper-container&#34;</span> <span style="color:#a6e22e">id</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;mySwiper&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>  &lt;<span style="color:#f92672">div</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;swiper-wrapper&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>      &lt;<span style="color:#f92672">div</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;swiper-slide&#34;</span> <span style="color:#f92672">v-for</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;image in images&#34; :key=&#34;image.Id&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>          &lt;<span style="color:#f92672">img</span> <span style="color:#f92672">:src</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;image.Src&#34;</span>/&gt;
+</span></span><span style="display:flex;"><span>      &lt;/<span style="color:#f92672">div</span>&gt;
+</span></span><span style="display:flex;"><span>  &lt;/<span style="color:#f92672">div</span>&gt;
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">&lt;!--</span> <span style="color:#a6e22e">如果需要分页器</span> <span style="color:#f92672">--&gt;</span>
+</span></span><span style="display:flex;"><span>  &lt;<span style="color:#f92672">div</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;swiper-pagination&#34;</span>&gt;&lt;/<span style="color:#f92672">div</span>&gt;
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">&lt;!--</span> <span style="color:#a6e22e">如果需要导航按钮</span> <span style="color:#f92672">--&gt;</span>
+</span></span><span style="display:flex;"><span>  &lt;<span style="color:#f92672">div</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;swiper-button-prev&#34;</span>&gt;&lt;/<span style="color:#f92672">div</span>&gt;
+</span></span><span style="display:flex;"><span>  &lt;<span style="color:#f92672">div</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;swiper-button-next&#34;</span>&gt;&lt;/<span style="color:#f92672">div</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">div</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#f92672">script</span>&gt;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">import</span> {<span style="color:#a6e22e">mapActions</span>, <span style="color:#a6e22e">mapState</span>} <span style="color:#a6e22e">from</span> <span style="color:#e6db74">&#34;vuex&#34;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">import</span> <span style="color:#a6e22e">Swiper</span> <span style="color:#a6e22e">from</span> <span style="color:#e6db74">&#34;swiper&#34;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">export</span> <span style="color:#66d9ef">default</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;index&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">computed</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>        ...<span style="color:#a6e22e">mapState</span>(<span style="color:#e6db74">&#34;home&#34;</span>, [<span style="color:#e6db74">&#34;images&#34;</span>])
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">methods</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>        ...<span style="color:#a6e22e">mapActions</span>(<span style="color:#e6db74">&#34;home&#34;</span>, [<span style="color:#e6db74">&#34;getImages&#34;</span>])
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">mounted</span>() {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 加载轮播图的图片
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">getImages</span>()
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">watch</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">images</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">handler</span>() {
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">$nextTick</span>(() =&gt; {
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">Swiper</span>(<span style="color:#e6db74">&#39;.swiper-container&#39;</span>, {
+</span></span><span style="display:flex;"><span>                        <span style="color:#75715e">//direction: &#39;vertical&#39;, // 垂直切换选项
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                        <span style="color:#a6e22e">loop</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">true</span>, <span style="color:#75715e">// 循环模式选项
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                        <span style="color:#75715e">// 如果需要分页器
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                        <span style="color:#a6e22e">pagination</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>                            <span style="color:#a6e22e">el</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;.swiper-pagination&#39;</span>,
+</span></span><span style="display:flex;"><span>                            <span style="color:#75715e">// 点击小球也可以跳转
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                            <span style="color:#a6e22e">clickable</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>                        },
+</span></span><span style="display:flex;"><span>                        <span style="color:#75715e">// 如果需要前进后退按钮
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                        <span style="color:#a6e22e">navigation</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>                            <span style="color:#a6e22e">nextEl</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;.swiper-button-next&#39;</span>,
+</span></span><span style="display:flex;"><span>                            <span style="color:#a6e22e">prevEl</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;.swiper-button-prev&#39;</span>,
+</span></span><span style="display:flex;"><span>                        },
+</span></span><span style="display:flex;"><span>                    })
+</span></span><span style="display:flex;"><span>                })
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">script</span>&gt;
+</span></span></code></pre></div><ul class="pa0">
+  
+   <li class="list di">
+     <a href="/tags/vue/" class="link f5 grow br-pill ba ph3 pv2 mb2 dib black sans-serif no-underline">Vue</a>
+   </li>
+  
+</ul>
+<div class="mt6 instapaper_ignoref">
+      
+      
+      </div>
+    </div>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white white-70 dn dib-ns pv2 ph3 no-underline" href="http://localhost:1313/" >
+    &copy;  loveyu233 2025 
+  </a>
+    <div><div class="ananke-socials"></div>
+</div>
+  </div>
+</footer>
+
+  </body>
+</html>

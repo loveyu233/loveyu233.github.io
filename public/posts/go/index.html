@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>go | loveyu233</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="">
+    <meta name="generator" content="Hugo 0.147.7">
+    
+    
+    
+      <meta name="robots" content="noindex, nofollow">
+    
+    
+
+    
+<link rel="stylesheet" href="/ananke/css/main.min.css" >
+
+
+
+
+    
+
+
+    
+      
+
+    
+
+    
+    
+      <link href="/posts/go/index.xml" rel="alternate" type="application/rss+xml" title="loveyu233" />
+      <link href="/posts/go/index.xml" rel="feed" type="application/rss+xml" title="loveyu233" />
+      
+    
+
+    
+      <link rel="canonical" href="http://localhost:1313/posts/go/">
+    
+
+    <meta property="og:url" content="http://localhost:1313/posts/go/">
+  <meta property="og:site_name" content="loveyu233">
+  <meta property="og:title" content="go">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="website">
+
+  <meta itemprop="name" content="go">
+  <meta itemprop="datePublished" content="2018-09-18T23:51:34+08:00">
+  <meta itemprop="dateModified" content="2018-09-18T23:51:34+08:00">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="go">
+
+	
+  </head><body class="ma0 avenir bg-near-white development">
+
+    
+
+  <header>
+    <div class="pb3-m pb6-l bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l center items-center justify-between">
+    <a href="/" class="f3 fw2 hover-white white-90 dib no-underline">
+      
+        loveyu233
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      <div class="ananke-socials"></div>
+
+    </div>
+  </div>
+</nav>
+
+      <div class="tc-l pv3 ph3 ph4-ns">
+        <h1 class="f2 f-subheadline-l fw2 light-silver mb0 lh-title">
+          go
+        </h1>
+        
+      </div>
+    </div>
+  </header>
+
+
+    <main class="pb7" role="main">
+      
+  <article class="pa3 pa4-ns nested-copy-line-height">
+    <section class="cf ph3 ph5-l pv3 pv4-l f4 tc-l center measure-wide lh-copy nested-links mid-gray"></section>
+    <section class="flex-ns mt5 flex-wrap justify-around">
+      
+        <div class="w-100 w-30-l mb4 relative bg-white">
+          <div class="w-100 mb4 nested-copy-line-height relative bg-white">
+  <div class="mb3 pa4 gray overflow-hidden bg-white">
+    <span class="f6 db">go</span>
+    <h1 class="f3 near-black">
+      <a href="/posts/go/gin-binding-tags/" class="link black dim">
+        Gin框架binding标签完整指南
+      </a>
+    </h1>
+    <div class="nested-links f5 lh-copy nested-copy-line-height">
+      <h1 id="gin框架binding标签完整指南">Gin框架binding标签完整指南</h1>
+<h2 id="基础绑定标签">基础绑定标签</h2>
+<p>Gin框架支持多种请求参数绑定方式，可以通过以下标签指定：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">LoginForm</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">User</span>     <span style="color:#66d9ef">string</span> <span style="color:#e6db74">`form:&#34;user&#34; json:&#34;user&#34; binding:&#34;required&#34;`</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">Password</span> <span style="color:#66d9ef">string</span> <span style="color:#e6db74">`form:&#34;password&#34; json:&#34;password&#34; binding:&#34;required&#34;`</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>主要的绑定标签有：</p>
+<ul>
+<li><code>binding:&quot;required&quot;</code> - 字段为必填项</li>
+<li><code>binding:&quot;-&quot;</code> - 忽略该字段的绑定和验证</li>
+<li><code>binding:&quot;omitempty&quot;</code> - 如果字段为空，则跳过后续验证规则</li>
+</ul>
+<h2 id="绑定来源">绑定来源</h2>
+<p>Gin框架支持从不同位置绑定数据：</p>
+<ul>
+<li><code>form</code> - 表单参数（multipart/form-data或application/x-www-form-urlencoded）</li>
+<li><code>json</code> - JSON格式请求体（application/json）</li>
+<li><code>xml</code> - XML格式请求体（application/xml）</li>
+<li><code>yaml</code> - YAML格式请求体</li>
+<li><code>query</code> - URL查询参数</li>
+<li><code>uri</code> - URL路径参数</li>
+<li><code>header</code> - HTTP请求头</li>
+<li><code>binding</code> - 通用绑定标签，指定验证规则</li>
+</ul>
+<h2 id="完整验证规则列表">完整验证规则列表</h2>
+<p>以下是binding标签支持的全部验证规则：</p>
+<h3 id="通用验证规则">通用验证规则</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">// 字符串验证</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">`binding:&#34;required&#34;`</span>              <span style="color:#75715e">// 必填字段</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">`binding:&#34;omitempty&#34;`</span>             <span style="color:#75715e">// 如果为空则跳过后续验证</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">`binding:&#34;len=10&#34;`</span>                <span style="color:#75715e">// 长度必须为10</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">`binding:&#34;min=1&#34;`</span>                 <span style="color:#75715e">// 最小长度为1</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">`binding:&#34;max=10&#34;`</span>                <span style="color:#75715e">// 最大长度为10</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">`binding:&#34;eq=10&#34;`</span>                 <span style="color:#75715e">// 长度等于10</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">`binding:&#34;ne=10&#34;`</span>                 <span style="color:#75715e">// 长度不等于10</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">`binding:&#34;gt=10&#34;`</span>                 <span style="color:#75715e">// 长度大于10</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">`binding:&#34;gte=10&#34;`</span>                <span style="color:#75715e">// 长度大于等于10</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">`binding:&#34;lt=10&#34;`</span>                 <span style="color:#75715e">// 长度小于10</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">`binding:&#34;lte=10&#34;`</span>                <span style="color:#75715e">// 长度小于等于10</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 数值范围验证</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">`binding:&#34;eq=10&#34;`</span>                 <span style="color:#75715e">// 等于10</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">`binding:&#34;ne=10&#34;`</span>                 <span style="color:#75715e">// 不等于10</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">`binding:&#34;gt=10&#34;`</span>                 <span style="color:#75715e">// 大于10</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">`binding:&#34;gte=10&#34;`</span>                <span style="color:#75715e">// 大于等于10</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">`binding:&#34;lt=10&#34;`</span>                 <span style="color:#75715e">// 小于10</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">`binding:&#34;lte=10&#34;`</span>                <span style="color:#75715e">// 小于等于10</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">`binding:&#34;oneof=5 10 15&#34;`</span>         <span style="color:#75715e">// 只能是5、10或15中的一个</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 字符串格式验证</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">`binding:&#34;contains=abc&#34;`</span>          <span style="color:#75715e">// 包含子字符串abc</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">`binding:&#34;containsany=abc&#34;`</span>       <span style="color:#75715e">// 包含abc中的任意字符</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">`binding:&#34;containsrune=☺&#34;`</span>        <span style="color:#75715e">// 包含特定的rune字符</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">`binding:&#34;excludes=abc&#34;`</span>          <span style="color:#75715e">// 不包含子字符串abc</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">`binding:&#34;excludesall=abc&#34;`</span>       <span style="color:#75715e">// 不包含abc中的任意字符</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">`binding:&#34;excludesrune=☺&#34;`</span>        <span style="color:#75715e">// 不包含特定的rune字符</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">`binding:&#34;startswith=abc&#34;`</span>        <span style="color:#75715e">// 以abc开头</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">`binding:&#34;endswith=abc&#34;`</span>          <span style="color:#75715e">// 以abc结尾</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 特殊格式验证</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">`binding:&#34;email&#34;`</span>                 <span style="color:#75715e">// 必须是有效的电子邮件地址</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">`binding:&#34;url&#34;`</span>                   <span style="color:#75715e">// 必须是有效的URL</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">`binding:&#34;uri&#34;`</span>                   <span style="color:#75715e">// 必须是有效的URI</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">`binding:&#34;base64&#34;`</span>                <span style="color:#75715e">// 必须是有效的base64字符串</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">`binding:&#34;iso3166_1_alpha2&#34;`</span>      <span style="color:#75715e">// 必须是有效的ISO 3166-1 alpha-2国家代码</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">`binding:&#34;iso3166_1_alpha3&#34;`</span>      <span style="color:#75715e">// 必须是有效的ISO 3166-1 alpha-3国家代码</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">`binding:&#34;iso3166_1_alpha_numeric&#34;`</span> <span style="color:#75715e">// 必须是有效的ISO 3166-1数字国家代码</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">`binding:&#34;isbn10&#34;`</span>                <span style="color:#75715e">// 必须是有效的ISBN-10</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">`binding:&#34;isbn13&#34;`</span>                <span style="color:#75715e">// 必须是有效的ISBN-13</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">`binding:&#34;uuid&#34;`</span>                  <span style="color:#75715e">// 必须是有效的UUID</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">`binding:&#34;uuid3&#34;`</span>                 <span style="color:#75715e">// 必须是有效的UUID版本3</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">`binding:&#34;uuid4&#34;`</span>                 <span style="color:#75715e">// 必须是有效的UUID版本4</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">`binding:&#34;uuid5&#34;`</span>                 <span style="color:#75715e">// 必须是有效的UUID版本5</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">`binding:&#34;alpha&#34;`</span>                 <span style="color:#75715e">// 只能包含字母</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">`binding:&#34;alphanum&#34;`</span>              <span style="color:#75715e">// 只能包含字母和数字</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">`binding:&#34;alphaunicode&#34;`</span>          <span style="color:#75715e">// 只能包含unicode字母</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">`binding:&#34;alphanumunicode&#34;`</span>       <span style="color:#75715e">// 只能包含unicode字母和数字</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">`binding:&#34;numeric&#34;`</span>               <span style="color:#75715e">// 只能包含数字</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">`binding:&#34;number&#34;`</span>                <span style="color:#75715e">// 必须是有效的数字</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">`binding:&#34;hexadecimal&#34;`</span>           <span style="color:#75715e">// 必须是有效的十六进制</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">`binding:&#34;hexcolor&#34;`</span>              <span style="color:#75715e">// 必须是有效的十六进制颜色码</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">`binding:&#34;rgb&#34;`</span>                   <span style="color:#75715e">// 必须是有效的RGB颜色</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">`binding:&#34;rgba&#34;`</span>                  <span style="color:#75715e">// 必须是有效的RGBA颜色</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">`binding:&#34;hsl&#34;`</span>                   <span style="color:#75715e">// 必须是有效的HSL颜色</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">`binding:&#34;hsla&#34;`</span>                  <span style="color:#75715e">// 必须是有效的HSLA颜色</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">`binding:&#34;e164&#34;`</span>                  <span style="color:#75715e">// 必须是有效的E.164电话号码</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">`binding:&#34;phone&#34;`</span>                 <span style="color:#75715e">// 必须是有效的电话号码</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">`binding:&#34;phonenumber&#34;`</span>           <span style="color:#75715e">// 必须是有效的电话号码(别名for `phone`)</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">`binding:&#34;datetime=2006-01-02&#34;`</span>   <span style="color:#75715e">// 必须匹配指定的日期时间格式</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 网络相关验证</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">`binding:&#34;ip&#34;`</span>                    <span style="color:#75715e">// 必须是有效的IP地址</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">`binding:&#34;ipv4&#34;`</span>                  <span style="color:#75715e">// 必须是有效的IPv4地址</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">`binding:&#34;ipv6&#34;`</span>                  <span style="color:#75715e">// 必须是有效的IPv6地址</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">`binding:&#34;tcp_addr&#34;`</span>              <span style="color:#75715e">// 必须是有效的TCP地址</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">`binding:&#34;tcp4_addr&#34;`</span>             <span style="color:#75715e">// 必须是有效的TCPv4地址</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">`binding:&#34;tcp6_addr&#34;`</span>             <span style="color:#75715e">// 必须是有效的TCPv6地址</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">`binding:&#34;udp_addr&#34;`</span>              <span style="color:#75715e">// 必须是有效的UDP地址</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">`binding:&#34;udp4_addr&#34;`</span>             <span style="color:#75715e">// 必须是有效的UDPv4地址</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">`binding:&#34;udp6_addr&#34;`</span>             <span style="color:#75715e">// 必须是有效的UDPv6地址</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">`binding:&#34;ip_addr&#34;`</span>               <span style="color:#75715e">// 必须是有效的IP地址</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">`binding:&#34;ip4_addr&#34;`</span>              <span style="color:#75715e">// 必须是有效的IPv4地址</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">`binding:&#34;ip6_addr&#34;`</span>              <span style="color:#75715e">// 必须是有效的IPv6地址</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">`binding:&#34;unix_addr&#34;`</span>             <span style="color:#75715e">// 必须是有效的Unix地址</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">`binding:&#34;mac&#34;`</span>                   <span style="color:#75715e">// 必须是有效的MAC地址</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 文件和路径验证</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">`binding:&#34;file&#34;`</span>                  <span style="color:#75715e">// 必须是有效的文件路径</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">`binding:&#34;dirpath&#34;`</span>               <span style="color:#75715e">// 必须是有效的目录路径</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">`binding:&#34;filepath&#34;`</span>              <span style="color:#75715e">// 必须是有效的文件或目录路径</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 切片和数组验证</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">`binding:&#34;dive&#34;`</span>                  <span style="color:#75715e">// 验证切片/数组/map的每个元素</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">`binding:&#34;unique&#34;`</span>                <span style="color:#75715e">// 切片/数组中的所有元素必须唯一</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">`binding:&#34;dive,required&#34;`</span>         <span style="color:#75715e">// 切片中的每个元素都是必需的</span>
+</span></span></code></pre></div><h3 id="组合验证规则">组合验证规则</h3>
+<p>可以通过逗号连接多个验证规则：</p>
+    </div>
+    <a href="/posts/go/gin-binding-tags/" class="ba b--moon-gray bg-light-gray br2 color-inherit dib f7 hover-bg-moon-gray link mt2 ph2 pv1">read more</a>
+  </div>
+</div>
+
+        </div>
+      
+        <div class="w-100 w-30-l mb4 relative bg-white">
+          <div class="w-100 mb4 nested-copy-line-height relative bg-white">
+  <div class="mb3 pa4 gray overflow-hidden bg-white">
+    <span class="f6 db">go</span>
+    <h1 class="f3 near-black">
+      <a href="/posts/go/go%E9%A1%B9%E7%9B%AE%E4%B8%8A%E4%BC%A0%E8%B0%83%E7%94%A8/" class="link black dim">
+        go项目上传调用
+      </a>
+    </h1>
+    <div class="nested-links f5 lh-copy nested-copy-line-height">
+      <h2 id="gitlabgithub创建仓库">gitlab/github创建仓库</h2>
+<h2 id="创建目录">创建目录</h2>
+<blockquote>
+<p>创建的目录名称要和gitlab/github创建的仓库名称一致</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>mkdir 仓库名称
+</span></span></code></pre></div><h2 id="初始化项目">初始化项目</h2>
+<blockquote>
+<h3 id="如果是gitlab默认用户名有大小写无论大小写统一全部按照小写-zhangsan--zhangsan">如果是gitlab默认用户名有大小写,无论大小写统一全部按照小写 ZhangSan &ndash;&gt; zhangsan</h3>
+<h3 id="初始化的项目名必须格式正确不能只写一个项目名称必须添加上远程仓库地址和用户名群组名"><code>初始化的项目名必须格式正确</code>，不能只写一个项目名称，必须添加上远程仓库地址和用户名/群组名</h3></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>go mod init gitlab地址或github.com/用户名或群组名/仓库名
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 例如</span>
+</span></span><span style="display:flex;"><span>go mod init 123.123.123.123/zhangsan/common-go
+</span></span><span style="display:flex;"><span>go mod init github.com/zhangsan/common-go
+</span></span></code></pre></div><h2 id="创建go文件">创建go文件</h2>
+<blockquote>
+<h3 id="对外的函数记得大写">对外的函数记得<code>大写</code></h3></blockquote>
+<h2 id="上传">上传</h2>
+<blockquote>
+<ol>
+<li>
+<h3 id="标签必须是v开头且是三组例如v100-v123-v222">标签必须是<code>v开头且是三组,例如v1.0.0 v1.2.3 v2.2.2</code></h3>
+</li>
+</ol></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>git init --initial-branch<span style="color:#f92672">=</span>main
+</span></span><span style="display:flex;"><span>git remote add origin ssh://git@123.123.123/zhangsan/common-go.git
+</span></span><span style="display:flex;"><span>git add .
+</span></span><span style="display:flex;"><span>git common -m <span style="color:#e6db74">&#34;init&#34;</span>
+</span></span><span style="display:flex;"><span>git push -u origin main
+</span></span><span style="display:flex;"><span>git tag v1.0.0
+</span></span><span style="display:flex;"><span>git push --tags
+</span></span></code></pre></div><h2 id="调用">调用</h2>
+<blockquote>
+<h3 id="第一次调用某个函数尽量用gitlab或github地址用户名或群组名仓库名要调用的包名--例如-123123123zhangsancommon-goredis">第一次调用某个函数尽量用:<code>gitlab或github地址/用户名或群组名/仓库名/要调用的包名</code>  例如: <code>123.123.123/zhangsan/common-go/redis</code></h3>
+<h3 id="如果在goland的项目中直接import-123123123zhangsancommon-go-然后鼠标悬浮上边点击同步依赖会报错-but-does-not-contain-package">如果在goland的项目中直接<code>import &quot;123.123.123/zhangsan/common-go&quot;</code> 然后鼠标悬浮上边点击同步依赖会<code>报错 but does not contain package</code></h3>
+<h3 id="需要import-123123123zhangsancommon-goredis-然后再鼠标点击同步依赖就没问题了">需要<code>import &quot;123.123.123/zhangsan/common-go/redis&quot;</code> 然后再鼠标点击同步依赖就没问题了</h3></blockquote>
+<h2 id="仓库更新">仓库更新</h2>
+<blockquote>
+<h3 id="正常更新代码然后提交远程仓库然后打tag注意格式">正常更新代码，然后提交远程仓库，然后打tag（注意格式）</h3>
+<h3 id="如果调用方想要使用最新的则使用go-get-123123123zhangsancommon-golatest即可">如果调用方想要使用最新的则使用<code>go get 123.123.123/zhangsan/common-go@latest</code>即可</h3></blockquote>
+    </div>
+    <a href="/posts/go/go%E9%A1%B9%E7%9B%AE%E4%B8%8A%E4%BC%A0%E8%B0%83%E7%94%A8/" class="ba b--moon-gray bg-light-gray br2 color-inherit dib f7 hover-bg-moon-gray link mt2 ph2 pv1">read more</a>
+  </div>
+</div>
+
+        </div>
+      
+        <div class="w-100 w-30-l mb4 relative bg-white">
+          <div class="w-100 mb4 nested-copy-line-height relative bg-white">
+  <div class="mb3 pa4 gray overflow-hidden bg-white">
+    <span class="f6 db">go</span>
+    <h1 class="f3 near-black">
+      <a href="/posts/go/channel%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/" class="link black dim">
+        Channel实现原理
+      </a>
+    </h1>
+    <div class="nested-links f5 lh-copy nested-copy-line-height">
+      <h1 id="数据结构">数据结构</h1>
+<p><img src="https://www.loveyu.asia//img/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.png" alt="数据结构"></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">hchan</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">qcount</span>   <span style="color:#66d9ef">uint</span>           <span style="color:#75715e">// 当前 channel 中存在多少个元素</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">dataqsiz</span> <span style="color:#66d9ef">uint</span>           <span style="color:#75715e">// 当前 channel 能存放的元素容量</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">buf</span>      <span style="color:#a6e22e">unsafe</span>.<span style="color:#a6e22e">Pointer</span> <span style="color:#75715e">// channel 中用于存放元素的环形缓冲区</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">elemsize</span> <span style="color:#66d9ef">uint16</span>         <span style="color:#75715e">// chan元素类型大小</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">closed</span>   <span style="color:#66d9ef">uint32</span>         <span style="color:#75715e">// chan是否关闭</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">elemtype</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">_type</span>         <span style="color:#75715e">// chan元素的类型</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">sendx</span>    <span style="color:#66d9ef">uint</span>           <span style="color:#75715e">// 发送元素进入环形缓冲区的 index</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">recvx</span>    <span style="color:#66d9ef">uint</span>           <span style="color:#75715e">// 接收元素所处的环形缓冲区的 index</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">recvq</span>    <span style="color:#a6e22e">waitq</span>          <span style="color:#75715e">// 因接收而陷入阻塞的协程队列</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">sendq</span>    <span style="color:#a6e22e">waitq</span>          <span style="color:#75715e">// 因发送而陷入阻塞的协程队列</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">lock</span>     <span style="color:#a6e22e">mutex</span>          <span style="color:#75715e">// 锁</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">waitq</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">first</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">sudog</span> <span style="color:#75715e">// 队头</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">last</span>  <span style="color:#f92672">*</span><span style="color:#a6e22e">sudog</span> <span style="color:#75715e">// 队尾</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">sudog</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">g</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">g</span> <span style="color:#75715e">// goroutine</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">next</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">sudog</span> <span style="color:#75715e">// 下一个节点指针</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">prev</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">sudog</span> <span style="color:#75715e">// 上一个节点指针</span>
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">elem</span> <span style="color:#a6e22e">unsafe</span>.<span style="color:#a6e22e">Pointer</span> <span style="color:#75715e">// 读取/写入 channel 的数据的容器</span>
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">isSelect</span> <span style="color:#66d9ef">bool</span>  <span style="color:#75715e">// 标识当前协程是否处在 select 多路复用的流程中</span>
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">c</span>        <span style="color:#f92672">*</span><span style="color:#a6e22e">hchan</span> <span style="color:#75715e">// 标识与当前 sudog 交互的 chan</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="初始化">初始化</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">makechan</span>(<span style="color:#a6e22e">t</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">chantype</span>, <span style="color:#a6e22e">size</span> <span style="color:#66d9ef">int</span>) <span style="color:#f92672">*</span><span style="color:#a6e22e">hchan</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">elem</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">t</span>.<span style="color:#a6e22e">elem</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 判断元素大小是否超出限制</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">elem</span>.<span style="color:#a6e22e">size</span> <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">1</span><span style="color:#f92672">&lt;&lt;</span><span style="color:#ae81ff">16</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">throw</span>(<span style="color:#e6db74">&#34;makechan: invalid channel element type&#34;</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 判断对齐方式是否正确</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">hchanSize</span><span style="color:#f92672">%</span><span style="color:#a6e22e">maxAlign</span> <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">||</span> <span style="color:#a6e22e">elem</span>.<span style="color:#a6e22e">align</span> &gt; <span style="color:#a6e22e">maxAlign</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">throw</span>(<span style="color:#e6db74">&#34;makechan: bad alignment&#34;</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 计算需要分配的内存大小，并进行溢出和范围检查。如果溢出或者大小超过了允许的最大值抛出异常</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">mem</span>, <span style="color:#a6e22e">overflow</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">math</span>.<span style="color:#a6e22e">MulUintptr</span>(<span style="color:#a6e22e">elem</span>.<span style="color:#a6e22e">size</span>, uintptr(<span style="color:#a6e22e">size</span>))
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">overflow</span> <span style="color:#f92672">||</span> <span style="color:#a6e22e">mem</span> &gt; <span style="color:#a6e22e">maxAlloc</span><span style="color:#f92672">-</span><span style="color:#a6e22e">hchanSize</span> <span style="color:#f92672">||</span> <span style="color:#a6e22e">size</span> &lt; <span style="color:#ae81ff">0</span> {
+</span></span><span style="display:flex;"><span>		panic(<span style="color:#a6e22e">plainError</span>(<span style="color:#e6db74">&#34;makechan: size out of range&#34;</span>))
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">hchan</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">switch</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 无缓冲</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">case</span> <span style="color:#a6e22e">mem</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>:
+</span></span><span style="display:flex;"><span>  	<span style="color:#75715e">// 分配hchanSize大小的内存并转为*hchan类型</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 则仅申请一个大小为默认值 96 的空间</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">c</span> = (<span style="color:#f92672">*</span><span style="color:#a6e22e">hchan</span>)(<span style="color:#a6e22e">mallocgc</span>(<span style="color:#a6e22e">hchanSize</span>, <span style="color:#66d9ef">nil</span>, <span style="color:#66d9ef">true</span>))
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">buf</span> = <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">raceaddr</span>()
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 有缓冲的 struct 型</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">case</span> <span style="color:#a6e22e">elem</span>.<span style="color:#a6e22e">ptrdata</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//一次性分配好 96 + mem 大小的空间，并且调整 chan 的 buf 指向 mem 的起始位置</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">c</span> = (<span style="color:#f92672">*</span><span style="color:#a6e22e">hchan</span>)(<span style="color:#a6e22e">mallocgc</span>(<span style="color:#a6e22e">hchanSize</span><span style="color:#f92672">+</span><span style="color:#a6e22e">mem</span>, <span style="color:#66d9ef">nil</span>, <span style="color:#66d9ef">true</span>))
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">buf</span> = <span style="color:#a6e22e">add</span>(<span style="color:#a6e22e">unsafe</span>.<span style="color:#a6e22e">Pointer</span>(<span style="color:#a6e22e">c</span>), <span style="color:#a6e22e">hchanSize</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 指针类型元素</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">default</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 分别申请 chan 和 buf 的空间，因为是指针类型的所以两者无需连续</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">c</span> = new(<span style="color:#a6e22e">hchan</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">buf</span> = <span style="color:#a6e22e">mallocgc</span>(<span style="color:#a6e22e">mem</span>, <span style="color:#a6e22e">elem</span>, <span style="color:#66d9ef">true</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 初始化元素类型大小</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">elemsize</span> = uint16(<span style="color:#a6e22e">elem</span>.<span style="color:#a6e22e">size</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 元素类型</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">elemtype</span> = <span style="color:#a6e22e">elem</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 容量</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">dataqsiz</span> = uint(<span style="color:#a6e22e">size</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 锁</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">lockInit</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">lock</span>, <span style="color:#a6e22e">lockRankHchan</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">debugChan</span> {
+</span></span><span style="display:flex;"><span>		print(<span style="color:#e6db74">&#34;makechan: chan=&#34;</span>, <span style="color:#a6e22e">c</span>, <span style="color:#e6db74">&#34;; elemsize=&#34;</span>, <span style="color:#a6e22e">elem</span>.<span style="color:#a6e22e">size</span>, <span style="color:#e6db74">&#34;; dataqsiz=&#34;</span>, <span style="color:#a6e22e">size</span>, <span style="color:#e6db74">&#34;\n&#34;</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">c</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="发送">发送</h1>
+<p><img src="https://www.loveyu.asia//img/chansend.png" alt="chansend"></p>
+    </div>
+    <a href="/posts/go/channel%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/" class="ba b--moon-gray bg-light-gray br2 color-inherit dib f7 hover-bg-moon-gray link mt2 ph2 pv1">read more</a>
+  </div>
+</div>
+
+        </div>
+      
+        <div class="w-100 w-30-l mb4 relative bg-white">
+          <div class="w-100 mb4 nested-copy-line-height relative bg-white">
+  <div class="mb3 pa4 gray overflow-hidden bg-white">
+    <span class="f6 db">go</span>
+    <h1 class="f3 near-black">
+      <a href="/posts/go/%E5%AE%9E%E7%8E%B0%E6%94%AF%E6%8C%81%E9%AB%98%E5%B9%B6%E5%8F%91%E4%B8%94%E6%94%AF%E6%8C%81%E5%A0%B5%E5%A1%9E%E5%92%8C%E8%B6%85%E6%97%B6%E6%8E%A7%E5%88%B6%E7%9A%84map/" class="link black dim">
+        实现支持高并发且支持堵塞和超时控制的map
+      </a>
+    </h1>
+    <div class="nested-links f5 lh-copy nested-copy-line-height">
+      <h1 id="map">Map</h1>
+<blockquote>
+<ol>
+<li>高并发</li>
+<li>只有插入和查询操作</li>
+<li>查询时key存在则返回value,不存在则阻塞等待k v对存入,可以指定超时时间,超过则返回超时报错</li>
+</ol></blockquote>
+<p>第一种:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">MyConcurrentMap</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">cMap</span> <span style="color:#66d9ef">map</span>[<span style="color:#66d9ef">int</span>]<span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">sync</span>.<span style="color:#a6e22e">Locker</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">KChan</span> <span style="color:#66d9ef">map</span>[<span style="color:#66d9ef">int</span>]<span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">struct</span>{}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">m</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">MyConcurrentMap</span>) <span style="color:#a6e22e">Set</span>(<span style="color:#a6e22e">k</span>, <span style="color:#a6e22e">v</span> <span style="color:#66d9ef">int</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">m</span>.<span style="color:#a6e22e">Lock</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">m</span>.<span style="color:#a6e22e">Unlock</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">m</span>.<span style="color:#a6e22e">cMap</span>[<span style="color:#a6e22e">k</span>] = <span style="color:#a6e22e">v</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">ch</span>, <span style="color:#a6e22e">ok</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">m</span>.<span style="color:#a6e22e">KChan</span>[<span style="color:#a6e22e">k</span>]
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> !<span style="color:#a6e22e">ok</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">select</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 如果读取到数据说明该管道已经被关闭了,就不能重复关闭</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">case</span> <span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">ch</span>:
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">default</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 关闭管道达到通知所有阻塞管道的目的</span>
+</span></span><span style="display:flex;"><span>		close(<span style="color:#a6e22e">ch</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">m</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">MyConcurrentMap</span>) <span style="color:#a6e22e">Get</span>(<span style="color:#a6e22e">k</span> <span style="color:#66d9ef">int</span>, <span style="color:#a6e22e">maxWaitingDuration</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Duration</span>) (<span style="color:#66d9ef">int</span>, <span style="color:#66d9ef">error</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">m</span>.<span style="color:#a6e22e">Lock</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">v</span>, <span style="color:#a6e22e">ok</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">m</span>.<span style="color:#a6e22e">cMap</span>[<span style="color:#a6e22e">k</span>]
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">ok</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">m</span>.<span style="color:#a6e22e">Unlock</span>()
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">v</span>, <span style="color:#66d9ef">nil</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">vc</span>, <span style="color:#a6e22e">ok</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">m</span>.<span style="color:#a6e22e">KChan</span>[<span style="color:#a6e22e">k</span>]
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> !<span style="color:#a6e22e">ok</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">vc</span> = make(<span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">struct</span>{})
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">m</span>.<span style="color:#a6e22e">KChan</span>[<span style="color:#a6e22e">k</span>] = <span style="color:#a6e22e">vc</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">ctx</span>, <span style="color:#a6e22e">cancelFunc</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">WithTimeout</span>(<span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">Background</span>(), <span style="color:#a6e22e">maxWaitingDuration</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">cancelFunc</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">m</span>.<span style="color:#a6e22e">Unlock</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">select</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">case</span> <span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">ctx</span>.<span style="color:#a6e22e">Done</span>():
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>, <span style="color:#a6e22e">ctx</span>.<span style="color:#a6e22e">Err</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">case</span> <span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">vc</span>:
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">m</span>.<span style="color:#a6e22e">Lock</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">v</span> = <span style="color:#a6e22e">m</span>.<span style="color:#a6e22e">cMap</span>[<span style="color:#a6e22e">k</span>]
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">m</span>.<span style="color:#a6e22e">Unlock</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">v</span>, <span style="color:#66d9ef">nil</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>第二种</p>
+    </div>
+    <a href="/posts/go/%E5%AE%9E%E7%8E%B0%E6%94%AF%E6%8C%81%E9%AB%98%E5%B9%B6%E5%8F%91%E4%B8%94%E6%94%AF%E6%8C%81%E5%A0%B5%E5%A1%9E%E5%92%8C%E8%B6%85%E6%97%B6%E6%8E%A7%E5%88%B6%E7%9A%84map/" class="ba b--moon-gray bg-light-gray br2 color-inherit dib f7 hover-bg-moon-gray link mt2 ph2 pv1">read more</a>
+  </div>
+</div>
+
+        </div>
+      
+        <div class="w-100 w-30-l mb4 relative bg-white">
+          <div class="w-100 mb4 nested-copy-line-height relative bg-white">
+  <div class="mb3 pa4 gray overflow-hidden bg-white">
+    <span class="f6 db">go</span>
+    <h1 class="f3 near-black">
+      <a href="/posts/go/ants%E7%9A%84cas%E7%AE%80%E6%98%93%E5%AE%9E%E7%8E%B0/" class="link black dim">
+        ants的CAS简易实现
+      </a>
+    </h1>
+    <div class="nested-links f5 lh-copy nested-copy-line-height">
+      <blockquote>
+<p>通过对<code>spinLock</code>的<code>atomic</code>原子操作来达到加解锁目的</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">spinLock</span> <span style="color:#66d9ef">uint32</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">maxBackoff</span> = <span style="color:#ae81ff">16</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">s</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">spinLock</span>) <span style="color:#a6e22e">Lock</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">backoff</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span> !<span style="color:#a6e22e">atomic</span>.<span style="color:#a6e22e">CompareAndSwapUint32</span>((<span style="color:#f92672">*</span><span style="color:#66d9ef">uint32</span>)(<span style="color:#a6e22e">s</span>), <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>) {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span>; <span style="color:#a6e22e">i</span> &lt; <span style="color:#a6e22e">backoff</span>; <span style="color:#a6e22e">i</span><span style="color:#f92672">++</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">runtime</span>.<span style="color:#a6e22e">Gosched</span>()
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">backoff</span> &lt; <span style="color:#a6e22e">maxBackoff</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">backoff</span> <span style="color:#f92672">&lt;&lt;=</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">s</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">spinLock</span>) <span style="color:#a6e22e">UnLock</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">atomic</span>.<span style="color:#a6e22e">StoreUint32</span>((<span style="color:#f92672">*</span><span style="color:#66d9ef">uint32</span>)(<span style="color:#a6e22e">s</span>), <span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div>
+    </div>
+    <a href="/posts/go/ants%E7%9A%84cas%E7%AE%80%E6%98%93%E5%AE%9E%E7%8E%B0/" class="ba b--moon-gray bg-light-gray br2 color-inherit dib f7 hover-bg-moon-gray link mt2 ph2 pv1">read more</a>
+  </div>
+</div>
+
+        </div>
+      
+        <div class="w-100 w-30-l mb4 relative bg-white">
+          <div class="w-100 mb4 nested-copy-line-height relative bg-white">
+  <div class="mb3 pa4 gray overflow-hidden bg-white">
+    <span class="f6 db">go</span>
+    <h1 class="f3 near-black">
+      <a href="/posts/go/go%E9%A1%B9%E7%9B%AE%E5%88%9D%E5%A7%8B%E5%8C%96/" class="link black dim">
+        go项目初始化
+      </a>
+    </h1>
+    <div class="nested-links f5 lh-copy nested-copy-line-height">
+      <h1 id="服务优雅关闭启动">服务优雅关闭启动</h1>
+<blockquote>
+<ol>
+<li>使用<code>signal.NotifyContext</code>接收退出相关信号,获取到ctx</li>
+<li>传递ctx到初始化api中</li>
+<li>初始化api</li>
+<li>先获取到项目api handler</li>
+<li>创建chan空结构体管道</li>
+<li>启动网络监听</li>
+<li>开启goroutine
+<ol>
+<li>打印输出</li>
+<li>向chan发送数据</li>
+<li>运行server</li>
+</ol>
+</li>
+<li>接收chan信号</li>
+<li>开启goroutine
+<ol>
+<li>打印输出</li>
+<li>向chan发送数据</li>
+<li>拦截ctx的done信号</li>
+<li>关闭server</li>
+</ol>
+</li>
+<li>接收chan信号</li>
+<li>接收ctx的done信号</li>
+<li>设置content.Timeout三秒关闭</li>
+</ol></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">ctx</span>, <span style="color:#a6e22e">cancel</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">signal</span>.<span style="color:#a6e22e">NotifyContext</span>(<span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">Background</span>(), <span style="color:#a6e22e">syscall</span>.<span style="color:#a6e22e">SIGHUP</span>, <span style="color:#a6e22e">syscall</span>.<span style="color:#a6e22e">SIGINT</span>, <span style="color:#a6e22e">syscall</span>.<span style="color:#a6e22e">SIGTERM</span>, <span style="color:#a6e22e">syscall</span>.<span style="color:#a6e22e">SIGQUIT</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">cancel</span>()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">opt</span>.<span style="color:#a6e22e">MustInitConfig</span>()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">api</span>.<span style="color:#a6e22e">MustStartApi</span>(<span style="color:#a6e22e">ctx</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">ctx</span>.<span style="color:#a6e22e">Done</span>()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">logrus</span>.<span style="color:#a6e22e">Warn</span>(<span style="color:#e6db74">&#34;[gateway] service stopped by gctx in 3s...&#34;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">util</span>.<span style="color:#a6e22e">Timeout</span>(<span style="color:#ae81ff">3</span>).<span style="color:#a6e22e">Done</span>()
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">initApp</span>() <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Handler</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">engine</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Default</span>()
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">...</span>.
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">engine</span>.<span style="color:#a6e22e">Handler</span>()
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">initApp</span>() <span style="color:#f92672">*</span><span style="color:#a6e22e">fiber</span>.<span style="color:#a6e22e">App</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">engine</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">fiber</span>.<span style="color:#a6e22e">New</span>(<span style="color:#a6e22e">fiber</span>.<span style="color:#a6e22e">Config</span>{<span style="color:#a6e22e">BodyLimit</span>: <span style="color:#ae81ff">200</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">1024</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">1024</span>})
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">...</span>.
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">engine</span>.<span style="color:#a6e22e">Handler</span>()
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">MustStartApi</span>(<span style="color:#a6e22e">ctx</span> <span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">Context</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> (
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">err</span> <span style="color:#66d9ef">error</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">ln</span>  <span style="color:#a6e22e">net</span>.<span style="color:#a6e22e">Listener</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// gin是在go的http上进行包装的框架所以可以直接使用http.Server来接受运行</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">srv</span> = <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Server</span>{
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">Handler</span>: <span style="color:#a6e22e">initApp</span>(),
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// fiber使用fasthttp所以需要使用fasthttp.Server来接收</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">srv</span> = <span style="color:#a6e22e">fasthttp</span>.<span style="color:#a6e22e">Server</span>{
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">Handler</span>:   <span style="color:#a6e22e">initApp</span>(),
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">TLSConfig</span>: <span style="color:#66d9ef">nil</span>,
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">address</span> = <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Sprintf</span>(<span style="color:#e6db74">&#34;%s:%d&#34;</span>, <span style="color:#a6e22e">opt</span>.<span style="color:#a6e22e">Cfg</span>.<span style="color:#a6e22e">Gateway</span>.<span style="color:#a6e22e">ListenHost</span>, <span style="color:#a6e22e">opt</span>.<span style="color:#a6e22e">Cfg</span>.<span style="color:#a6e22e">Gateway</span>.<span style="color:#a6e22e">ListenPort</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">ready</span>   = make(<span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">struct</span>{})
+</span></span><span style="display:flex;"><span>	)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">ln</span>, <span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">net</span>.<span style="color:#a6e22e">Listen</span>(<span style="color:#e6db74">&#34;tcp&#34;</span>, <span style="color:#a6e22e">address</span>); <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">logrus</span>.<span style="color:#a6e22e">Fatalf</span>(<span style="color:#e6db74">&#34;[%s] MustStart: listen address: %s err: %v&#34;</span>, <span style="color:#a6e22e">opt</span>.<span style="color:#a6e22e">Cfg</span>.<span style="color:#a6e22e">Gateway</span>.<span style="color:#a6e22e">Name</span>, <span style="color:#a6e22e">address</span>, <span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">go</span> <span style="color:#66d9ef">func</span>() {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">logrus</span>.<span style="color:#a6e22e">Infof</span>(<span style="color:#e6db74">&#34;[%s] MustStart: service serve at: %s&#34;</span>, <span style="color:#a6e22e">opt</span>.<span style="color:#a6e22e">Cfg</span>.<span style="color:#a6e22e">Gateway</span>.<span style="color:#a6e22e">Name</span>, <span style="color:#a6e22e">address</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">ready</span> <span style="color:#f92672">&lt;-</span> <span style="color:#66d9ef">struct</span>{}{}
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">srv</span>.<span style="color:#a6e22e">Serve</span>(<span style="color:#a6e22e">ln</span>); <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">logrus</span>.<span style="color:#a6e22e">Fatalf</span>(<span style="color:#e6db74">&#34;[%s] MustStart: service serve err: %v&#34;</span>, <span style="color:#a6e22e">opt</span>.<span style="color:#a6e22e">Cfg</span>.<span style="color:#a6e22e">Gateway</span>.<span style="color:#a6e22e">Name</span>, <span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>	}()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">ready</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">go</span> <span style="color:#66d9ef">func</span>() {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">ready</span> <span style="color:#f92672">&lt;-</span> <span style="color:#66d9ef">struct</span>{}{}
+</span></span><span style="display:flex;"><span>		<span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">ctx</span>.<span style="color:#a6e22e">Done</span>()
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">logrus</span>.<span style="color:#a6e22e">Infof</span>(<span style="color:#e6db74">&#34;[%s] MustStart: service shutdown by gctx&#34;</span>, <span style="color:#a6e22e">opt</span>.<span style="color:#a6e22e">Cfg</span>.<span style="color:#a6e22e">Gateway</span>.<span style="color:#a6e22e">Name</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">srv</span>.<span style="color:#a6e22e">Shutdown</span>(<span style="color:#a6e22e">tools</span>.<span style="color:#a6e22e">Timeout</span>(<span style="color:#ae81ff">3</span>)); <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">logrus</span>.<span style="color:#a6e22e">Errorf</span>(<span style="color:#e6db74">&#34;[%s] MustStart: service shutdown by gctx with err: %v&#34;</span>, <span style="color:#a6e22e">opt</span>.<span style="color:#a6e22e">Cfg</span>.<span style="color:#a6e22e">Gateway</span>.<span style="color:#a6e22e">Name</span>, <span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>	}()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">ready</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="项目配置初始化">项目配置初始化</h1>
+<blockquote>
+<ol>
+<li>
+<p>必须在<code>init</code>里面进行参数解析</p>
+    </div>
+    <a href="/posts/go/go%E9%A1%B9%E7%9B%AE%E5%88%9D%E5%A7%8B%E5%8C%96/" class="ba b--moon-gray bg-light-gray br2 color-inherit dib f7 hover-bg-moon-gray link mt2 ph2 pv1">read more</a>
+  </div>
+</div>
+
+        </div>
+      
+        <div class="w-100 w-30-l mb4 relative bg-white">
+          <div class="w-100 mb4 nested-copy-line-height relative bg-white">
+  <div class="mb3 pa4 gray overflow-hidden bg-white">
+    <span class="f6 db">go</span>
+    <h1 class="f3 near-black">
+      <a href="/posts/go/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/" class="link black dim">
+        分布式事务
+      </a>
+    </h1>
+    <div class="nested-links f5 lh-copy nested-copy-line-height">
+      <p>来源文章:</p>
+<p><a href="https://mp.weixin.qq.com/s/Z-ZY9VYUzNER8iwk80XSxA">万字长文漫谈分布式事务实现原理</a></p>
+<p><a href="https://mp.weixin.qq.com/s/aTQ6mgVUbUqn69NLmXh_7A">从零到一搭建 TCC 分布式事务框架</a></p>
+<p><a href="https://learn.microsoft.com/zh-cn/azure/architecture/reference-architectures/saga/saga">微软SAGA解答</a></p>
+<p><a href="https://cloud.tencent.com/developer/article/1839642">10分钟说透Saga分布式事务</a></p>
+<p>现有实现:</p>
+<p><a href="https://dtm.pub/guide/start.html">DTM</a></p>
+<h1 id="事务的核心特征acid">事务的核心特征ACID</h1>
+<ol>
+<li>
+<h3 id="atomicity原子性">Atomicity原子性</h3>
+<ol>
+<li>全部成功或者全部失败</li>
+</ol>
+</li>
+<li>
+<h3 id="consistency一致性">Consistency一致性</h3>
+<ol>
+<li>宏观角度下的全局数据保持一致</li>
+</ol>
+</li>
+<li>
+<h3 id="isolation隔离性">Isolation隔离性</h3>
+<ol>
+<li>并发事务不互相干扰</li>
+</ol>
+</li>
+<li>
+<h3 id="durability持久性">Durability持久性</h3>
+<ol>
+<li>事务提交后，变更永久生效</li>
+</ol>
+</li>
+</ol>
+<h1 id="什么是分布式事务">什么是分布式事务</h1>
+<blockquote>
+<p><code>对两个或以上独立服务进行调用操作,保证这些操作同时成功或失败,在失败时要做到回滚操作,恢复到失败前的状态</code></p>
+<p>例如订单创建操作,分别有账户系统和库存系统</p>
+<p>在处理一笔来自用户创建订单的请求时，需要执行两步操作：</p>
+<ul>
+<li>从账户系统中，扣减用户的账户余额</li>
+<li>从库存系统中，扣减商品的剩余库存</li>
+</ul>
+<p>从技术流程上来讲，两个步骤是相对独立的两个操作，底层涉及到的存储介质也是相互独立的，因此无法基于本地事务的实现方式,所以需要分布式事务解决问题</p></blockquote>
+<h1 id="事务消息实现方案">事务消息实现方案</h1>
+<h2 id="概念">概念</h2>
+<p>偏狭义的分布式事务解决方案是<code>基于消息队列</code> MessageQueue（后续简称 MQ）实现的事务消息 Transaction Message.</p>
+<p><code>at least once : </code> 投递到 MQ 中的消息能至少被下游消费者 consumer 消费到一次.</p>
+<p>基于此，MQ 组件能够保证消息不会在消费环节丢失，但是无法解决消息的重复性问题. 因此，倘若我们需要追求精确消费一次的目标，则下游的 consumer 还需要<code>基于消息的唯一键执行幂等去重操作</code>，在 at least once 的基础上过滤掉重复消息，最终达到 <code>exactly once</code> 的语义.</p>
+<p>依赖于 MQ 中 at least once 的性质，我们简单认为，只要把一条消息成功投递到 MQ 组件中，它就<code>一定被下游 consumer 端消费端</code>，至少不会发生消息丢失的问题.</p>
+<h2 id="场景">场景</h2>
+<p>假如执行一个分布式事务，事务流程中包含需要在服务 A 中执行的动作 I 以及需要在服务 B 中执行的动作 II</p>
+    </div>
+    <a href="/posts/go/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/" class="ba b--moon-gray bg-light-gray br2 color-inherit dib f7 hover-bg-moon-gray link mt2 ph2 pv1">read more</a>
+  </div>
+</div>
+
+        </div>
+      
+        <div class="w-100 w-30-l mb4 relative bg-white">
+          <div class="w-100 mb4 nested-copy-line-height relative bg-white">
+  <div class="mb3 pa4 gray overflow-hidden bg-white">
+    <span class="f6 db">go</span>
+    <h1 class="f3 near-black">
+      <a href="/posts/go/golang%E5%AD%A6%E4%B9%A0%E8%B7%AF%E7%BA%BF/" class="link black dim">
+        Go学习路线
+      </a>
+    </h1>
+    <div class="nested-links f5 lh-copy nested-copy-line-height">
+      <!-- raw HTML omitted -->
+<h1 id="基础">基础</h1>
+<h2 id="基础语法">基础语法</h2>
+<p><a href="https://www.bilibili.com/video/BV1gf4y1r79E/?vd_source=c82892ceed4b858d308c45829c725d98">刘丹冰老师教学视频：8小时golang转职之路</a></p>
+<h2 id="mysql">Mysql</h2>
+<h3 id="索引事务">索引事务</h3>
+<p><a href="https://www.bilibili.com/video/BV1kA411u734/?vd_source=c82892ceed4b858d308c45829c725d98">周瑜老师 b 站解说视频：mysql 技术原理解析</a></p>
+<h2 id="gorm入门">Gorm入门</h2>
+<p><a href="https://www.liwenzhou.com/posts/Go/gorm/">李文周老师技术博客：gorm 框架入门篇</a></p>
+<p><a href="https://www.liwenzhou.com/posts/Go/gorm-crud/">李文周老师技术博客：gorm 框架操作教程</a></p>
+<p><a href="https://book.douban.com/subject/24708143/">推荐书籍：MySQL技术内幕-InnoDB存储引擎(第2版) 姜承尧 著</a></p>
+<h2 id="redis">Redis</h2>
+<p><a href="https://redis.io/commands/">官方指令文档</a></p>
+<p><a href="http://www.redis.cn/commands.html">指令文档中文版</a></p>
+<p><a href="https://github.com/gomodule/redigo">redigo：golang redis 开源SDK</a></p>
+<p><a href="https://mp.weixin.qq.com/s?__biz=MzkxMjQzMjA0OQ==&amp;mid=2247484313&amp;idx=1&amp;sn=905342d3fc1cdaf845a62a140bd5247e">技术博客：golang 分布式锁 1-3章</a></p>
+<p><a href="https://www.bilibili.com/video/BV1Pm4y1b76u/?vd_source=c82892ceed4b858d308c45829c725d98">b 站解说视频：golang 分布式锁 p1-p4</a></p>
+<h2 id="mq">MQ</h2>
+<p><a href="https://mp.weixin.qq.com/s?__biz=MzkxMjQzMjA0OQ==&amp;mid=2247484622&amp;idx=1&amp;sn=e5199a4d0276a9aef8630ac9f781c48f">技术博客：基于 redis 实现 mq</a></p>
+<blockquote>
+<p>kafka/rocketmq/rabbitmq至少了解其中之一的架构及原理</p></blockquote>
+<p><a href="https://github.com/nsqio/nsq">nsq 开源地址,【进阶】基于 golang 实现的 mq 组件 nsq</a></p>
+<h2 id="web">WEB</h2>
+<h3 id="gin">Gin</h3>
+<p><a href="https://www.liwenzhou.com/posts/Go/gin/">李文周老师技术博客：gin 介绍及使用</a></p>
+<h3 id="标准库">标准库</h3>
+<p><a href="https://mp.weixin.qq.com/s?__biz=MzkxMjQzMjA0OQ==&amp;mid=2247484040&amp;idx=1&amp;sn=b710f4429188ea5f49f6a9155381b67f">技术博客：net/http 底层实现原理</a></p>
+<p><a href="https://www.bilibili.com/video/BV1Hj411U7Zw/?vd_source=c82892ceed4b858d308c45829c725d98">b 站解说视频：net/http 底层实现原理</a></p>
+<h3 id="io多路复用epoll">io多路复用,epoll</h3>
+<p><a href="https://mp.weixin.qq.com/s?__biz=MzkxMjQzMjA0OQ==&amp;mid=2247484057&amp;idx=1&amp;sn=50e57108f736bc47137ac57dfb643893">技术博客：golang io 与 epoll</a></p>
+<p><a href="https://www.bilibili.com/video/BV1ph4y1f7gr/?vd_source=c82892ceed4b858d308c45829c725d98">b 站解说视频：golang io 与 epoll</a></p>
+<h2 id="gin实现原理">Gin实现原理</h2>
+<p><a href="https://mp.weixin.qq.com/s?__biz=MzkxMjQzMjA0OQ==&amp;mid=2247484076&amp;idx=1&amp;sn=9492d326c820625700345a881b58a849">技术博客：gin 框架实现原理</a></p>
+    </div>
+    <a href="/posts/go/golang%E5%AD%A6%E4%B9%A0%E8%B7%AF%E7%BA%BF/" class="ba b--moon-gray bg-light-gray br2 color-inherit dib f7 hover-bg-moon-gray link mt2 ph2 pv1">read more</a>
+  </div>
+</div>
+
+        </div>
+      
+        <div class="w-100 w-30-l mb4 relative bg-white">
+          <div class="w-100 mb4 nested-copy-line-height relative bg-white">
+  <div class="mb3 pa4 gray overflow-hidden bg-white">
+    <span class="f6 db">go</span>
+    <h1 class="f3 near-black">
+      <a href="/posts/go/gotoolpprof%E4%BD%BF%E7%94%A8/" class="link black dim">
+        pprof
+      </a>
+    </h1>
+    <div class="nested-links f5 lh-copy nested-copy-line-height">
+      <h1 id="go-test-包路径-选项">go test [包路径] [选项]</h1>
+<blockquote>
+<ul>
+<li><code>-v</code>：输出详细的测试日志，包括每个测试函数的名称和执行结果。</li>
+<li><code>-run &lt;正则表达式&gt;</code>：指定要运行的测试函数或测试组的正则表达式。</li>
+<li><code>-cover</code>：计算测试覆盖率，并显示每个文件的覆盖率百分比。</li>
+<li><code>-bench &lt;正则表达式&gt;</code>：运行性能基准测试，并显示基准测试的结果。</li>
+<li><code>-timeout &lt;时长&gt;</code>：设置超时时间，单个测试的最大执行时间。</li>
+<li><code>-count &lt;次数&gt;</code>：执行测试的次数，默认为 1 次。</li>
+<li>-benchmem
+打印出申请内存的次数。一般用于简单的性能测试，不会导出数据文件。</li>
+<li>-blockprofile block.out
+将协程的阻塞数据写入特定的文件（block.out）。如果-c，则写成二进制文件。</li>
+<li>-cpuprofile cpu.out
+将协程的CPU使用数据写入特定的文件（cpu.out）。如果-c，则写成二进制文件。</li>
+<li>-memprofile mem.out
+将协程的内存申请数据写入特定的文件（mem.out）。如果-c，则写成二进制文件。</li>
+<li>-mutexprofile mutex.out
+将协程的互斥数据写入特定的文件（mutex.out）。如果-c，则写成二进制文件。</li>
+<li>-trace trace.out
+将执行调用链写入特定文件（trace.out）。</li>
+</ul></blockquote>
+<p>例如，要运行当前目录下所有测试文件的测试，可以执行以下命令：</p>
+<pre tabindex="0"><code>bashCopy Codego test
+</code></pre><p>如果你只想运行某个特定包的测试，可以指定包的导入路径：</p>
+<pre tabindex="0"><code>bashCopy Codego test github.com/example/package
+</code></pre><p>你还可以使用 <code>-run</code> 标志来选择性地运行特定的测试函数或测试组。例如，下面的命令将运行名称中包含 &ldquo;TestFoo&rdquo; 的测试函数：</p>
+<pre tabindex="0"><code>bashCopy Codego test -run TestFoo
+</code></pre><p>如果你想在测试运行时生成并查看测试覆盖率报告，可以使用 <code>-cover</code> 标志：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>bashCopy Codego test -cover
+</span></span></code></pre></div><h1 id="项目配置">项目配置</h1>
+<ol>
+<li>在项目中导入</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#a6e22e">_</span> <span style="color:#e6db74">&#34;net/http/pprof&#34;</span>
+</span></span></code></pre></div><ol start="2">
+<li>启动http服务</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ListenAndServe</span>(<span style="color:#e6db74">&#34;:6060&#34;</span>, <span style="color:#66d9ef">nil</span>)
+</span></span></code></pre></div><ol start="3">
+<li>访问网址</li>
+</ol>
+<pre tabindex="0"><code class="language-url" data-lang="url">http://27.0.0.1:6060/debug/pprof
+</code></pre><blockquote>
+<ul>
+<li>allocs：查看过去所有内存分配的样本（历史累计）。</li>
+<li>block：查看导致阻塞同步的堆栈跟踪（历史累计）。</li>
+<li>cmdline： 当前程序的命令行的完整调用路径（从程序一开始运行时决定）。</li>
+<li>goroutine：查看当前所有运行的 goroutines 堆栈跟踪（实时变化）。</li>
+<li>heap：查看活动对象的内存分配情况（实时变化）。</li>
+<li>mutex：查看导致互斥锁的竞争持有者的堆栈跟踪（历史累计）。</li>
+<li>profile： 默认进行 30s 的 CPU Profiling，得到一个分析用的 profile 文件（从开始分析，到分析结束）。</li>
+<li>threadcreate：查看创建新 OS 线程的堆栈跟踪（一般没啥用）。</li>
+</ul></blockquote>
+<blockquote>
+<p>默认情况下是不追踪block和mutex的信息,开启方式:</p>
+    </div>
+    <a href="/posts/go/gotoolpprof%E4%BD%BF%E7%94%A8/" class="ba b--moon-gray bg-light-gray br2 color-inherit dib f7 hover-bg-moon-gray link mt2 ph2 pv1">read more</a>
+  </div>
+</div>
+
+        </div>
+      
+        <div class="w-100 w-30-l mb4 relative bg-white">
+          <div class="w-100 mb4 nested-copy-line-height relative bg-white">
+  <div class="mb3 pa4 gray overflow-hidden bg-white">
+    <span class="f6 db">go</span>
+    <h1 class="f3 near-black">
+      <a href="/posts/go/fiber%E7%AC%94%E8%AE%B0/" class="link black dim">
+        fiber基础
+      </a>
+    </h1>
+    <div class="nested-links f5 lh-copy nested-copy-line-height">
+      <h1 id="获取参数">获取参数</h1>
+<p>Params: 获取url参数</p>
+<p>Query: 获取get请求参数</p>
+<p>Get: 获取请求头参数</p>
+<p>FormValue: 获取表单参数</p>
+<p>BodyParser: 获取json格式参数</p>
+<p>FormFile: 获取文件类型参数, 配合SaveFile使用</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<h1 id="app">APP</h1>
+<p>Name: 给路由起一个名字</p>
+<p>GetRoute: 获取指定name的路由信息</p>
+<p>Stack: 获取全部的路由信息</p>
+<!-- raw HTML omitted -->
+<p>Mount: 挂载</p>
+<p>MountPath: 获取挂载后的路由path地址</p>
+<!-- raw HTML omitted -->
+<p>GetRoutes: 参数为true过滤中间件,false则不过滤</p>
+<!-- raw HTML omitted -->
+<p>ListenTLS: 用于设置https, 参数分别为地址,pem,key</p>
+<!-- raw HTML omitted -->
+<p>hooks := app.Hooks():</p>
+<p>onRoute 是请求路由注册时的钩子函数切片。可以通过 app.OnRoute() 方法向切片中添加钩子函数，这些函数将在每次调用 app.Method() 注册路由时触发。</p>
+<p>onName 是命名路由注册时的钩子函数切片。可以通过 app.OnName() 方法向切片中添加钩子函数，这些函数将在每次调用 app.Get(&quot;/path&quot;, handler).Name(&ldquo;name&rdquo;) 设置命名路由时触发。</p>
+    </div>
+    <a href="/posts/go/fiber%E7%AC%94%E8%AE%B0/" class="ba b--moon-gray bg-light-gray br2 color-inherit dib f7 hover-bg-moon-gray link mt2 ph2 pv1">read more</a>
+  </div>
+</div>
+
+        </div>
+      
+    </section>
+    <ul class="pagination pagination-default">
+      <li class="page-item disabled">
+        <a aria-disabled="true" aria-label="First" class="page-link" role="button" tabindex="-1"><span aria-hidden="true">&laquo;&laquo;</span></a>
+      </li>
+      <li class="page-item disabled">
+        <a aria-disabled="true" aria-label="Previous" class="page-link" role="button" tabindex="-1"><span aria-hidden="true">&laquo;</span></a>
+      </li>
+      <li class="page-item active">
+        <a aria-current="page" aria-label="Page 1" class="page-link" role="button">1</a>
+      </li>
+      <li class="page-item">
+        <a href="/posts/go/page/2/" aria-label="Page 2" class="page-link" role="button">2</a>
+      </li>
+      <li class="page-item">
+        <a href="/posts/go/page/3/" aria-label="Page 3" class="page-link" role="button">3</a>
+      </li>
+      <li class="page-item">
+        <a href="/posts/go/page/4/" aria-label="Page 4" class="page-link" role="button">4</a>
+      </li>
+      <li class="page-item">
+        <a href="/posts/go/page/2/" aria-label="Next" class="page-link" role="button"><span aria-hidden="true">&raquo;</span></a>
+      </li>
+      <li class="page-item">
+        <a href="/posts/go/page/4/" aria-label="Last" class="page-link" role="button"><span aria-hidden="true">&raquo;&raquo;</span></a>
+      </li>
+    </ul></article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white white-70 dn dib-ns pv2 ph3 no-underline" href="http://localhost:1313/" >
+    &copy;  loveyu233 2025 
+  </a>
+    <div><div class="ananke-socials"></div>
+</div>
+  </div>
+</footer>
+
+  </body>
+</html>

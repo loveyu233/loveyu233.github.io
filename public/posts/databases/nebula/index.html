@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>nebula | loveyu233</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="
+官网文档
+初始化
+添加Storage 主机
+
+刚部署好不添加主机有可能会报错
+ADD HOSTS &#34;storaged0&#34;:9779,&#34;storaged1&#34;:9779,&#34;storaged2&#34;:9779
+图
+创建
+
+必须指定vid_type,partition_num:分区数，通常为全集群硬盘数量的 5 倍;replica_factor：指定集群中副本的数量，通常生产环境为 3，测试环境为 1
+如果报错提示[ERROR (-1005)]: Host not enough!，请检查是否已添加 Storage 主机。
+CREATE SPACE [IF NOT EXISTS] &lt;graph_space_name&gt; (
+[partition_num = &lt;partition_number&gt;,]
+[replica_factor = &lt;replica_number&gt;,]
+vid_type = {FIXED_STRING(&lt;N&gt;) | INT64}
+)
+[COMMENT = &#39;&lt;comment&gt;&#39;];
+
+# 实例
+CREATE SPACE IF NOT EXISTS hzy (partition_num = 1, replica_factor=1, vid_type=fixed_string(30)) COMMENT=&#39;测试图&#39;;
+nebula&gt; CREATE SPACE basketballplayer(partition_num=15, replica_factor=1, vid_type=fixed_string(30));
+查看
+SHOW SPACES;
+检查分片分布
+
+如果 Leader distribution 分布不均匀，请执行命令BALANCE LEADER重新分配。
+SHOW HOSTS
+使用
+USE space_name;
+Tag/Edge type
+创建
+CREATE {TAG | EDGE} [IF NOT EXISTS] {&lt;tag_name&gt; | &lt;edge_type_name&gt;}
+    (
+      &lt;prop_name&gt; &lt;data_type&gt; [NULL | NOT NULL] [DEFAULT &lt;default_value&gt;] [COMMENT &#39;&lt;comment&gt;&#39;]
+      [{, &lt;prop_name&gt; &lt;data_type&gt; [NULL | NOT NULL] [DEFAULT &lt;default_value&gt;] [COMMENT &#39;&lt;comment&gt;&#39;]} ...] 
+    )
+    [TTL_DURATION = &lt;ttl_duration&gt;]
+    [TTL_COL = &lt;prop_name&gt;]
+    [COMMENT = &#39;&lt;comment&gt;&#39;];
+
+# 实例
+create tag if not exists tag1 (name string not null default &#39;default_value&#39; comment &#39;测试tag1&#39;);
+create edge if not exists dege1 (start int comment &#39;测试dege1&#39;);
+nebula&gt; CREATE TAG player(name string, age int);
+
+nebula&gt; CREATE TAG team(name string);
+
+nebula&gt; CREATE EDGE follow(degree int);
+
+nebula&gt; CREATE EDGE serve(start_year int, end_year int);
+插入数据
+点
+
+vid是 Vertex ID 的缩写，vid在一个图空间中是唯一的。">
+    <meta name="generator" content="Hugo 0.147.7">
+    
+    
+    
+      <meta name="robots" content="noindex, nofollow">
+    
+    <meta name="author" content="loveyu">
+    
+
+    
+<link rel="stylesheet" href="/ananke/css/main.min.css" >
+
+
+
+
+    
+
+
+    
+      
+
+    
+
+    
+
+    
+      <link rel="canonical" href="http://localhost:1313/posts/databases/nebula/">
+    
+
+    <meta property="og:url" content="http://localhost:1313/posts/databases/nebula/">
+  <meta property="og:site_name" content="loveyu233">
+  <meta property="og:title" content="nebula">
+  <meta property="og:description" content="官网文档
+初始化 添加Storage 主机 刚部署好不添加主机有可能会报错
+ADD HOSTS &#34;storaged0&#34;:9779,&#34;storaged1&#34;:9779,&#34;storaged2&#34;:9779 图 创建 必须指定vid_type,partition_num:分区数，通常为全集群硬盘数量的 5 倍;replica_factor：指定集群中副本的数量，通常生产环境为 3，测试环境为 1
+如果报错提示[ERROR (-1005)]: Host not enough!，请检查是否已添加 Storage 主机。
+CREATE SPACE [IF NOT EXISTS] &lt;graph_space_name&gt; ( [partition_num = &lt;partition_number&gt;,] [replica_factor = &lt;replica_number&gt;,] vid_type = {FIXED_STRING(&lt;N&gt;) | INT64} ) [COMMENT = &#39;&lt;comment&gt;&#39;]; # 实例 CREATE SPACE IF NOT EXISTS hzy (partition_num = 1, replica_factor=1, vid_type=fixed_string(30)) COMMENT=&#39;测试图&#39;; nebula&gt; CREATE SPACE basketballplayer(partition_num=15, replica_factor=1, vid_type=fixed_string(30)); 查看 SHOW SPACES; 检查分片分布 如果 Leader distribution 分布不均匀，请执行命令BALANCE LEADER重新分配。
+SHOW HOSTS 使用 USE space_name; Tag/Edge type 创建 CREATE {TAG | EDGE} [IF NOT EXISTS] {&lt;tag_name&gt; | &lt;edge_type_name&gt;} ( &lt;prop_name&gt; &lt;data_type&gt; [NULL | NOT NULL] [DEFAULT &lt;default_value&gt;] [COMMENT &#39;&lt;comment&gt;&#39;] [{, &lt;prop_name&gt; &lt;data_type&gt; [NULL | NOT NULL] [DEFAULT &lt;default_value&gt;] [COMMENT &#39;&lt;comment&gt;&#39;]} ...] ) [TTL_DURATION = &lt;ttl_duration&gt;] [TTL_COL = &lt;prop_name&gt;] [COMMENT = &#39;&lt;comment&gt;&#39;]; # 实例 create tag if not exists tag1 (name string not null default &#39;default_value&#39; comment &#39;测试tag1&#39;); create edge if not exists dege1 (start int comment &#39;测试dege1&#39;); nebula&gt; CREATE TAG player(name string, age int); nebula&gt; CREATE TAG team(name string); nebula&gt; CREATE EDGE follow(degree int); nebula&gt; CREATE EDGE serve(start_year int, end_year int); 插入数据 点 vid是 Vertex ID 的缩写，vid在一个图空间中是唯一的。">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2024-03-24T19:38:37+08:00">
+    <meta property="article:modified_time" content="2024-03-24T19:38:37+08:00">
+    <meta property="article:tag" content="Nebula">
+    <meta property="article:tag" content="Databases">
+
+  <meta itemprop="name" content="nebula">
+  <meta itemprop="description" content="官网文档
+初始化 添加Storage 主机 刚部署好不添加主机有可能会报错
+ADD HOSTS &#34;storaged0&#34;:9779,&#34;storaged1&#34;:9779,&#34;storaged2&#34;:9779 图 创建 必须指定vid_type,partition_num:分区数，通常为全集群硬盘数量的 5 倍;replica_factor：指定集群中副本的数量，通常生产环境为 3，测试环境为 1
+如果报错提示[ERROR (-1005)]: Host not enough!，请检查是否已添加 Storage 主机。
+CREATE SPACE [IF NOT EXISTS] &lt;graph_space_name&gt; ( [partition_num = &lt;partition_number&gt;,] [replica_factor = &lt;replica_number&gt;,] vid_type = {FIXED_STRING(&lt;N&gt;) | INT64} ) [COMMENT = &#39;&lt;comment&gt;&#39;]; # 实例 CREATE SPACE IF NOT EXISTS hzy (partition_num = 1, replica_factor=1, vid_type=fixed_string(30)) COMMENT=&#39;测试图&#39;; nebula&gt; CREATE SPACE basketballplayer(partition_num=15, replica_factor=1, vid_type=fixed_string(30)); 查看 SHOW SPACES; 检查分片分布 如果 Leader distribution 分布不均匀，请执行命令BALANCE LEADER重新分配。
+SHOW HOSTS 使用 USE space_name; Tag/Edge type 创建 CREATE {TAG | EDGE} [IF NOT EXISTS] {&lt;tag_name&gt; | &lt;edge_type_name&gt;} ( &lt;prop_name&gt; &lt;data_type&gt; [NULL | NOT NULL] [DEFAULT &lt;default_value&gt;] [COMMENT &#39;&lt;comment&gt;&#39;] [{, &lt;prop_name&gt; &lt;data_type&gt; [NULL | NOT NULL] [DEFAULT &lt;default_value&gt;] [COMMENT &#39;&lt;comment&gt;&#39;]} ...] ) [TTL_DURATION = &lt;ttl_duration&gt;] [TTL_COL = &lt;prop_name&gt;] [COMMENT = &#39;&lt;comment&gt;&#39;]; # 实例 create tag if not exists tag1 (name string not null default &#39;default_value&#39; comment &#39;测试tag1&#39;); create edge if not exists dege1 (start int comment &#39;测试dege1&#39;); nebula&gt; CREATE TAG player(name string, age int); nebula&gt; CREATE TAG team(name string); nebula&gt; CREATE EDGE follow(degree int); nebula&gt; CREATE EDGE serve(start_year int, end_year int); 插入数据 点 vid是 Vertex ID 的缩写，vid在一个图空间中是唯一的。">
+  <meta itemprop="datePublished" content="2024-03-24T19:38:37+08:00">
+  <meta itemprop="dateModified" content="2024-03-24T19:38:37+08:00">
+  <meta itemprop="wordCount" content="807">
+  <meta itemprop="keywords" content="Nebula,Databases">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="nebula">
+  <meta name="twitter:description" content="官网文档
+初始化 添加Storage 主机 刚部署好不添加主机有可能会报错
+ADD HOSTS &#34;storaged0&#34;:9779,&#34;storaged1&#34;:9779,&#34;storaged2&#34;:9779 图 创建 必须指定vid_type,partition_num:分区数，通常为全集群硬盘数量的 5 倍;replica_factor：指定集群中副本的数量，通常生产环境为 3，测试环境为 1
+如果报错提示[ERROR (-1005)]: Host not enough!，请检查是否已添加 Storage 主机。
+CREATE SPACE [IF NOT EXISTS] &lt;graph_space_name&gt; ( [partition_num = &lt;partition_number&gt;,] [replica_factor = &lt;replica_number&gt;,] vid_type = {FIXED_STRING(&lt;N&gt;) | INT64} ) [COMMENT = &#39;&lt;comment&gt;&#39;]; # 实例 CREATE SPACE IF NOT EXISTS hzy (partition_num = 1, replica_factor=1, vid_type=fixed_string(30)) COMMENT=&#39;测试图&#39;; nebula&gt; CREATE SPACE basketballplayer(partition_num=15, replica_factor=1, vid_type=fixed_string(30)); 查看 SHOW SPACES; 检查分片分布 如果 Leader distribution 分布不均匀，请执行命令BALANCE LEADER重新分配。
+SHOW HOSTS 使用 USE space_name; Tag/Edge type 创建 CREATE {TAG | EDGE} [IF NOT EXISTS] {&lt;tag_name&gt; | &lt;edge_type_name&gt;} ( &lt;prop_name&gt; &lt;data_type&gt; [NULL | NOT NULL] [DEFAULT &lt;default_value&gt;] [COMMENT &#39;&lt;comment&gt;&#39;] [{, &lt;prop_name&gt; &lt;data_type&gt; [NULL | NOT NULL] [DEFAULT &lt;default_value&gt;] [COMMENT &#39;&lt;comment&gt;&#39;]} ...] ) [TTL_DURATION = &lt;ttl_duration&gt;] [TTL_COL = &lt;prop_name&gt;] [COMMENT = &#39;&lt;comment&gt;&#39;]; # 实例 create tag if not exists tag1 (name string not null default &#39;default_value&#39; comment &#39;测试tag1&#39;); create edge if not exists dege1 (start int comment &#39;测试dege1&#39;); nebula&gt; CREATE TAG player(name string, age int); nebula&gt; CREATE TAG team(name string); nebula&gt; CREATE EDGE follow(degree int); nebula&gt; CREATE EDGE serve(start_year int, end_year int); 插入数据 点 vid是 Vertex ID 的缩写，vid在一个图空间中是唯一的。">
+
+	
+  </head><body class="ma0 avenir bg-near-white development">
+
+    
+   
+  
+
+  <header>
+    <div class="bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l center items-center justify-between">
+    <a href="/" class="f3 fw2 hover-white white-90 dib no-underline">
+      
+        loveyu233
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      <div class="ananke-socials"></div>
+
+    </div>
+  </div>
+</nav>
+
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  
+  <article class="flex-l mw8 center ph3 flex-wrap justify-between">
+    <header class="mt4 w-100">
+      <aside class="instapaper_ignoref b helvetica tracked ttu">
+          
+        databases
+      </aside><div id="sharing" class="mt3 ananke-socials"></div>
+<h1 class="f1 athelas mt3 mb1">nebula</h1>
+      
+      <p class="tracked"><strong>loveyu</strong>
+      </p>
+      
+      
+      
+      <time class="f6 mv4 dib tracked" datetime="2024-03-24T19:38:37+08:00">March 24, 2024</time>
+      
+
+      
+      
+    </header>
+    <div class="nested-copy-line-height lh-copy serif f4 nested-links mid-gray pr4-l w-two-thirds-l"><blockquote>
+<p><a href="https://docs.nebula-graph.com.cn/3.6.0/2.quick-start/3.quick-start-on-premise/4.nebula-graph-crud/#_10">官网文档</a></p></blockquote>
+<h1 id="初始化">初始化</h1>
+<h2 id="添加storage-主机">添加Storage 主机</h2>
+<blockquote>
+<p>刚部署好不添加主机<code>有可能</code>会报错</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>ADD HOSTS <span style="color:#e6db74">&#34;storaged0&#34;</span>:9779,<span style="color:#e6db74">&#34;storaged1&#34;</span>:9779,<span style="color:#e6db74">&#34;storaged2&#34;</span>:9779
+</span></span></code></pre></div><h1 id="图">图</h1>
+<h2 id="创建">创建</h2>
+<blockquote>
+<p>必须指定vid_type,partition_num:分区数，通常为全集群硬盘数量的 5 倍;replica_factor：指定集群中副本的数量，通常生产环境为 3，测试环境为 1</p>
+<p>如果报错提示<code>[ERROR (-1005)]: Host not enough!</code>，请检查是否已添加 Storage 主机。</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>CREATE SPACE <span style="color:#f92672">[</span>IF NOT EXISTS<span style="color:#f92672">]</span> &lt;graph_space_name&gt; <span style="color:#f92672">(</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>partition_num <span style="color:#f92672">=</span> &lt;partition_number&gt;,<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>replica_factor <span style="color:#f92672">=</span> &lt;replica_number&gt;,<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>vid_type <span style="color:#f92672">=</span> <span style="color:#f92672">{</span>FIXED_STRING<span style="color:#f92672">(</span>&lt;N&gt;<span style="color:#f92672">)</span> | INT64<span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>COMMENT <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;&lt;comment&gt;&#39;</span><span style="color:#f92672">]</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 实例</span>
+</span></span><span style="display:flex;"><span>CREATE SPACE IF NOT EXISTS hzy <span style="color:#f92672">(</span>partition_num <span style="color:#f92672">=</span> 1, replica_factor<span style="color:#f92672">=</span>1, vid_type<span style="color:#f92672">=</span>fixed_string<span style="color:#f92672">(</span>30<span style="color:#f92672">))</span> COMMENT<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;测试图&#39;</span>;
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>nebula&gt; CREATE SPACE basketballplayer<span style="color:#f92672">(</span>partition_num<span style="color:#f92672">=</span>15, replica_factor<span style="color:#f92672">=</span>1, vid_type<span style="color:#f92672">=</span>fixed_string<span style="color:#f92672">(</span>30<span style="color:#f92672">))</span>;
+</span></span></code></pre></div><h2 id="查看">查看</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>SHOW SPACES;
+</span></span></code></pre></div><h2 id="检查分片分布">检查分片分布</h2>
+<blockquote>
+<p>如果 <strong>Leader distribution</strong> 分布不均匀，请执行命令<code>BALANCE LEADER</code>重新分配。</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>SHOW HOSTS
+</span></span></code></pre></div><h2 id="使用">使用</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>USE space_name;
+</span></span></code></pre></div><h1 id="tagedge-type">Tag/Edge type</h1>
+<h2 id="创建-1">创建</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>CREATE <span style="color:#f92672">{</span>TAG | EDGE<span style="color:#f92672">}</span> <span style="color:#f92672">[</span>IF NOT EXISTS<span style="color:#f92672">]</span> <span style="color:#f92672">{</span>&lt;tag_name&gt; | &lt;edge_type_name&gt;<span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">(</span>
+</span></span><span style="display:flex;"><span>      &lt;prop_name&gt; &lt;data_type&gt; <span style="color:#f92672">[</span>NULL | NOT NULL<span style="color:#f92672">]</span> <span style="color:#f92672">[</span>DEFAULT &lt;default_value&gt;<span style="color:#f92672">]</span> <span style="color:#f92672">[</span>COMMENT <span style="color:#e6db74">&#39;&lt;comment&gt;&#39;</span><span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">[{</span>, &lt;prop_name&gt; &lt;data_type&gt; <span style="color:#f92672">[</span>NULL | NOT NULL<span style="color:#f92672">]</span> <span style="color:#f92672">[</span>DEFAULT &lt;default_value&gt;<span style="color:#f92672">]</span> <span style="color:#f92672">[</span>COMMENT <span style="color:#e6db74">&#39;&lt;comment&gt;&#39;</span><span style="color:#f92672">]}</span> ...<span style="color:#f92672">]</span> 
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">[</span>TTL_DURATION <span style="color:#f92672">=</span> &lt;ttl_duration&gt;<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">[</span>TTL_COL <span style="color:#f92672">=</span> &lt;prop_name&gt;<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">[</span>COMMENT <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;&lt;comment&gt;&#39;</span><span style="color:#f92672">]</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 实例</span>
+</span></span><span style="display:flex;"><span>create tag <span style="color:#66d9ef">if</span> not exists tag1 <span style="color:#f92672">(</span>name string not null default <span style="color:#e6db74">&#39;default_value&#39;</span> comment <span style="color:#e6db74">&#39;测试tag1&#39;</span><span style="color:#f92672">)</span>;
+</span></span><span style="display:flex;"><span>create edge <span style="color:#66d9ef">if</span> not exists dege1 <span style="color:#f92672">(</span>start int comment <span style="color:#e6db74">&#39;测试dege1&#39;</span><span style="color:#f92672">)</span>;
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>nebula&gt; CREATE TAG player<span style="color:#f92672">(</span>name string, age int<span style="color:#f92672">)</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>nebula&gt; CREATE TAG team<span style="color:#f92672">(</span>name string<span style="color:#f92672">)</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>nebula&gt; CREATE EDGE follow<span style="color:#f92672">(</span>degree int<span style="color:#f92672">)</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>nebula&gt; CREATE EDGE serve<span style="color:#f92672">(</span>start_year int, end_year int<span style="color:#f92672">)</span>;
+</span></span></code></pre></div><h2 id="插入数据">插入数据</h2>
+<h3 id="点">点</h3>
+<blockquote>
+<p><code>vid</code>是 Vertex ID 的缩写，<code>vid</code>在一个图空间中是唯一的。</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>INSERT VERTEX <span style="color:#f92672">[</span>IF NOT EXISTS<span style="color:#f92672">]</span> <span style="color:#f92672">[</span>tag_props, <span style="color:#f92672">[</span>tag_props<span style="color:#f92672">]</span> ...<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>VALUES &lt;vid&gt;: <span style="color:#f92672">([</span>prop_value_list<span style="color:#f92672">])</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>tag_props:
+</span></span><span style="display:flex;"><span>  tag_name <span style="color:#f92672">([</span>prop_name_list<span style="color:#f92672">])</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>prop_name_list:
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">[</span>prop_name <span style="color:#f92672">[</span>, prop_name<span style="color:#f92672">]</span> ...<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>prop_value_list:
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">[</span>prop_value <span style="color:#f92672">[</span>, prop_value<span style="color:#f92672">]</span> ...<span style="color:#f92672">]</span>  
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 实例</span>
+</span></span><span style="display:flex;"><span>insert vertex tag1<span style="color:#f92672">(</span>name<span style="color:#f92672">)</span> values <span style="color:#e6db74">&#34;v1&#34;</span>:<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;v1-name&#34;</span><span style="color:#f92672">)</span>;
+</span></span><span style="display:flex;"><span>insert vertex tag1<span style="color:#f92672">(</span>name<span style="color:#f92672">)</span>,tag2<span style="color:#f92672">(</span>age<span style="color:#f92672">)</span> values <span style="color:#e6db74">&#34;v2&#34;</span>:<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;v2-name&#34;</span>,14<span style="color:#f92672">)</span>;
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>nebula&gt; INSERT VERTEX player<span style="color:#f92672">(</span>name, age<span style="color:#f92672">)</span> VALUES <span style="color:#e6db74">&#34;player100&#34;</span>:<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Tim Duncan&#34;</span>, 42<span style="color:#f92672">)</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>nebula&gt; INSERT VERTEX player<span style="color:#f92672">(</span>name, age<span style="color:#f92672">)</span> VALUES <span style="color:#e6db74">&#34;player101&#34;</span>:<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Tony Parker&#34;</span>, 36<span style="color:#f92672">)</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>nebula&gt; INSERT VERTEX player<span style="color:#f92672">(</span>name, age<span style="color:#f92672">)</span> VALUES <span style="color:#e6db74">&#34;player102&#34;</span>:<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;LaMarcus Aldridge&#34;</span>, 33<span style="color:#f92672">)</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>nebula&gt; INSERT VERTEX team<span style="color:#f92672">(</span>name<span style="color:#f92672">)</span> VALUES <span style="color:#e6db74">&#34;team203&#34;</span>:<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Trail Blazers&#34;</span><span style="color:#f92672">)</span>, <span style="color:#e6db74">&#34;team204&#34;</span>:<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Spurs&#34;</span><span style="color:#f92672">)</span>;
+</span></span></code></pre></div><h3 id="边">边</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>INSERT EDGE <span style="color:#f92672">[</span>IF NOT EXISTS<span style="color:#f92672">]</span> &lt;edge_type&gt; <span style="color:#f92672">(</span> &lt;prop_name_list&gt; <span style="color:#f92672">)</span> VALUES 
+</span></span><span style="display:flex;"><span>&lt;src_vid&gt; -&gt; &lt;dst_vid&gt;<span style="color:#f92672">[</span>@&lt;rank&gt;<span style="color:#f92672">]</span> : <span style="color:#f92672">(</span> &lt;prop_value_list&gt; <span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>, &lt;src_vid&gt; -&gt; &lt;dst_vid&gt;<span style="color:#f92672">[</span>@&lt;rank&gt;<span style="color:#f92672">]</span> : <span style="color:#f92672">(</span> &lt;prop_value_list&gt; <span style="color:#f92672">)</span>, ...<span style="color:#f92672">]</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>&lt;prop_name_list&gt; ::<span style="color:#f92672">=</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span> &lt;prop_name&gt; <span style="color:#f92672">[</span>, &lt;prop_name&gt; <span style="color:#f92672">]</span> ...<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>&lt;prop_value_list&gt; ::<span style="color:#f92672">=</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span> &lt;prop_value&gt; <span style="color:#f92672">[</span>, &lt;prop_value&gt; <span style="color:#f92672">]</span> ...<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 实例</span>
+</span></span><span style="display:flex;"><span>insert edge dege1<span style="color:#f92672">(</span>start<span style="color:#f92672">)</span> values <span style="color:#e6db74">&#34;v1&#34;</span> -&gt; <span style="color:#e6db74">&#34;v2&#34;</span>:<span style="color:#f92672">(</span>95<span style="color:#f92672">)</span>;
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>nebula&gt; INSERT EDGE follow<span style="color:#f92672">(</span>degree<span style="color:#f92672">)</span> VALUES <span style="color:#e6db74">&#34;player101&#34;</span> -&gt; <span style="color:#e6db74">&#34;player100&#34;</span>:<span style="color:#f92672">(</span>95<span style="color:#f92672">)</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>nebula&gt; INSERT EDGE follow<span style="color:#f92672">(</span>degree<span style="color:#f92672">)</span> VALUES <span style="color:#e6db74">&#34;player101&#34;</span> -&gt; <span style="color:#e6db74">&#34;player102&#34;</span>:<span style="color:#f92672">(</span>90<span style="color:#f92672">)</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>nebula&gt; INSERT EDGE follow<span style="color:#f92672">(</span>degree<span style="color:#f92672">)</span> VALUES <span style="color:#e6db74">&#34;player102&#34;</span> -&gt; <span style="color:#e6db74">&#34;player100&#34;</span>:<span style="color:#f92672">(</span>75<span style="color:#f92672">)</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>nebula&gt; INSERT EDGE serve<span style="color:#f92672">(</span>start_year, end_year<span style="color:#f92672">)</span> VALUES <span style="color:#e6db74">&#34;player101&#34;</span> -&gt; <span style="color:#e6db74">&#34;team204&#34;</span>:<span style="color:#f92672">(</span>1999, 2018<span style="color:#f92672">)</span>,<span style="color:#e6db74">&#34;player102&#34;</span> -&gt; <span style="color:#e6db74">&#34;team203&#34;</span>:<span style="color:#f92672">(</span>2006,  2015<span style="color:#f92672">)</span>;
+</span></span></code></pre></div><h2 id="查询">查询</h2>
+<h3 id="go">GO</h3>
+<blockquote>
+<p><a href="https://docs.nebula-graph.com.cn/3.6.0/3.ngql-guide/7.general-query-statements/3.go/">GO</a> 语句可以根据指定的条件遍历数据库。<code>GO</code>语句从一个或多个点开始，沿着一条或多条边遍历，返回<code>YIELD</code>子句中指定的信息。</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>GO <span style="color:#f92672">[[</span>&lt;M&gt; TO<span style="color:#f92672">]</span> &lt;N&gt; <span style="color:#f92672">{</span>STEP|STEPS<span style="color:#f92672">}]</span> FROM &lt;vertex_list&gt;
+</span></span><span style="display:flex;"><span>OVER &lt;edge_type_list&gt; <span style="color:#f92672">[{</span>REVERSELY | BIDIRECT<span style="color:#f92672">}]</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span> WHERE &lt;conditions&gt; <span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>YIELD <span style="color:#f92672">[</span>DISTINCT<span style="color:#f92672">]</span> &lt;return_list&gt;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[{</span> SAMPLE &lt;sample_list&gt; | &lt;limit_by_list_clause&gt; <span style="color:#f92672">}]</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span> | GROUP BY <span style="color:#f92672">{</span>&lt;col_name&gt; | expression&gt; | &lt;position&gt;<span style="color:#f92672">}</span> YIELD &lt;col_name&gt;<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span> | ORDER BY &lt;expression&gt; <span style="color:#f92672">[{</span>ASC | DESC<span style="color:#f92672">}]]</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span> | LIMIT <span style="color:#f92672">[</span>&lt;offset&gt;,<span style="color:#f92672">]</span> &lt;number_rows&gt;<span style="color:#f92672">]</span>;
+</span></span></code></pre></div><blockquote>
+<p>从 VID 为<code>player101</code>的球员开始，沿着边<code>follow</code>找到连接的球员。</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>GO FROM <span style="color:#e6db74">&#34;player101&#34;</span> OVER follow YIELD id<span style="color:#f92672">(</span>$$<span style="color:#f92672">)</span>
+</span></span></code></pre></div><blockquote>
+<p>从 VID 为<code>player101</code>的球员开始，沿着边<code>follow</code>查找年龄大于或等于 35 岁的球员，并返回他们的姓名和年龄，同时重命名对应的列。</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: center">YIELD</th>
+          <th style="text-align: center">指定该查询需要返回的值或结果。</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: center">$$</td>
+          <td style="text-align: center">表示边的终点。</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">\</td>
+          <td style="text-align: center">表示换行继续输入。</td>
+      </tr>
+  </tbody>
+</table></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>go from <span style="color:#e6db74">&#34;player101&#34;</span> over follow where properties<span style="color:#f92672">(</span>$$<span style="color:#f92672">)</span>.age &gt;<span style="color:#f92672">=</span> <span style="color:#ae81ff">35</span> yield properties<span style="color:#f92672">(</span>$$<span style="color:#f92672">)</span>.name as Teamate,properties<span style="color:#f92672">(</span>$$<span style="color:#f92672">)</span>.age as Age;
+</span></span></code></pre></div><blockquote>
+<p>从 VID 为<code>player101</code>的球员开始，沿着边<code>follow</code>查找连接的球员，然后检索这些球员的球队。为了合并这两个查询请求，可以使用管道符或临时变量。</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: center">$^</th>
+          <th style="text-align: center">表示边的起点。</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: center">|</td>
+          <td style="text-align: center">组合多个查询的管道符，将前一个查询的结果集用于后一个查询。</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">$-</td>
+          <td style="text-align: center">表示管道符前面的查询输出的结果集。</td>
+      </tr>
+  </tbody>
+</table>
+<ol>
+<li><code>GO FROM &quot;player101&quot;</code>：这是起始点，从图数据库中的节点 &ldquo;player101&rdquo; 开始查询。</li>
+<li><code>OVER follow YIELD dst(edge) AS id</code>：在从起始节点出发后，沿着名为 &ldquo;follow&rdquo; 的边进行遍历，将沿途经过的目标节点（即边的终点）的标识符保存为变量 <code>id</code>。这个变量会在后续的查询中使用。</li>
+<li><code>GO FROM $-.id OVER serve</code>：这一部分使用了前面查询得到的目标节点的标识符 <code>$-.id</code>，表示从上一步得到的目标节点作为起始节点。然后，沿着名为 &ldquo;serve&rdquo; 的边进行遍历。</li>
+<li><code>YIELD properties($$).name AS Team, properties($^).name AS Player</code>：在遍历过程中，使用 <code>YIELD</code> 关键字来返回结果。<code>properties($$).name</code> 表示从当前节点出发，获取边的属性，然后获取属性名为 &ldquo;name&rdquo; 的值作为 Team；<code>properties($^).name</code> 表示从当前节点出发，获取边的起始节点的属性，然后获取属性名为 &ldquo;name&rdquo; 的值作为 Player。</li>
+</ol></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>GO FROM <span style="color:#e6db74">&#34;player101&#34;</span> OVER follow YIELD dst<span style="color:#f92672">(</span>edge<span style="color:#f92672">)</span> AS id | <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>        GO FROM $-.id OVER serve YIELD properties<span style="color:#f92672">(</span>$$<span style="color:#f92672">)</span>.name AS Team, <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>        properties<span style="color:#f92672">(</span>$^<span style="color:#f92672">)</span>.name AS Player;
+</span></span></code></pre></div><h3 id="fetch">FETCH</h3>
+<blockquote>
+<p><a href="https://docs.nebula-graph.com.cn/3.6.0/3.ngql-guide/7.general-query-statements/4.fetch/">FETCH</a> 语句可以获得点或边的属性。</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># tag属性</span>
+</span></span><span style="display:flex;"><span>FETCH PROP ON <span style="color:#f92672">{</span>&lt;tag_name&gt;<span style="color:#f92672">[</span>, tag_name ...<span style="color:#f92672">]</span> | *<span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>&lt;vid&gt; <span style="color:#f92672">[</span>, vid ...<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>YIELD &lt;return_list&gt; <span style="color:#f92672">[</span>AS &lt;alias&gt;<span style="color:#f92672">]</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 边属性</span>
+</span></span><span style="display:flex;"><span>FETCH PROP ON &lt;edge_type&gt; &lt;src_vid&gt; -&gt; &lt;dst_vid&gt;<span style="color:#f92672">[</span>@&lt;rank&gt;<span style="color:#f92672">]</span> <span style="color:#f92672">[</span>, &lt;src_vid&gt; -&gt; &lt;dst_vid&gt; ...<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>YIELD &lt;output&gt;;
+</span></span></code></pre></div><blockquote>
+<p>查询 VID 为<code>player100</code>的球员的属性。</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>fetch prop on player <span style="color:#e6db74">&#34;player100&#34;</span> yield properties<span style="color:#f92672">(</span>vertex<span style="color:#f92672">)</span>;
+</span></span></code></pre></div><blockquote>
+<p>查询点<code>player101</code>到<code>player102</code>的边属性</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>FETCH PROP ON follow <span style="color:#e6db74">&#34;player101&#34;</span>-&gt;<span style="color:#e6db74">&#34;player102&#34;</span> yield properties<span style="color:#f92672">(</span>edge<span style="color:#f92672">)</span>;
+</span></span></code></pre></div><h3 id="lookup">LOOKUP</h3>
+<blockquote>
+<p><a href="https://docs.nebula-graph.com.cn/3.6.0/3.ngql-guide/7.general-query-statements/5.lookup/">LOOKUP</a> 语句是基于<a href="https://docs.nebula-graph.com.cn/3.6.0/2.quick-start/3.quick-start-on-premise/4.nebula-graph-crud/#_12">索引</a>的，和<code>WHERE</code>子句一起使用，查找符合特定条件的数据。</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>LOOKUP ON <span style="color:#f92672">{</span>&lt;vertex_tag&gt; | &lt;edge_type&gt;<span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>WHERE &lt;expression&gt; <span style="color:#f92672">[</span>AND &lt;expression&gt; ...<span style="color:#f92672">]]</span>
+</span></span><span style="display:flex;"><span>YIELD &lt;return_list&gt; <span style="color:#f92672">[</span>AS &lt;alias&gt;<span style="color:#f92672">]</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>&lt;return_list&gt;
+</span></span><span style="display:flex;"><span>    &lt;prop_name&gt; <span style="color:#f92672">[</span>AS &lt;col_alias&gt;<span style="color:#f92672">]</span> <span style="color:#f92672">[</span>, &lt;prop_name&gt; <span style="color:#f92672">[</span>AS &lt;prop_alias&gt;<span style="color:#f92672">]</span> ...<span style="color:#f92672">]</span>;
+</span></span></code></pre></div><blockquote>
+<p><code>player.name</code>必须是已经创建索引</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>LOOKUP ON player WHERE player.name <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;Tony Parker&#34;</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>        YIELD properties<span style="color:#f92672">(</span>vertex<span style="color:#f92672">)</span>.name AS name, properties<span style="color:#f92672">(</span>vertex<span style="color:#f92672">)</span>.age AS age;
+</span></span></code></pre></div><h3 id="match">MATCH</h3>
+<blockquote>
+<p><a href="https://docs.nebula-graph.com.cn/3.6.0/3.ngql-guide/7.general-query-statements/2.match/">MATCH</a> 语句是查询图数据最常用的，可以灵活的描述各种图模式，但是它依赖<a href="https://docs.nebula-graph.com.cn/3.6.0/2.quick-start/3.quick-start-on-premise/4.nebula-graph-crud/#_12">索引</a>去匹配 NebulaGraph 中的数据模型，性能也还需要调优。</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>MATCH &lt;pattern&gt; <span style="color:#f92672">[</span>&lt;clause_1&gt;<span style="color:#f92672">]</span>  RETURN &lt;output&gt;  <span style="color:#f92672">[</span>&lt;clause_2&gt;<span style="color:#f92672">]</span>;
+</span></span></code></pre></div><blockquote>
+<p>要查询的必须是索引</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>MATCH <span style="color:#f92672">(</span>v:player<span style="color:#f92672">{</span>name:<span style="color:#e6db74">&#34;Tony Parker&#34;</span><span style="color:#f92672">})</span> RETURN v;
+</span></span></code></pre></div><h2 id="修改">修改</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># UPDATE点</span>
+</span></span><span style="display:flex;"><span>UPDATE VERTEX &lt;vid&gt; SET &lt;properties to be updated&gt;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>WHEN &lt;condition&gt;<span style="color:#f92672">]</span> <span style="color:#f92672">[</span>YIELD &lt;columns&gt;<span style="color:#f92672">]</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># UPDATE边</span>
+</span></span><span style="display:flex;"><span>UPDATE EDGE ON &lt;edge_type&gt; &lt;source vid&gt; -&gt; &lt;destination vid&gt; <span style="color:#f92672">[</span>@rank<span style="color:#f92672">]</span> 
+</span></span><span style="display:flex;"><span>SET &lt;properties to be updated&gt; <span style="color:#f92672">[</span>WHEN &lt;condition&gt;<span style="color:#f92672">]</span> <span style="color:#f92672">[</span>YIELD &lt;columns to be output&gt;<span style="color:#f92672">]</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># UPSERT点或边</span>
+</span></span><span style="display:flex;"><span>UPSERT <span style="color:#f92672">{</span>VERTEX &lt;vid&gt; | EDGE &lt;edge_type&gt;<span style="color:#f92672">}</span> SET &lt;update_columns&gt;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>WHEN &lt;condition&gt;<span style="color:#f92672">]</span> <span style="color:#f92672">[</span>YIELD &lt;columns&gt;<span style="color:#f92672">]</span>;
+</span></span></code></pre></div><blockquote>
+<p>修改点<code>player100</code>的<code> player.name='Tim'</code></p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>update vertex <span style="color:#e6db74">&#34;player100&#34;</span> set player.name<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;Tim&#39;</span>;
+</span></span></code></pre></div><blockquote>
+<p>修改点<code>&quot;player101&quot;-&gt;&quot;player102&quot;</code>的属性<code>degree=92</code></p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>update edge on follow <span style="color:#e6db74">&#34;player101&#34;</span>-&gt;<span style="color:#e6db74">&#34;player102&#34;</span> set degree<span style="color:#f92672">=</span><span style="color:#ae81ff">92</span>
+</span></span></code></pre></div><blockquote>
+<p>根据条件修改</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>INSERT VERTEX player<span style="color:#f92672">(</span>name,age<span style="color:#f92672">)</span> VALUES <span style="color:#e6db74">&#34;player111&#34;</span>:<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;David West&#34;</span>, 38<span style="color:#f92672">)</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>UPSERT VERTEX <span style="color:#e6db74">&#34;player111&#34;</span> SET player.name <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;David&#34;</span>, player.age <span style="color:#f92672">=</span> $^.player.age + <span style="color:#ae81ff">11</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>        WHEN $^.player.name <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;David West&#34;</span> AND $^.player.age &gt; <span style="color:#ae81ff">20</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>        YIELD $^.player.name AS Name, $^.player.age AS Age;
+</span></span></code></pre></div><h2 id="删除">删除</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># 删除点</span>
+</span></span><span style="display:flex;"><span>DELETE VERTEX &lt;vid1&gt;<span style="color:#f92672">[</span>, &lt;vid2&gt;...<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 删除边</span>
+</span></span><span style="display:flex;"><span>DELETE EDGE &lt;edge_type&gt; &lt;src_vid&gt; -&gt; &lt;dst_vid&gt;<span style="color:#f92672">[</span>@&lt;rank&gt;<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>, &lt;src_vid&gt; -&gt; &lt;dst_vid&gt;...<span style="color:#f92672">]</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>DELETE VERTEX <span style="color:#e6db74">&#34;player111&#34;</span>, <span style="color:#e6db74">&#34;team203&#34;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>DELETE EDGE follow <span style="color:#e6db74">&#34;player101&#34;</span> -&gt; <span style="color:#e6db74">&#34;team204&#34;</span>;
+</span></span></code></pre></div><h1 id="索引">索引</h1>
+<blockquote>
+<p>为没有指定长度的变量属性创建索引时，需要指定索引长度。在 utf-8 编码中，一个中文字符占 3 字节，请根据变量属性长度设置合适的索引长度。例如 10 个中文字符，索引长度需要为 30。详情请参见<a href="https://docs.nebula-graph.com.cn/3.6.0/3.ngql-guide/14.native-index-statements/1.create-native-index/">创建索引</a>。</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># 创建索引</span>
+</span></span><span style="display:flex;"><span>CREATE <span style="color:#f92672">{</span>TAG | EDGE<span style="color:#f92672">}</span> INDEX <span style="color:#f92672">[</span>IF NOT EXISTS<span style="color:#f92672">]</span> &lt;index_name&gt;
+</span></span><span style="display:flex;"><span>ON <span style="color:#f92672">{</span>&lt;tag_name&gt; | &lt;edge_name&gt;<span style="color:#f92672">}</span> <span style="color:#f92672">([</span>&lt;prop_name_list&gt;<span style="color:#f92672">])</span> <span style="color:#f92672">[</span>COMMENT <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;&lt;comment&gt;&#39;</span><span style="color:#f92672">]</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 创建索引</span>
+</span></span><span style="display:flex;"><span>REBUILD <span style="color:#f92672">{</span>TAG | EDGE<span style="color:#f92672">}</span> INDEX &lt;index_name&gt;;
+</span></span></code></pre></div><h2 id="创建-2">创建</h2>
+<blockquote>
+<p>为 name 属性创建索引 player_index_1。</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>create tag index <span style="color:#66d9ef">if</span> not exists player_index_1 on player<span style="color:#f92672">(</span>name<span style="color:#f92672">(</span>20<span style="color:#f92672">))</span>;
+</span></span></code></pre></div><h2 id="重建">重建</h2>
+<blockquote>
+<p>重建索引确保能对已存在数据生效。</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>REBUILD TAG INDEX player_index_1;
+</span></span></code></pre></div><ul class="pa0">
+  
+   <li class="list di">
+     <a href="/tags/nebula/" class="link f5 grow br-pill ba ph3 pv2 mb2 dib black sans-serif no-underline">Nebula</a>
+   </li>
+  
+   <li class="list di">
+     <a href="/tags/databases/" class="link f5 grow br-pill ba ph3 pv2 mb2 dib black sans-serif no-underline">Databases</a>
+   </li>
+  
+</ul>
+<div class="mt6 instapaper_ignoref">
+      
+      
+      </div>
+    </div>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+  <div class="bg-light-gray pa3 nested-list-reset nested-copy-line-height nested-links">
+    <p class="f5 b mb3">Related</p>
+    <ul class="pa0 list">
+	   
+	     <li  class="mb2">
+          <a href="/posts/databases/pgsql/">pgsql</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/databases/mysql%E6%97%A5%E5%BF%97/">mysql日志</a>
+        </li>
+	    
+    </ul>
+</div>
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white white-70 dn dib-ns pv2 ph3 no-underline" href="http://localhost:1313/" >
+    &copy;  loveyu233 2025 
+  </a>
+    <div><div class="ananke-socials"></div>
+</div>
+  </div>
+</footer>
+
+  </body>
+</html>

@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>Go Redis项目使用 | loveyu233</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="
+一：redis存储验证码
+相关代码
+只展示相关技术点的代码，看完可自己实现
+
+生成验证码
+func Code() string {
+	rnd := rand.New(rand.NewSource(time.Now().UnixNano()))
+	vcode := fmt.Sprintf(&#34;%06v&#34;, rnd.Int31n(1000000))
+	return vcode
+}
+
+存储和读取redis
+client := redis.NewClient(&#34;url&#34;)
+// key可以为用户手机号、value为Code()生成的验证码；成功保存的返回值为：result:ok err:nil
+result, err := client.Set(context.TODO(), &#34;key&#34;, &#34;value&#34;, time.Second*60).Result()
+// result为 key 对应的 value
+result, err = client.Get(context.TODO(), &#34;key&#34;).Result()
+
+生成jwt/判断jwt
+/*参数结构体为自定义结构体：
+type JwtClaims struct {
+	tb.TbUser
+	jwt.StandardClaims
+}
+只要包含jwt.StandardClaims即可，其中jwt.StandardClaims的ExpiresAt为设置过期时间
+*/
+func CreateToken(jwtClaims sys.JwtClaims) (string, error) {
+	claims := jwt.NewWithClaims(jwt.SigningMethodHS256, &amp;jwtClaims)
+	token, err := claims.SignedString(&#34;miyao suibian&#34;)
+	return token, err
+}
+
+func ParseToken(token string) (*sys.JwtClaims, error) {
+	claims, err := jwt.ParseWithClaims(token, &amp;sys.JwtClaims{}, func(token *jwt.Token) (interface{}, error) {
+		return &#34;miyao suibian&#34;, nil
+	})
+	if err != nil {
+		return nil, err
+	}
+  // 返回值强转为自定义结构体的类型，方便取值
+	return claims.Claims.(*sys.JwtClaims), nil
+}
+二：redis分布式锁
+原因
+
+用redis分布式锁的原因：如果用语言自带的锁只能在当前的进程中锁，如果后续服务不再是单体服务而是横向扩展为多个服务同时运行在多个进程中的时候是无法共享锁的，所以需要用到分布式锁，用来在多个进程中共享锁">
+    <meta name="generator" content="Hugo 0.147.7">
+    
+    
+    
+      <meta name="robots" content="noindex, nofollow">
+    
+    <meta name="author" content="loveyu">
+    
+
+    
+<link rel="stylesheet" href="/ananke/css/main.min.css" >
+
+
+
+
+    
+
+
+    
+      
+
+    
+
+    
+
+    
+      <link rel="canonical" href="http://localhost:1313/posts/go/go-redis%E9%A1%B9%E7%9B%AE%E4%BD%BF%E7%94%A8/">
+    
+
+    <meta property="og:url" content="http://localhost:1313/posts/go/go-redis%E9%A1%B9%E7%9B%AE%E4%BD%BF%E7%94%A8/">
+  <meta property="og:site_name" content="loveyu233">
+  <meta property="og:title" content="Go Redis项目使用">
+  <meta property="og:description" content="一：redis存储验证码 相关代码 只展示相关技术点的代码，看完可自己实现
+生成验证码
+func Code() string { rnd := rand.New(rand.NewSource(time.Now().UnixNano())) vcode := fmt.Sprintf(&#34;%06v&#34;, rnd.Int31n(1000000)) return vcode } 存储和读取redis
+client := redis.NewClient(&#34;url&#34;) // key可以为用户手机号、value为Code()生成的验证码；成功保存的返回值为：result:ok err:nil result, err := client.Set(context.TODO(), &#34;key&#34;, &#34;value&#34;, time.Second*60).Result() // result为 key 对应的 value result, err = client.Get(context.TODO(), &#34;key&#34;).Result() 生成jwt/判断jwt
+/*参数结构体为自定义结构体： type JwtClaims struct { tb.TbUser jwt.StandardClaims } 只要包含jwt.StandardClaims即可，其中jwt.StandardClaims的ExpiresAt为设置过期时间 */ func CreateToken(jwtClaims sys.JwtClaims) (string, error) { claims := jwt.NewWithClaims(jwt.SigningMethodHS256, &amp;jwtClaims) token, err := claims.SignedString(&#34;miyao suibian&#34;) return token, err } func ParseToken(token string) (*sys.JwtClaims, error) { claims, err := jwt.ParseWithClaims(token, &amp;sys.JwtClaims{}, func(token *jwt.Token) (interface{}, error) { return &#34;miyao suibian&#34;, nil }) if err != nil { return nil, err } // 返回值强转为自定义结构体的类型，方便取值 return claims.Claims.(*sys.JwtClaims), nil } 二：redis分布式锁 原因 用redis分布式锁的原因：如果用语言自带的锁只能在当前的进程中锁，如果后续服务不再是单体服务而是横向扩展为多个服务同时运行在多个进程中的时候是无法共享锁的，所以需要用到分布式锁，用来在多个进程中共享锁">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2022-10-23T19:38:37+08:00">
+    <meta property="article:modified_time" content="2022-10-23T19:38:37+08:00">
+    <meta property="article:tag" content="Go">
+    <meta property="article:tag" content="Redis">
+
+  <meta itemprop="name" content="Go Redis项目使用">
+  <meta itemprop="description" content="一：redis存储验证码 相关代码 只展示相关技术点的代码，看完可自己实现
+生成验证码
+func Code() string { rnd := rand.New(rand.NewSource(time.Now().UnixNano())) vcode := fmt.Sprintf(&#34;%06v&#34;, rnd.Int31n(1000000)) return vcode } 存储和读取redis
+client := redis.NewClient(&#34;url&#34;) // key可以为用户手机号、value为Code()生成的验证码；成功保存的返回值为：result:ok err:nil result, err := client.Set(context.TODO(), &#34;key&#34;, &#34;value&#34;, time.Second*60).Result() // result为 key 对应的 value result, err = client.Get(context.TODO(), &#34;key&#34;).Result() 生成jwt/判断jwt
+/*参数结构体为自定义结构体： type JwtClaims struct { tb.TbUser jwt.StandardClaims } 只要包含jwt.StandardClaims即可，其中jwt.StandardClaims的ExpiresAt为设置过期时间 */ func CreateToken(jwtClaims sys.JwtClaims) (string, error) { claims := jwt.NewWithClaims(jwt.SigningMethodHS256, &amp;jwtClaims) token, err := claims.SignedString(&#34;miyao suibian&#34;) return token, err } func ParseToken(token string) (*sys.JwtClaims, error) { claims, err := jwt.ParseWithClaims(token, &amp;sys.JwtClaims{}, func(token *jwt.Token) (interface{}, error) { return &#34;miyao suibian&#34;, nil }) if err != nil { return nil, err } // 返回值强转为自定义结构体的类型，方便取值 return claims.Claims.(*sys.JwtClaims), nil } 二：redis分布式锁 原因 用redis分布式锁的原因：如果用语言自带的锁只能在当前的进程中锁，如果后续服务不再是单体服务而是横向扩展为多个服务同时运行在多个进程中的时候是无法共享锁的，所以需要用到分布式锁，用来在多个进程中共享锁">
+  <meta itemprop="datePublished" content="2022-10-23T19:38:37+08:00">
+  <meta itemprop="dateModified" content="2022-10-23T19:38:37+08:00">
+  <meta itemprop="wordCount" content="739">
+  <meta itemprop="keywords" content="Go,Redis">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Go Redis项目使用">
+  <meta name="twitter:description" content="一：redis存储验证码 相关代码 只展示相关技术点的代码，看完可自己实现
+生成验证码
+func Code() string { rnd := rand.New(rand.NewSource(time.Now().UnixNano())) vcode := fmt.Sprintf(&#34;%06v&#34;, rnd.Int31n(1000000)) return vcode } 存储和读取redis
+client := redis.NewClient(&#34;url&#34;) // key可以为用户手机号、value为Code()生成的验证码；成功保存的返回值为：result:ok err:nil result, err := client.Set(context.TODO(), &#34;key&#34;, &#34;value&#34;, time.Second*60).Result() // result为 key 对应的 value result, err = client.Get(context.TODO(), &#34;key&#34;).Result() 生成jwt/判断jwt
+/*参数结构体为自定义结构体： type JwtClaims struct { tb.TbUser jwt.StandardClaims } 只要包含jwt.StandardClaims即可，其中jwt.StandardClaims的ExpiresAt为设置过期时间 */ func CreateToken(jwtClaims sys.JwtClaims) (string, error) { claims := jwt.NewWithClaims(jwt.SigningMethodHS256, &amp;jwtClaims) token, err := claims.SignedString(&#34;miyao suibian&#34;) return token, err } func ParseToken(token string) (*sys.JwtClaims, error) { claims, err := jwt.ParseWithClaims(token, &amp;sys.JwtClaims{}, func(token *jwt.Token) (interface{}, error) { return &#34;miyao suibian&#34;, nil }) if err != nil { return nil, err } // 返回值强转为自定义结构体的类型，方便取值 return claims.Claims.(*sys.JwtClaims), nil } 二：redis分布式锁 原因 用redis分布式锁的原因：如果用语言自带的锁只能在当前的进程中锁，如果后续服务不再是单体服务而是横向扩展为多个服务同时运行在多个进程中的时候是无法共享锁的，所以需要用到分布式锁，用来在多个进程中共享锁">
+
+	
+  </head><body class="ma0 avenir bg-near-white development">
+
+    
+   
+  
+
+  <header>
+    <div class="bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l center items-center justify-between">
+    <a href="/" class="f3 fw2 hover-white white-90 dib no-underline">
+      
+        loveyu233
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      <div class="ananke-socials"></div>
+
+    </div>
+  </div>
+</nav>
+
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  
+  <article class="flex-l mw8 center ph3 flex-wrap justify-between">
+    <header class="mt4 w-100">
+      <aside class="instapaper_ignoref b helvetica tracked ttu">
+          
+        go
+      </aside><div id="sharing" class="mt3 ananke-socials"></div>
+<h1 class="f1 athelas mt3 mb1">Go Redis项目使用</h1>
+      
+      <p class="tracked"><strong>loveyu</strong>
+      </p>
+      
+      
+      
+      <time class="f6 mv4 dib tracked" datetime="2022-10-23T19:38:37+08:00">October 23, 2022</time>
+      
+
+      
+      
+    </header>
+    <div class="nested-copy-line-height lh-copy serif f4 nested-links mid-gray pr4-l w-two-thirds-l"><!-- raw HTML omitted -->
+<h1 id="一redis存储验证码">一：redis存储验证码</h1>
+<h2 id="相关代码">相关代码</h2>
+<p>只展示相关技术点的代码，看完可自己实现</p>
+<blockquote>
+<p>生成验证码</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">Code</span>() <span style="color:#66d9ef">string</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">rnd</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">rand</span>.<span style="color:#a6e22e">New</span>(<span style="color:#a6e22e">rand</span>.<span style="color:#a6e22e">NewSource</span>(<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Now</span>().<span style="color:#a6e22e">UnixNano</span>()))
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">vcode</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Sprintf</span>(<span style="color:#e6db74">&#34;%06v&#34;</span>, <span style="color:#a6e22e">rnd</span>.<span style="color:#a6e22e">Int31n</span>(<span style="color:#ae81ff">1000000</span>))
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">vcode</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><blockquote>
+<p>存储和读取redis</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#a6e22e">client</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">redis</span>.<span style="color:#a6e22e">NewClient</span>(<span style="color:#e6db74">&#34;url&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// key可以为用户手机号、value为Code()生成的验证码；成功保存的返回值为：result:ok err:nil</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">result</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">client</span>.<span style="color:#a6e22e">Set</span>(<span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">TODO</span>(), <span style="color:#e6db74">&#34;key&#34;</span>, <span style="color:#e6db74">&#34;value&#34;</span>, <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Second</span><span style="color:#f92672">*</span><span style="color:#ae81ff">60</span>).<span style="color:#a6e22e">Result</span>()
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// result为 key 对应的 value</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">result</span>, <span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">client</span>.<span style="color:#a6e22e">Get</span>(<span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">TODO</span>(), <span style="color:#e6db74">&#34;key&#34;</span>).<span style="color:#a6e22e">Result</span>()
+</span></span></code></pre></div><blockquote>
+<p>生成jwt/判断jwt</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">/*参数结构体为自定义结构体：
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">type JwtClaims struct {
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">	tb.TbUser
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">	jwt.StandardClaims
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">}
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">只要包含jwt.StandardClaims即可，其中jwt.StandardClaims的ExpiresAt为设置过期时间
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">*/</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">CreateToken</span>(<span style="color:#a6e22e">jwtClaims</span> <span style="color:#a6e22e">sys</span>.<span style="color:#a6e22e">JwtClaims</span>) (<span style="color:#66d9ef">string</span>, <span style="color:#66d9ef">error</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">claims</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">jwt</span>.<span style="color:#a6e22e">NewWithClaims</span>(<span style="color:#a6e22e">jwt</span>.<span style="color:#a6e22e">SigningMethodHS256</span>, <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">jwtClaims</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">token</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">claims</span>.<span style="color:#a6e22e">SignedString</span>(<span style="color:#e6db74">&#34;miyao suibian&#34;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">token</span>, <span style="color:#a6e22e">err</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">ParseToken</span>(<span style="color:#a6e22e">token</span> <span style="color:#66d9ef">string</span>) (<span style="color:#f92672">*</span><span style="color:#a6e22e">sys</span>.<span style="color:#a6e22e">JwtClaims</span>, <span style="color:#66d9ef">error</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">claims</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">jwt</span>.<span style="color:#a6e22e">ParseWithClaims</span>(<span style="color:#a6e22e">token</span>, <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">sys</span>.<span style="color:#a6e22e">JwtClaims</span>{}, <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">token</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">jwt</span>.<span style="color:#a6e22e">Token</span>) (<span style="color:#66d9ef">interface</span>{}, <span style="color:#66d9ef">error</span>) {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;miyao suibian&#34;</span>, <span style="color:#66d9ef">nil</span>
+</span></span><span style="display:flex;"><span>	})
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>, <span style="color:#a6e22e">err</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 返回值强转为自定义结构体的类型，方便取值</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">claims</span>.<span style="color:#a6e22e">Claims</span>.(<span style="color:#f92672">*</span><span style="color:#a6e22e">sys</span>.<span style="color:#a6e22e">JwtClaims</span>), <span style="color:#66d9ef">nil</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="二redis分布式锁">二：redis分布式锁</h1>
+<h2 id="原因">原因</h2>
+<blockquote>
+<p>用redis分布式锁的原因：如果用语言自带的锁只能在当前的进程中锁，如果后续服务不再是单体服务而是横向扩展为多个服务同时运行在多个进程中的时候是无法共享锁的，所以需要用到分布式锁，用来在多个进程中共享锁</p></blockquote>
+<h2 id="原理">原理</h2>
+<blockquote>
+<p>redis中有一个命令：setnx key value</p>
+<p>不存在这个key的时候执行该命令返回值为1，当存在key的时候返回值为0</p>
+<p>可以借助这个命令来实现锁：</p>
+<p>当多个线程并发过来的时候，都要先执行setnx命令，返回值为1的即为拿到锁，返回值为0的为没有拿到锁，当拿到锁的线程执行完毕后执行del key 命令删除该key，后续的线程再执行setnx返回值为1即拿到锁。根据这个原理来实现redis分布式锁</p></blockquote>
+<h2 id="使用">使用</h2>
+<blockquote>
+<p>使用的时候先NewRedisLock(锁名称, 锁值, 锁的ttl)创建锁，然后TryLock()获取锁，最后UnLock()释放锁</p></blockquote>
+<h2 id="lua脚本">lua脚本</h2>
+<blockquote>
+<p>实现redis分布式锁需要用到lua脚本，用lua脚本的目的是为了保证执行多条redis命令时的原子性</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span><span style="color:#f92672">==</span> UnLock()<span style="color:#960050;background-color:#1e0010">中要使用</span>
+</span></span><span style="display:flex;"><span>UnLockLuaScript :<span style="color:#f92672">=</span> <span style="color:#960050;background-color:#1e0010">`</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> redis.call(<span style="color:#e6db74">&#34;GET&#34;</span>,KEYS[<span style="color:#ae81ff">1</span>]) <span style="color:#f92672">==</span> ARGV[<span style="color:#ae81ff">1</span>] <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">return</span> redis.call(<span style="color:#e6db74">&#34;DEL&#34;</span>,KEYS[<span style="color:#ae81ff">1</span>])
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">end</span><span style="color:#960050;background-color:#1e0010">`</span>
+</span></span></code></pre></div><h2 id="代码">代码</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">// 存储到redis中的key前缀，目的是为了方便查看</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">lockPrefix</span> = <span style="color:#e6db74">&#34;lock:&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// RedisLock redis 分布式锁</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">RedisLock</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">LockName</span>  <span style="color:#66d9ef">string</span>	<span style="color:#75715e">// 锁的名称，也就是存储到redis中的key</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">LockValue</span> <span style="color:#66d9ef">string</span>	<span style="color:#75715e">// 锁的内容，也就是存储到redis中的value</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">TTl</span>       <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Duration</span>	<span style="color:#75715e">// 锁的过期时间防止死锁</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 创建锁，参数为：锁名称、锁的值、锁的过期时间</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">NewRedisLock</span>(<span style="color:#a6e22e">lockName</span>, <span style="color:#a6e22e">lockValue</span> <span style="color:#66d9ef">string</span>, <span style="color:#a6e22e">tll</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Duration</span>) <span style="color:#f92672">*</span><span style="color:#a6e22e">RedisLock</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">RedisLock</span>{
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">LockName</span>:  <span style="color:#a6e22e">lockName</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">LockValue</span>: <span style="color:#a6e22e">lockValue</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">TTl</span>:       <span style="color:#a6e22e">tll</span>,
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 获取锁，返回值为是否获取到锁</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">RedisLock</span>) <span style="color:#a6e22e">TryLock</span>() <span style="color:#66d9ef">bool</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">result</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">global</span>.<span style="color:#a6e22e">RedisDb</span>.<span style="color:#a6e22e">SetNX</span>(<span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">TODO</span>(), <span style="color:#a6e22e">lockPrefix</span><span style="color:#f92672">+</span><span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">LockName</span>, <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">LockValue</span>, <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">TTl</span>).<span style="color:#a6e22e">Result</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">result</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 释放锁，不需要返回值</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">RedisLock</span>) <span style="color:#a6e22e">UnLock</span>() {
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 创建脚本，UnLockLuaScript的lua脚本上边有写</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">script</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">redis</span>.<span style="color:#a6e22e">NewScript</span>(<span style="color:#a6e22e">UnLockLuaScript</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 运行脚本，第二个参数为client，第三个字符串数组表示的是lua脚本中KEYS，第四个参数为lua脚本中的ARGV</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">script</span>.<span style="color:#a6e22e">Run</span>(<span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">TODO</span>(), <span style="color:#a6e22e">redis</span>.<span style="color:#a6e22e">NewClient</span>(<span style="color:#e6db74">&#34;url&#34;</span>), []<span style="color:#66d9ef">string</span>{<span style="color:#a6e22e">lockPrefix</span> <span style="color:#f92672">+</span> <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">LockName</span>}, <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">LockValue</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="三redis缓存">三：redis缓存</h1>
+<h2 id="缓存">缓存</h2>
+<h3 id="流程图">流程图：</h3>
+<blockquote>
+<p>场景：客户端通过id查询对应的商铺信息</p></blockquote>
+<!-- raw HTML omitted -->
+<h3 id="代码-1">代码：</h3>
+<blockquote>
+<p>每一行都有注释，代码不难理解，这个思路要明白代码是很简单的</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">ById</span>(<span style="color:#a6e22e">id</span> <span style="color:#66d9ef">int</span>) <span style="color:#a6e22e">dto</span>.<span style="color:#a6e22e">Response</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// global.ShopCache：前缀，查看方便</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">key</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">global</span>.<span style="color:#a6e22e">ShopCache</span> <span style="color:#f92672">+</span> <span style="color:#a6e22e">strconv</span>.<span style="color:#a6e22e">Itoa</span>(<span style="color:#a6e22e">id</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 布隆过滤器判断是否有改key，解决缓存穿透，后边会介绍布隆过滤器</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> !<span style="color:#a6e22e">global</span>.<span style="color:#a6e22e">Bloomfilter</span>.<span style="color:#a6e22e">Contain</span>([]byte(<span style="color:#a6e22e">key</span>)) {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">dto</span>.<span style="color:#a6e22e">Err</span>(<span style="color:#a6e22e">key</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;不存在&#34;</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">shop</span> <span style="color:#a6e22e">tb</span>.<span style="color:#a6e22e">TbShop</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 从redis缓存中获取店铺信息，这里就是简单的get命令只是这里进行了再次封装把redis的返回值转为对应的结构体而已</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">boolRes</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">utils</span>.<span style="color:#a6e22e">EnterUtilsApp</span>.<span style="color:#a6e22e">RedisCacheUtils</span>.<span style="color:#a6e22e">GetCacheData</span>(<span style="color:#a6e22e">key</span>, <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">shop</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// redis锁的key，这里锁的key用uuid+商铺id组成保证value的唯一以免删除了不属于自己的锁</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// key一样value不一样，当释放锁的时候会先判断一下自己的value和redis中存储的value是否一致，一致说明是自己的锁既可以释放(删除key)，如果value不一样则不进行删除操作因为这个不是自己的锁</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">lockValue</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">uuid</span>.<span style="color:#a6e22e">NewV4</span>().<span style="color:#a6e22e">String</span>() <span style="color:#f92672">+</span> <span style="color:#a6e22e">strconv</span>.<span style="color:#a6e22e">Itoa</span>(<span style="color:#a6e22e">id</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// false说明没有该缓存</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> !<span style="color:#a6e22e">boolRes</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 创建锁</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">rlock</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">redisLock</span>.<span style="color:#a6e22e">NewRedisLock</span>(<span style="color:#a6e22e">key</span>, <span style="color:#a6e22e">lockValue</span>, <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Second</span><span style="color:#f92672">*</span><span style="color:#ae81ff">2</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#75715e">// 获取锁，拿到锁的去数据库查询重建缓存，拿不到的等待</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">for</span> !<span style="color:#a6e22e">rlock</span>.<span style="color:#a6e22e">TryLock</span>() {
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Sleep</span>(<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Millisecond</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">50</span>)
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		<span style="color:#75715e">// DCL双重检查缓存。获取到锁再次检查是否有缓存，防止拿到锁后多次重建缓存</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">boolRes</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">utils</span>.<span style="color:#a6e22e">EnterUtilsApp</span>.<span style="color:#a6e22e">RedisCacheUtils</span>.<span style="color:#a6e22e">GetCacheData</span>(<span style="color:#a6e22e">key</span>, <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">shop</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#75715e">// 如果有缓存直接返回</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">boolRes</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">rlock</span>.<span style="color:#a6e22e">UnLock</span>()
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">dto</span>.<span style="color:#a6e22e">OkData</span>(<span style="color:#a6e22e">shop</span>)
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		<span style="color:#75715e">// 模拟重建缓存需要很长时间</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#75715e">//time.Sleep(time.Millisecond * 200)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>		<span style="color:#75715e">// 根据id查询商铺信息，不需要判断返回值，因为已经把id全部添加到布隆过滤器中了，而在开头已经判断了布隆过滤器中是否有这个id，代码能走到这里说明一定是存在这个id的</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">global</span>.<span style="color:#a6e22e">MysqlDb</span>.<span style="color:#a6e22e">Model</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">tb</span>.<span style="color:#a6e22e">TbShop</span>{}).<span style="color:#a6e22e">Scopes</span>(<span style="color:#a6e22e">EnterServicesApp</span>.<span style="color:#a6e22e">PaginateService</span>.<span style="color:#a6e22e">byId</span>(<span style="color:#a6e22e">id</span>)).<span style="color:#a6e22e">Find</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">shop</span>).<span style="color:#a6e22e">RowsAffected</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#75715e">// 重建缓存，json序列化shop存入redis，这里是使用的再次封装的函数，这个函数只是把这个shop进行序列话然后存储redis中。</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">utils</span>.<span style="color:#a6e22e">EnterUtilsApp</span>.<span style="color:#a6e22e">RedisCacheUtils</span>.<span style="color:#a6e22e">AddCacheDataAndSetTTL</span>(<span style="color:#a6e22e">key</span>, <span style="color:#a6e22e">shop</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">rlock</span>.<span style="color:#a6e22e">UnLock</span>()
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">dto</span>.<span style="color:#a6e22e">OkData</span>(<span style="color:#a6e22e">shop</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">dto</span>.<span style="color:#a6e22e">OkData</span>(<span style="color:#a6e22e">shop</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="更新缓存">更新缓存</h2>
+<blockquote>
+<p>数据库对缓存数据进行修改的时候一起对redis的缓存数据进行修改，这里不再展示代码</p>
+<p>也有别的更新缓存策略这里也不再细说，有兴趣的自行百度学习</p></blockquote>
+<h1 id="四缓存三大问题击穿雪崩穿透">四：缓存三大问题：击穿、雪崩、穿透</h1>
+<h2 id="产生问题的原因">产生问题的原因</h2>
+<blockquote>
+<p>问题描述请看：https://editor.csdn.net/md/?articleId=127782108</p></blockquote>
+<h2 id="解决">解决</h2>
+<h3 id="击穿">击穿：</h3>
+<blockquote>
+<p>缓存击穿也叫热点key问题，就是一个被<code>高并发访问</code>并且<code>缓存重建业务比较复杂</code>的key突然失效，无数的请求访问会在瞬间给数据库带来巨大的冲击。</p>
+<p>解决就是使用互斥锁，参考上面的redis缓存场景，当缓存失效的时候加锁，只有一个去重建缓存</p></blockquote>
+<h3 id="雪崩">雪崩：</h3>
+<blockquote>
+<p>缓存雪崩是指在同一时段<code>大量的缓存key同时失效或者redis服务宕机</code>，导致大量请求直达数据库，带来巨大压力。</p>
+<p>代码层解决就是在对key设置ttl的时候不要全部都设置一样的，使key失效的时候不是大面积的失效就行</p>
+<p>其他办法：搭建集群，服务降级限流，添加多级缓存(redis缓存失效还有别的缓存支撑)</p></blockquote>
+<h3 id="穿透">穿透：</h3>
+<blockquote>
+<p>缓存穿透是指客户端请求的数据在缓存中和数据库中都不存在，这样缓存永远不会生效，这些请求都会打到数据库。</p>
+<p>代码解决：布隆过滤器</p>
+<p>布隆过滤器就是把key进行多次hash然后用hash后的值作为索引，索引对应的值设置为1，默认为0</p>
+<p>查询的时候一样把key 多次hash查询对应hash索引对应的值是否都为1，都为1说明存在否则不存在</p>
+<p>推荐使用库：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#e6db74">&#34;github.com/linvon/cuckoo-filter&#34;</span>
+</span></span></code></pre></div></blockquote>
+<h1 id="布隆过滤器">布隆过滤器</h1>
+<p>使用：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">// 创建过滤器</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">cf</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">cuckoo</span>.<span style="color:#a6e22e">NewFilter</span>(<span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">9</span>, <span style="color:#a6e22e">长度</span>, <span style="color:#a6e22e">cuckoo</span>.<span style="color:#a6e22e">TableTypePacked</span>)
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 添加key</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">cd</span>.<span style="color:#a6e22e">Add</span>(<span style="color:#e6db74">&#34;key&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 判断是否存在,返回值是布尔类型，存在为true不存在false</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">cf</span>.<span style="color:#a6e22e">Contain</span>([]byte(<span style="color:#a6e22e">key</span>))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 项目使用的时候可以在项目运行后先执行添加key操作，把所有要进行缓存的key都查询出来添加到过滤器中，在后边查询缓存的时候先从过滤器中判断一下要查询的这个缓存key是否存在，存在的前提下再去查询缓存</span>
+</span></span></code></pre></div><h1 id="五秒杀">五：秒杀</h1>
+<!-- raw HTML omitted -->
+<blockquote>
+<p>通过lua脚本可以避免超卖问题和线程安全问题，甚至于可以全程不加锁</p></blockquote>
+<blockquote>
+<p>场景：优惠卷秒杀</p>
+<p>前提条件：在上架优惠卷的时候不仅把优惠卷信息存储到mysql中还要把信息存储到redis中，redis中的存储只需要优惠卷id和优惠卷数量即可</p></blockquote>
+<blockquote>
+<p>lua脚本中要使用到的redis命令：</p>
+<p>sismember、incrby、sadd</p>
+<p>sismember key value	判断集合key中是否存在value，不存在返回0，存在返回1</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>127.0.0.1:6379&gt; SISMEMBER k v1
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; sadd k v1
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; SISMEMBER k v1
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span></code></pre></div><p>sadd key value 	向集合key中添加value</p>
+<p>incrby key value  对一个key的value做加法</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>127.0.0.1:6379&gt; set count <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>OK
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; get count
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;1&#34;</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; INCRBY count <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; get count
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;2&#34;</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; INCRBY count -1
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; get count
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;1&#34;</span>
+</span></span></code></pre></div></blockquote>
+<h2 id="代码-2">代码：</h2>
+<blockquote>
+<p>lua脚本</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span>	IsQualificationLuaScript <span style="color:#f92672">=</span> <span style="color:#960050;background-color:#1e0010">`</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">local</span> voucherId <span style="color:#f92672">=</span> ARGV[<span style="color:#ae81ff">1</span>]
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">local</span> userId <span style="color:#f92672">=</span> ARGV[<span style="color:#ae81ff">2</span>]
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">local</span> stockKey <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;seckill:stock:&#39;</span> <span style="color:#f92672">..</span> voucherId
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">local</span> orderKey <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;seckill:order&#39;</span> <span style="color:#f92672">..</span> voucherId
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">-- 判断是否有库存</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> (tonumber(redis.call(<span style="color:#e6db74">&#39;get&#39;</span>,stockKey)) <span style="color:#f92672">&lt;=</span> <span style="color:#ae81ff">0</span>) <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">end</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">-- 判断用户是否下过单</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> (redis.call(<span style="color:#e6db74">&#39;sismember&#39;</span>,orderKey,userId) <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span>) <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">end</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">-- 扣库存，吧stockKey的值-1</span>
+</span></span><span style="display:flex;"><span>	redis.call(<span style="color:#e6db74">&#39;incrby&#39;</span>,stockKey,<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">-- 下单，把用户id存到orderKey这个set集合中</span>
+</span></span><span style="display:flex;"><span>	redis.call(<span style="color:#e6db74">&#39;sadd&#39;</span>,orderKey,userId)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#960050;background-color:#1e0010">`</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">VouCher</span>) <span style="color:#a6e22e">VoucherOrderId</span>(<span style="color:#a6e22e">voucherId</span> <span style="color:#66d9ef">string</span>, <span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Context</span>) <span style="color:#a6e22e">dto</span>.<span style="color:#a6e22e">Response</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 获取用户信息，因为用户信息都在jwt中，只需要解析jwt即可拿到用户信息</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">user</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">utils</span>.<span style="color:#a6e22e">EnterUtilsApp</span>.<span style="color:#a6e22e">JwtUtils</span>.<span style="color:#a6e22e">JwtGetUser</span>(<span style="color:#a6e22e">c</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 执行lua脚本判断用户是否有资格抢购优惠卷; 返回值： 0：有资格；1：没有库存；2：已经抢购过了；</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">result</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">redis</span>.<span style="color:#a6e22e">NewScript</span>(<span style="color:#a6e22e">global</span>.<span style="color:#a6e22e">IsQualificationLuaScript</span>).<span style="color:#a6e22e">Run</span>(<span style="color:#a6e22e">global</span>.<span style="color:#a6e22e">Content</span>, <span style="color:#a6e22e">global</span>.<span style="color:#a6e22e">RedisDb</span>, []<span style="color:#66d9ef">string</span>{}, <span style="color:#a6e22e">voucherId</span>, <span style="color:#a6e22e">user</span>.<span style="color:#a6e22e">ID</span>).<span style="color:#a6e22e">Result</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">result</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">dto</span>.<span style="color:#a6e22e">Err</span>(<span style="color:#e6db74">&#34;不存在该优惠卷&#34;</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 根据返回值来判断</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">switch</span> <span style="color:#a6e22e">result</span>.(<span style="color:#66d9ef">int64</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">case</span> <span style="color:#ae81ff">1</span>:
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">dto</span>.<span style="color:#a6e22e">Err</span>(<span style="color:#e6db74">&#34;库存不足&#34;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">case</span> <span style="color:#ae81ff">2</span>:
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">dto</span>.<span style="color:#a6e22e">Err</span>(<span style="color:#e6db74">&#34;一人只可抢购一单&#34;</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 封装订单信息</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">voucherOrder</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">returnVoucherOrder</span>(<span style="color:#a6e22e">user</span>.<span style="color:#a6e22e">ID</span>, <span style="color:#a6e22e">voucherId</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 订单信息json序列化</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">orderJson</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">json</span>.<span style="color:#a6e22e">Marshal</span>(<span style="color:#a6e22e">voucherOrder</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 发送订单信息，订单消息通过mq进行异步处理，只需要再开启线程用来专门的处理订单信息即可(在数据库中创建订单信息)，这样可以增加服务的处理能力，这里不再展示这部分代码</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">rabbitmq</span>.<span style="color:#a6e22e">Producer</span>(<span style="color:#a6e22e">global</span>.<span style="color:#a6e22e">VoucherOrderRabbitMQQueueName</span>, <span style="color:#a6e22e">orderJson</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 返回订单ID</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">dto</span>.<span style="color:#a6e22e">OkData</span>(<span style="color:#a6e22e">voucherOrder</span>.<span style="color:#a6e22e">ID</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">returnVoucherOrder</span>(<span style="color:#a6e22e">userId</span> <span style="color:#66d9ef">uint64</span>, <span style="color:#a6e22e">voucherID</span> <span style="color:#66d9ef">string</span>) <span style="color:#f92672">*</span><span style="color:#a6e22e">tb</span>.<span style="color:#a6e22e">TbVoucherOrder</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 新增订单</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">voucherOrder</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">tb</span>.<span style="color:#a6e22e">TbVoucherOrder</span>{}
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 订单ID，全局唯一ID，这里使用的是自己封装生成唯一id的函数，也可以使用uuid等..</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">voucherOrder</span>.<span style="color:#a6e22e">ID</span> = <span style="color:#a6e22e">utils</span>.<span style="color:#a6e22e">EnterUtilsApp</span>.<span style="color:#a6e22e">RedisIDWorker</span>.<span style="color:#a6e22e">NextId</span>(<span style="color:#e6db74">&#34;voucherOrder&#34;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 用户ID</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">voucherOrder</span>.<span style="color:#a6e22e">UserID</span> = <span style="color:#a6e22e">userId</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 优惠卷ID</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">id</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">strconv</span>.<span style="color:#a6e22e">Atoi</span>(<span style="color:#a6e22e">voucherID</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">voucherOrder</span>.<span style="color:#a6e22e">VoucherID</span> = uint64(<span style="color:#a6e22e">id</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 默认为 未支付、余额支付、订单创建时间</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">voucherOrder</span>.<span style="color:#a6e22e">Status</span> = <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">voucherOrder</span>.<span style="color:#a6e22e">PayType</span> = <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">voucherOrder</span>.<span style="color:#a6e22e">CreateTime</span> = <span style="color:#a6e22e">global</span>.<span style="color:#a6e22e">TimeNow</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 返回订单结构体</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">voucherOrder</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="六pv和uv统计">六：pv和uv统计</h1>
+<blockquote>
+<p>pv：记录网站有多少用户访问</p>
+<p>uv：记录网站的点击量</p></blockquote>
+<h2 id="redis命令">redis命令</h2>
+<blockquote>
+<p>相同的元素是不会重复添加的</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>127.0.0.1:6379&gt; PFADD pv <span style="color:#ae81ff">1</span> <span style="color:#ae81ff">2</span> <span style="color:#ae81ff">3</span> <span style="color:#ae81ff">4</span> <span style="color:#ae81ff">5</span> <span style="color:#ae81ff">6</span> <span style="color:#ae81ff">7</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; PFCOUNT pv
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">7</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; PFADD pv <span style="color:#ae81ff">1</span> <span style="color:#ae81ff">2</span> <span style="color:#ae81ff">3</span> <span style="color:#ae81ff">4</span> <span style="color:#ae81ff">5</span> <span style="color:#ae81ff">6</span> <span style="color:#ae81ff">7</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; PFCOUNT pv
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">7</span>
+</span></span></code></pre></div><h2 id="代码-3">代码</h2>
+<blockquote>
+<p>这里用年-月作为key，用来统计每月的pv和uv</p>
+<p>统计uv的时候key为年-月，value为用户的id</p>
+<p>而pv就随便了，只要是不重复的即可这里用的是uuid</p>
+<p>使用方法也很简单，把这些函数封装成中间件，然后在gin中use即可</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">UV</span>(<span style="color:#a6e22e">userId</span> <span style="color:#66d9ef">uint64</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">key</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Sprintf</span>(<span style="color:#e6db74">&#34;%s:%d-%s&#34;</span>, <span style="color:#e6db74">&#34;uv&#34;</span>, <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Now</span>().<span style="color:#a6e22e">Year</span>(), <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Now</span>().<span style="color:#a6e22e">Format</span>(<span style="color:#e6db74">&#34;01&#34;</span>))
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">global</span>.<span style="color:#a6e22e">RedisDb</span>.<span style="color:#a6e22e">PFAdd</span>(<span style="color:#a6e22e">global</span>.<span style="color:#a6e22e">Content</span>, <span style="color:#a6e22e">key</span>, <span style="color:#a6e22e">userId</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">PV</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">key</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Sprintf</span>(<span style="color:#e6db74">&#34;%s:%d-%s&#34;</span>, <span style="color:#e6db74">&#34;pv&#34;</span>, <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Now</span>().<span style="color:#a6e22e">Year</span>(), <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Now</span>().<span style="color:#a6e22e">Format</span>(<span style="color:#e6db74">&#34;01&#34;</span>))
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">global</span>.<span style="color:#a6e22e">RedisDb</span>.<span style="color:#a6e22e">PFAdd</span>(<span style="color:#a6e22e">global</span>.<span style="color:#a6e22e">Content</span>, <span style="color:#a6e22e">key</span>, <span style="color:#a6e22e">uuid</span>.<span style="color:#a6e22e">NewV4</span>().<span style="color:#a6e22e">String</span>())
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">UVCount</span>() <span style="color:#66d9ef">int64</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">key</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Sprintf</span>(<span style="color:#e6db74">&#34;%s:%d-%s&#34;</span>, <span style="color:#e6db74">&#34;uv&#34;</span>, <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Now</span>().<span style="color:#a6e22e">Year</span>(), <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Now</span>().<span style="color:#a6e22e">Format</span>(<span style="color:#e6db74">&#34;01&#34;</span>))
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">result</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">global</span>.<span style="color:#a6e22e">RedisDb</span>.<span style="color:#a6e22e">PFCount</span>(<span style="color:#a6e22e">global</span>.<span style="color:#a6e22e">Content</span>, <span style="color:#a6e22e">key</span>).<span style="color:#a6e22e">Result</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">result</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">PVCount</span>() <span style="color:#66d9ef">int64</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">key</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Sprintf</span>(<span style="color:#e6db74">&#34;%s:%d-%s&#34;</span>, <span style="color:#e6db74">&#34;pv&#34;</span>, <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Now</span>().<span style="color:#a6e22e">Year</span>(), <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Now</span>().<span style="color:#a6e22e">Format</span>(<span style="color:#e6db74">&#34;01&#34;</span>))
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">result</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">global</span>.<span style="color:#a6e22e">RedisDb</span>.<span style="color:#a6e22e">PFCount</span>(<span style="color:#a6e22e">global</span>.<span style="color:#a6e22e">Content</span>, <span style="color:#a6e22e">key</span>).<span style="color:#a6e22e">Result</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">result</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul class="pa0">
+  
+   <li class="list di">
+     <a href="/tags/go/" class="link f5 grow br-pill ba ph3 pv2 mb2 dib black sans-serif no-underline">Go</a>
+   </li>
+  
+   <li class="list di">
+     <a href="/tags/redis/" class="link f5 grow br-pill ba ph3 pv2 mb2 dib black sans-serif no-underline">Redis</a>
+   </li>
+  
+</ul>
+<div class="mt6 instapaper_ignoref">
+      
+      
+      </div>
+    </div>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+  <div class="bg-light-gray pa3 nested-list-reset nested-copy-line-height nested-links">
+    <p class="f5 b mb3">Related</p>
+    <ul class="pa0 list">
+	   
+	     <li  class="mb2">
+          <a href="/posts/go/go-redis%E4%BD%BF%E7%94%A8lua%E8%84%9A%E6%9C%AC/">Go Redis使用lua脚本</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/databases/redis%E9%9B%AA%E5%B4%A9%E5%87%BB%E7%A9%BF%E5%92%8C%E7%A9%BF%E9%80%8F/">Redis雪崩击穿和穿透</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/grpc/">go GRPC使用</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/go-swagger/">Go Swagger</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/go%E5%8D%95%E7%82%B9%E7%99%BB%E5%BD%95/">Go单点登录</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/databases/redis/">redis</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/gorm/">Gorm</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/gin%E6%96%87%E4%BB%B6%E4%B8%8B%E8%BD%BD%E4%B9%B1%E7%A0%81/">Gin文件下载乱码</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/casbin/">go使用casbin</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/jwt/">go使用Jwt</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/%E9%BC%A0%E6%A0%87%E8%87%AA%E5%8A%A8%E5%8C%96/">鼠标自动化</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/gowebsocket/">GoWebsocket</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/go-email/">Go Email</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/gin%E6%97%A5%E5%BF%97%E8%87%AA%E5%AE%9A%E4%B9%89/">Gin日志自定义</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/go%E4%BD%BF%E7%94%A8%E4%BB%A4%E7%89%8C%E6%A1%B6/">Go使用令牌桶</a>
+        </li>
+	    
+    </ul>
+</div>
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white white-70 dn dib-ns pv2 ph3 no-underline" href="http://localhost:1313/" >
+    &copy;  loveyu233 2025 
+  </a>
+    <div><div class="ananke-socials"></div>
+</div>
+  </div>
+</footer>
+
+  </body>
+</html>

@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>loveyu233</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="">
+    <meta name="generator" content="Hugo 0.147.7">
+    
+    
+    
+      <meta name="robots" content="noindex, nofollow">
+    
+    
+
+    
+<link rel="stylesheet" href="/ananke/css/main.min.css" >
+
+
+
+
+    
+
+
+    
+      
+
+    
+
+    
+    
+      <link href="/tags/prometheus/index.xml" rel="alternate" type="application/rss+xml" title="loveyu233" />
+      <link href="/tags/prometheus/index.xml" rel="feed" type="application/rss+xml" title="loveyu233" />
+      
+    
+
+    
+      <link rel="canonical" href="http://localhost:1313/tags/prometheus/">
+    
+
+    <meta property="og:url" content="http://localhost:1313/tags/prometheus/">
+  <meta property="og:site_name" content="loveyu233">
+  <meta property="og:title" content="Prometheus">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="website">
+
+  <meta itemprop="name" content="Prometheus">
+  <meta itemprop="datePublished" content="2023-06-21T11:18:37+08:00">
+  <meta itemprop="dateModified" content="2023-06-21T11:18:37+08:00">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Prometheus">
+
+	
+  </head><body class="ma0 avenir bg-near-white development">
+
+    
+
+  <header>
+    <div class="pb3-m pb6-l bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l center items-center justify-between">
+    <a href="/" class="f3 fw2 hover-white white-90 dib no-underline">
+      
+        loveyu233
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      <div class="ananke-socials"></div>
+
+    </div>
+  </div>
+</nav>
+
+      <div class="tc-l pv3 ph3 ph4-ns">
+        <h1 class="f2 f-subheadline-l fw2 light-silver mb0 lh-title">
+          Prometheus
+        </h1>
+        
+      </div>
+    </div>
+  </header>
+
+
+    <main class="pb7" role="main">
+      
+  <article class="cf pa3 pa4-m pa4-l">
+    <div class="measure-wide-l center f4 lh-copy nested-copy-line-height nested-links mid-gray">
+      <p>Below you will find pages that utilize the taxonomy term “Prometheus”</p>
+    </div>
+  </article>
+  <div class="mw8 center">
+    <section class="flex-ns mt5 flex-wrap justify-around">
+      
+        <div class="w-100 mb4 relative bg-white">
+          <div class="w-100 mb4 nested-copy-line-height relative bg-white">
+  <div class="mb3 pa4 gray overflow-hidden bg-white">
+    <span class="f6 db">other</span>
+    <h1 class="f3 near-black">
+      <a href="/posts/other/%E9%93%BE%E8%B7%AF%E8%BF%BD%E8%B8%AA%E7%9B%91%E6%8E%A7/" class="link black dim">
+        链路追踪
+      </a>
+    </h1>
+    <div class="nested-links f5 lh-copy nested-copy-line-height">
+      <h1 id="安装prometheus">安装prometheus</h1>
+<blockquote>
+<p><code>brew install prometheus</code></p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>~ &gt; brew install prometheus
+</span></span><span style="display:flex;"><span><span style="color:#f92672">==</span>&gt; Downloading https://formulae.brew.sh/api/formula.jws.json
+</span></span><span style="display:flex;"><span><span style="color:#75715e">################################################################################### 100.0%</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">==</span>&gt; Downloading https://formulae.brew.sh/api/cask.jws.json
+</span></span><span style="display:flex;"><span><span style="color:#75715e">################################################################################### 100.0%</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">==</span>&gt; Fetching prometheus
+</span></span><span style="display:flex;"><span><span style="color:#f92672">==</span>&gt; Downloading https://mirrors.aliyun.com/homebrew/homebrew-bottles/prometheus-2.44.0.arm
+</span></span><span style="display:flex;"><span><span style="color:#75715e">################################################################################### 100.0%</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">==</span>&gt; Pouring prometheus-2.44.0.arm64_ventura.bottle.tar.gz
+</span></span><span style="display:flex;"><span><span style="color:#f92672">==</span>&gt; Caveats
+</span></span><span style="display:flex;"><span>When run from <span style="color:#e6db74">`</span>brew services<span style="color:#e6db74">`</span>, <span style="color:#e6db74">`</span>prometheus<span style="color:#e6db74">`</span> is run from
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">`</span>prometheus_brew_services<span style="color:#e6db74">`</span> and uses the flags in:
+</span></span><span style="display:flex;"><span>   /opt/homebrew/etc/prometheus.args
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>To start prometheus now and restart at login:
+</span></span><span style="display:flex;"><span>  brew services start prometheus
+</span></span><span style="display:flex;"><span>Or, <span style="color:#66d9ef">if</span> you don<span style="color:#960050;background-color:#1e0010">&#39;</span>t want/need a background service you can just run:
+</span></span><span style="display:flex;"><span>  /opt/homebrew/opt/prometheus/bin/prometheus_brew_services
+</span></span><span style="display:flex;"><span><span style="color:#f92672">==</span>&gt; Summary
+</span></span><span style="display:flex;"><span>🍺  /opt/homebrew/Cellar/prometheus/2.44.0: <span style="color:#ae81ff">22</span> files, 220MB
+</span></span><span style="display:flex;"><span><span style="color:#f92672">==</span>&gt; Running <span style="color:#e6db74">`</span>brew cleanup prometheus<span style="color:#e6db74">`</span>...
+</span></span><span style="display:flex;"><span>Disable this behaviour by setting HOMEBREW_NO_INSTALL_CLEANUP.
+</span></span><span style="display:flex;"><span>Hide these hints with HOMEBREW_NO_ENV_HINTS <span style="color:#f92672">(</span>see <span style="color:#e6db74">`</span>man brew<span style="color:#e6db74">`</span><span style="color:#f92672">)</span>.
+</span></span></code></pre></div><h1 id="安装grafana">安装grafana</h1>
+<blockquote>
+<p><code>brew install grafana</code></p>
+    </div>
+    <a href="/posts/other/%E9%93%BE%E8%B7%AF%E8%BF%BD%E8%B8%AA%E7%9B%91%E6%8E%A7/" class="ba b--moon-gray bg-light-gray br2 color-inherit dib f7 hover-bg-moon-gray link mt2 ph2 pv1">read more</a>
+  </div>
+</div>
+
+        </div>
+      
+        <div class="w-100 mb4 relative bg-white">
+          <div class="w-100 mb4 nested-copy-line-height relative bg-white">
+  <div class="mb3 pa4 gray overflow-hidden bg-white">
+    <span class="f6 db">go</span>
+    <h1 class="f3 near-black">
+      <a href="/posts/go/prometheus_grafana/" class="link black dim">
+        Prometheus_grafana
+      </a>
+    </h1>
+    <div class="nested-links f5 lh-copy nested-copy-line-height">
+      <h1 id="安装prometheus">安装prometheus</h1>
+<blockquote>
+<p><code>brew install prometheus</code></p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>~ &gt; brew install prometheus
+</span></span><span style="display:flex;"><span><span style="color:#f92672">==</span>&gt; Downloading https://formulae.brew.sh/api/formula.jws.json
+</span></span><span style="display:flex;"><span><span style="color:#75715e">################################################################################### 100.0%</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">==</span>&gt; Downloading https://formulae.brew.sh/api/cask.jws.json
+</span></span><span style="display:flex;"><span><span style="color:#75715e">################################################################################### 100.0%</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">==</span>&gt; Fetching prometheus
+</span></span><span style="display:flex;"><span><span style="color:#f92672">==</span>&gt; Downloading https://mirrors.aliyun.com/homebrew/homebrew-bottles/prometheus-2.44.0.arm
+</span></span><span style="display:flex;"><span><span style="color:#75715e">################################################################################### 100.0%</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">==</span>&gt; Pouring prometheus-2.44.0.arm64_ventura.bottle.tar.gz
+</span></span><span style="display:flex;"><span><span style="color:#f92672">==</span>&gt; Caveats
+</span></span><span style="display:flex;"><span>When run from <span style="color:#e6db74">`</span>brew services<span style="color:#e6db74">`</span>, <span style="color:#e6db74">`</span>prometheus<span style="color:#e6db74">`</span> is run from
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">`</span>prometheus_brew_services<span style="color:#e6db74">`</span> and uses the flags in:
+</span></span><span style="display:flex;"><span>   /opt/homebrew/etc/prometheus.args
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>To start prometheus now and restart at login:
+</span></span><span style="display:flex;"><span>  brew services start prometheus
+</span></span><span style="display:flex;"><span>Or, <span style="color:#66d9ef">if</span> you don<span style="color:#960050;background-color:#1e0010">&#39;</span>t want/need a background service you can just run:
+</span></span><span style="display:flex;"><span>  /opt/homebrew/opt/prometheus/bin/prometheus_brew_services
+</span></span><span style="display:flex;"><span><span style="color:#f92672">==</span>&gt; Summary
+</span></span><span style="display:flex;"><span>🍺  /opt/homebrew/Cellar/prometheus/2.44.0: <span style="color:#ae81ff">22</span> files, 220MB
+</span></span><span style="display:flex;"><span><span style="color:#f92672">==</span>&gt; Running <span style="color:#e6db74">`</span>brew cleanup prometheus<span style="color:#e6db74">`</span>...
+</span></span><span style="display:flex;"><span>Disable this behaviour by setting HOMEBREW_NO_INSTALL_CLEANUP.
+</span></span><span style="display:flex;"><span>Hide these hints with HOMEBREW_NO_ENV_HINTS <span style="color:#f92672">(</span>see <span style="color:#e6db74">`</span>man brew<span style="color:#e6db74">`</span><span style="color:#f92672">)</span>.
+</span></span></code></pre></div><h1 id="安装grafana">安装grafana</h1>
+<blockquote>
+<p><code>brew install grafana</code></p>
+    </div>
+    <a href="/posts/go/prometheus_grafana/" class="ba b--moon-gray bg-light-gray br2 color-inherit dib f7 hover-bg-moon-gray link mt2 ph2 pv1">read more</a>
+  </div>
+</div>
+
+        </div>
+      
+    </section>
+  </div>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white white-70 dn dib-ns pv2 ph3 no-underline" href="http://localhost:1313/" >
+    &copy;  loveyu233 2025 
+  </a>
+    <div><div class="ananke-socials"></div>
+</div>
+  </div>
+</footer>
+
+  </body>
+</html>

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>loveyu233</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="">
+    <meta name="generator" content="Hugo 0.147.7">
+    
+    
+    
+      <meta name="robots" content="noindex, nofollow">
+    
+    
+
+    
+<link rel="stylesheet" href="/ananke/css/main.min.css" >
+
+
+
+
+    
+
+
+    
+      
+
+    
+
+    
+    
+      <link href="/tags/%E6%BA%90%E7%A0%81/index.xml" rel="alternate" type="application/rss+xml" title="loveyu233" />
+      <link href="/tags/%E6%BA%90%E7%A0%81/index.xml" rel="feed" type="application/rss+xml" title="loveyu233" />
+      
+    
+
+    
+      <link rel="canonical" href="http://localhost:1313/tags/%E6%BA%90%E7%A0%81/">
+    
+
+    <meta property="og:url" content="http://localhost:1313/tags/%E6%BA%90%E7%A0%81/">
+  <meta property="og:site_name" content="loveyu233">
+  <meta property="og:title" content="源码">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="website">
+
+  <meta itemprop="name" content="源码">
+  <meta itemprop="datePublished" content="2023-10-28T16:06:27+08:00">
+  <meta itemprop="dateModified" content="2023-10-28T16:06:27+08:00">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="源码">
+
+	
+  </head><body class="ma0 avenir bg-near-white development">
+
+    
+
+  <header>
+    <div class="pb3-m pb6-l bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l center items-center justify-between">
+    <a href="/" class="f3 fw2 hover-white white-90 dib no-underline">
+      
+        loveyu233
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      <div class="ananke-socials"></div>
+
+    </div>
+  </div>
+</nav>
+
+      <div class="tc-l pv3 ph3 ph4-ns">
+        <h1 class="f2 f-subheadline-l fw2 light-silver mb0 lh-title">
+          源码
+        </h1>
+        
+      </div>
+    </div>
+  </header>
+
+
+    <main class="pb7" role="main">
+      
+  <article class="cf pa3 pa4-m pa4-l">
+    <div class="measure-wide-l center f4 lh-copy nested-copy-line-height nested-links mid-gray">
+      <p>Below you will find pages that utilize the taxonomy term “源码”</p>
+    </div>
+  </article>
+  <div class="mw8 center">
+    <section class="flex-ns mt5 flex-wrap justify-around">
+      
+        <div class="w-100 mb4 relative bg-white">
+          <div class="w-100 mb4 nested-copy-line-height relative bg-white">
+  <div class="mb3 pa4 gray overflow-hidden bg-white">
+    <span class="f6 db">go</span>
+    <h1 class="f3 near-black">
+      <a href="/posts/go/channel%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/" class="link black dim">
+        Channel实现原理
+      </a>
+    </h1>
+    <div class="nested-links f5 lh-copy nested-copy-line-height">
+      <h1 id="数据结构">数据结构</h1>
+<p><img src="https://www.loveyu.asia//img/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.png" alt="数据结构"></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">hchan</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">qcount</span>   <span style="color:#66d9ef">uint</span>           <span style="color:#75715e">// 当前 channel 中存在多少个元素</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">dataqsiz</span> <span style="color:#66d9ef">uint</span>           <span style="color:#75715e">// 当前 channel 能存放的元素容量</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">buf</span>      <span style="color:#a6e22e">unsafe</span>.<span style="color:#a6e22e">Pointer</span> <span style="color:#75715e">// channel 中用于存放元素的环形缓冲区</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">elemsize</span> <span style="color:#66d9ef">uint16</span>         <span style="color:#75715e">// chan元素类型大小</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">closed</span>   <span style="color:#66d9ef">uint32</span>         <span style="color:#75715e">// chan是否关闭</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">elemtype</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">_type</span>         <span style="color:#75715e">// chan元素的类型</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">sendx</span>    <span style="color:#66d9ef">uint</span>           <span style="color:#75715e">// 发送元素进入环形缓冲区的 index</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">recvx</span>    <span style="color:#66d9ef">uint</span>           <span style="color:#75715e">// 接收元素所处的环形缓冲区的 index</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">recvq</span>    <span style="color:#a6e22e">waitq</span>          <span style="color:#75715e">// 因接收而陷入阻塞的协程队列</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">sendq</span>    <span style="color:#a6e22e">waitq</span>          <span style="color:#75715e">// 因发送而陷入阻塞的协程队列</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">lock</span>     <span style="color:#a6e22e">mutex</span>          <span style="color:#75715e">// 锁</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">waitq</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">first</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">sudog</span> <span style="color:#75715e">// 队头</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">last</span>  <span style="color:#f92672">*</span><span style="color:#a6e22e">sudog</span> <span style="color:#75715e">// 队尾</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">sudog</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">g</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">g</span> <span style="color:#75715e">// goroutine</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">next</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">sudog</span> <span style="color:#75715e">// 下一个节点指针</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">prev</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">sudog</span> <span style="color:#75715e">// 上一个节点指针</span>
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">elem</span> <span style="color:#a6e22e">unsafe</span>.<span style="color:#a6e22e">Pointer</span> <span style="color:#75715e">// 读取/写入 channel 的数据的容器</span>
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">isSelect</span> <span style="color:#66d9ef">bool</span>  <span style="color:#75715e">// 标识当前协程是否处在 select 多路复用的流程中</span>
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">c</span>        <span style="color:#f92672">*</span><span style="color:#a6e22e">hchan</span> <span style="color:#75715e">// 标识与当前 sudog 交互的 chan</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="初始化">初始化</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">makechan</span>(<span style="color:#a6e22e">t</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">chantype</span>, <span style="color:#a6e22e">size</span> <span style="color:#66d9ef">int</span>) <span style="color:#f92672">*</span><span style="color:#a6e22e">hchan</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">elem</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">t</span>.<span style="color:#a6e22e">elem</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 判断元素大小是否超出限制</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">elem</span>.<span style="color:#a6e22e">size</span> <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">1</span><span style="color:#f92672">&lt;&lt;</span><span style="color:#ae81ff">16</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">throw</span>(<span style="color:#e6db74">&#34;makechan: invalid channel element type&#34;</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 判断对齐方式是否正确</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">hchanSize</span><span style="color:#f92672">%</span><span style="color:#a6e22e">maxAlign</span> <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">||</span> <span style="color:#a6e22e">elem</span>.<span style="color:#a6e22e">align</span> &gt; <span style="color:#a6e22e">maxAlign</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">throw</span>(<span style="color:#e6db74">&#34;makechan: bad alignment&#34;</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 计算需要分配的内存大小，并进行溢出和范围检查。如果溢出或者大小超过了允许的最大值抛出异常</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">mem</span>, <span style="color:#a6e22e">overflow</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">math</span>.<span style="color:#a6e22e">MulUintptr</span>(<span style="color:#a6e22e">elem</span>.<span style="color:#a6e22e">size</span>, uintptr(<span style="color:#a6e22e">size</span>))
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">overflow</span> <span style="color:#f92672">||</span> <span style="color:#a6e22e">mem</span> &gt; <span style="color:#a6e22e">maxAlloc</span><span style="color:#f92672">-</span><span style="color:#a6e22e">hchanSize</span> <span style="color:#f92672">||</span> <span style="color:#a6e22e">size</span> &lt; <span style="color:#ae81ff">0</span> {
+</span></span><span style="display:flex;"><span>		panic(<span style="color:#a6e22e">plainError</span>(<span style="color:#e6db74">&#34;makechan: size out of range&#34;</span>))
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">hchan</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">switch</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 无缓冲</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">case</span> <span style="color:#a6e22e">mem</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>:
+</span></span><span style="display:flex;"><span>  	<span style="color:#75715e">// 分配hchanSize大小的内存并转为*hchan类型</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 则仅申请一个大小为默认值 96 的空间</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">c</span> = (<span style="color:#f92672">*</span><span style="color:#a6e22e">hchan</span>)(<span style="color:#a6e22e">mallocgc</span>(<span style="color:#a6e22e">hchanSize</span>, <span style="color:#66d9ef">nil</span>, <span style="color:#66d9ef">true</span>))
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">buf</span> = <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">raceaddr</span>()
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 有缓冲的 struct 型</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">case</span> <span style="color:#a6e22e">elem</span>.<span style="color:#a6e22e">ptrdata</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//一次性分配好 96 + mem 大小的空间，并且调整 chan 的 buf 指向 mem 的起始位置</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">c</span> = (<span style="color:#f92672">*</span><span style="color:#a6e22e">hchan</span>)(<span style="color:#a6e22e">mallocgc</span>(<span style="color:#a6e22e">hchanSize</span><span style="color:#f92672">+</span><span style="color:#a6e22e">mem</span>, <span style="color:#66d9ef">nil</span>, <span style="color:#66d9ef">true</span>))
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">buf</span> = <span style="color:#a6e22e">add</span>(<span style="color:#a6e22e">unsafe</span>.<span style="color:#a6e22e">Pointer</span>(<span style="color:#a6e22e">c</span>), <span style="color:#a6e22e">hchanSize</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 指针类型元素</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">default</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 分别申请 chan 和 buf 的空间，因为是指针类型的所以两者无需连续</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">c</span> = new(<span style="color:#a6e22e">hchan</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">buf</span> = <span style="color:#a6e22e">mallocgc</span>(<span style="color:#a6e22e">mem</span>, <span style="color:#a6e22e">elem</span>, <span style="color:#66d9ef">true</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 初始化元素类型大小</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">elemsize</span> = uint16(<span style="color:#a6e22e">elem</span>.<span style="color:#a6e22e">size</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 元素类型</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">elemtype</span> = <span style="color:#a6e22e">elem</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 容量</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">dataqsiz</span> = uint(<span style="color:#a6e22e">size</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 锁</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">lockInit</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">lock</span>, <span style="color:#a6e22e">lockRankHchan</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">debugChan</span> {
+</span></span><span style="display:flex;"><span>		print(<span style="color:#e6db74">&#34;makechan: chan=&#34;</span>, <span style="color:#a6e22e">c</span>, <span style="color:#e6db74">&#34;; elemsize=&#34;</span>, <span style="color:#a6e22e">elem</span>.<span style="color:#a6e22e">size</span>, <span style="color:#e6db74">&#34;; dataqsiz=&#34;</span>, <span style="color:#a6e22e">size</span>, <span style="color:#e6db74">&#34;\n&#34;</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">c</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="发送">发送</h1>
+<p><img src="https://www.loveyu.asia//img/chansend.png" alt="chansend"></p>
+    </div>
+    <a href="/posts/go/channel%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/" class="ba b--moon-gray bg-light-gray br2 color-inherit dib f7 hover-bg-moon-gray link mt2 ph2 pv1">read more</a>
+  </div>
+</div>
+
+        </div>
+      
+    </section>
+  </div>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white white-70 dn dib-ns pv2 ph3 no-underline" href="http://localhost:1313/" >
+    &copy;  loveyu233 2025 
+  </a>
+    <div><div class="ananke-socials"></div>
+</div>
+  </div>
+</footer>
+
+  </body>
+</html>

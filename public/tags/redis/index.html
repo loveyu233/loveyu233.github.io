@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>loveyu233</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="">
+    <meta name="generator" content="Hugo 0.147.7">
+    
+    
+    
+      <meta name="robots" content="noindex, nofollow">
+    
+    
+
+    
+<link rel="stylesheet" href="/ananke/css/main.min.css" >
+
+
+
+
+    
+
+
+    
+      
+
+    
+
+    
+    
+      <link href="/tags/redis/index.xml" rel="alternate" type="application/rss+xml" title="loveyu233" />
+      <link href="/tags/redis/index.xml" rel="feed" type="application/rss+xml" title="loveyu233" />
+      
+    
+
+    
+      <link rel="canonical" href="http://localhost:1313/tags/redis/">
+    
+
+    <meta property="og:url" content="http://localhost:1313/tags/redis/">
+  <meta property="og:site_name" content="loveyu233">
+  <meta property="og:title" content="Redis">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="website">
+
+  <meta itemprop="name" content="Redis">
+  <meta itemprop="datePublished" content="2023-02-17T22:50:21+08:00">
+  <meta itemprop="dateModified" content="2023-02-17T22:50:21+08:00">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Redis">
+
+	
+  </head><body class="ma0 avenir bg-near-white development">
+
+    
+
+  <header>
+    <div class="pb3-m pb6-l bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l center items-center justify-between">
+    <a href="/" class="f3 fw2 hover-white white-90 dib no-underline">
+      
+        loveyu233
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      <div class="ananke-socials"></div>
+
+    </div>
+  </div>
+</nav>
+
+      <div class="tc-l pv3 ph3 ph4-ns">
+        <h1 class="f2 f-subheadline-l fw2 light-silver mb0 lh-title">
+          Redis
+        </h1>
+        
+      </div>
+    </div>
+  </header>
+
+
+    <main class="pb7" role="main">
+      
+  <article class="cf pa3 pa4-m pa4-l">
+    <div class="measure-wide-l center f4 lh-copy nested-copy-line-height nested-links mid-gray">
+      <p>Below you will find pages that utilize the taxonomy term “Redis”</p>
+    </div>
+  </article>
+  <div class="mw8 center">
+    <section class="flex-ns mt5 flex-wrap justify-around">
+      
+        <div class="w-100 mb4 relative bg-white">
+          <div class="w-100 mb4 nested-copy-line-height relative bg-white">
+  <div class="mb3 pa4 gray overflow-hidden bg-white">
+    <span class="f6 db">go</span>
+    <h1 class="f3 near-black">
+      <a href="/posts/go/interview/" class="link black dim">
+        面试指南
+      </a>
+    </h1>
+    <div class="nested-links f5 lh-copy nested-copy-line-height">
+      <h1 id="go">go</h1>
+<h2 id="slice">slice</h2>
+<h3 id="slice如何扩容">slice如何扩容？</h3>
+<blockquote>
+<p>切片数量小于1024个元素那么扩容的时候slice的cap就翻倍,一旦超过1024个元素增长因子就变成零1.25也就是每次增长原来容量的四分之一.</p>
+<p>如果扩容之后还没有触及原来数组的容量,那么切片中的指针指向的位置就还是原数组位置,如果扩容之后超过了原数组的容量,那么go会开辟一块新的内存,把原来的值拷贝过来这种情况丝毫不会影响原数组</p></blockquote>
+<h2 id="map">map</h2>
+<h3 id="map-的key为什么是无序的">map 的key为什么是无序的？</h3>
+<blockquote>
+<p>map 在扩容后，会发生 key 的搬迁，原来落在同一个 bucket中的 key，搬迁后，有些 key 就要远走高飞了（bucket 序号加上了 2^B）。而遍历的过程，就是按顺序遍历 bucket，同时按顺序遍历 bucket 中的 key。搬迁后，key 的位置发生了重大的变化，有些 key 飞上高枝，有些 key 则原地不动。这样，遍历 map 的结果就不可能按原来的顺序了。</p></blockquote>
+<h3 id="不对现有的map做增删改操作为什么遍历时key还是无序的">不对现有的map做增删改操作为什么遍历时key还是无序的？</h3>
+<blockquote>
+<p>当我们在遍历 map 时，并不是固定地从 0 号 bucket 开始遍历，每次都是从一个随机值序号的 bucket 开始遍历，并且是从这个 bucket 的一个随机序号的 cell 开始遍历。这样，即使你是一个写死的 map，仅仅只是遍历它，也不太可能会返回一个固定序列的 key/value 对了。</p></blockquote>
+<h3 id="在map遍历的时候对这个map做添加操作每次添加相同数量的key后为什么最后的map-size都不一样">在map遍历的时候对这个map做添加操作每次添加相同数量的key后为什么最后的map size都不一样？</h3>
+<blockquote>
+<p>因为range取map的顺序随机，range会再次遍历刚刚新加入map的键值对。</p></blockquote>
+<h3 id="map的value存储为结构体该怎么修改值">map的value存储为结构体该怎么修改值</h3>
+<blockquote>
+<p>直接取出value修改是无效的，修改方式有二：一拿出value修改value然后替换老的value. map[key] = newValue</p>
+<p>第二不要直接存储结构体而是存储结构体的指针，这样修改就可以获取指针然后进行修改.  (*map[key]).name = value</p></blockquote>
+<h2 id="chan">chan</h2>
+<h3 id="无缓冲chan的发送和接受是否同步">无缓冲Chan的发送和接受是否同步？</h3>
+<blockquote>
+<p>ch := make(chan int)    无缓冲的channel由于没有缓冲发送的和接受需要同步</p>
+    </div>
+    <a href="/posts/go/interview/" class="ba b--moon-gray bg-light-gray br2 color-inherit dib f7 hover-bg-moon-gray link mt2 ph2 pv1">read more</a>
+  </div>
+</div>
+
+        </div>
+      
+        <div class="w-100 mb4 relative bg-white">
+          <div class="w-100 mb4 nested-copy-line-height relative bg-white">
+  <div class="mb3 pa4 gray overflow-hidden bg-white">
+    <span class="f6 db">go</span>
+    <h1 class="f3 near-black">
+      <a href="/posts/go/go-redis%E9%A1%B9%E7%9B%AE%E4%BD%BF%E7%94%A8/" class="link black dim">
+        Go Redis项目使用
+      </a>
+    </h1>
+    <div class="nested-links f5 lh-copy nested-copy-line-height">
+      <!-- raw HTML omitted -->
+<h1 id="一redis存储验证码">一：redis存储验证码</h1>
+<h2 id="相关代码">相关代码</h2>
+<p>只展示相关技术点的代码，看完可自己实现</p>
+<blockquote>
+<p>生成验证码</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">Code</span>() <span style="color:#66d9ef">string</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">rnd</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">rand</span>.<span style="color:#a6e22e">New</span>(<span style="color:#a6e22e">rand</span>.<span style="color:#a6e22e">NewSource</span>(<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Now</span>().<span style="color:#a6e22e">UnixNano</span>()))
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">vcode</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Sprintf</span>(<span style="color:#e6db74">&#34;%06v&#34;</span>, <span style="color:#a6e22e">rnd</span>.<span style="color:#a6e22e">Int31n</span>(<span style="color:#ae81ff">1000000</span>))
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">vcode</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><blockquote>
+<p>存储和读取redis</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#a6e22e">client</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">redis</span>.<span style="color:#a6e22e">NewClient</span>(<span style="color:#e6db74">&#34;url&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// key可以为用户手机号、value为Code()生成的验证码；成功保存的返回值为：result:ok err:nil</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">result</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">client</span>.<span style="color:#a6e22e">Set</span>(<span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">TODO</span>(), <span style="color:#e6db74">&#34;key&#34;</span>, <span style="color:#e6db74">&#34;value&#34;</span>, <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Second</span><span style="color:#f92672">*</span><span style="color:#ae81ff">60</span>).<span style="color:#a6e22e">Result</span>()
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// result为 key 对应的 value</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">result</span>, <span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">client</span>.<span style="color:#a6e22e">Get</span>(<span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">TODO</span>(), <span style="color:#e6db74">&#34;key&#34;</span>).<span style="color:#a6e22e">Result</span>()
+</span></span></code></pre></div><blockquote>
+<p>生成jwt/判断jwt</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">/*参数结构体为自定义结构体：
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">type JwtClaims struct {
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">	tb.TbUser
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">	jwt.StandardClaims
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">}
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">只要包含jwt.StandardClaims即可，其中jwt.StandardClaims的ExpiresAt为设置过期时间
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">*/</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">CreateToken</span>(<span style="color:#a6e22e">jwtClaims</span> <span style="color:#a6e22e">sys</span>.<span style="color:#a6e22e">JwtClaims</span>) (<span style="color:#66d9ef">string</span>, <span style="color:#66d9ef">error</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">claims</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">jwt</span>.<span style="color:#a6e22e">NewWithClaims</span>(<span style="color:#a6e22e">jwt</span>.<span style="color:#a6e22e">SigningMethodHS256</span>, <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">jwtClaims</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">token</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">claims</span>.<span style="color:#a6e22e">SignedString</span>(<span style="color:#e6db74">&#34;miyao suibian&#34;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">token</span>, <span style="color:#a6e22e">err</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">ParseToken</span>(<span style="color:#a6e22e">token</span> <span style="color:#66d9ef">string</span>) (<span style="color:#f92672">*</span><span style="color:#a6e22e">sys</span>.<span style="color:#a6e22e">JwtClaims</span>, <span style="color:#66d9ef">error</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">claims</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">jwt</span>.<span style="color:#a6e22e">ParseWithClaims</span>(<span style="color:#a6e22e">token</span>, <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">sys</span>.<span style="color:#a6e22e">JwtClaims</span>{}, <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">token</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">jwt</span>.<span style="color:#a6e22e">Token</span>) (<span style="color:#66d9ef">interface</span>{}, <span style="color:#66d9ef">error</span>) {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;miyao suibian&#34;</span>, <span style="color:#66d9ef">nil</span>
+</span></span><span style="display:flex;"><span>	})
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>, <span style="color:#a6e22e">err</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 返回值强转为自定义结构体的类型，方便取值</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">claims</span>.<span style="color:#a6e22e">Claims</span>.(<span style="color:#f92672">*</span><span style="color:#a6e22e">sys</span>.<span style="color:#a6e22e">JwtClaims</span>), <span style="color:#66d9ef">nil</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="二redis分布式锁">二：redis分布式锁</h1>
+<h2 id="原因">原因</h2>
+<blockquote>
+<p>用redis分布式锁的原因：如果用语言自带的锁只能在当前的进程中锁，如果后续服务不再是单体服务而是横向扩展为多个服务同时运行在多个进程中的时候是无法共享锁的，所以需要用到分布式锁，用来在多个进程中共享锁</p>
+    </div>
+    <a href="/posts/go/go-redis%E9%A1%B9%E7%9B%AE%E4%BD%BF%E7%94%A8/" class="ba b--moon-gray bg-light-gray br2 color-inherit dib f7 hover-bg-moon-gray link mt2 ph2 pv1">read more</a>
+  </div>
+</div>
+
+        </div>
+      
+        <div class="w-100 mb4 relative bg-white">
+          <div class="w-100 mb4 nested-copy-line-height relative bg-white">
+  <div class="mb3 pa4 gray overflow-hidden bg-white">
+    <span class="f6 db">databases</span>
+    <h1 class="f3 near-black">
+      <a href="/posts/databases/redis%E9%9B%AA%E5%B4%A9%E5%87%BB%E7%A9%BF%E5%92%8C%E7%A9%BF%E9%80%8F/" class="link black dim">
+        Redis雪崩击穿和穿透
+      </a>
+    </h1>
+    <div class="nested-links f5 lh-copy nested-copy-line-height">
+      <h1 id="1-缓存击穿">1. 缓存击穿</h1>
+<h2 id="什么是缓存击穿">什么是缓存击穿</h2>
+<blockquote>
+<p>缓存击穿也叫热点key问题，就是一个被<code>高并发访问</code>并且<code>缓存重建业务比较复杂</code>的key突然失效，无数的请求访问会在瞬间给数据库带来巨大的冲击。</p></blockquote>
+<!-- raw HTML omitted -->
+<h2 id="常见解决办法">常见解决办法</h2>
+<h3 id="1-互斥锁">1. 互斥锁</h3>
+<!-- raw HTML omitted -->
+<h3 id="2-逻辑过期">2. 逻辑过期</h3>
+<!-- raw HTML omitted -->
+<h2 id="解决方案对比">解决方案对比</h2>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: center">解决办法</th>
+          <th style="text-align: center">优点</th>
+          <th style="text-align: center">缺点</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: center">互斥锁</td>
+          <td style="text-align: center">1.没有额外内存消耗；2.保证一致性；3.实现简单</td>
+          <td style="text-align: center">1.线程需要等待，性能受影响；2.可能有死锁风险</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">逻辑过期</td>
+          <td style="text-align: center">线程无需等待，性能较好</td>
+          <td style="text-align: center">1.不保证一致性；2.有额外内存消耗；3.实现复杂</td>
+      </tr>
+  </tbody>
+</table>
+<h1 id="2缓存雪崩">2.缓存雪崩</h1>
+<h2 id="什么是缓存雪崩">什么是缓存雪崩</h2>
+<blockquote>
+<p>缓存雪崩是指在同一时段<code>大量的缓存key同时失效或者redis服务宕机</code>，导致大量请求直达数据库，带来巨大压力。</p></blockquote>
+<!-- raw HTML omitted -->
+<h2 id="常见解决办法-1">常见解决办法</h2>
+<ol>
+<li>给不同的key的TTL添加随机值，防止同一时间失效</li>
+<li>利用redis集群提高服务的可用性</li>
+<li>给缓存业务添加降级限流策略</li>
+<li>给业务添加多级缓存</li>
+</ol>
+<h1 id="缓存穿透">缓存穿透</h1>
+<h2 id="什么是缓存穿透">什么是缓存穿透</h2>
+<blockquote>
+<p>缓存穿透是指客户端请求的数据在缓存中和数据库中都不存在，这样缓存永远不会生效，这些请求都会打到数据库。</p></blockquote>
+<!-- raw HTML omitted -->
+<h2 id="常见解决办法-2">常见解决办法</h2>
+<h3 id="1-缓存空对象">1. 缓存空对象</h3>
+<!-- raw HTML omitted -->
+<h3 id="2-布隆过滤器">2. 布隆过滤器</h3>
+<!-- raw HTML omitted -->
+<h2 id="解决方案对比-1">解决方案对比</h2>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: center">解决方案</th>
+          <th style="text-align: center">优点</th>
+          <th style="text-align: center">缺点</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: center">缓存空对象</td>
+          <td style="text-align: center">实现简单，维护方便</td>
+          <td style="text-align: center">额外内存消耗，可能造成短期数据不一致</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">布隆过滤器</td>
+          <td style="text-align: center">内存占用少，没有多余key</td>
+          <td style="text-align: center">实现复杂，存在误判</td>
+      </tr>
+  </tbody>
+</table>
+    </div>
+    <a href="/posts/databases/redis%E9%9B%AA%E5%B4%A9%E5%87%BB%E7%A9%BF%E5%92%8C%E7%A9%BF%E9%80%8F/" class="ba b--moon-gray bg-light-gray br2 color-inherit dib f7 hover-bg-moon-gray link mt2 ph2 pv1">read more</a>
+  </div>
+</div>
+
+        </div>
+      
+        <div class="w-100 mb4 relative bg-white">
+          <div class="w-100 mb4 nested-copy-line-height relative bg-white">
+  <div class="mb3 pa4 gray overflow-hidden bg-white">
+    <span class="f6 db">go</span>
+    <h1 class="f3 near-black">
+      <a href="/posts/go/go-redis%E4%BD%BF%E7%94%A8lua%E8%84%9A%E6%9C%AC/" class="link black dim">
+        Go Redis使用lua脚本
+      </a>
+    </h1>
+    <div class="nested-links f5 lh-copy nested-copy-line-height">
+      <h1 id="lua脚本">lua脚本</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span><span style="color:#66d9ef">return</span> redis.call(<span style="color:#e6db74">&#34;set&#34;</span>, KEYS[<span style="color:#ae81ff">1</span>], ARGV[<span style="color:#ae81ff">1</span>])
+</span></span></code></pre></div><h1 id="go-redis使用">go-redis使用</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> (
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;context&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;github.com/go-redis/redis/v8&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;io/ioutil&#34;</span>
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">client</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">redis</span>.<span style="color:#a6e22e">NewClient</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">redis</span>.<span style="color:#a6e22e">Options</span>{
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">Addr</span>: <span style="color:#e6db74">&#34;127.0.0.1:6379&#34;</span>,
+</span></span><span style="display:flex;"><span>	})
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">file</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">ioutil</span>.<span style="color:#a6e22e">ReadFile</span>(<span style="color:#e6db74">&#34;lua.lua&#34;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">script</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">redis</span>.<span style="color:#a6e22e">NewScript</span>(string(<span style="color:#a6e22e">file</span>))
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 这里你的脚本上有几个key你就在数组里面写几个对应key</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 最后一个参数是对应你脚本里面的argv，你脚本里面有几个你就写几个</span>
+</span></span><span style="display:flex;"><span>	println(<span style="color:#a6e22e">script</span>.<span style="color:#a6e22e">Run</span>(<span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">Background</span>(), <span style="color:#a6e22e">client</span>, []<span style="color:#66d9ef">string</span>{<span style="color:#e6db74">&#34;name&#34;</span>}, <span style="color:#e6db74">&#34;asd&#34;</span>).<span style="color:#a6e22e">String</span>())
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div>
+    </div>
+    <a href="/posts/go/go-redis%E4%BD%BF%E7%94%A8lua%E8%84%9A%E6%9C%AC/" class="ba b--moon-gray bg-light-gray br2 color-inherit dib f7 hover-bg-moon-gray link mt2 ph2 pv1">read more</a>
+  </div>
+</div>
+
+        </div>
+      
+        <div class="w-100 mb4 relative bg-white">
+          <div class="w-100 mb4 nested-copy-line-height relative bg-white">
+  <div class="mb3 pa4 gray overflow-hidden bg-white">
+    <span class="f6 db">databases</span>
+    <h1 class="f3 near-black">
+      <a href="/posts/databases/redis/" class="link black dim">
+        redis
+      </a>
+    </h1>
+    <div class="nested-links f5 lh-copy nested-copy-line-height">
+      <h1 id="redis数据类型">Redis数据类型</h1>
+<h2 id="1-string字符串">1. string字符串</h2>
+<h3 id="分布式锁">分布式锁</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>setnx key value
+</span></span><span style="display:flex;"><span>del key
+</span></span></code></pre></div><h3 id="自增自减">自增自减</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>incrby key value
+</span></span><span style="display:flex;"><span>decrby key value
+</span></span></code></pre></div><h2 id="2-list双端队列">2. list双端队列</h2>
+<h3 id="消息订阅">消息订阅</h3>
+<blockquote>
+<p>lpush key value</p>
+<p>rpop key value</p></blockquote>
+<h2 id="3-hash">3. hash</h2>
+<h3 id="购物车">购物车</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>// 新增商品
+</span></span><span style="display:flex;"><span>hset shopcar:uid shopid number
+</span></span><span style="display:flex;"><span>// 商品个数添加
+</span></span><span style="display:flex;"><span>hincrby shopcar:uid shopid <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>// 查看用户全部购物车商品总数
+</span></span><span style="display:flex;"><span>hlen shopcar:uid
+</span></span><span style="display:flex;"><span>// 全部选择
+</span></span><span style="display:flex;"><span>hgetall shopcar:uid
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>127.0.0.1:6379&gt; hset shopcar:01 <span style="color:#ae81ff">001</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; hset shopcar:01 <span style="color:#ae81ff">002</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; hlen shopcar:01
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; hgetall shopcar:01
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;001&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;1&#34;</span>
+</span></span><span style="display:flex;"><span>3<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;002&#34;</span>
+</span></span><span style="display:flex;"><span>4<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;1&#34;</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; hincrby shopcar:01 <span style="color:#ae81ff">001</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; hincrby shopcar:01 <span style="color:#ae81ff">001</span> -1
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; hgetall shopcar:01
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;001&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;1&#34;</span>
+</span></span><span style="display:flex;"><span>3<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;002&#34;</span>
+</span></span><span style="display:flex;"><span>4<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;1&#34;</span>
+</span></span></code></pre></div><h2 id="4-set无序无重复集合">4. set无序无重复集合</h2>
+<h3 id="抽奖">抽奖</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>// 参与抽奖
+</span></span><span style="display:flex;"><span>sadd key userid
+</span></span><span style="display:flex;"><span>// 获取参与人数
+</span></span><span style="display:flex;"><span>scard key
+</span></span><span style="display:flex;"><span>// 开始抽奖,number为此次中奖人数
+</span></span><span style="display:flex;"><span>srandmember key number // 抽完奖后还可以继续参与抽奖
+</span></span><span style="display:flex;"><span>spop key number				// 抽完奖就弹出不可以参加下一轮抽奖
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>127.0.0.1:6379&gt; sadd s <span style="color:#ae81ff">001</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; sadd s <span style="color:#ae81ff">002</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; sadd s <span style="color:#ae81ff">003</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; sadd s <span style="color:#ae81ff">004</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; scard s
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">4</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; srandmember s <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;003&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;001&#34;</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; scard s
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">4</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; spop s <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;003&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;004&#34;</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; scard s
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">2</span>
+</span></span></code></pre></div><h3 id="点赞">点赞</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>// 新增点赞
+</span></span><span style="display:flex;"><span>sadd msgid userid
+</span></span><span style="display:flex;"><span>// 取消点赞
+</span></span><span style="display:flex;"><span>srem msgid userid
+</span></span><span style="display:flex;"><span>// 获取所有点赞的用户id
+</span></span><span style="display:flex;"><span>smembers msgid
+</span></span><span style="display:flex;"><span>// 点赞统计
+</span></span><span style="display:flex;"><span>scard msgid
+</span></span><span style="display:flex;"><span>// 判断用户是否点过赞
+</span></span><span style="display:flex;"><span>sismember msgid userid
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>127.0.0.1:6379&gt; sadd msg:1 <span style="color:#ae81ff">001</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; sadd msg:1 <span style="color:#ae81ff">002</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; sadd msg:1 <span style="color:#ae81ff">003</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; smembers msg:1
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;003&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;002&#34;</span>
+</span></span><span style="display:flex;"><span>3<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;001&#34;</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; smembers msg:1
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;003&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;002&#34;</span>
+</span></span><span style="display:flex;"><span>3<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;001&#34;</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; scard msg:1
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">3</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; srem msg:1 <span style="color:#ae81ff">002</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; sismember msg:1 <span style="color:#ae81ff">002</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; sismember msg:1 <span style="color:#ae81ff">001</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span></code></pre></div><h3 id="好友">好友</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>// 添加好友
+</span></span><span style="display:flex;"><span>sadd uid huid
+</span></span><span style="display:flex;"><span>// A和B共同好友,交集
+</span></span><span style="display:flex;"><span>sinter uidA uidB
+</span></span><span style="display:flex;"><span>// A没有B有的,差集
+</span></span><span style="display:flex;"><span>sdiff uidA uidB
+</span></span><span style="display:flex;"><span>// A和B都有的,并集
+</span></span><span style="display:flex;"><span>sunion uidA uidB
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>127.0.0.1:6379&gt; sadd uidA <span style="color:#ae81ff">001</span> <span style="color:#ae81ff">002</span> <span style="color:#ae81ff">003</span> <span style="color:#ae81ff">004</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">4</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; sadd uidB <span style="color:#ae81ff">002</span> <span style="color:#ae81ff">003</span> <span style="color:#ae81ff">004</span> <span style="color:#ae81ff">005</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">4</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; sinter uidA uidB
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;003&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;002&#34;</span>
+</span></span><span style="display:flex;"><span>3<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;004&#34;</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; sdiff uidA uidB
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;001&#34;</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; sdiff uidB uidA
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;005&#34;</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; sunion uidA uidB
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;001&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;005&#34;</span>
+</span></span><span style="display:flex;"><span>3<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;002&#34;</span>
+</span></span><span style="display:flex;"><span>4<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;004&#34;</span>
+</span></span><span style="display:flex;"><span>5<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;003&#34;</span>
+</span></span></code></pre></div><h2 id="5-zset有序无重复集合">5. zset有序无重复集合</h2>
+<h3 id="排行榜相关">排行榜相关</h3>
+<blockquote>
+<p>例如: 点赞排行榜,商品热销排行榜,主播打赏排行榜,视频播放量排行榜</p>
+    </div>
+    <a href="/posts/databases/redis/" class="ba b--moon-gray bg-light-gray br2 color-inherit dib f7 hover-bg-moon-gray link mt2 ph2 pv1">read more</a>
+  </div>
+</div>
+
+        </div>
+      
+    </section>
+  </div>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white white-70 dn dib-ns pv2 ph3 no-underline" href="http://localhost:1313/" >
+    &copy;  loveyu233 2025 
+  </a>
+    <div><div class="ananke-socials"></div>
+</div>
+  </div>
+</footer>
+
+  </body>
+</html>

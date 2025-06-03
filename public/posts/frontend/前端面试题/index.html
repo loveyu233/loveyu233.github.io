@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>前端面试题 | loveyu233</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="HTML 的字符实体是什么
+js底层数据结构如何存储在V8里面
+H5新特性
+如果提到localstorage 就追问 localstorage API 以及 localStorage 实现原理 以及 localStorage 存在哪儿 以及localStorage 跨域
+如果提到PWA技术 就追问 PWA优点 继续追问 Service Workers 继续追问 PWA和hybrid的不同
+如果提到canvas 就追问 canvas 常用API
+如果提到webSocket 就追问 webSocket 的用法 以及手动实现ws协议 继续追问SSE技术 和 ws的区别
+如果提到webWorker 就追问 webWorker 用法 以及实现原理
+如何区分强网弱网
+什么是灰度
+async defer
+SEO
+BFC
+回流与重绘 以及优化方案
+webComponents 以及 微前端 以及 emp 模块联邦
+Css盒模型 和 怪异盒模型区别 以及统一策略
+css 伪类
+为什么哔哩哔哩用vmin 不用 vh
+css变量
+css flex grid
+Css 动画 关键帧等">
+    <meta name="generator" content="Hugo 0.147.7">
+    
+    
+    
+      <meta name="robots" content="noindex, nofollow">
+    
+    <meta name="author" content="loveyu">
+    
+
+    
+<link rel="stylesheet" href="/ananke/css/main.min.css" >
+
+
+
+
+    
+
+
+    
+      
+
+    
+
+    
+
+    
+      <link rel="canonical" href="http://localhost:1313/posts/frontend/%E5%89%8D%E7%AB%AF%E9%9D%A2%E8%AF%95%E9%A2%98/">
+    
+
+    <meta property="og:url" content="http://localhost:1313/posts/frontend/%E5%89%8D%E7%AB%AF%E9%9D%A2%E8%AF%95%E9%A2%98/">
+  <meta property="og:site_name" content="loveyu233">
+  <meta property="og:title" content="前端面试题">
+  <meta property="og:description" content="HTML 的字符实体是什么
+js底层数据结构如何存储在V8里面
+H5新特性
+如果提到localstorage 就追问 localstorage API 以及 localStorage 实现原理 以及 localStorage 存在哪儿 以及localStorage 跨域
+如果提到PWA技术 就追问 PWA优点 继续追问 Service Workers 继续追问 PWA和hybrid的不同
+如果提到canvas 就追问 canvas 常用API
+如果提到webSocket 就追问 webSocket 的用法 以及手动实现ws协议 继续追问SSE技术 和 ws的区别
+如果提到webWorker 就追问 webWorker 用法 以及实现原理
+如何区分强网弱网
+什么是灰度
+async defer
+SEO
+BFC
+回流与重绘 以及优化方案
+webComponents 以及 微前端 以及 emp 模块联邦
+Css盒模型 和 怪异盒模型区别 以及统一策略
+css 伪类
+为什么哔哩哔哩用vmin 不用 vh
+css变量
+css flex grid
+Css 动画 关键帧等">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2023-06-05T18:14:04+08:00">
+    <meta property="article:modified_time" content="2023-06-05T18:14:04+08:00">
+    <meta property="article:tag" content="前端">
+    <meta property="article:tag" content="面试题">
+
+  <meta itemprop="name" content="前端面试题">
+  <meta itemprop="description" content="HTML 的字符实体是什么
+js底层数据结构如何存储在V8里面
+H5新特性
+如果提到localstorage 就追问 localstorage API 以及 localStorage 实现原理 以及 localStorage 存在哪儿 以及localStorage 跨域
+如果提到PWA技术 就追问 PWA优点 继续追问 Service Workers 继续追问 PWA和hybrid的不同
+如果提到canvas 就追问 canvas 常用API
+如果提到webSocket 就追问 webSocket 的用法 以及手动实现ws协议 继续追问SSE技术 和 ws的区别
+如果提到webWorker 就追问 webWorker 用法 以及实现原理
+如何区分强网弱网
+什么是灰度
+async defer
+SEO
+BFC
+回流与重绘 以及优化方案
+webComponents 以及 微前端 以及 emp 模块联邦
+Css盒模型 和 怪异盒模型区别 以及统一策略
+css 伪类
+为什么哔哩哔哩用vmin 不用 vh
+css变量
+css flex grid
+Css 动画 关键帧等">
+  <meta itemprop="datePublished" content="2023-06-05T18:14:04+08:00">
+  <meta itemprop="dateModified" content="2023-06-05T18:14:04+08:00">
+  <meta itemprop="wordCount" content="364">
+  <meta itemprop="keywords" content="前端,面试题">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="前端面试题">
+  <meta name="twitter:description" content="HTML 的字符实体是什么
+js底层数据结构如何存储在V8里面
+H5新特性
+如果提到localstorage 就追问 localstorage API 以及 localStorage 实现原理 以及 localStorage 存在哪儿 以及localStorage 跨域
+如果提到PWA技术 就追问 PWA优点 继续追问 Service Workers 继续追问 PWA和hybrid的不同
+如果提到canvas 就追问 canvas 常用API
+如果提到webSocket 就追问 webSocket 的用法 以及手动实现ws协议 继续追问SSE技术 和 ws的区别
+如果提到webWorker 就追问 webWorker 用法 以及实现原理
+如何区分强网弱网
+什么是灰度
+async defer
+SEO
+BFC
+回流与重绘 以及优化方案
+webComponents 以及 微前端 以及 emp 模块联邦
+Css盒模型 和 怪异盒模型区别 以及统一策略
+css 伪类
+为什么哔哩哔哩用vmin 不用 vh
+css变量
+css flex grid
+Css 动画 关键帧等">
+
+	
+  </head><body class="ma0 avenir bg-near-white development">
+
+    
+   
+  
+
+  <header>
+    <div class="bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l center items-center justify-between">
+    <a href="/" class="f3 fw2 hover-white white-90 dib no-underline">
+      
+        loveyu233
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      <div class="ananke-socials"></div>
+
+    </div>
+  </div>
+</nav>
+
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  
+  <article class="flex-l mw8 center ph3 flex-wrap justify-between">
+    <header class="mt4 w-100">
+      <aside class="instapaper_ignoref b helvetica tracked ttu">
+          
+        frontEnd
+      </aside><div id="sharing" class="mt3 ananke-socials"></div>
+<h1 class="f1 athelas mt3 mb1">前端面试题</h1>
+      
+      <p class="tracked"><strong>loveyu</strong>
+      </p>
+      
+      
+      
+      <time class="f6 mv4 dib tracked" datetime="2023-06-05T18:14:04+08:00">June 5, 2023</time>
+      
+
+      
+      
+    </header>
+    <div class="nested-copy-line-height lh-copy serif f4 nested-links mid-gray pr4-l w-two-thirds-l"><p>HTML 的字符实体是什么</p>
+<p>js底层数据结构如何存储在V8里面</p>
+<p>H5新特性</p>
+<p>如果提到localstorage 就追问 localstorage API 以及 localStorage 实现原理 以及 localStorage 存在哪儿 以及localStorage 跨域</p>
+<p>如果提到PWA技术 就追问 PWA优点 继续追问 Service Workers 继续追问 PWA和hybrid的不同</p>
+<p>如果提到canvas 就追问 canvas 常用API</p>
+<p>如果提到webSocket 就追问 webSocket 的用法 以及手动实现ws协议 继续追问SSE技术 和 ws的区别</p>
+<p>如果提到webWorker 就追问 webWorker 用法 以及实现原理</p>
+<p>如何区分强网弱网</p>
+<p>什么是灰度</p>
+<p>async defer</p>
+<p>SEO</p>
+<p>BFC</p>
+<p>回流与重绘 以及优化方案</p>
+<p>webComponents 以及 微前端 以及 emp 模块联邦</p>
+<p>Css盒模型 和 怪异盒模型区别 以及统一策略</p>
+<p>css 伪类</p>
+<p>为什么哔哩哔哩用vmin 不用 vh</p>
+<p>css变量</p>
+<p>css flex grid</p>
+<p>Css 动画 关键帧等</p>
+<p>bem架构</p>
+<p>如果需要手动写动画，你认为最小时间间隔是多久，为什么？ 答：多数显示器默认频率是60Hz，即1秒刷新60次，所以理论上最小间隔为1/60*1000ms＝16.7ms</p>
+<p>less scss 解决了什么问题</p>
+<p>postCss 是干嘛的 是否用过 是否写过插件</p>
+<p>是否用过tailwindCss 是否用过unoCss</p>
+<p>typeOf null 是什么 原因是什么</p>
+<p>比较两个对象是否相等</p>
+<p>判断是不是数组</p>
+<p>说说常用的es6</p>
+<p>proxy Reflect 为什么要配合 proxy劫持 函数 劫持for in</p>
+<p>迭代器 生成器 for of 以及 Iterator 以及数组解构原理 和对象解构原理（深入V8引擎）</p>
+<p>Class 用法 super原理 继承 如何定义私有属性</p>
+<p>AMD CMD UMD CJS ESM IIFE 的区别</p>
+<p>Promise 静态方法 以及 all 实现原理 有限状态机</p>
+<p>map set weakMap weakSet</p>
+<p>微任务 宏任务 同步 异步 async await</p>
+<p>装饰器 以及 装饰器解决了什么问题</p>
+<p>ArrayBuffer 如何使用 以及跟webGl 的关系</p>
+<p>讲一下 GLSL Shader 实现亮度(Brightness)、对比度(Contrast) 和边缘检测(Edge Detection) 是如何实现的回答的时候忘记了对比度的算法实现没答上来，讲了下明度 Luminance 的调节；亮度Brightness是RGB+亮度系数；边缘检测和图像锐化是使用 Convolution Kernel 卷积核加深中心像素与周围像素的色彩差值梯度，使边缘更加突出</p>
+<p>计算机图形绘制原理</p>
+<p>WebAssembly 工作原理 如何编译成wasm</p>
+<p>webRTC 架构 如何 实现推流 拉流</p>
+<p>垃圾回收 内存泄漏 堆栈</p>
+<p>深拷贝 防抖 节流</p>
+<p>实现深拷贝的几种方法 追问 对象群嵌套15层 我想用14层的一个属性 最优解决方案 引出 Immutable js 追问 Immutable js 实现原理 字典 位分区 及 树压缩算法</p>
+<p>什么是纯函数 什么是副作用函数</p>
+<p>浏览器输入一个url 发生了什么 追问OSI 七层网络模型 三次握手 http https 区别 http1 2 3 区别 强缓存 协商缓存</p>
+<p>Ajax fetch navigator.sendBeacon 三个的区别</p>
+<p>nodejs 是否用过</p>
+<p>是否用过一些库 如 express koa nest 追问用的什么数据库 以及高速缓存 如 redis ，用的什么ORM框架，如果熟悉express 追问 中间件原理，熟悉nest 追问 ioc控制反转 DI 依赖注入 设计模式 以及MVC 架构 和MVVM 区别 继续追问nest rxjs 库用法 以及原理 继续追问nest 微服务 gRPC MQ 以及网关 。</p>
+<p>聊聊数据库 mysql 底层数据结构 为什么使用B+ 树，继续追问 mysql事务 追问悲观锁和乐观锁</p>
+<p>聊聊redis redis是单线程还是多线程 以及底层原理</p>
+<p>聊聊nodejs 的 vm虚拟机 以及PAI 以及 底层libuv openSSL</p>
+<p>聊聊nodejs 子线程 进程守卫怎么做</p>
+<p>聊聊 断点续传怎么做（前后端）</p>
+<p>Npm 是什么 package-lock.json 是做什么的 npm 缓存原理</p>
+<p>pnpm 实现原理 以及 monorepo 架构</p>
+<p>如何发布 npm 包 有没有发过 自己的 npm包 周下载量多少</p>
+<p>webpack vite rollup esbuild swc gulp</p>
+<p>Webpack 脱口而出的配置 webpack 分包 webpack 打包优化 webpack打包原理 以及 HMR 原理</p>
+<p>Vite原理 中间件原理 是否写过vite插件</p>
+<p>rollup 和 webpack的区别</p>
+<p>esBuild 常用命令 以及 为什么这么快</p>
+<p>Vue2 3 区别</p>
+<p>Diff算法 追问 最长递增子序列算法 以及 二分查找 和 贪心算法</p>
+<p>响应式原理 追问 为什么使用位运算</p>
+<p>Vue源码调度机制 以及nextTick执行机制</p>
+<p>Vue3 新增2个内置组件 介绍</p>
+<p>Vue3 keep-alive LRU 算法以及原理介绍</p>
+<p>Vue-router 原理 hash 和 history 以及 对应微前端 以及monorepo 架构</p>
+<p>Pinia vuex 设计模式 以及实现原理 为什么刷新数据丢失 以及解决方案</p>
+<p>AOT 和 JIT 的区别</p>
+<p>动态扩容 动态缩容 横向扩容 怎么做</p>
+<p>nginx 四层LB负载均衡 nginx七层LSB 负载均衡怎么做 nginx多机房异地容灾怎么做</p>
+<p>nginx源码中的unix域是怎么做的 做什么的</p>
+<p>nginx lua插件怎么写</p>
+<p>网关怎么做 网关熔断怎么做 网关分流怎么做 网关加密怎么做</p>
+<p>FPS 帧率 requestIdleCallback performance</p>
+<ul class="pa0">
+  
+   <li class="list di">
+     <a href="/tags/%E5%89%8D%E7%AB%AF/" class="link f5 grow br-pill ba ph3 pv2 mb2 dib black sans-serif no-underline">前端</a>
+   </li>
+  
+   <li class="list di">
+     <a href="/tags/%E9%9D%A2%E8%AF%95%E9%A2%98/" class="link f5 grow br-pill ba ph3 pv2 mb2 dib black sans-serif no-underline">面试题</a>
+   </li>
+  
+</ul>
+<div class="mt6 instapaper_ignoref">
+      
+      
+      </div>
+    </div>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+  <div class="bg-light-gray pa3 nested-list-reset nested-copy-line-height nested-links">
+    <p class="f5 b mb3">Related</p>
+    <ul class="pa0 list">
+	   
+	     <li  class="mb2">
+          <a href="/posts/frontend/vue3%E6%95%99%E7%A8%8B/">Vue3</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/frontend/vue/">Vue2</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/frontend/%E4%B8%AD%E5%9B%BD%E5%9C%B0%E5%9B%BE%E5%92%8C%E6%95%B0%E6%8D%AE%E8%B5%84%E6%BA%90/">中国地图js和经纬度json文件</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/frontend/css/">css常用样式</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/frontend/html/">html常用标签</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/frontend/js/">js常用操作</a>
+        </li>
+	    
+    </ul>
+</div>
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white white-70 dn dib-ns pv2 ph3 no-underline" href="http://localhost:1313/" >
+    &copy;  loveyu233 2025 
+  </a>
+    <div><div class="ananke-socials"></div>
+</div>
+  </div>
+</footer>
+
+  </body>
+</html>

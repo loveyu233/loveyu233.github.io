@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>sql常用函数 | loveyu233</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="SQL常用函数大全
+SQL提供了丰富的函数集合，可以用于数据处理、分析和转换。本指南整理了常见的SQL函数类别及其用法示例。
+目录
+
+1. 窗口函数
+2. 聚合函数
+3. 字符串函数
+4. 日期和时间函数
+5. 数值函数
+6. 条件函数
+7. 类型转换函数
+8. JSON函数
+9. 全文搜索函数
+10. 加密和安全函数
+11. 系统和元数据函数
+12. 常见复合SQL示例
+
+1. 窗口函数
+窗口函数允许对结果集中的行进行计算，同时保留每行的独立性。
+基本语法
+&lt;窗口函数&gt; OVER ([PARTITION BY &lt;分区列&gt;] [ORDER BY &lt;排序列&gt;] [&lt;窗口子句&gt;])
+排名函数
+-- ROW_NUMBER(): 为每行分配唯一序号
+SELECT name, score, ROW_NUMBER() OVER (ORDER BY score DESC) AS row_num
+FROM students;
+
+-- RANK(): 相同值获得相同排名，跳过下一个排名
+SELECT name, score, RANK() OVER (ORDER BY score DESC) AS rank
+FROM students;
+
+-- DENSE_RANK(): 相同值获得相同排名，不跳过排名
+SELECT name, score, DENSE_RANK() OVER (ORDER BY score DESC) AS dense_rank
+FROM students;
+
+-- NTILE(): 将分区数据分成指定数量的组
+SELECT name, score, NTILE(4) OVER (ORDER BY score DESC) AS quartile
+FROM students;
+聚合窗口函数
+SELECT 
+    department,
+    name,
+    salary,
+    AVG(salary) OVER (PARTITION BY department) AS dept_avg,
+    SUM(salary) OVER (PARTITION BY department) AS dept_sum,
+    COUNT(*) OVER (PARTITION BY department) AS dept_count
+FROM employees;
+偏移函数
+-- LAG(): 获取前面行的值
+SELECT date, sales, LAG(sales) OVER (ORDER BY date) AS prev_day_sales
+FROM daily_sales;
+
+-- LEAD(): 获取后面行的值
+SELECT date, sales, LEAD(sales) OVER (ORDER BY date) AS next_day_sales
+FROM daily_sales;
+分析函数
+-- FIRST_VALUE(): 窗口中第一个值
+SELECT date, product, sales,
+       FIRST_VALUE(sales) OVER (PARTITION BY product ORDER BY date) AS first_sale
+FROM product_sales;
+
+-- LAST_VALUE(): 窗口中最后一个值
+SELECT date, product, sales,
+       LAST_VALUE(sales) OVER (
+           PARTITION BY product 
+           ORDER BY date 
+           ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING
+       ) AS last_sale
+FROM product_sales;
+窗口子句
+-- 计算3天移动平均值
+SELECT date, sales,
+       AVG(sales) OVER (
+           ORDER BY date 
+           ROWS BETWEEN 1 PRECEDING AND 1 FOLLOWING
+       ) AS moving_avg
+FROM daily_sales;
+2. 聚合函数
+聚合函数对一组值执行计算并返回单个值。">
+    <meta name="generator" content="Hugo 0.147.7">
+    
+    
+    
+      <meta name="robots" content="noindex, nofollow">
+    
+    <meta name="author" content="loveyu">
+    
+
+    
+<link rel="stylesheet" href="/ananke/css/main.min.css" >
+
+
+
+
+    
+
+
+    
+      
+
+    
+
+    
+
+    
+      <link rel="canonical" href="http://localhost:1313/posts/databases/sql-functions/">
+    
+
+    <meta property="og:url" content="http://localhost:1313/posts/databases/sql-functions/">
+  <meta property="og:site_name" content="loveyu233">
+  <meta property="og:title" content="sql常用函数">
+  <meta property="og:description" content="SQL常用函数大全 SQL提供了丰富的函数集合，可以用于数据处理、分析和转换。本指南整理了常见的SQL函数类别及其用法示例。
+目录 1. 窗口函数 2. 聚合函数 3. 字符串函数 4. 日期和时间函数 5. 数值函数 6. 条件函数 7. 类型转换函数 8. JSON函数 9. 全文搜索函数 10. 加密和安全函数 11. 系统和元数据函数 12. 常见复合SQL示例 1. 窗口函数 窗口函数允许对结果集中的行进行计算，同时保留每行的独立性。
+基本语法 &lt;窗口函数&gt; OVER ([PARTITION BY &lt;分区列&gt;] [ORDER BY &lt;排序列&gt;] [&lt;窗口子句&gt;]) 排名函数 -- ROW_NUMBER(): 为每行分配唯一序号 SELECT name, score, ROW_NUMBER() OVER (ORDER BY score DESC) AS row_num FROM students; -- RANK(): 相同值获得相同排名，跳过下一个排名 SELECT name, score, RANK() OVER (ORDER BY score DESC) AS rank FROM students; -- DENSE_RANK(): 相同值获得相同排名，不跳过排名 SELECT name, score, DENSE_RANK() OVER (ORDER BY score DESC) AS dense_rank FROM students; -- NTILE(): 将分区数据分成指定数量的组 SELECT name, score, NTILE(4) OVER (ORDER BY score DESC) AS quartile FROM students; 聚合窗口函数 SELECT department, name, salary, AVG(salary) OVER (PARTITION BY department) AS dept_avg, SUM(salary) OVER (PARTITION BY department) AS dept_sum, COUNT(*) OVER (PARTITION BY department) AS dept_count FROM employees; 偏移函数 -- LAG(): 获取前面行的值 SELECT date, sales, LAG(sales) OVER (ORDER BY date) AS prev_day_sales FROM daily_sales; -- LEAD(): 获取后面行的值 SELECT date, sales, LEAD(sales) OVER (ORDER BY date) AS next_day_sales FROM daily_sales; 分析函数 -- FIRST_VALUE(): 窗口中第一个值 SELECT date, product, sales, FIRST_VALUE(sales) OVER (PARTITION BY product ORDER BY date) AS first_sale FROM product_sales; -- LAST_VALUE(): 窗口中最后一个值 SELECT date, product, sales, LAST_VALUE(sales) OVER ( PARTITION BY product ORDER BY date ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING ) AS last_sale FROM product_sales; 窗口子句 -- 计算3天移动平均值 SELECT date, sales, AVG(sales) OVER ( ORDER BY date ROWS BETWEEN 1 PRECEDING AND 1 FOLLOWING ) AS moving_avg FROM daily_sales; 2. 聚合函数 聚合函数对一组值执行计算并返回单个值。">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2025-04-27T14:11:37+08:00">
+    <meta property="article:modified_time" content="2025-04-27T14:11:37+08:00">
+    <meta property="article:tag" content="Mysql">
+    <meta property="article:tag" content="Pgsql">
+
+  <meta itemprop="name" content="sql常用函数">
+  <meta itemprop="description" content="SQL常用函数大全 SQL提供了丰富的函数集合，可以用于数据处理、分析和转换。本指南整理了常见的SQL函数类别及其用法示例。
+目录 1. 窗口函数 2. 聚合函数 3. 字符串函数 4. 日期和时间函数 5. 数值函数 6. 条件函数 7. 类型转换函数 8. JSON函数 9. 全文搜索函数 10. 加密和安全函数 11. 系统和元数据函数 12. 常见复合SQL示例 1. 窗口函数 窗口函数允许对结果集中的行进行计算，同时保留每行的独立性。
+基本语法 &lt;窗口函数&gt; OVER ([PARTITION BY &lt;分区列&gt;] [ORDER BY &lt;排序列&gt;] [&lt;窗口子句&gt;]) 排名函数 -- ROW_NUMBER(): 为每行分配唯一序号 SELECT name, score, ROW_NUMBER() OVER (ORDER BY score DESC) AS row_num FROM students; -- RANK(): 相同值获得相同排名，跳过下一个排名 SELECT name, score, RANK() OVER (ORDER BY score DESC) AS rank FROM students; -- DENSE_RANK(): 相同值获得相同排名，不跳过排名 SELECT name, score, DENSE_RANK() OVER (ORDER BY score DESC) AS dense_rank FROM students; -- NTILE(): 将分区数据分成指定数量的组 SELECT name, score, NTILE(4) OVER (ORDER BY score DESC) AS quartile FROM students; 聚合窗口函数 SELECT department, name, salary, AVG(salary) OVER (PARTITION BY department) AS dept_avg, SUM(salary) OVER (PARTITION BY department) AS dept_sum, COUNT(*) OVER (PARTITION BY department) AS dept_count FROM employees; 偏移函数 -- LAG(): 获取前面行的值 SELECT date, sales, LAG(sales) OVER (ORDER BY date) AS prev_day_sales FROM daily_sales; -- LEAD(): 获取后面行的值 SELECT date, sales, LEAD(sales) OVER (ORDER BY date) AS next_day_sales FROM daily_sales; 分析函数 -- FIRST_VALUE(): 窗口中第一个值 SELECT date, product, sales, FIRST_VALUE(sales) OVER (PARTITION BY product ORDER BY date) AS first_sale FROM product_sales; -- LAST_VALUE(): 窗口中最后一个值 SELECT date, product, sales, LAST_VALUE(sales) OVER ( PARTITION BY product ORDER BY date ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING ) AS last_sale FROM product_sales; 窗口子句 -- 计算3天移动平均值 SELECT date, sales, AVG(sales) OVER ( ORDER BY date ROWS BETWEEN 1 PRECEDING AND 1 FOLLOWING ) AS moving_avg FROM daily_sales; 2. 聚合函数 聚合函数对一组值执行计算并返回单个值。">
+  <meta itemprop="datePublished" content="2025-04-27T14:11:37+08:00">
+  <meta itemprop="dateModified" content="2025-04-27T14:11:37+08:00">
+  <meta itemprop="wordCount" content="1419">
+  <meta itemprop="keywords" content="Mysql,Pgsql">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="sql常用函数">
+  <meta name="twitter:description" content="SQL常用函数大全 SQL提供了丰富的函数集合，可以用于数据处理、分析和转换。本指南整理了常见的SQL函数类别及其用法示例。
+目录 1. 窗口函数 2. 聚合函数 3. 字符串函数 4. 日期和时间函数 5. 数值函数 6. 条件函数 7. 类型转换函数 8. JSON函数 9. 全文搜索函数 10. 加密和安全函数 11. 系统和元数据函数 12. 常见复合SQL示例 1. 窗口函数 窗口函数允许对结果集中的行进行计算，同时保留每行的独立性。
+基本语法 &lt;窗口函数&gt; OVER ([PARTITION BY &lt;分区列&gt;] [ORDER BY &lt;排序列&gt;] [&lt;窗口子句&gt;]) 排名函数 -- ROW_NUMBER(): 为每行分配唯一序号 SELECT name, score, ROW_NUMBER() OVER (ORDER BY score DESC) AS row_num FROM students; -- RANK(): 相同值获得相同排名，跳过下一个排名 SELECT name, score, RANK() OVER (ORDER BY score DESC) AS rank FROM students; -- DENSE_RANK(): 相同值获得相同排名，不跳过排名 SELECT name, score, DENSE_RANK() OVER (ORDER BY score DESC) AS dense_rank FROM students; -- NTILE(): 将分区数据分成指定数量的组 SELECT name, score, NTILE(4) OVER (ORDER BY score DESC) AS quartile FROM students; 聚合窗口函数 SELECT department, name, salary, AVG(salary) OVER (PARTITION BY department) AS dept_avg, SUM(salary) OVER (PARTITION BY department) AS dept_sum, COUNT(*) OVER (PARTITION BY department) AS dept_count FROM employees; 偏移函数 -- LAG(): 获取前面行的值 SELECT date, sales, LAG(sales) OVER (ORDER BY date) AS prev_day_sales FROM daily_sales; -- LEAD(): 获取后面行的值 SELECT date, sales, LEAD(sales) OVER (ORDER BY date) AS next_day_sales FROM daily_sales; 分析函数 -- FIRST_VALUE(): 窗口中第一个值 SELECT date, product, sales, FIRST_VALUE(sales) OVER (PARTITION BY product ORDER BY date) AS first_sale FROM product_sales; -- LAST_VALUE(): 窗口中最后一个值 SELECT date, product, sales, LAST_VALUE(sales) OVER ( PARTITION BY product ORDER BY date ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING ) AS last_sale FROM product_sales; 窗口子句 -- 计算3天移动平均值 SELECT date, sales, AVG(sales) OVER ( ORDER BY date ROWS BETWEEN 1 PRECEDING AND 1 FOLLOWING ) AS moving_avg FROM daily_sales; 2. 聚合函数 聚合函数对一组值执行计算并返回单个值。">
+
+	
+  </head><body class="ma0 avenir bg-near-white development">
+
+    
+   
+  
+
+  <header>
+    <div class="bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l center items-center justify-between">
+    <a href="/" class="f3 fw2 hover-white white-90 dib no-underline">
+      
+        loveyu233
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      <div class="ananke-socials"></div>
+
+    </div>
+  </div>
+</nav>
+
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  
+  <article class="flex-l mw8 center ph3 flex-wrap justify-between">
+    <header class="mt4 w-100">
+      <aside class="instapaper_ignoref b helvetica tracked ttu">
+          
+        databases
+      </aside><div id="sharing" class="mt3 ananke-socials"></div>
+<h1 class="f1 athelas mt3 mb1">sql常用函数</h1>
+      
+      <p class="tracked"><strong>loveyu</strong>
+      </p>
+      
+      
+      
+      <time class="f6 mv4 dib tracked" datetime="2025-04-27T14:11:37+08:00">April 27, 2025</time>
+      
+
+      
+      
+    </header>
+    <div class="nested-copy-line-height lh-copy serif f4 nested-links mid-gray pr4-l w-two-thirds-l"><h1 id="sql常用函数大全">SQL常用函数大全</h1>
+<p>SQL提供了丰富的函数集合，可以用于数据处理、分析和转换。本指南整理了常见的SQL函数类别及其用法示例。</p>
+<h2 id="目录">目录</h2>
+<ul>
+<li><a href="#1-%E7%AA%97%E5%8F%A3%E5%87%BD%E6%95%B0">1. 窗口函数</a></li>
+<li><a href="#2-%E8%81%9A%E5%90%88%E5%87%BD%E6%95%B0">2. 聚合函数</a></li>
+<li><a href="#3-%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%87%BD%E6%95%B0">3. 字符串函数</a></li>
+<li><a href="#4-%E6%97%A5%E6%9C%9F%E5%92%8C%E6%97%B6%E9%97%B4%E5%87%BD%E6%95%B0">4. 日期和时间函数</a></li>
+<li><a href="#5-%E6%95%B0%E5%80%BC%E5%87%BD%E6%95%B0">5. 数值函数</a></li>
+<li><a href="#6-%E6%9D%A1%E4%BB%B6%E5%87%BD%E6%95%B0">6. 条件函数</a></li>
+<li><a href="#7-%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2%E5%87%BD%E6%95%B0">7. 类型转换函数</a></li>
+<li><a href="#8-json%E5%87%BD%E6%95%B0">8. JSON函数</a></li>
+<li><a href="#9-%E5%85%A8%E6%96%87%E6%90%9C%E7%B4%A2%E5%87%BD%E6%95%B0">9. 全文搜索函数</a></li>
+<li><a href="#10-%E5%8A%A0%E5%AF%86%E5%92%8C%E5%AE%89%E5%85%A8%E5%87%BD%E6%95%B0">10. 加密和安全函数</a></li>
+<li><a href="#11-%E7%B3%BB%E7%BB%9F%E5%92%8C%E5%85%83%E6%95%B0%E6%8D%AE%E5%87%BD%E6%95%B0">11. 系统和元数据函数</a></li>
+<li><a href="#12-%E5%B8%B8%E8%A7%81%E5%A4%8D%E5%90%88sql%E7%A4%BA%E4%BE%8B">12. 常见复合SQL示例</a></li>
+</ul>
+<h2 id="1-窗口函数">1. 窗口函数</h2>
+<p>窗口函数允许对结果集中的行进行计算，同时保留每行的独立性。</p>
+<h3 id="基本语法">基本语法</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#f92672">&lt;</span><span style="color:#960050;background-color:#1e0010">窗口函数</span><span style="color:#f92672">&gt;</span> OVER ([PARTITION <span style="color:#66d9ef">BY</span> <span style="color:#f92672">&lt;</span><span style="color:#960050;background-color:#1e0010">分区列</span><span style="color:#f92672">&gt;</span>] [<span style="color:#66d9ef">ORDER</span> <span style="color:#66d9ef">BY</span> <span style="color:#f92672">&lt;</span><span style="color:#960050;background-color:#1e0010">排序列</span><span style="color:#f92672">&gt;</span>] [<span style="color:#f92672">&lt;</span><span style="color:#960050;background-color:#1e0010">窗口子句</span><span style="color:#f92672">&gt;</span>])
+</span></span></code></pre></div><h3 id="排名函数">排名函数</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#75715e">-- ROW_NUMBER(): 为每行分配唯一序号
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> name, score, ROW_NUMBER() OVER (<span style="color:#66d9ef">ORDER</span> <span style="color:#66d9ef">BY</span> score <span style="color:#66d9ef">DESC</span>) <span style="color:#66d9ef">AS</span> row_num
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span> students;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- RANK(): 相同值获得相同排名，跳过下一个排名
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> name, score, RANK() OVER (<span style="color:#66d9ef">ORDER</span> <span style="color:#66d9ef">BY</span> score <span style="color:#66d9ef">DESC</span>) <span style="color:#66d9ef">AS</span> rank
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span> students;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- DENSE_RANK(): 相同值获得相同排名，不跳过排名
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> name, score, DENSE_RANK() OVER (<span style="color:#66d9ef">ORDER</span> <span style="color:#66d9ef">BY</span> score <span style="color:#66d9ef">DESC</span>) <span style="color:#66d9ef">AS</span> dense_rank
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span> students;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- NTILE(): 将分区数据分成指定数量的组
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> name, score, NTILE(<span style="color:#ae81ff">4</span>) OVER (<span style="color:#66d9ef">ORDER</span> <span style="color:#66d9ef">BY</span> score <span style="color:#66d9ef">DESC</span>) <span style="color:#66d9ef">AS</span> quartile
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span> students;
+</span></span></code></pre></div><h3 id="聚合窗口函数">聚合窗口函数</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> 
+</span></span><span style="display:flex;"><span>    department,
+</span></span><span style="display:flex;"><span>    name,
+</span></span><span style="display:flex;"><span>    salary,
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">AVG</span>(salary) OVER (PARTITION <span style="color:#66d9ef">BY</span> department) <span style="color:#66d9ef">AS</span> dept_avg,
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">SUM</span>(salary) OVER (PARTITION <span style="color:#66d9ef">BY</span> department) <span style="color:#66d9ef">AS</span> dept_sum,
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">COUNT</span>(<span style="color:#f92672">*</span>) OVER (PARTITION <span style="color:#66d9ef">BY</span> department) <span style="color:#66d9ef">AS</span> dept_count
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span> employees;
+</span></span></code></pre></div><h3 id="偏移函数">偏移函数</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#75715e">-- LAG(): 获取前面行的值
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> date, sales, LAG(sales) OVER (<span style="color:#66d9ef">ORDER</span> <span style="color:#66d9ef">BY</span> date) <span style="color:#66d9ef">AS</span> prev_day_sales
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span> daily_sales;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- LEAD(): 获取后面行的值
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> date, sales, LEAD(sales) OVER (<span style="color:#66d9ef">ORDER</span> <span style="color:#66d9ef">BY</span> date) <span style="color:#66d9ef">AS</span> next_day_sales
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span> daily_sales;
+</span></span></code></pre></div><h3 id="分析函数">分析函数</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#75715e">-- FIRST_VALUE(): 窗口中第一个值
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> date, product, sales,
+</span></span><span style="display:flex;"><span>       FIRST_VALUE(sales) OVER (PARTITION <span style="color:#66d9ef">BY</span> product <span style="color:#66d9ef">ORDER</span> <span style="color:#66d9ef">BY</span> date) <span style="color:#66d9ef">AS</span> first_sale
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span> product_sales;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- LAST_VALUE(): 窗口中最后一个值
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> date, product, sales,
+</span></span><span style="display:flex;"><span>       LAST_VALUE(sales) OVER (
+</span></span><span style="display:flex;"><span>           PARTITION <span style="color:#66d9ef">BY</span> product 
+</span></span><span style="display:flex;"><span>           <span style="color:#66d9ef">ORDER</span> <span style="color:#66d9ef">BY</span> date 
+</span></span><span style="display:flex;"><span>           <span style="color:#66d9ef">ROWS</span> <span style="color:#66d9ef">BETWEEN</span> UNBOUNDED PRECEDING <span style="color:#66d9ef">AND</span> UNBOUNDED FOLLOWING
+</span></span><span style="display:flex;"><span>       ) <span style="color:#66d9ef">AS</span> last_sale
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span> product_sales;
+</span></span></code></pre></div><h3 id="窗口子句">窗口子句</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#75715e">-- 计算3天移动平均值
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> date, sales,
+</span></span><span style="display:flex;"><span>       <span style="color:#66d9ef">AVG</span>(sales) OVER (
+</span></span><span style="display:flex;"><span>           <span style="color:#66d9ef">ORDER</span> <span style="color:#66d9ef">BY</span> date 
+</span></span><span style="display:flex;"><span>           <span style="color:#66d9ef">ROWS</span> <span style="color:#66d9ef">BETWEEN</span> <span style="color:#ae81ff">1</span> PRECEDING <span style="color:#66d9ef">AND</span> <span style="color:#ae81ff">1</span> FOLLOWING
+</span></span><span style="display:flex;"><span>       ) <span style="color:#66d9ef">AS</span> moving_avg
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span> daily_sales;
+</span></span></code></pre></div><h2 id="2-聚合函数">2. 聚合函数</h2>
+<p>聚合函数对一组值执行计算并返回单个值。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#75715e">-- SUM(): 计算总和
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> <span style="color:#66d9ef">SUM</span>(salary) <span style="color:#66d9ef">FROM</span> employees;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- AVG(): 计算平均值
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> <span style="color:#66d9ef">AVG</span>(price) <span style="color:#66d9ef">FROM</span> products;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- MAX(): 计算最大值
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> <span style="color:#66d9ef">MAX</span>(score) <span style="color:#66d9ef">FROM</span> exams;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- MIN(): 计算最小值
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> <span style="color:#66d9ef">MIN</span>(date_registered) <span style="color:#66d9ef">FROM</span> users;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- COUNT(): 计数
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> <span style="color:#66d9ef">COUNT</span>(<span style="color:#f92672">*</span>) <span style="color:#66d9ef">FROM</span> orders;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> <span style="color:#66d9ef">COUNT</span>(<span style="color:#66d9ef">DISTINCT</span> customer_id) <span style="color:#66d9ef">FROM</span> orders;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- GROUP_CONCAT(): 将组值连接为字符串(MySQL)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> department, GROUP_CONCAT(name) <span style="color:#66d9ef">FROM</span> employees <span style="color:#66d9ef">GROUP</span> <span style="color:#66d9ef">BY</span> department;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- STRING_AGG(): 将组值连接为字符串(PostgreSQL/SQL Server)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> department, STRING_AGG(name, <span style="color:#e6db74">&#39;, &#39;</span>) <span style="color:#66d9ef">FROM</span> employees <span style="color:#66d9ef">GROUP</span> <span style="color:#66d9ef">BY</span> department;
+</span></span></code></pre></div><h2 id="3-字符串函数">3. 字符串函数</h2>
+<p>处理和操作文本数据的函数。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#75715e">-- CONCAT(): 连接字符串
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> CONCAT(first_name, <span style="color:#e6db74">&#39; &#39;</span>, last_name) <span style="color:#66d9ef">AS</span> full_name <span style="color:#66d9ef">FROM</span> users;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- UPPER()/LOWER(): 转换大小写
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> <span style="color:#66d9ef">UPPER</span>(name) <span style="color:#66d9ef">FROM</span> products;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> <span style="color:#66d9ef">LOWER</span>(email) <span style="color:#66d9ef">FROM</span> customers;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- SUBSTRING(): 提取子字符串
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> <span style="color:#66d9ef">SUBSTRING</span>(description, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">100</span>) <span style="color:#66d9ef">FROM</span> articles;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- LEFT()/RIGHT(): 从左/右提取字符
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> <span style="color:#66d9ef">LEFT</span>(phone, <span style="color:#ae81ff">3</span>) <span style="color:#66d9ef">AS</span> area_code <span style="color:#66d9ef">FROM</span> contacts;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> <span style="color:#66d9ef">RIGHT</span>(reference, <span style="color:#ae81ff">6</span>) <span style="color:#66d9ef">AS</span> ref_code <span style="color:#66d9ef">FROM</span> orders;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- TRIM()/LTRIM()/RTRIM(): 去除空格
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> <span style="color:#66d9ef">TRIM</span>(name) <span style="color:#66d9ef">FROM</span> categories;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> LTRIM(code) <span style="color:#66d9ef">FROM</span> products; <span style="color:#75715e">-- 去除左侧空格
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> RTRIM(notes) <span style="color:#66d9ef">FROM</span> comments; <span style="color:#75715e">-- 去除右侧空格
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- REPLACE(): 替换字符
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> <span style="color:#66d9ef">REPLACE</span>(phone, <span style="color:#e6db74">&#39;-&#39;</span>, <span style="color:#e6db74">&#39;&#39;</span>) <span style="color:#66d9ef">FROM</span> contacts;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- LENGTH()/CHAR_LENGTH(): 字符串长度
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> <span style="color:#66d9ef">LENGTH</span>(password) <span style="color:#66d9ef">FROM</span> users;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> <span style="color:#66d9ef">CHAR_LENGTH</span>(description) <span style="color:#66d9ef">FROM</span> products;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- POSITION()/INSTR(): 查找子字符串位置
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> <span style="color:#66d9ef">POSITION</span>(<span style="color:#e6db74">&#39;SQL&#39;</span> <span style="color:#66d9ef">IN</span> course_name) <span style="color:#66d9ef">FROM</span> courses;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> INSTR(email, <span style="color:#e6db74">&#39;@&#39;</span>) <span style="color:#66d9ef">FROM</span> users;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- REGEXP/RLIKE: 正则表达式匹配
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> emails <span style="color:#66d9ef">WHERE</span> email REGEXP <span style="color:#e6db74">&#39;^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$&#39;</span>;
+</span></span></code></pre></div><h2 id="4-日期和时间函数">4. 日期和时间函数</h2>
+<p>处理日期和时间值的函数。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#75715e">-- 获取当前日期/时间
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> <span style="color:#66d9ef">CURRENT_DATE</span>();
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> <span style="color:#66d9ef">CURRENT_TIMESTAMP</span>();
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> NOW();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 提取日期部分
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> <span style="color:#66d9ef">YEAR</span>(order_date) <span style="color:#66d9ef">FROM</span> orders;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> <span style="color:#66d9ef">MONTH</span>(birth_date) <span style="color:#66d9ef">FROM</span> employees;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> <span style="color:#66d9ef">DAY</span>(created_at) <span style="color:#66d9ef">FROM</span> logs;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> HOUR(login_time) <span style="color:#66d9ef">FROM</span> user_sessions;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> <span style="color:#66d9ef">MINUTE</span>(start_time) <span style="color:#66d9ef">FROM</span> meetings;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> <span style="color:#66d9ef">SECOND</span>(<span style="color:#66d9ef">timestamp</span>) <span style="color:#66d9ef">FROM</span> events;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> DAYNAME(event_date) <span style="color:#66d9ef">FROM</span> calendar; <span style="color:#75715e">-- 星期几名称
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> MONTHNAME(birth_date) <span style="color:#66d9ef">FROM</span> employees; <span style="color:#75715e">-- 月份名称
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> DAYOFWEEK(date) <span style="color:#66d9ef">FROM</span> dates; <span style="color:#75715e">-- 一周的第几天(1=星期日到7=星期六)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> DAYOFYEAR(date) <span style="color:#66d9ef">FROM</span> events; <span style="color:#75715e">-- 一年的第几天(1-366)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> WEEKOFYEAR(date) <span style="color:#66d9ef">FROM</span> events; <span style="color:#75715e">-- 一年的第几周
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 日期计算
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> DATE_ADD(start_date, INTERVAL <span style="color:#ae81ff">30</span> <span style="color:#66d9ef">DAY</span>) <span style="color:#66d9ef">FROM</span> subscriptions;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> DATE_SUB(end_date, INTERVAL <span style="color:#ae81ff">7</span> <span style="color:#66d9ef">DAY</span>) <span style="color:#66d9ef">FROM</span> projects;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> DATEDIFF(end_date, start_date) <span style="color:#66d9ef">AS</span> duration <span style="color:#66d9ef">FROM</span> projects;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> TIMESTAMPDIFF(HOUR, start_time, end_time) <span style="color:#66d9ef">AS</span> hours <span style="color:#66d9ef">FROM</span> sessions;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 日期格式化
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> DATE_FORMAT(order_date, <span style="color:#e6db74">&#39;%Y-%m-%d&#39;</span>) <span style="color:#66d9ef">FROM</span> orders;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> DATE_FORMAT(<span style="color:#66d9ef">timestamp</span>, <span style="color:#e6db74">&#39;%H:%i:%s&#39;</span>) <span style="color:#66d9ef">FROM</span> logs;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> DATE_FORMAT(birth_date, <span style="color:#e6db74">&#39;%d %M %Y&#39;</span>) <span style="color:#66d9ef">FROM</span> employees;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 日期/时间部分提取
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> <span style="color:#66d9ef">EXTRACT</span>(<span style="color:#66d9ef">YEAR</span> <span style="color:#66d9ef">FROM</span> date) <span style="color:#66d9ef">FROM</span> events;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> <span style="color:#66d9ef">EXTRACT</span>(<span style="color:#66d9ef">MONTH</span> <span style="color:#66d9ef">FROM</span> date) <span style="color:#66d9ef">FROM</span> events;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> <span style="color:#66d9ef">EXTRACT</span>(<span style="color:#66d9ef">DAY</span> <span style="color:#66d9ef">FROM</span> date) <span style="color:#66d9ef">FROM</span> events;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> <span style="color:#66d9ef">EXTRACT</span>(HOUR <span style="color:#66d9ef">FROM</span> <span style="color:#66d9ef">timestamp</span>) <span style="color:#66d9ef">FROM</span> logs;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 日期/时间构造
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> MAKEDATE(<span style="color:#ae81ff">2023</span>, <span style="color:#ae81ff">45</span>) <span style="color:#66d9ef">AS</span> day_45_of_2023;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> MAKETIME(<span style="color:#ae81ff">14</span>, <span style="color:#ae81ff">30</span>, <span style="color:#ae81ff">0</span>) <span style="color:#66d9ef">AS</span> time_2_30_pm;
+</span></span></code></pre></div><h2 id="5-数值函数">5. 数值函数</h2>
+<p>处理数字的函数。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#75715e">-- 四舍五入
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> ROUND(price, <span style="color:#ae81ff">2</span>) <span style="color:#66d9ef">FROM</span> products;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 向上/向下取整
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> CEILING(rating) <span style="color:#66d9ef">FROM</span> reviews;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> FLOOR(amount) <span style="color:#66d9ef">FROM</span> transactions;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 截断小数位
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> <span style="color:#66d9ef">TRUNCATE</span>(value, <span style="color:#ae81ff">2</span>) <span style="color:#66d9ef">FROM</span> measurements;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 绝对值
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> <span style="color:#66d9ef">ABS</span>(temperature_change) <span style="color:#66d9ef">FROM</span> climate_data;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 取余
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> <span style="color:#66d9ef">MOD</span>(employee_id, <span style="color:#ae81ff">10</span>) <span style="color:#66d9ef">FROM</span> employees;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 随机数
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> RAND() <span style="color:#f92672">*</span> <span style="color:#ae81ff">100</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 数学函数
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> SQRT(area) <span style="color:#66d9ef">FROM</span> squares;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> POWER(base, exponent) <span style="color:#66d9ef">FROM</span> calculations;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> LOG(value) <span style="color:#66d9ef">FROM</span> data_points; <span style="color:#75715e">-- 自然对数
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> LOG10(value) <span style="color:#66d9ef">FROM</span> data_points; <span style="color:#75715e">-- 以10为底对数
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> EXP(value) <span style="color:#66d9ef">FROM</span> exponential_data; <span style="color:#75715e">-- e的幂
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> PI(); <span style="color:#75715e">-- π值
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> SIN(angle), COS(angle), TAN(angle) <span style="color:#66d9ef">FROM</span> triangles; <span style="color:#75715e">-- 三角函数
+</span></span></span></code></pre></div><h2 id="6-条件函数">6. 条件函数</h2>
+<p>基于条件返回值的函数。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#75715e">-- IF()条件表达式(MySQL)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> product_name, <span style="color:#66d9ef">IF</span>(stock <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span>, <span style="color:#e6db74">&#39;有库存&#39;</span>, <span style="color:#e6db74">&#39;无库存&#39;</span>) <span style="color:#66d9ef">AS</span> stock_status
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span> products;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- CASE条件表达式
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> 
+</span></span><span style="display:flex;"><span>    order_id,
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">CASE</span> 
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">WHEN</span> amount <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">100</span> <span style="color:#66d9ef">THEN</span> <span style="color:#e6db74">&#39;小额订单&#39;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">WHEN</span> amount <span style="color:#66d9ef">BETWEEN</span> <span style="color:#ae81ff">100</span> <span style="color:#66d9ef">AND</span> <span style="color:#ae81ff">1000</span> <span style="color:#66d9ef">THEN</span> <span style="color:#e6db74">&#39;中额订单&#39;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">ELSE</span> <span style="color:#e6db74">&#39;大额订单&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">END</span> <span style="color:#66d9ef">AS</span> order_size
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span> orders;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- COALESCE(): 返回第一个非NULL值
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> COALESCE(nickname, username, email, <span style="color:#e6db74">&#39;匿名用户&#39;</span>) <span style="color:#66d9ef">AS</span> display_name 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span> users;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- NULLIF(): 如果两个表达式相等返回NULL，否则返回第一个表达式
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> <span style="color:#66d9ef">NULLIF</span>(divider, <span style="color:#ae81ff">0</span>) <span style="color:#66d9ef">FROM</span> calculations; <span style="color:#75715e">-- 避免除以零错误
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- IFNULL()/NVL(): 替换NULL值
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> IFNULL(phone, <span style="color:#e6db74">&#39;未提供&#39;</span>) <span style="color:#66d9ef">FROM</span> contacts; <span style="color:#75715e">-- MySQL
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> NVL(phone, <span style="color:#e6db74">&#39;未提供&#39;</span>) <span style="color:#66d9ef">FROM</span> contacts; <span style="color:#75715e">-- Oracle
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- IIF(): 条件表达式(SQL Server)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> IIF(price <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">100</span>, <span style="color:#e6db74">&#39;高价&#39;</span>, <span style="color:#e6db74">&#39;低价&#39;</span>) <span style="color:#66d9ef">FROM</span> products;
+</span></span></code></pre></div><h2 id="7-类型转换函数">7. 类型转换函数</h2>
+<p>在不同数据类型之间转换的函数。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#75715e">-- CAST(): 显式类型转换
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> <span style="color:#66d9ef">CAST</span>(price_string <span style="color:#66d9ef">AS</span> DECIMAL(<span style="color:#ae81ff">10</span>,<span style="color:#ae81ff">2</span>)) <span style="color:#66d9ef">FROM</span> import_data;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> <span style="color:#66d9ef">CAST</span>(employee_id <span style="color:#66d9ef">AS</span> CHAR) <span style="color:#66d9ef">FROM</span> employees;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> <span style="color:#66d9ef">CAST</span>(<span style="color:#e6db74">&#39;2023-01-01&#39;</span> <span style="color:#66d9ef">AS</span> DATE);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- CONVERT(): 类型转换(SQL Server/MySQL语法)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> <span style="color:#66d9ef">CONVERT</span>(VARCHAR, order_date, <span style="color:#ae81ff">120</span>) <span style="color:#66d9ef">FROM</span> orders; <span style="color:#75715e">-- SQL Server
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> <span style="color:#66d9ef">CONVERT</span>(order_date, CHAR) <span style="color:#66d9ef">FROM</span> orders; <span style="color:#75715e">-- MySQL
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 隐式转换
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> <span style="color:#e6db74">&#39;价格: &#39;</span> <span style="color:#f92672">||</span> price <span style="color:#66d9ef">FROM</span> products; <span style="color:#75715e">-- PostgreSQL字符串连接会自动转换
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> CONCAT(<span style="color:#e6db74">&#39;价格: &#39;</span>, price) <span style="color:#66d9ef">FROM</span> products; <span style="color:#75715e">-- MySQL
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 特定类型转换
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> TO_DATE(<span style="color:#e6db74">&#39;2023-01-01&#39;</span>, <span style="color:#e6db74">&#39;YYYY-MM-DD&#39;</span>); <span style="color:#75715e">-- Oracle/PostgreSQL
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> STR_TO_DATE(<span style="color:#e6db74">&#39;01/01/2023&#39;</span>, <span style="color:#e6db74">&#39;%d/%m/%Y&#39;</span>); <span style="color:#75715e">-- MySQL
+</span></span></span></code></pre></div><h2 id="8-json函数">8. JSON函数</h2>
+<p>处理JSON数据类型的函数(现代数据库)。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#75715e">-- JSON_EXTRACT(): 提取JSON值(MySQL)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> JSON_EXTRACT(<span style="color:#66d9ef">data</span>, <span style="color:#e6db74">&#39;$.name&#39;</span>) <span style="color:#66d9ef">FROM</span> documents;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- -&gt;和-&gt;&gt;操作符(MySQL/PostgreSQL)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> <span style="color:#66d9ef">data</span><span style="color:#f92672">-&gt;</span><span style="color:#e6db74">&#39;$.name&#39;</span> <span style="color:#66d9ef">FROM</span> documents; <span style="color:#75715e">-- 返回JSON值
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> <span style="color:#66d9ef">data</span><span style="color:#f92672">-&gt;&gt;</span><span style="color:#e6db74">&#39;$.name&#39;</span> <span style="color:#66d9ef">FROM</span> documents; <span style="color:#75715e">-- 返回文本值
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- JSON_SET(): 设置JSON值(MySQL)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> JSON_SET(preferences, <span style="color:#e6db74">&#39;$.theme&#39;</span>, <span style="color:#e6db74">&#39;dark&#39;</span>) <span style="color:#66d9ef">FROM</span> user_settings;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- JSON_REMOVE(): 移除JSON键(MySQL)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> JSON_REMOVE(metadata, <span style="color:#e6db74">&#39;$.temporary&#39;</span>) <span style="color:#66d9ef">FROM</span> files;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- JSON_CONTAINS(): 检查JSON是否包含值(MySQL)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> products <span style="color:#66d9ef">WHERE</span> JSON_CONTAINS(attributes, <span style="color:#e6db74">&#39;&#34;red&#34;&#39;</span>, <span style="color:#e6db74">&#39;$.colors&#39;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- JSON_ARRAY(): 创建JSON数组(MySQL)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> JSON_ARRAY(<span style="color:#e6db74">&#39;apple&#39;</span>, <span style="color:#e6db74">&#39;banana&#39;</span>, <span style="color:#e6db74">&#39;orange&#39;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- JSON_OBJECT(): 创建JSON对象(MySQL)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> JSON_OBJECT(<span style="color:#e6db74">&#39;name&#39;</span>, username, <span style="color:#e6db74">&#39;age&#39;</span>, age) <span style="color:#66d9ef">FROM</span> users;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- PostgreSQL的JSON函数
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> jsonb_pretty(<span style="color:#66d9ef">data</span>) <span style="color:#66d9ef">FROM</span> documents; <span style="color:#75715e">-- 格式化JSON
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> jsonb_set(<span style="color:#66d9ef">data</span>, <span style="color:#e6db74">&#39;{theme}&#39;</span>, <span style="color:#e6db74">&#39;&#34;dark&#34;&#39;</span>) <span style="color:#66d9ef">FROM</span> user_settings; <span style="color:#75715e">-- 设置值
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> jsonb_array_elements(<span style="color:#66d9ef">data</span><span style="color:#f92672">-&gt;</span><span style="color:#e6db74">&#39;tags&#39;</span>) <span style="color:#66d9ef">FROM</span> documents; <span style="color:#75715e">-- 展开JSON数组
+</span></span></span></code></pre></div><h2 id="9-全文搜索函数">9. 全文搜索函数</h2>
+<p>提供高级文本搜索功能的函数。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#75715e">-- MySQL全文搜索
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">CREATE</span> FULLTEXT <span style="color:#66d9ef">INDEX</span> idx_article <span style="color:#66d9ef">ON</span> articles(title, content);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> articles 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">WHERE</span> <span style="color:#66d9ef">MATCH</span>(title, content) AGAINST(<span style="color:#e6db74">&#39;关键词&#39;</span> <span style="color:#66d9ef">IN</span> <span style="color:#66d9ef">NATURAL</span> <span style="color:#66d9ef">LANGUAGE</span> <span style="color:#66d9ef">MODE</span>);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> articles 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">WHERE</span> <span style="color:#66d9ef">MATCH</span>(title, content) AGAINST(<span style="color:#e6db74">&#39;+必须 -排除&#39;</span> <span style="color:#66d9ef">IN</span> BOOLEAN <span style="color:#66d9ef">MODE</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- PostgreSQL全文搜索
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> documents 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">WHERE</span> to_tsvector(<span style="color:#e6db74">&#39;chinese&#39;</span>, content) <span style="color:#f92672">@@</span> to_tsquery(<span style="color:#e6db74">&#39;chinese&#39;</span>, <span style="color:#e6db74">&#39;关键词&#39;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> ts_rank(to_tsvector(<span style="color:#e6db74">&#39;english&#39;</span>, content), to_tsquery(<span style="color:#e6db74">&#39;english&#39;</span>, <span style="color:#e6db74">&#39;search&#39;</span>)) <span style="color:#66d9ef">AS</span> rank
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span> documents
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">ORDER</span> <span style="color:#66d9ef">BY</span> rank <span style="color:#66d9ef">DESC</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- SQL Server全文搜索
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> articles 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">WHERE</span> <span style="color:#66d9ef">CONTAINS</span>(content, <span style="color:#e6db74">&#39;关键词&#39;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> articles 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">WHERE</span> FREETEXT(content, <span style="color:#e6db74">&#39;相关搜索短语&#39;</span>);
+</span></span></code></pre></div><h2 id="10-加密和安全函数">10. 加密和安全函数</h2>
+<p>处理密码和敏感数据的函数。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#75715e">-- MD5哈希(不推荐用于密码)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> MD5(password) <span style="color:#66d9ef">FROM</span> legacy_users;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- SHA哈希系列
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> SHA1(<span style="color:#66d9ef">data</span>) <span style="color:#66d9ef">FROM</span> files;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> SHA2(password, <span style="color:#ae81ff">256</span>) <span style="color:#66d9ef">FROM</span> users;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 生成UUID/GUID
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> UUID() <span style="color:#66d9ef">AS</span> unique_id; <span style="color:#75715e">-- MySQL
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> NEWID() <span style="color:#66d9ef">AS</span> unique_id; <span style="color:#75715e">-- SQL Server
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 加密函数
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> AES_ENCRYPT(credit_card, <span style="color:#e6db74">&#39;secret_key&#39;</span>) <span style="color:#66d9ef">FROM</span> payments; <span style="color:#75715e">-- MySQL
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> ENCRYPT(credit_card, <span style="color:#e6db74">&#39;salt&#39;</span>) <span style="color:#66d9ef">FROM</span> payments; <span style="color:#75715e">-- PostgreSQL
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 解密函数
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> AES_DECRYPT(encrypted_data, <span style="color:#e6db74">&#39;secret_key&#39;</span>) <span style="color:#66d9ef">FROM</span> secure_data; <span style="color:#75715e">-- MySQL
+</span></span></span></code></pre></div><h2 id="11-系统和元数据函数">11. 系统和元数据函数</h2>
+<p>提供关于数据库和当前会话的信息的函数。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#75715e">-- 用户信息
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> <span style="color:#66d9ef">CURRENT_USER</span>();
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> <span style="color:#66d9ef">USER</span>();
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> <span style="color:#66d9ef">SESSION_USER</span>();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 数据库信息
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> <span style="color:#66d9ef">VERSION</span>();
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> <span style="color:#66d9ef">DATABASE</span>();
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> <span style="color:#66d9ef">SCHEMA</span>();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 连接信息
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> CONNECTION_ID();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 字符集信息
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> CHARSET(<span style="color:#e6db74">&#39;文本&#39;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> <span style="color:#66d9ef">COLLATION</span>(<span style="color:#e6db74">&#39;文本&#39;</span>);
+</span></span></code></pre></div><h2 id="12-常见复合sql示例">12. 常见复合SQL示例</h2>
+<p>结合多种函数的实际应用示例。</p>
+<h3 id="销售报表生成">销售报表生成</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> 
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">YEAR</span>(order_date) <span style="color:#66d9ef">AS</span> <span style="color:#66d9ef">year</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">MONTH</span>(order_date) <span style="color:#66d9ef">AS</span> <span style="color:#66d9ef">month</span>,
+</span></span><span style="display:flex;"><span>    MONTHNAME(order_date) <span style="color:#66d9ef">AS</span> month_name,
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">COUNT</span>(<span style="color:#f92672">*</span>) <span style="color:#66d9ef">AS</span> total_orders,
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">SUM</span>(amount) <span style="color:#66d9ef">AS</span> total_sales,
+</span></span><span style="display:flex;"><span>    ROUND(<span style="color:#66d9ef">AVG</span>(amount), <span style="color:#ae81ff">2</span>) <span style="color:#66d9ef">AS</span> avg_order_value,
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">MAX</span>(amount) <span style="color:#66d9ef">AS</span> largest_order,
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">MIN</span>(amount) <span style="color:#66d9ef">AS</span> smallest_order,
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">COUNT</span>(<span style="color:#66d9ef">DISTINCT</span> customer_id) <span style="color:#66d9ef">AS</span> unique_customers,
+</span></span><span style="display:flex;"><span>    ROUND(<span style="color:#66d9ef">SUM</span>(amount) <span style="color:#f92672">/</span> <span style="color:#66d9ef">COUNT</span>(<span style="color:#66d9ef">DISTINCT</span> customer_id), <span style="color:#ae81ff">2</span>) <span style="color:#66d9ef">AS</span> avg_customer_spend
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span> orders
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">WHERE</span> order_date <span style="color:#66d9ef">BETWEEN</span> DATE_SUB(<span style="color:#66d9ef">CURRENT_DATE</span>(), INTERVAL <span style="color:#ae81ff">1</span> <span style="color:#66d9ef">YEAR</span>) <span style="color:#66d9ef">AND</span> <span style="color:#66d9ef">CURRENT_DATE</span>()
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">GROUP</span> <span style="color:#66d9ef">BY</span> <span style="color:#66d9ef">YEAR</span>(order_date), <span style="color:#66d9ef">MONTH</span>(order_date), MONTHNAME(order_date)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">ORDER</span> <span style="color:#66d9ef">BY</span> <span style="color:#66d9ef">year</span> <span style="color:#66d9ef">DESC</span>, <span style="color:#66d9ef">month</span> <span style="color:#66d9ef">DESC</span>;
+</span></span></code></pre></div><h3 id="用户活跃度分析">用户活跃度分析</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> 
+</span></span><span style="display:flex;"><span>    user_id,
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">COUNT</span>(<span style="color:#f92672">*</span>) <span style="color:#66d9ef">AS</span> login_count,
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">MIN</span>(login_time) <span style="color:#66d9ef">AS</span> first_login,
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">MAX</span>(login_time) <span style="color:#66d9ef">AS</span> last_login,
+</span></span><span style="display:flex;"><span>    DATEDIFF(<span style="color:#66d9ef">MAX</span>(login_time), <span style="color:#66d9ef">MIN</span>(login_time)) <span style="color:#66d9ef">AS</span> days_active,
+</span></span><span style="display:flex;"><span>    ROUND(<span style="color:#66d9ef">COUNT</span>(<span style="color:#f92672">*</span>) <span style="color:#f92672">/</span> <span style="color:#66d9ef">NULLIF</span>(DATEDIFF(<span style="color:#66d9ef">MAX</span>(login_time), <span style="color:#66d9ef">MIN</span>(login_time)), <span style="color:#ae81ff">0</span>), <span style="color:#ae81ff">2</span>) <span style="color:#66d9ef">AS</span> logins_per_day,
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">CASE</span> 
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">WHEN</span> DATEDIFF(<span style="color:#66d9ef">CURRENT_DATE</span>(), <span style="color:#66d9ef">MAX</span>(login_time)) <span style="color:#f92672">&lt;=</span> <span style="color:#ae81ff">7</span> <span style="color:#66d9ef">THEN</span> <span style="color:#e6db74">&#39;活跃用户&#39;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">WHEN</span> DATEDIFF(<span style="color:#66d9ef">CURRENT_DATE</span>(), <span style="color:#66d9ef">MAX</span>(login_time)) <span style="color:#f92672">&lt;=</span> <span style="color:#ae81ff">30</span> <span style="color:#66d9ef">THEN</span> <span style="color:#e6db74">&#39;一般用户&#39;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">WHEN</span> DATEDIFF(<span style="color:#66d9ef">CURRENT_DATE</span>(), <span style="color:#66d9ef">MAX</span>(login_time)) <span style="color:#f92672">&lt;=</span> <span style="color:#ae81ff">90</span> <span style="color:#66d9ef">THEN</span> <span style="color:#e6db74">&#39;非活跃用户&#39;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">ELSE</span> <span style="color:#e6db74">&#39;休眠用户&#39;</span> 
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">END</span> <span style="color:#66d9ef">AS</span> user_status
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span> user_logins
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">GROUP</span> <span style="color:#66d9ef">BY</span> user_id
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">HAVING</span> <span style="color:#66d9ef">COUNT</span>(<span style="color:#f92672">*</span>) <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">ORDER</span> <span style="color:#66d9ef">BY</span> logins_per_day <span style="color:#66d9ef">DESC</span>;
+</span></span></code></pre></div><h3 id="动态透视表">动态透视表</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> 
+</span></span><span style="display:flex;"><span>    DATE_FORMAT(created_at, <span style="color:#e6db74">&#39;%Y-%m&#39;</span>) <span style="color:#66d9ef">AS</span> <span style="color:#66d9ef">month</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">SUM</span>(<span style="color:#66d9ef">CASE</span> <span style="color:#66d9ef">WHEN</span> status <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;completed&#39;</span> <span style="color:#66d9ef">THEN</span> <span style="color:#ae81ff">1</span> <span style="color:#66d9ef">ELSE</span> <span style="color:#ae81ff">0</span> <span style="color:#66d9ef">END</span>) <span style="color:#66d9ef">AS</span> completed_orders,
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">SUM</span>(<span style="color:#66d9ef">CASE</span> <span style="color:#66d9ef">WHEN</span> status <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;cancelled&#39;</span> <span style="color:#66d9ef">THEN</span> <span style="color:#ae81ff">1</span> <span style="color:#66d9ef">ELSE</span> <span style="color:#ae81ff">0</span> <span style="color:#66d9ef">END</span>) <span style="color:#66d9ef">AS</span> cancelled_orders,
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">SUM</span>(<span style="color:#66d9ef">CASE</span> <span style="color:#66d9ef">WHEN</span> status <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;pending&#39;</span> <span style="color:#66d9ef">THEN</span> <span style="color:#ae81ff">1</span> <span style="color:#66d9ef">ELSE</span> <span style="color:#ae81ff">0</span> <span style="color:#66d9ef">END</span>) <span style="color:#66d9ef">AS</span> pending_orders,
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">COUNT</span>(<span style="color:#f92672">*</span>) <span style="color:#66d9ef">AS</span> total_orders,
+</span></span><span style="display:flex;"><span>    ROUND(<span style="color:#66d9ef">SUM</span>(<span style="color:#66d9ef">CASE</span> <span style="color:#66d9ef">WHEN</span> status <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;completed&#39;</span> <span style="color:#66d9ef">THEN</span> <span style="color:#ae81ff">1</span> <span style="color:#66d9ef">ELSE</span> <span style="color:#ae81ff">0</span> <span style="color:#66d9ef">END</span>) <span style="color:#f92672">/</span> <span style="color:#66d9ef">COUNT</span>(<span style="color:#f92672">*</span>) <span style="color:#f92672">*</span> <span style="color:#ae81ff">100</span>, <span style="color:#ae81ff">2</span>) <span style="color:#66d9ef">AS</span> completion_rate,
+</span></span><span style="display:flex;"><span>    ROUND(<span style="color:#66d9ef">SUM</span>(<span style="color:#66d9ef">CASE</span> <span style="color:#66d9ef">WHEN</span> status <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;cancelled&#39;</span> <span style="color:#66d9ef">THEN</span> <span style="color:#ae81ff">1</span> <span style="color:#66d9ef">ELSE</span> <span style="color:#ae81ff">0</span> <span style="color:#66d9ef">END</span>) <span style="color:#f92672">/</span> <span style="color:#66d9ef">COUNT</span>(<span style="color:#f92672">*</span>) <span style="color:#f92672">*</span> <span style="color:#ae81ff">100</span>, <span style="color:#ae81ff">2</span>) <span style="color:#66d9ef">AS</span> cancellation_rate
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span> orders
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">GROUP</span> <span style="color:#66d9ef">BY</span> DATE_FORMAT(created_at, <span style="color:#e6db74">&#39;%Y-%m&#39;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">ORDER</span> <span style="color:#66d9ef">BY</span> <span style="color:#66d9ef">month</span>;
+</span></span></code></pre></div><h3 id="获取每个分类的最新产品">获取每个分类的最新产品</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">WITH</span> latest_products <span style="color:#66d9ef">AS</span> (
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">SELECT</span> 
+</span></span><span style="display:flex;"><span>        category_id,
+</span></span><span style="display:flex;"><span>        product_id,
+</span></span><span style="display:flex;"><span>        product_name,
+</span></span><span style="display:flex;"><span>        created_at,
+</span></span><span style="display:flex;"><span>        ROW_NUMBER() OVER (PARTITION <span style="color:#66d9ef">BY</span> category_id <span style="color:#66d9ef">ORDER</span> <span style="color:#66d9ef">BY</span> created_at <span style="color:#66d9ef">DESC</span>) <span style="color:#66d9ef">AS</span> rn
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">FROM</span> products
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">WHERE</span> status <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;active&#39;</span>
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> 
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">c</span>.category_name,
+</span></span><span style="display:flex;"><span>    p.product_id,
+</span></span><span style="display:flex;"><span>    p.product_name,
+</span></span><span style="display:flex;"><span>    p.created_at
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span> latest_products p
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">JOIN</span> categories <span style="color:#66d9ef">c</span> <span style="color:#66d9ef">ON</span> p.category_id <span style="color:#f92672">=</span> <span style="color:#66d9ef">c</span>.category_id
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">WHERE</span> p.rn <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;
+</span></span></code></pre></div><h3 id="数据清洗和标准化">数据清洗和标准化</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> 
+</span></span><span style="display:flex;"><span>    id,
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">TRIM</span>(<span style="color:#66d9ef">UPPER</span>(<span style="color:#66d9ef">SUBSTRING</span>(product_code, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">3</span>))) <span style="color:#66d9ef">AS</span> category_code,
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">CASE</span> 
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">WHEN</span> price_str REGEXP <span style="color:#e6db74">&#39;^[0-9]+(\.[0-9]+)?$&#39;</span> <span style="color:#66d9ef">THEN</span> 
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">CAST</span>(price_str <span style="color:#66d9ef">AS</span> DECIMAL(<span style="color:#ae81ff">10</span>,<span style="color:#ae81ff">2</span>))
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">ELSE</span> <span style="color:#66d9ef">NULL</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">END</span> <span style="color:#66d9ef">AS</span> clean_price,
+</span></span><span style="display:flex;"><span>    COALESCE(<span style="color:#66d9ef">NULLIF</span>(<span style="color:#66d9ef">TRIM</span>(description), <span style="color:#e6db74">&#39;&#39;</span>), <span style="color:#e6db74">&#39;No description available&#39;</span>) <span style="color:#66d9ef">AS</span> display_description,
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">CASE</span> 
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">WHEN</span> stock <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0</span> <span style="color:#66d9ef">THEN</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">ELSE</span> stock
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">END</span> <span style="color:#66d9ef">AS</span> corrected_stock,
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">CASE</span> 
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">WHEN</span> stock <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">10</span> <span style="color:#66d9ef">THEN</span> <span style="color:#e6db74">&#39;Low stock&#39;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">WHEN</span> stock <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">50</span> <span style="color:#66d9ef">THEN</span> <span style="color:#e6db74">&#39;Medium stock&#39;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">ELSE</span> <span style="color:#e6db74">&#39;High stock&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">END</span> <span style="color:#66d9ef">AS</span> stock_level,
+</span></span><span style="display:flex;"><span>    DATE_FORMAT(STR_TO_DATE(date_str, <span style="color:#e6db74">&#39;%m/%d/%Y&#39;</span>), <span style="color:#e6db74">&#39;%Y-%m-%d&#39;</span>) <span style="color:#66d9ef">AS</span> standardized_date
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span> raw_product_data;
+</span></span></code></pre></div><ul class="pa0">
+  
+   <li class="list di">
+     <a href="/tags/mysql/" class="link f5 grow br-pill ba ph3 pv2 mb2 dib black sans-serif no-underline">Mysql</a>
+   </li>
+  
+   <li class="list di">
+     <a href="/tags/pgsql/" class="link f5 grow br-pill ba ph3 pv2 mb2 dib black sans-serif no-underline">Pgsql</a>
+   </li>
+  
+</ul>
+<div class="mt6 instapaper_ignoref">
+      
+      
+      </div>
+    </div>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+  <div class="bg-light-gray pa3 nested-list-reset nested-copy-line-height nested-links">
+    <p class="f5 b mb3">Related</p>
+    <ul class="pa0 list">
+	   
+	     <li  class="mb2">
+          <a href="/posts/databases/pgsql_demo/">pg常用操作</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/interview/">面试指南</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/%E5%AE%9E%E6%88%98%E6%8A%80%E5%B7%A7/">实战技巧</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/databases/pgsql/">pgsql</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/databases/mysql%E6%97%A5%E5%BF%97/">mysql日志</a>
+        </li>
+	    
+    </ul>
+</div>
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white white-70 dn dib-ns pv2 ph3 no-underline" href="http://localhost:1313/" >
+    &copy;  loveyu233 2025 
+  </a>
+    <div><div class="ananke-socials"></div>
+</div>
+  </div>
+</footer>
+
+  </body>
+</html>

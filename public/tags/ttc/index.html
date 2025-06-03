@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>loveyu233</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="">
+    <meta name="generator" content="Hugo 0.147.7">
+    
+    
+    
+      <meta name="robots" content="noindex, nofollow">
+    
+    
+
+    
+<link rel="stylesheet" href="/ananke/css/main.min.css" >
+
+
+
+
+    
+
+
+    
+      
+
+    
+
+    
+    
+      <link href="/tags/ttc/index.xml" rel="alternate" type="application/rss+xml" title="loveyu233" />
+      <link href="/tags/ttc/index.xml" rel="feed" type="application/rss+xml" title="loveyu233" />
+      
+    
+
+    
+      <link rel="canonical" href="http://localhost:1313/tags/ttc/">
+    
+
+    <meta property="og:url" content="http://localhost:1313/tags/ttc/">
+  <meta property="og:site_name" content="loveyu233">
+  <meta property="og:title" content="TTC">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="website">
+
+  <meta itemprop="name" content="TTC">
+  <meta itemprop="datePublished" content="2023-09-22T16:54:10+08:00">
+  <meta itemprop="dateModified" content="2023-09-22T16:54:10+08:00">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="TTC">
+
+	
+  </head><body class="ma0 avenir bg-near-white development">
+
+    
+
+  <header>
+    <div class="pb3-m pb6-l bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l center items-center justify-between">
+    <a href="/" class="f3 fw2 hover-white white-90 dib no-underline">
+      
+        loveyu233
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      <div class="ananke-socials"></div>
+
+    </div>
+  </div>
+</nav>
+
+      <div class="tc-l pv3 ph3 ph4-ns">
+        <h1 class="f2 f-subheadline-l fw2 light-silver mb0 lh-title">
+          TTC
+        </h1>
+        
+      </div>
+    </div>
+  </header>
+
+
+    <main class="pb7" role="main">
+      
+  <article class="cf pa3 pa4-m pa4-l">
+    <div class="measure-wide-l center f4 lh-copy nested-copy-line-height nested-links mid-gray">
+      <p>Below you will find pages that utilize the taxonomy term “TTC”</p>
+    </div>
+  </article>
+  <div class="mw8 center">
+    <section class="flex-ns mt5 flex-wrap justify-around">
+      
+        <div class="w-100 mb4 relative bg-white">
+          <div class="w-100 mb4 nested-copy-line-height relative bg-white">
+  <div class="mb3 pa4 gray overflow-hidden bg-white">
+    <span class="f6 db">go</span>
+    <h1 class="f3 near-black">
+      <a href="/posts/go/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/" class="link black dim">
+        分布式事务
+      </a>
+    </h1>
+    <div class="nested-links f5 lh-copy nested-copy-line-height">
+      <p>来源文章:</p>
+<p><a href="https://mp.weixin.qq.com/s/Z-ZY9VYUzNER8iwk80XSxA">万字长文漫谈分布式事务实现原理</a></p>
+<p><a href="https://mp.weixin.qq.com/s/aTQ6mgVUbUqn69NLmXh_7A">从零到一搭建 TCC 分布式事务框架</a></p>
+<p><a href="https://learn.microsoft.com/zh-cn/azure/architecture/reference-architectures/saga/saga">微软SAGA解答</a></p>
+<p><a href="https://cloud.tencent.com/developer/article/1839642">10分钟说透Saga分布式事务</a></p>
+<p>现有实现:</p>
+<p><a href="https://dtm.pub/guide/start.html">DTM</a></p>
+<h1 id="事务的核心特征acid">事务的核心特征ACID</h1>
+<ol>
+<li>
+<h3 id="atomicity原子性">Atomicity原子性</h3>
+<ol>
+<li>全部成功或者全部失败</li>
+</ol>
+</li>
+<li>
+<h3 id="consistency一致性">Consistency一致性</h3>
+<ol>
+<li>宏观角度下的全局数据保持一致</li>
+</ol>
+</li>
+<li>
+<h3 id="isolation隔离性">Isolation隔离性</h3>
+<ol>
+<li>并发事务不互相干扰</li>
+</ol>
+</li>
+<li>
+<h3 id="durability持久性">Durability持久性</h3>
+<ol>
+<li>事务提交后，变更永久生效</li>
+</ol>
+</li>
+</ol>
+<h1 id="什么是分布式事务">什么是分布式事务</h1>
+<blockquote>
+<p><code>对两个或以上独立服务进行调用操作,保证这些操作同时成功或失败,在失败时要做到回滚操作,恢复到失败前的状态</code></p>
+<p>例如订单创建操作,分别有账户系统和库存系统</p>
+<p>在处理一笔来自用户创建订单的请求时，需要执行两步操作：</p>
+<ul>
+<li>从账户系统中，扣减用户的账户余额</li>
+<li>从库存系统中，扣减商品的剩余库存</li>
+</ul>
+<p>从技术流程上来讲，两个步骤是相对独立的两个操作，底层涉及到的存储介质也是相互独立的，因此无法基于本地事务的实现方式,所以需要分布式事务解决问题</p></blockquote>
+<h1 id="事务消息实现方案">事务消息实现方案</h1>
+<h2 id="概念">概念</h2>
+<p>偏狭义的分布式事务解决方案是<code>基于消息队列</code> MessageQueue（后续简称 MQ）实现的事务消息 Transaction Message.</p>
+<p><code>at least once : </code> 投递到 MQ 中的消息能至少被下游消费者 consumer 消费到一次.</p>
+<p>基于此，MQ 组件能够保证消息不会在消费环节丢失，但是无法解决消息的重复性问题. 因此，倘若我们需要追求精确消费一次的目标，则下游的 consumer 还需要<code>基于消息的唯一键执行幂等去重操作</code>，在 at least once 的基础上过滤掉重复消息，最终达到 <code>exactly once</code> 的语义.</p>
+<p>依赖于 MQ 中 at least once 的性质，我们简单认为，只要把一条消息成功投递到 MQ 组件中，它就<code>一定被下游 consumer 端消费端</code>，至少不会发生消息丢失的问题.</p>
+<h2 id="场景">场景</h2>
+<p>假如执行一个分布式事务，事务流程中包含需要在服务 A 中执行的动作 I 以及需要在服务 B 中执行的动作 II</p>
+    </div>
+    <a href="/posts/go/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/" class="ba b--moon-gray bg-light-gray br2 color-inherit dib f7 hover-bg-moon-gray link mt2 ph2 pv1">read more</a>
+  </div>
+</div>
+
+        </div>
+      
+    </section>
+  </div>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white white-70 dn dib-ns pv2 ph3 no-underline" href="http://localhost:1313/" >
+    &copy;  loveyu233 2025 
+  </a>
+    <div><div class="ananke-socials"></div>
+</div>
+  </div>
+</footer>
+
+  </body>
+</html>

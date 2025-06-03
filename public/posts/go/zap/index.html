@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>Zap | loveyu233</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="zap
+日志配置
+func getZapConfig() zapcore.EncoderConfig {
+	c := zap.NewProductionEncoderConfig()
+	c.EncodeTime = func(t time.Time, pae zapcore.PrimitiveArrayEncoder) {
+		pae.AppendString(t.Format((&#34;[GIN_ZVCJ] &#34; &#43; &#34;2006/01/02 - 15:04:05.000&#34;)))
+	}
+	c.EncodeLevel = func(l zapcore.Level, pae zapcore.PrimitiveArrayEncoder) {
+		pae.AppendString(&#34;[&#34; &#43; l.CapitalString() &#43; &#34;]&#34;)
+	}
+	c.EncodeCaller = func(ec zapcore.EntryCaller, pae zapcore.PrimitiveArrayEncoder) {
+		pae.AppendString(&#34;[&#34; &#43; ec.TrimmedPath() &#43; &#34;]&#34;)
+	}
+	return c
+}
+日志分割
+func getZapWrite(filename string) zapcore.WriteSyncer {
+	lumberjack := &amp;lumberjack.Logger{
+		Filename:   filename,
+		MaxSize:    10,
+		MaxAge:     30,
+		MaxBackups: 5,
+		Compress:   true,
+	}
+	return zapcore.AddSync(lumberjack)
+}
+创建core
+func newZapCore(filename string, level zapcore.LevelEnabler) zapcore.Core {
+	return zapcore.NewCore(getZapEncode(), getZapWrite(filename), level)
+}
+
+func getZapEncode() zapcore.Encoder {
+	return zapcore.NewConsoleEncoder(getZapConfig())
+}
+日志初始化
+func ZapInit() *zap.Logger {
+	info := zap.LevelEnablerFunc(func(l zapcore.Level) bool {
+		return l == zap.InfoLevel
+	})
+	debug := zap.LevelEnablerFunc(func(l zapcore.Level) bool {
+		return l == zap.DebugLevel
+	})
+	warn := zap.LevelEnablerFunc(func(l zapcore.Level) bool {
+		return l == zap.WarnLevel
+	})
+	error := zap.LevelEnablerFunc(func(l zapcore.Level) bool {
+		return l &gt;= zap.ErrorLevel
+	})
+
+	t := time.Now().Format(&#34;2006-01-02&#34;)
+	cores := [...]zapcore.Core{
+		newZapCore(fmt.Sprintf(&#34;%s/%s/info.log&#34;, &#34;log&#34;, t), info),
+		newZapCore(fmt.Sprintf(&#34;%s/%s/debug.log&#34;, &#34;debug&#34;, t), debug),
+		newZapCore(fmt.Sprintf(&#34;%s/%s/warn.log&#34;, &#34;warn&#34;, t), warn),
+		newZapCore(fmt.Sprintf(&#34;%s/%s/error.log&#34;, &#34;error&#34;, t), error),
+	}
+	return zap.New(zapcore.NewTee(cores[:]...), zap.AddCaller())
+}
+gin使用zap日志
+配置gin处理
+// 日志处理
+func GinLogger() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		start := time.Now()
+		path := c.Request.URL.Path
+		query := c.Request.URL.RawQuery
+		c.Next()
+		cost := time.Since(start)
+		global.GZV_LOG.Info(path,
+			zap.Int(&#34;status&#34;, c.Writer.Status()),
+			zap.String(&#34;method&#34;, c.Request.Method),
+			zap.String(&#34;path&#34;, path),
+			zap.String(&#34;query&#34;, query),
+			zap.String(&#34;ip&#34;, c.ClientIP()),
+			zap.String(&#34;user-agent&#34;, c.Request.UserAgent()),
+			zap.String(&#34;errors&#34;, c.Errors.ByType(gin.ErrorTypePrivate).String()),
+			zap.Duration(&#34;cost&#34;, cost),
+		)
+	}
+}
+
+// 错误处理
+func GinRecovery(stack bool) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		defer func() {
+			if err := recover(); err != nil {
+				var brokenPipe bool
+				if ne, ok := err.(*net.OpError); ok {
+					if se, ok := ne.Err.(*os.SyscallError); ok {
+						if strings.Contains(strings.ToLower(se.Error()), &#34;broken pipe&#34;) || strings.Contains(strings.ToLower(se.Error()), &#34;connection reset by peer&#34;) {
+							brokenPipe = true
+						}
+					}
+				}
+
+				httpRequest, _ := httputil.DumpRequest(c.Request, false)
+				if brokenPipe {
+					global.GZV_LOG.Error(c.Request.URL.Path,
+						zap.Any(&#34;error&#34;, err),
+						zap.String(&#34;request&#34;, string(httpRequest)),
+					)
+					c.Error(err.(error))
+					c.Abort()
+					return
+				}
+
+				if stack {
+					global.GZV_LOG.Error(&#34;[Recovery from panic]&#34;,
+						zap.Any(&#34;error&#34;, err),
+						zap.String(&#34;request&#34;, string(httpRequest)),
+						zap.String(&#34;stack&#34;, string(debug.Stack())),
+					)
+				} else {
+					global.GZV_LOG.Error(&#34;[Recovery from panic]&#34;,
+						zap.Any(&#34;error&#34;, err),
+						zap.String(&#34;request&#34;, string(httpRequest)),
+					)
+				}
+				c.AbortWithStatus(http.StatusInternalServerError)
+			}
+		}()
+		c.Next()
+	}
+}
+使用
+e := gin.Default()
+e.Use(config.GinRecovery(true), config.GinLogger())
+">
+    <meta name="generator" content="Hugo 0.147.7">
+    
+    
+    
+      <meta name="robots" content="noindex, nofollow">
+    
+    <meta name="author" content="loveyu">
+    
+
+    
+<link rel="stylesheet" href="/ananke/css/main.min.css" >
+
+
+
+
+    
+
+
+    
+      
+
+    
+
+    
+
+    
+      <link rel="canonical" href="http://localhost:1313/posts/go/zap/">
+    
+
+    <meta property="og:url" content="http://localhost:1313/posts/go/zap/">
+  <meta property="og:site_name" content="loveyu233">
+  <meta property="og:title" content="Zap">
+  <meta property="og:description" content="zap 日志配置 func getZapConfig() zapcore.EncoderConfig { c := zap.NewProductionEncoderConfig() c.EncodeTime = func(t time.Time, pae zapcore.PrimitiveArrayEncoder) { pae.AppendString(t.Format((&#34;[GIN_ZVCJ] &#34; &#43; &#34;2006/01/02 - 15:04:05.000&#34;))) } c.EncodeLevel = func(l zapcore.Level, pae zapcore.PrimitiveArrayEncoder) { pae.AppendString(&#34;[&#34; &#43; l.CapitalString() &#43; &#34;]&#34;) } c.EncodeCaller = func(ec zapcore.EntryCaller, pae zapcore.PrimitiveArrayEncoder) { pae.AppendString(&#34;[&#34; &#43; ec.TrimmedPath() &#43; &#34;]&#34;) } return c } 日志分割 func getZapWrite(filename string) zapcore.WriteSyncer { lumberjack := &amp;lumberjack.Logger{ Filename: filename, MaxSize: 10, MaxAge: 30, MaxBackups: 5, Compress: true, } return zapcore.AddSync(lumberjack) } 创建core func newZapCore(filename string, level zapcore.LevelEnabler) zapcore.Core { return zapcore.NewCore(getZapEncode(), getZapWrite(filename), level) } func getZapEncode() zapcore.Encoder { return zapcore.NewConsoleEncoder(getZapConfig()) } 日志初始化 func ZapInit() *zap.Logger { info := zap.LevelEnablerFunc(func(l zapcore.Level) bool { return l == zap.InfoLevel }) debug := zap.LevelEnablerFunc(func(l zapcore.Level) bool { return l == zap.DebugLevel }) warn := zap.LevelEnablerFunc(func(l zapcore.Level) bool { return l == zap.WarnLevel }) error := zap.LevelEnablerFunc(func(l zapcore.Level) bool { return l &gt;= zap.ErrorLevel }) t := time.Now().Format(&#34;2006-01-02&#34;) cores := [...]zapcore.Core{ newZapCore(fmt.Sprintf(&#34;%s/%s/info.log&#34;, &#34;log&#34;, t), info), newZapCore(fmt.Sprintf(&#34;%s/%s/debug.log&#34;, &#34;debug&#34;, t), debug), newZapCore(fmt.Sprintf(&#34;%s/%s/warn.log&#34;, &#34;warn&#34;, t), warn), newZapCore(fmt.Sprintf(&#34;%s/%s/error.log&#34;, &#34;error&#34;, t), error), } return zap.New(zapcore.NewTee(cores[:]...), zap.AddCaller()) } gin使用zap日志 配置gin处理 // 日志处理 func GinLogger() gin.HandlerFunc { return func(c *gin.Context) { start := time.Now() path := c.Request.URL.Path query := c.Request.URL.RawQuery c.Next() cost := time.Since(start) global.GZV_LOG.Info(path, zap.Int(&#34;status&#34;, c.Writer.Status()), zap.String(&#34;method&#34;, c.Request.Method), zap.String(&#34;path&#34;, path), zap.String(&#34;query&#34;, query), zap.String(&#34;ip&#34;, c.ClientIP()), zap.String(&#34;user-agent&#34;, c.Request.UserAgent()), zap.String(&#34;errors&#34;, c.Errors.ByType(gin.ErrorTypePrivate).String()), zap.Duration(&#34;cost&#34;, cost), ) } } // 错误处理 func GinRecovery(stack bool) gin.HandlerFunc { return func(c *gin.Context) { defer func() { if err := recover(); err != nil { var brokenPipe bool if ne, ok := err.(*net.OpError); ok { if se, ok := ne.Err.(*os.SyscallError); ok { if strings.Contains(strings.ToLower(se.Error()), &#34;broken pipe&#34;) || strings.Contains(strings.ToLower(se.Error()), &#34;connection reset by peer&#34;) { brokenPipe = true } } } httpRequest, _ := httputil.DumpRequest(c.Request, false) if brokenPipe { global.GZV_LOG.Error(c.Request.URL.Path, zap.Any(&#34;error&#34;, err), zap.String(&#34;request&#34;, string(httpRequest)), ) c.Error(err.(error)) c.Abort() return } if stack { global.GZV_LOG.Error(&#34;[Recovery from panic]&#34;, zap.Any(&#34;error&#34;, err), zap.String(&#34;request&#34;, string(httpRequest)), zap.String(&#34;stack&#34;, string(debug.Stack())), ) } else { global.GZV_LOG.Error(&#34;[Recovery from panic]&#34;, zap.Any(&#34;error&#34;, err), zap.String(&#34;request&#34;, string(httpRequest)), ) } c.AbortWithStatus(http.StatusInternalServerError) } }() c.Next() } } 使用 e := gin.Default() e.Use(config.GinRecovery(true), config.GinLogger())">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2020-01-04T11:31:31+08:00">
+    <meta property="article:modified_time" content="2020-01-04T11:31:31+08:00">
+    <meta property="article:tag" content="Go">
+    <meta property="article:tag" content="Zap">
+
+  <meta itemprop="name" content="Zap">
+  <meta itemprop="description" content="zap 日志配置 func getZapConfig() zapcore.EncoderConfig { c := zap.NewProductionEncoderConfig() c.EncodeTime = func(t time.Time, pae zapcore.PrimitiveArrayEncoder) { pae.AppendString(t.Format((&#34;[GIN_ZVCJ] &#34; &#43; &#34;2006/01/02 - 15:04:05.000&#34;))) } c.EncodeLevel = func(l zapcore.Level, pae zapcore.PrimitiveArrayEncoder) { pae.AppendString(&#34;[&#34; &#43; l.CapitalString() &#43; &#34;]&#34;) } c.EncodeCaller = func(ec zapcore.EntryCaller, pae zapcore.PrimitiveArrayEncoder) { pae.AppendString(&#34;[&#34; &#43; ec.TrimmedPath() &#43; &#34;]&#34;) } return c } 日志分割 func getZapWrite(filename string) zapcore.WriteSyncer { lumberjack := &amp;lumberjack.Logger{ Filename: filename, MaxSize: 10, MaxAge: 30, MaxBackups: 5, Compress: true, } return zapcore.AddSync(lumberjack) } 创建core func newZapCore(filename string, level zapcore.LevelEnabler) zapcore.Core { return zapcore.NewCore(getZapEncode(), getZapWrite(filename), level) } func getZapEncode() zapcore.Encoder { return zapcore.NewConsoleEncoder(getZapConfig()) } 日志初始化 func ZapInit() *zap.Logger { info := zap.LevelEnablerFunc(func(l zapcore.Level) bool { return l == zap.InfoLevel }) debug := zap.LevelEnablerFunc(func(l zapcore.Level) bool { return l == zap.DebugLevel }) warn := zap.LevelEnablerFunc(func(l zapcore.Level) bool { return l == zap.WarnLevel }) error := zap.LevelEnablerFunc(func(l zapcore.Level) bool { return l &gt;= zap.ErrorLevel }) t := time.Now().Format(&#34;2006-01-02&#34;) cores := [...]zapcore.Core{ newZapCore(fmt.Sprintf(&#34;%s/%s/info.log&#34;, &#34;log&#34;, t), info), newZapCore(fmt.Sprintf(&#34;%s/%s/debug.log&#34;, &#34;debug&#34;, t), debug), newZapCore(fmt.Sprintf(&#34;%s/%s/warn.log&#34;, &#34;warn&#34;, t), warn), newZapCore(fmt.Sprintf(&#34;%s/%s/error.log&#34;, &#34;error&#34;, t), error), } return zap.New(zapcore.NewTee(cores[:]...), zap.AddCaller()) } gin使用zap日志 配置gin处理 // 日志处理 func GinLogger() gin.HandlerFunc { return func(c *gin.Context) { start := time.Now() path := c.Request.URL.Path query := c.Request.URL.RawQuery c.Next() cost := time.Since(start) global.GZV_LOG.Info(path, zap.Int(&#34;status&#34;, c.Writer.Status()), zap.String(&#34;method&#34;, c.Request.Method), zap.String(&#34;path&#34;, path), zap.String(&#34;query&#34;, query), zap.String(&#34;ip&#34;, c.ClientIP()), zap.String(&#34;user-agent&#34;, c.Request.UserAgent()), zap.String(&#34;errors&#34;, c.Errors.ByType(gin.ErrorTypePrivate).String()), zap.Duration(&#34;cost&#34;, cost), ) } } // 错误处理 func GinRecovery(stack bool) gin.HandlerFunc { return func(c *gin.Context) { defer func() { if err := recover(); err != nil { var brokenPipe bool if ne, ok := err.(*net.OpError); ok { if se, ok := ne.Err.(*os.SyscallError); ok { if strings.Contains(strings.ToLower(se.Error()), &#34;broken pipe&#34;) || strings.Contains(strings.ToLower(se.Error()), &#34;connection reset by peer&#34;) { brokenPipe = true } } } httpRequest, _ := httputil.DumpRequest(c.Request, false) if brokenPipe { global.GZV_LOG.Error(c.Request.URL.Path, zap.Any(&#34;error&#34;, err), zap.String(&#34;request&#34;, string(httpRequest)), ) c.Error(err.(error)) c.Abort() return } if stack { global.GZV_LOG.Error(&#34;[Recovery from panic]&#34;, zap.Any(&#34;error&#34;, err), zap.String(&#34;request&#34;, string(httpRequest)), zap.String(&#34;stack&#34;, string(debug.Stack())), ) } else { global.GZV_LOG.Error(&#34;[Recovery from panic]&#34;, zap.Any(&#34;error&#34;, err), zap.String(&#34;request&#34;, string(httpRequest)), ) } c.AbortWithStatus(http.StatusInternalServerError) } }() c.Next() } } 使用 e := gin.Default() e.Use(config.GinRecovery(true), config.GinLogger())">
+  <meta itemprop="datePublished" content="2020-01-04T11:31:31+08:00">
+  <meta itemprop="dateModified" content="2020-01-04T11:31:31+08:00">
+  <meta itemprop="wordCount" content="327">
+  <meta itemprop="keywords" content="Go,Zap">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Zap">
+  <meta name="twitter:description" content="zap 日志配置 func getZapConfig() zapcore.EncoderConfig { c := zap.NewProductionEncoderConfig() c.EncodeTime = func(t time.Time, pae zapcore.PrimitiveArrayEncoder) { pae.AppendString(t.Format((&#34;[GIN_ZVCJ] &#34; &#43; &#34;2006/01/02 - 15:04:05.000&#34;))) } c.EncodeLevel = func(l zapcore.Level, pae zapcore.PrimitiveArrayEncoder) { pae.AppendString(&#34;[&#34; &#43; l.CapitalString() &#43; &#34;]&#34;) } c.EncodeCaller = func(ec zapcore.EntryCaller, pae zapcore.PrimitiveArrayEncoder) { pae.AppendString(&#34;[&#34; &#43; ec.TrimmedPath() &#43; &#34;]&#34;) } return c } 日志分割 func getZapWrite(filename string) zapcore.WriteSyncer { lumberjack := &amp;lumberjack.Logger{ Filename: filename, MaxSize: 10, MaxAge: 30, MaxBackups: 5, Compress: true, } return zapcore.AddSync(lumberjack) } 创建core func newZapCore(filename string, level zapcore.LevelEnabler) zapcore.Core { return zapcore.NewCore(getZapEncode(), getZapWrite(filename), level) } func getZapEncode() zapcore.Encoder { return zapcore.NewConsoleEncoder(getZapConfig()) } 日志初始化 func ZapInit() *zap.Logger { info := zap.LevelEnablerFunc(func(l zapcore.Level) bool { return l == zap.InfoLevel }) debug := zap.LevelEnablerFunc(func(l zapcore.Level) bool { return l == zap.DebugLevel }) warn := zap.LevelEnablerFunc(func(l zapcore.Level) bool { return l == zap.WarnLevel }) error := zap.LevelEnablerFunc(func(l zapcore.Level) bool { return l &gt;= zap.ErrorLevel }) t := time.Now().Format(&#34;2006-01-02&#34;) cores := [...]zapcore.Core{ newZapCore(fmt.Sprintf(&#34;%s/%s/info.log&#34;, &#34;log&#34;, t), info), newZapCore(fmt.Sprintf(&#34;%s/%s/debug.log&#34;, &#34;debug&#34;, t), debug), newZapCore(fmt.Sprintf(&#34;%s/%s/warn.log&#34;, &#34;warn&#34;, t), warn), newZapCore(fmt.Sprintf(&#34;%s/%s/error.log&#34;, &#34;error&#34;, t), error), } return zap.New(zapcore.NewTee(cores[:]...), zap.AddCaller()) } gin使用zap日志 配置gin处理 // 日志处理 func GinLogger() gin.HandlerFunc { return func(c *gin.Context) { start := time.Now() path := c.Request.URL.Path query := c.Request.URL.RawQuery c.Next() cost := time.Since(start) global.GZV_LOG.Info(path, zap.Int(&#34;status&#34;, c.Writer.Status()), zap.String(&#34;method&#34;, c.Request.Method), zap.String(&#34;path&#34;, path), zap.String(&#34;query&#34;, query), zap.String(&#34;ip&#34;, c.ClientIP()), zap.String(&#34;user-agent&#34;, c.Request.UserAgent()), zap.String(&#34;errors&#34;, c.Errors.ByType(gin.ErrorTypePrivate).String()), zap.Duration(&#34;cost&#34;, cost), ) } } // 错误处理 func GinRecovery(stack bool) gin.HandlerFunc { return func(c *gin.Context) { defer func() { if err := recover(); err != nil { var brokenPipe bool if ne, ok := err.(*net.OpError); ok { if se, ok := ne.Err.(*os.SyscallError); ok { if strings.Contains(strings.ToLower(se.Error()), &#34;broken pipe&#34;) || strings.Contains(strings.ToLower(se.Error()), &#34;connection reset by peer&#34;) { brokenPipe = true } } } httpRequest, _ := httputil.DumpRequest(c.Request, false) if brokenPipe { global.GZV_LOG.Error(c.Request.URL.Path, zap.Any(&#34;error&#34;, err), zap.String(&#34;request&#34;, string(httpRequest)), ) c.Error(err.(error)) c.Abort() return } if stack { global.GZV_LOG.Error(&#34;[Recovery from panic]&#34;, zap.Any(&#34;error&#34;, err), zap.String(&#34;request&#34;, string(httpRequest)), zap.String(&#34;stack&#34;, string(debug.Stack())), ) } else { global.GZV_LOG.Error(&#34;[Recovery from panic]&#34;, zap.Any(&#34;error&#34;, err), zap.String(&#34;request&#34;, string(httpRequest)), ) } c.AbortWithStatus(http.StatusInternalServerError) } }() c.Next() } } 使用 e := gin.Default() e.Use(config.GinRecovery(true), config.GinLogger())">
+
+	
+  </head><body class="ma0 avenir bg-near-white development">
+
+    
+   
+  
+
+  <header>
+    <div class="bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l center items-center justify-between">
+    <a href="/" class="f3 fw2 hover-white white-90 dib no-underline">
+      
+        loveyu233
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      <div class="ananke-socials"></div>
+
+    </div>
+  </div>
+</nav>
+
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  
+  <article class="flex-l mw8 center ph3 flex-wrap justify-between">
+    <header class="mt4 w-100">
+      <aside class="instapaper_ignoref b helvetica tracked ttu">
+          
+        go
+      </aside><div id="sharing" class="mt3 ananke-socials"></div>
+<h1 class="f1 athelas mt3 mb1">Zap</h1>
+      
+      <p class="tracked"><strong>loveyu</strong>
+      </p>
+      
+      
+      
+      <time class="f6 mv4 dib tracked" datetime="2020-01-04T11:31:31+08:00">January 4, 2020</time>
+      
+
+      
+      
+    </header>
+    <div class="nested-copy-line-height lh-copy serif f4 nested-links mid-gray pr4-l w-two-thirds-l"><h1 id="zap">zap</h1>
+<h2 id="日志配置">日志配置</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">getZapConfig</span>() <span style="color:#a6e22e">zapcore</span>.<span style="color:#a6e22e">EncoderConfig</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">c</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">zap</span>.<span style="color:#a6e22e">NewProductionEncoderConfig</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">EncodeTime</span> = <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">t</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Time</span>, <span style="color:#a6e22e">pae</span> <span style="color:#a6e22e">zapcore</span>.<span style="color:#a6e22e">PrimitiveArrayEncoder</span>) {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">pae</span>.<span style="color:#a6e22e">AppendString</span>(<span style="color:#a6e22e">t</span>.<span style="color:#a6e22e">Format</span>((<span style="color:#e6db74">&#34;[GIN_ZVCJ] &#34;</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;2006/01/02 - 15:04:05.000&#34;</span>)))
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">EncodeLevel</span> = <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">l</span> <span style="color:#a6e22e">zapcore</span>.<span style="color:#a6e22e">Level</span>, <span style="color:#a6e22e">pae</span> <span style="color:#a6e22e">zapcore</span>.<span style="color:#a6e22e">PrimitiveArrayEncoder</span>) {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">pae</span>.<span style="color:#a6e22e">AppendString</span>(<span style="color:#e6db74">&#34;[&#34;</span> <span style="color:#f92672">+</span> <span style="color:#a6e22e">l</span>.<span style="color:#a6e22e">CapitalString</span>() <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;]&#34;</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">EncodeCaller</span> = <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">ec</span> <span style="color:#a6e22e">zapcore</span>.<span style="color:#a6e22e">EntryCaller</span>, <span style="color:#a6e22e">pae</span> <span style="color:#a6e22e">zapcore</span>.<span style="color:#a6e22e">PrimitiveArrayEncoder</span>) {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">pae</span>.<span style="color:#a6e22e">AppendString</span>(<span style="color:#e6db74">&#34;[&#34;</span> <span style="color:#f92672">+</span> <span style="color:#a6e22e">ec</span>.<span style="color:#a6e22e">TrimmedPath</span>() <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;]&#34;</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">c</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="日志分割">日志分割</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">getZapWrite</span>(<span style="color:#a6e22e">filename</span> <span style="color:#66d9ef">string</span>) <span style="color:#a6e22e">zapcore</span>.<span style="color:#a6e22e">WriteSyncer</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">lumberjack</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">lumberjack</span>.<span style="color:#a6e22e">Logger</span>{
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">Filename</span>:   <span style="color:#a6e22e">filename</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">MaxSize</span>:    <span style="color:#ae81ff">10</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">MaxAge</span>:     <span style="color:#ae81ff">30</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">MaxBackups</span>: <span style="color:#ae81ff">5</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">Compress</span>:   <span style="color:#66d9ef">true</span>,
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">zapcore</span>.<span style="color:#a6e22e">AddSync</span>(<span style="color:#a6e22e">lumberjack</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="创建core">创建core</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">newZapCore</span>(<span style="color:#a6e22e">filename</span> <span style="color:#66d9ef">string</span>, <span style="color:#a6e22e">level</span> <span style="color:#a6e22e">zapcore</span>.<span style="color:#a6e22e">LevelEnabler</span>) <span style="color:#a6e22e">zapcore</span>.<span style="color:#a6e22e">Core</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">zapcore</span>.<span style="color:#a6e22e">NewCore</span>(<span style="color:#a6e22e">getZapEncode</span>(), <span style="color:#a6e22e">getZapWrite</span>(<span style="color:#a6e22e">filename</span>), <span style="color:#a6e22e">level</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">getZapEncode</span>() <span style="color:#a6e22e">zapcore</span>.<span style="color:#a6e22e">Encoder</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">zapcore</span>.<span style="color:#a6e22e">NewConsoleEncoder</span>(<span style="color:#a6e22e">getZapConfig</span>())
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="日志初始化">日志初始化</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">ZapInit</span>() <span style="color:#f92672">*</span><span style="color:#a6e22e">zap</span>.<span style="color:#a6e22e">Logger</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">info</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">zap</span>.<span style="color:#a6e22e">LevelEnablerFunc</span>(<span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">l</span> <span style="color:#a6e22e">zapcore</span>.<span style="color:#a6e22e">Level</span>) <span style="color:#66d9ef">bool</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">l</span> <span style="color:#f92672">==</span> <span style="color:#a6e22e">zap</span>.<span style="color:#a6e22e">InfoLevel</span>
+</span></span><span style="display:flex;"><span>	})
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">debug</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">zap</span>.<span style="color:#a6e22e">LevelEnablerFunc</span>(<span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">l</span> <span style="color:#a6e22e">zapcore</span>.<span style="color:#a6e22e">Level</span>) <span style="color:#66d9ef">bool</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">l</span> <span style="color:#f92672">==</span> <span style="color:#a6e22e">zap</span>.<span style="color:#a6e22e">DebugLevel</span>
+</span></span><span style="display:flex;"><span>	})
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">warn</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">zap</span>.<span style="color:#a6e22e">LevelEnablerFunc</span>(<span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">l</span> <span style="color:#a6e22e">zapcore</span>.<span style="color:#a6e22e">Level</span>) <span style="color:#66d9ef">bool</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">l</span> <span style="color:#f92672">==</span> <span style="color:#a6e22e">zap</span>.<span style="color:#a6e22e">WarnLevel</span>
+</span></span><span style="display:flex;"><span>	})
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">error</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">zap</span>.<span style="color:#a6e22e">LevelEnablerFunc</span>(<span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">l</span> <span style="color:#a6e22e">zapcore</span>.<span style="color:#a6e22e">Level</span>) <span style="color:#66d9ef">bool</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">l</span> <span style="color:#f92672">&gt;=</span> <span style="color:#a6e22e">zap</span>.<span style="color:#a6e22e">ErrorLevel</span>
+</span></span><span style="display:flex;"><span>	})
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">t</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Now</span>().<span style="color:#a6e22e">Format</span>(<span style="color:#e6db74">&#34;2006-01-02&#34;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">cores</span> <span style="color:#f92672">:=</span> [<span style="color:#f92672">...</span>]<span style="color:#a6e22e">zapcore</span>.<span style="color:#a6e22e">Core</span>{
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">newZapCore</span>(<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Sprintf</span>(<span style="color:#e6db74">&#34;%s/%s/info.log&#34;</span>, <span style="color:#e6db74">&#34;log&#34;</span>, <span style="color:#a6e22e">t</span>), <span style="color:#a6e22e">info</span>),
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">newZapCore</span>(<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Sprintf</span>(<span style="color:#e6db74">&#34;%s/%s/debug.log&#34;</span>, <span style="color:#e6db74">&#34;debug&#34;</span>, <span style="color:#a6e22e">t</span>), <span style="color:#a6e22e">debug</span>),
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">newZapCore</span>(<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Sprintf</span>(<span style="color:#e6db74">&#34;%s/%s/warn.log&#34;</span>, <span style="color:#e6db74">&#34;warn&#34;</span>, <span style="color:#a6e22e">t</span>), <span style="color:#a6e22e">warn</span>),
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">newZapCore</span>(<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Sprintf</span>(<span style="color:#e6db74">&#34;%s/%s/error.log&#34;</span>, <span style="color:#e6db74">&#34;error&#34;</span>, <span style="color:#a6e22e">t</span>), <span style="color:#66d9ef">error</span>),
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">zap</span>.<span style="color:#a6e22e">New</span>(<span style="color:#a6e22e">zapcore</span>.<span style="color:#a6e22e">NewTee</span>(<span style="color:#a6e22e">cores</span>[:]<span style="color:#f92672">...</span>), <span style="color:#a6e22e">zap</span>.<span style="color:#a6e22e">AddCaller</span>())
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="gin使用zap日志">gin使用zap日志</h1>
+<h2 id="配置gin处理">配置gin处理</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">// 日志处理</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">GinLogger</span>() <span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">HandlerFunc</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Context</span>) {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">start</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Now</span>()
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">path</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">Request</span>.<span style="color:#a6e22e">URL</span>.<span style="color:#a6e22e">Path</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">query</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">Request</span>.<span style="color:#a6e22e">URL</span>.<span style="color:#a6e22e">RawQuery</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">Next</span>()
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">cost</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Since</span>(<span style="color:#a6e22e">start</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">global</span>.<span style="color:#a6e22e">GZV_LOG</span>.<span style="color:#a6e22e">Info</span>(<span style="color:#a6e22e">path</span>,
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">zap</span>.<span style="color:#a6e22e">Int</span>(<span style="color:#e6db74">&#34;status&#34;</span>, <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">Writer</span>.<span style="color:#a6e22e">Status</span>()),
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">zap</span>.<span style="color:#a6e22e">String</span>(<span style="color:#e6db74">&#34;method&#34;</span>, <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">Request</span>.<span style="color:#a6e22e">Method</span>),
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">zap</span>.<span style="color:#a6e22e">String</span>(<span style="color:#e6db74">&#34;path&#34;</span>, <span style="color:#a6e22e">path</span>),
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">zap</span>.<span style="color:#a6e22e">String</span>(<span style="color:#e6db74">&#34;query&#34;</span>, <span style="color:#a6e22e">query</span>),
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">zap</span>.<span style="color:#a6e22e">String</span>(<span style="color:#e6db74">&#34;ip&#34;</span>, <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">ClientIP</span>()),
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">zap</span>.<span style="color:#a6e22e">String</span>(<span style="color:#e6db74">&#34;user-agent&#34;</span>, <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">Request</span>.<span style="color:#a6e22e">UserAgent</span>()),
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">zap</span>.<span style="color:#a6e22e">String</span>(<span style="color:#e6db74">&#34;errors&#34;</span>, <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">Errors</span>.<span style="color:#a6e22e">ByType</span>(<span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">ErrorTypePrivate</span>).<span style="color:#a6e22e">String</span>()),
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">zap</span>.<span style="color:#a6e22e">Duration</span>(<span style="color:#e6db74">&#34;cost&#34;</span>, <span style="color:#a6e22e">cost</span>),
+</span></span><span style="display:flex;"><span>		)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 错误处理</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">GinRecovery</span>(<span style="color:#a6e22e">stack</span> <span style="color:#66d9ef">bool</span>) <span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">HandlerFunc</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Context</span>) {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">defer</span> <span style="color:#66d9ef">func</span>() {
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> recover(); <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">brokenPipe</span> <span style="color:#66d9ef">bool</span>
+</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">ne</span>, <span style="color:#a6e22e">ok</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">err</span>.(<span style="color:#f92672">*</span><span style="color:#a6e22e">net</span>.<span style="color:#a6e22e">OpError</span>); <span style="color:#a6e22e">ok</span> {
+</span></span><span style="display:flex;"><span>					<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">se</span>, <span style="color:#a6e22e">ok</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">ne</span>.<span style="color:#a6e22e">Err</span>.(<span style="color:#f92672">*</span><span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">SyscallError</span>); <span style="color:#a6e22e">ok</span> {
+</span></span><span style="display:flex;"><span>						<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">strings</span>.<span style="color:#a6e22e">Contains</span>(<span style="color:#a6e22e">strings</span>.<span style="color:#a6e22e">ToLower</span>(<span style="color:#a6e22e">se</span>.<span style="color:#a6e22e">Error</span>()), <span style="color:#e6db74">&#34;broken pipe&#34;</span>) <span style="color:#f92672">||</span> <span style="color:#a6e22e">strings</span>.<span style="color:#a6e22e">Contains</span>(<span style="color:#a6e22e">strings</span>.<span style="color:#a6e22e">ToLower</span>(<span style="color:#a6e22e">se</span>.<span style="color:#a6e22e">Error</span>()), <span style="color:#e6db74">&#34;connection reset by peer&#34;</span>) {
+</span></span><span style="display:flex;"><span>							<span style="color:#a6e22e">brokenPipe</span> = <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>						}
+</span></span><span style="display:flex;"><span>					}
+</span></span><span style="display:flex;"><span>				}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>				<span style="color:#a6e22e">httpRequest</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">httputil</span>.<span style="color:#a6e22e">DumpRequest</span>(<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">Request</span>, <span style="color:#66d9ef">false</span>)
+</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">brokenPipe</span> {
+</span></span><span style="display:flex;"><span>					<span style="color:#a6e22e">global</span>.<span style="color:#a6e22e">GZV_LOG</span>.<span style="color:#a6e22e">Error</span>(<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">Request</span>.<span style="color:#a6e22e">URL</span>.<span style="color:#a6e22e">Path</span>,
+</span></span><span style="display:flex;"><span>						<span style="color:#a6e22e">zap</span>.<span style="color:#a6e22e">Any</span>(<span style="color:#e6db74">&#34;error&#34;</span>, <span style="color:#a6e22e">err</span>),
+</span></span><span style="display:flex;"><span>						<span style="color:#a6e22e">zap</span>.<span style="color:#a6e22e">String</span>(<span style="color:#e6db74">&#34;request&#34;</span>, string(<span style="color:#a6e22e">httpRequest</span>)),
+</span></span><span style="display:flex;"><span>					)
+</span></span><span style="display:flex;"><span>					<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">Error</span>(<span style="color:#a6e22e">err</span>.(<span style="color:#66d9ef">error</span>))
+</span></span><span style="display:flex;"><span>					<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">Abort</span>()
+</span></span><span style="display:flex;"><span>					<span style="color:#66d9ef">return</span>
+</span></span><span style="display:flex;"><span>				}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">stack</span> {
+</span></span><span style="display:flex;"><span>					<span style="color:#a6e22e">global</span>.<span style="color:#a6e22e">GZV_LOG</span>.<span style="color:#a6e22e">Error</span>(<span style="color:#e6db74">&#34;[Recovery from panic]&#34;</span>,
+</span></span><span style="display:flex;"><span>						<span style="color:#a6e22e">zap</span>.<span style="color:#a6e22e">Any</span>(<span style="color:#e6db74">&#34;error&#34;</span>, <span style="color:#a6e22e">err</span>),
+</span></span><span style="display:flex;"><span>						<span style="color:#a6e22e">zap</span>.<span style="color:#a6e22e">String</span>(<span style="color:#e6db74">&#34;request&#34;</span>, string(<span style="color:#a6e22e">httpRequest</span>)),
+</span></span><span style="display:flex;"><span>						<span style="color:#a6e22e">zap</span>.<span style="color:#a6e22e">String</span>(<span style="color:#e6db74">&#34;stack&#34;</span>, string(<span style="color:#a6e22e">debug</span>.<span style="color:#a6e22e">Stack</span>())),
+</span></span><span style="display:flex;"><span>					)
+</span></span><span style="display:flex;"><span>				} <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>					<span style="color:#a6e22e">global</span>.<span style="color:#a6e22e">GZV_LOG</span>.<span style="color:#a6e22e">Error</span>(<span style="color:#e6db74">&#34;[Recovery from panic]&#34;</span>,
+</span></span><span style="display:flex;"><span>						<span style="color:#a6e22e">zap</span>.<span style="color:#a6e22e">Any</span>(<span style="color:#e6db74">&#34;error&#34;</span>, <span style="color:#a6e22e">err</span>),
+</span></span><span style="display:flex;"><span>						<span style="color:#a6e22e">zap</span>.<span style="color:#a6e22e">String</span>(<span style="color:#e6db74">&#34;request&#34;</span>, string(<span style="color:#a6e22e">httpRequest</span>)),
+</span></span><span style="display:flex;"><span>					)
+</span></span><span style="display:flex;"><span>				}
+</span></span><span style="display:flex;"><span>				<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">AbortWithStatus</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusInternalServerError</span>)
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>		}()
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">Next</span>()
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="使用">使用</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#a6e22e">e</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Default</span>()
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">e</span>.<span style="color:#a6e22e">Use</span>(<span style="color:#a6e22e">config</span>.<span style="color:#a6e22e">GinRecovery</span>(<span style="color:#66d9ef">true</span>), <span style="color:#a6e22e">config</span>.<span style="color:#a6e22e">GinLogger</span>())
+</span></span></code></pre></div><ul class="pa0">
+  
+   <li class="list di">
+     <a href="/tags/go/" class="link f5 grow br-pill ba ph3 pv2 mb2 dib black sans-serif no-underline">Go</a>
+   </li>
+  
+   <li class="list di">
+     <a href="/tags/zap/" class="link f5 grow br-pill ba ph3 pv2 mb2 dib black sans-serif no-underline">Zap</a>
+   </li>
+  
+</ul>
+<div class="mt6 instapaper_ignoref">
+      
+      
+      </div>
+    </div>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white white-70 dn dib-ns pv2 ph3 no-underline" href="http://localhost:1313/" >
+    &copy;  loveyu233 2025 
+  </a>
+    <div><div class="ananke-socials"></div>
+</div>
+  </div>
+</footer>
+
+  </body>
+</html>

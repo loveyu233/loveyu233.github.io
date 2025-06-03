@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>Ffmpeg | loveyu233</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="
+
+ffprobe -i test.mp4 -v quiet -print_format json -show_format -show_streams
+
+type VideoInfoData struct {
+   Stream []Streams `json:&#34;streams&#34;` //视频数据流,包括视频音频字幕
+   Format Format    `json:&#34;format&#34;`  //格式化
+}
+
+type Streams struct {
+   CodecName string `json:&#34;codec_name&#34;`        //编码
+   Width     int    `json:&#34;width,omitempty&#34;`   //宽
+   Height    int    `json:&#34;height,omitempty&#34;`  //高
+   PixFmt    string `json:&#34;pix_fmt,omitempty&#34;` // 分辨率
+   Duration  string `json:&#34;duration&#34;`          //视频时长
+}
+
+type Format struct {
+   BitRate string `json:&#34;bit_rate&#34;` //速率
+}
+把json数据反序列化为结构体
+
+
+提取test.mp4的音频文件保存为audio.m4a
+ffmpeg -hide_banner -i test.mp4 -vn -c copy audio.m4a
+
+
+
+视频分辨率转换,把test.mp4转化为1920x1080分辨率3000k码率的视频
+ffmpeg -hide_banner -i test.mp4 -crf 20 -c:v libx264 -an -s 1920x1080 -r 300
+00/1001 -b:v 3000k tmp_1080p_3000k.mp4
+
+
+
+分辨率对应:
+1080: &ldquo;1920x1080&rdquo;, &ldquo;-r&rdquo;, &ldquo;30000/1001&rdquo;, &ldquo;-b:v&rdquo;, &ldquo;3000k&rdquo;
+720: &ldquo;1080x720&rdquo;, &ldquo;-r&rdquo;, &ldquo;30000/1001&rdquo;, &ldquo;-b:v&rdquo;, &ldquo;2000k&rdquo;">
+    <meta name="generator" content="Hugo 0.147.7">
+    
+    
+    
+      <meta name="robots" content="noindex, nofollow">
+    
+    <meta name="author" content="loveyu">
+    
+
+    
+<link rel="stylesheet" href="/ananke/css/main.min.css" >
+
+
+
+
+    
+
+
+    
+      
+
+    
+
+    
+
+    
+      <link rel="canonical" href="http://localhost:1313/posts/other/ffmpeg/">
+    
+
+    <meta property="og:url" content="http://localhost:1313/posts/other/ffmpeg/">
+  <meta property="og:site_name" content="loveyu233">
+  <meta property="og:title" content="Ffmpeg">
+  <meta property="og:description" content="ffprobe -i test.mp4 -v quiet -print_format json -show_format -show_streams type VideoInfoData struct { Stream []Streams `json:&#34;streams&#34;` //视频数据流,包括视频音频字幕 Format Format `json:&#34;format&#34;` //格式化 } type Streams struct { CodecName string `json:&#34;codec_name&#34;` //编码 Width int `json:&#34;width,omitempty&#34;` //宽 Height int `json:&#34;height,omitempty&#34;` //高 PixFmt string `json:&#34;pix_fmt,omitempty&#34;` // 分辨率 Duration string `json:&#34;duration&#34;` //视频时长 } type Format struct { BitRate string `json:&#34;bit_rate&#34;` //速率 } 把json数据反序列化为结构体
+提取test.mp4的音频文件保存为audio.m4a ffmpeg -hide_banner -i test.mp4 -vn -c copy audio.m4a 视频分辨率转换,把test.mp4转化为1920x1080分辨率3000k码率的视频 ffmpeg -hide_banner -i test.mp4 -crf 20 -c:v libx264 -an -s 1920x1080 -r 300 00/1001 -b:v 3000k tmp_1080p_3000k.mp4 分辨率对应:
+1080: “1920x1080”, “-r”, “30000/1001”, “-b:v”, “3000k”
+720: “1080x720”, “-r”, “30000/1001”, “-b:v”, “2000k”">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2023-02-12T07:56:49+08:00">
+    <meta property="article:modified_time" content="2023-02-12T07:56:49+08:00">
+    <meta property="article:tag" content="Ffmpeg">
+    <meta property="article:tag" content="Other">
+
+  <meta itemprop="name" content="Ffmpeg">
+  <meta itemprop="description" content="ffprobe -i test.mp4 -v quiet -print_format json -show_format -show_streams type VideoInfoData struct { Stream []Streams `json:&#34;streams&#34;` //视频数据流,包括视频音频字幕 Format Format `json:&#34;format&#34;` //格式化 } type Streams struct { CodecName string `json:&#34;codec_name&#34;` //编码 Width int `json:&#34;width,omitempty&#34;` //宽 Height int `json:&#34;height,omitempty&#34;` //高 PixFmt string `json:&#34;pix_fmt,omitempty&#34;` // 分辨率 Duration string `json:&#34;duration&#34;` //视频时长 } type Format struct { BitRate string `json:&#34;bit_rate&#34;` //速率 } 把json数据反序列化为结构体
+提取test.mp4的音频文件保存为audio.m4a ffmpeg -hide_banner -i test.mp4 -vn -c copy audio.m4a 视频分辨率转换,把test.mp4转化为1920x1080分辨率3000k码率的视频 ffmpeg -hide_banner -i test.mp4 -crf 20 -c:v libx264 -an -s 1920x1080 -r 300 00/1001 -b:v 3000k tmp_1080p_3000k.mp4 分辨率对应:
+1080: “1920x1080”, “-r”, “30000/1001”, “-b:v”, “3000k”
+720: “1080x720”, “-r”, “30000/1001”, “-b:v”, “2000k”">
+  <meta itemprop="datePublished" content="2023-02-12T07:56:49+08:00">
+  <meta itemprop="dateModified" content="2023-02-12T07:56:49+08:00">
+  <meta itemprop="wordCount" content="156">
+  <meta itemprop="keywords" content="Ffmpeg,Other">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Ffmpeg">
+  <meta name="twitter:description" content="ffprobe -i test.mp4 -v quiet -print_format json -show_format -show_streams type VideoInfoData struct { Stream []Streams `json:&#34;streams&#34;` //视频数据流,包括视频音频字幕 Format Format `json:&#34;format&#34;` //格式化 } type Streams struct { CodecName string `json:&#34;codec_name&#34;` //编码 Width int `json:&#34;width,omitempty&#34;` //宽 Height int `json:&#34;height,omitempty&#34;` //高 PixFmt string `json:&#34;pix_fmt,omitempty&#34;` // 分辨率 Duration string `json:&#34;duration&#34;` //视频时长 } type Format struct { BitRate string `json:&#34;bit_rate&#34;` //速率 } 把json数据反序列化为结构体
+提取test.mp4的音频文件保存为audio.m4a ffmpeg -hide_banner -i test.mp4 -vn -c copy audio.m4a 视频分辨率转换,把test.mp4转化为1920x1080分辨率3000k码率的视频 ffmpeg -hide_banner -i test.mp4 -crf 20 -c:v libx264 -an -s 1920x1080 -r 300 00/1001 -b:v 3000k tmp_1080p_3000k.mp4 分辨率对应:
+1080: “1920x1080”, “-r”, “30000/1001”, “-b:v”, “3000k”
+720: “1080x720”, “-r”, “30000/1001”, “-b:v”, “2000k”">
+
+	
+  </head><body class="ma0 avenir bg-near-white development">
+
+    
+   
+  
+
+  <header>
+    <div class="bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l center items-center justify-between">
+    <a href="/" class="f3 fw2 hover-white white-90 dib no-underline">
+      
+        loveyu233
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      <div class="ananke-socials"></div>
+
+    </div>
+  </div>
+</nav>
+
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  
+  <article class="flex-l mw8 center ph3 flex-wrap justify-between">
+    <header class="mt4 w-100">
+      <aside class="instapaper_ignoref b helvetica tracked ttu">
+          
+        other
+      </aside><div id="sharing" class="mt3 ananke-socials"></div>
+<h1 class="f1 athelas mt3 mb1">Ffmpeg</h1>
+      
+      <p class="tracked"><strong>loveyu</strong>
+      </p>
+      
+      
+      
+      <time class="f6 mv4 dib tracked" datetime="2023-02-12T07:56:49+08:00">February 12, 2023</time>
+      
+
+      
+      
+    </header>
+    <div class="nested-copy-line-height lh-copy serif f4 nested-links mid-gray pr4-l w-two-thirds-l"><ol>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>ffprobe -i test.mp4 -v quiet -print_format json -show_format -show_streams
+</span></span></code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">VideoInfoData</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">Stream</span> []<span style="color:#a6e22e">Streams</span> <span style="color:#e6db74">`json:&#34;streams&#34;`</span> <span style="color:#75715e">//视频数据流,包括视频音频字幕</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">Format</span> <span style="color:#a6e22e">Format</span>    <span style="color:#e6db74">`json:&#34;format&#34;`</span>  <span style="color:#75715e">//格式化</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Streams</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">CodecName</span> <span style="color:#66d9ef">string</span> <span style="color:#e6db74">`json:&#34;codec_name&#34;`</span>        <span style="color:#75715e">//编码</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">Width</span>     <span style="color:#66d9ef">int</span>    <span style="color:#e6db74">`json:&#34;width,omitempty&#34;`</span>   <span style="color:#75715e">//宽</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">Height</span>    <span style="color:#66d9ef">int</span>    <span style="color:#e6db74">`json:&#34;height,omitempty&#34;`</span>  <span style="color:#75715e">//高</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">PixFmt</span>    <span style="color:#66d9ef">string</span> <span style="color:#e6db74">`json:&#34;pix_fmt,omitempty&#34;`</span> <span style="color:#75715e">// 分辨率</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">Duration</span>  <span style="color:#66d9ef">string</span> <span style="color:#e6db74">`json:&#34;duration&#34;`</span>          <span style="color:#75715e">//视频时长</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Format</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">BitRate</span> <span style="color:#66d9ef">string</span> <span style="color:#e6db74">`json:&#34;bit_rate&#34;`</span> <span style="color:#75715e">//速率</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>把json数据反序列化为结构体</p></blockquote>
+</li>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>提取test.mp4的音频文件保存为audio.m4a
+</span></span><span style="display:flex;"><span>ffmpeg -hide_banner -i test.mp4 -vn -c copy audio.m4a
+</span></span></code></pre></div></li>
+<li></li>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>视频分辨率转换,把test.mp4转化为1920x1080分辨率3000k码率的视频
+</span></span><span style="display:flex;"><span>ffmpeg -hide_banner -i test.mp4 -crf <span style="color:#ae81ff">20</span> -c:v libx264 -an -s 1920x1080 -r <span style="color:#ae81ff">300</span>
+</span></span><span style="display:flex;"><span>00/1001 -b:v 3000k tmp_1080p_3000k.mp4
+</span></span></code></pre></div></li>
+<li>
+<blockquote>
+<p>分辨率对应:</p>
+<p>1080: &ldquo;1920x1080&rdquo;, &ldquo;-r&rdquo;, &ldquo;30000/1001&rdquo;, &ldquo;-b:v&rdquo;, &ldquo;3000k&rdquo;</p>
+<p>720: &ldquo;1080x720&rdquo;, &ldquo;-r&rdquo;, &ldquo;30000/1001&rdquo;, &ldquo;-b:v&rdquo;, &ldquo;2000k&rdquo;</p>
+<p>480: &ldquo;854x480&rdquo;, &ldquo;-r&rdquo;, &ldquo;30000/1001&rdquo;, &ldquo;-b:v&rdquo;, &ldquo;900k&rdquo;</p>
+<p>360: &ldquo;640x360&rdquo;, &ldquo;-r&rdquo;, &ldquo;30000/1001&rdquo;, &ldquo;-b:v&rdquo;, &ldquo;500k&rdquo;</p></blockquote>
+</li>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>ffmpeg -i ./upload/video/v_cr41aouei3zc847/tmp_360p_500k.mp4 -i ./upload/video/v_cr41aouei3zc847/tmp_480p_900k.mp4 -i ./upload/video/v_cr41aouei3zc847/tmp_720p_2000k.mp4 -i ./upload/video/v_cr41aouei3zc847/tmp_1080p_3000k.mp4 -i ./upload/video/v_cr41aouei3zc847/audio.m4a -c copy -map <span style="color:#ae81ff">0</span> -map <span style="color:#ae81ff">1</span> -map <span style="color:#ae81ff">2</span> -map <span style="color:#ae81ff">3</span> -map <span style="color:#ae81ff">4</span> -f dash -init_seg_name v_cr41aouei3zc847-init-$RepresentationID$.m4s -media_seg_name v_cr41aouei3zc847-$RepresentationID$-$Number%05d$.m4s ./upload/video/v_cr41aouei3zc847/index.mpd
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>ffmpeg -i tmp_1080p_3000k.mp4 -i audio.m4a -c copy -map <span style="color:#ae81ff">0</span> -f dash -init_seg_name v_cr41aouei3zc847-init-$RepresentationID$.m4s -media_seg_name v_cr41aouei3zc847-$RepresentationID$-$Number%05d$.m4s index.mpd
+</span></span></code></pre></div></li>
+<li></li>
+</ol>
+<ul class="pa0">
+  
+   <li class="list di">
+     <a href="/tags/ffmpeg/" class="link f5 grow br-pill ba ph3 pv2 mb2 dib black sans-serif no-underline">Ffmpeg</a>
+   </li>
+  
+   <li class="list di">
+     <a href="/tags/other/" class="link f5 grow br-pill ba ph3 pv2 mb2 dib black sans-serif no-underline">Other</a>
+   </li>
+  
+</ul>
+<div class="mt6 instapaper_ignoref">
+      
+      
+      </div>
+    </div>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white white-70 dn dib-ns pv2 ph3 no-underline" href="http://localhost:1313/" >
+    &copy;  loveyu233 2025 
+  </a>
+    <div><div class="ananke-socials"></div>
+</div>
+  </div>
+</footer>
+
+  </body>
+</html>

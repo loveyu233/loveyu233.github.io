@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>kafka | loveyu233</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="指令
+
+  
+      
+          参数
+          描述
+      
+  
+  
+      
+          &ndash;bootstrap-server
+          连接Kafka主机名称和端口
+      
+      
+          &ndash;alter
+          修改主题
+      
+      
+          &ndash;create
+          创建主题
+      
+      
+          &ndash;delete
+          删除主题
+      
+      
+          &ndash;describe
+          主题详细信息
+      
+      
+          &ndash;partitions
+          设置分区数，分区数修改只能大于当前分区数
+      
+      
+          &ndash;replication-factor
+          设置分数副本，无法直接修改
+      
+      
+          &ndash;list
+          查看全部主题
+      
+      
+          &ndash; topic
+          操作的主题名称
+      
+  
+
+创建topic
+
+&ndash;bootstrap-server：指定链接的Kafka，多个用逗号隔开
+&ndash;topic：指定topic名称
+&ndash;create：指定为创建topic
+&ndash;partitions：分区数
+&ndash;replication-factor：备份数，不能大于当前集群数，单节点就是1
+~ &gt; kafka-topics --bootstrap-server 127.0.0.1:9092 --topic first --create --partitions 1 --replication-factor 1
+Created topic first.
+查看topic
+
+&ndash;list：查看有哪些topic
+&ndash;describe：查看某一个topic的信息
+~ &gt; kafka-topics --bootstrap-server 127.0.0.1:9092 --list
+first
+
+~ &gt; kafka-topics --bootstrap-server 127.0.0.1:9092 --topic first --describe
+Topic: first	TopicId: XMyZmRawTo6_DGxtYS7v1A	PartitionCount: 1	ReplicationFactor: 1	Configs: segment.bytes=1073741824
+	Topic: first	Partition: 0	Leader: 0	Replicas: 0	Isr: 0
+修改分区数
+
+修改的分区数只能大于原来的分区数">
+    <meta name="generator" content="Hugo 0.147.7">
+    
+    
+    
+      <meta name="robots" content="noindex, nofollow">
+    
+    <meta name="author" content="loveyu">
+    
+
+    
+<link rel="stylesheet" href="/ananke/css/main.min.css" >
+
+
+
+
+    
+
+
+    
+      
+
+    
+
+    
+
+    
+      <link rel="canonical" href="http://localhost:1313/posts/databases/kafka/">
+    
+
+    <meta property="og:url" content="http://localhost:1313/posts/databases/kafka/">
+  <meta property="og:site_name" content="loveyu233">
+  <meta property="og:title" content="kafka">
+  <meta property="og:description" content="指令 参数 描述 –bootstrap-server 连接Kafka主机名称和端口 –alter 修改主题 –create 创建主题 –delete 删除主题 –describe 主题详细信息 –partitions 设置分区数，分区数修改只能大于当前分区数 –replication-factor 设置分数副本，无法直接修改 –list 查看全部主题 – topic 操作的主题名称 创建topic –bootstrap-server：指定链接的Kafka，多个用逗号隔开
+–topic：指定topic名称
+–create：指定为创建topic
+–partitions：分区数
+–replication-factor：备份数，不能大于当前集群数，单节点就是1
+~ &gt; kafka-topics --bootstrap-server 127.0.0.1:9092 --topic first --create --partitions 1 --replication-factor 1 Created topic first. 查看topic –list：查看有哪些topic
+–describe：查看某一个topic的信息
+~ &gt; kafka-topics --bootstrap-server 127.0.0.1:9092 --list first ~ &gt; kafka-topics --bootstrap-server 127.0.0.1:9092 --topic first --describe Topic: first	TopicId: XMyZmRawTo6_DGxtYS7v1A	PartitionCount: 1	ReplicationFactor: 1	Configs: segment.bytes=1073741824 Topic: first	Partition: 0	Leader: 0	Replicas: 0	Isr: 0 修改分区数 修改的分区数只能大于原来的分区数">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2020-12-04T19:38:37+08:00">
+    <meta property="article:modified_time" content="2020-12-04T19:38:37+08:00">
+    <meta property="article:tag" content="Kafka">
+
+  <meta itemprop="name" content="kafka">
+  <meta itemprop="description" content="指令 参数 描述 –bootstrap-server 连接Kafka主机名称和端口 –alter 修改主题 –create 创建主题 –delete 删除主题 –describe 主题详细信息 –partitions 设置分区数，分区数修改只能大于当前分区数 –replication-factor 设置分数副本，无法直接修改 –list 查看全部主题 – topic 操作的主题名称 创建topic –bootstrap-server：指定链接的Kafka，多个用逗号隔开
+–topic：指定topic名称
+–create：指定为创建topic
+–partitions：分区数
+–replication-factor：备份数，不能大于当前集群数，单节点就是1
+~ &gt; kafka-topics --bootstrap-server 127.0.0.1:9092 --topic first --create --partitions 1 --replication-factor 1 Created topic first. 查看topic –list：查看有哪些topic
+–describe：查看某一个topic的信息
+~ &gt; kafka-topics --bootstrap-server 127.0.0.1:9092 --list first ~ &gt; kafka-topics --bootstrap-server 127.0.0.1:9092 --topic first --describe Topic: first	TopicId: XMyZmRawTo6_DGxtYS7v1A	PartitionCount: 1	ReplicationFactor: 1	Configs: segment.bytes=1073741824 Topic: first	Partition: 0	Leader: 0	Replicas: 0	Isr: 0 修改分区数 修改的分区数只能大于原来的分区数">
+  <meta itemprop="datePublished" content="2020-12-04T19:38:37+08:00">
+  <meta itemprop="dateModified" content="2020-12-04T19:38:37+08:00">
+  <meta itemprop="wordCount" content="171">
+  <meta itemprop="keywords" content="Kafka">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="kafka">
+  <meta name="twitter:description" content="指令 参数 描述 –bootstrap-server 连接Kafka主机名称和端口 –alter 修改主题 –create 创建主题 –delete 删除主题 –describe 主题详细信息 –partitions 设置分区数，分区数修改只能大于当前分区数 –replication-factor 设置分数副本，无法直接修改 –list 查看全部主题 – topic 操作的主题名称 创建topic –bootstrap-server：指定链接的Kafka，多个用逗号隔开
+–topic：指定topic名称
+–create：指定为创建topic
+–partitions：分区数
+–replication-factor：备份数，不能大于当前集群数，单节点就是1
+~ &gt; kafka-topics --bootstrap-server 127.0.0.1:9092 --topic first --create --partitions 1 --replication-factor 1 Created topic first. 查看topic –list：查看有哪些topic
+–describe：查看某一个topic的信息
+~ &gt; kafka-topics --bootstrap-server 127.0.0.1:9092 --list first ~ &gt; kafka-topics --bootstrap-server 127.0.0.1:9092 --topic first --describe Topic: first	TopicId: XMyZmRawTo6_DGxtYS7v1A	PartitionCount: 1	ReplicationFactor: 1	Configs: segment.bytes=1073741824 Topic: first	Partition: 0	Leader: 0	Replicas: 0	Isr: 0 修改分区数 修改的分区数只能大于原来的分区数">
+
+	
+  </head><body class="ma0 avenir bg-near-white development">
+
+    
+   
+  
+
+  <header>
+    <div class="bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l center items-center justify-between">
+    <a href="/" class="f3 fw2 hover-white white-90 dib no-underline">
+      
+        loveyu233
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      <div class="ananke-socials"></div>
+
+    </div>
+  </div>
+</nav>
+
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  
+  <article class="flex-l mw8 center ph3 flex-wrap justify-between">
+    <header class="mt4 w-100">
+      <aside class="instapaper_ignoref b helvetica tracked ttu">
+          
+        databases
+      </aside><div id="sharing" class="mt3 ananke-socials"></div>
+<h1 class="f1 athelas mt3 mb1">kafka</h1>
+      
+      <p class="tracked"><strong>loveyu</strong>
+      </p>
+      
+      
+      
+      <time class="f6 mv4 dib tracked" datetime="2020-12-04T19:38:37+08:00">December 4, 2020</time>
+      
+
+      
+      
+    </header>
+    <div class="nested-copy-line-height lh-copy serif f4 nested-links mid-gray pr4-l w-two-thirds-l"><h1 id="指令">指令</h1>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: center">参数</th>
+          <th style="text-align: center">描述</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: center">&ndash;bootstrap-server</td>
+          <td style="text-align: center">连接Kafka主机名称和端口</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">&ndash;alter</td>
+          <td style="text-align: center">修改主题</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">&ndash;create</td>
+          <td style="text-align: center">创建主题</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">&ndash;delete</td>
+          <td style="text-align: center">删除主题</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">&ndash;describe</td>
+          <td style="text-align: center">主题详细信息</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">&ndash;partitions</td>
+          <td style="text-align: center">设置分区数，分区数修改只能大于当前分区数</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">&ndash;replication-factor</td>
+          <td style="text-align: center">设置分数副本，无法直接修改</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">&ndash;list</td>
+          <td style="text-align: center">查看全部主题</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">&ndash; topic</td>
+          <td style="text-align: center">操作的主题名称</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="创建topic">创建topic</h2>
+<blockquote>
+<p>&ndash;bootstrap-server：指定链接的Kafka，多个用逗号隔开</p>
+<p>&ndash;topic：指定topic名称</p>
+<p>&ndash;create：指定为创建topic</p>
+<p>&ndash;partitions：分区数</p>
+<p>&ndash;replication-factor：备份数，不能大于当前集群数，单节点就是1</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>~ &gt; kafka-topics --bootstrap-server 127.0.0.1:9092 --topic first --create --partitions <span style="color:#ae81ff">1</span> --replication-factor <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>Created topic first.
+</span></span></code></pre></div><h2 id="查看topic">查看topic</h2>
+<blockquote>
+<p>&ndash;list：查看有哪些topic</p>
+<p>&ndash;describe：查看某一个topic的信息</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>~ &gt; kafka-topics --bootstrap-server 127.0.0.1:9092 --list
+</span></span><span style="display:flex;"><span>first
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>~ &gt; kafka-topics --bootstrap-server 127.0.0.1:9092 --topic first --describe
+</span></span><span style="display:flex;"><span>Topic: first	TopicId: XMyZmRawTo6_DGxtYS7v1A	PartitionCount: 1	ReplicationFactor: 1	Configs: segment.bytes<span style="color:#f92672">=</span><span style="color:#ae81ff">1073741824</span>
+</span></span><span style="display:flex;"><span>	Topic: first	Partition: 0	Leader: 0	Replicas: 0	Isr: <span style="color:#ae81ff">0</span>
+</span></span></code></pre></div><h2 id="修改分区数">修改分区数</h2>
+<blockquote>
+<p>修改的分区数只能大于原来的分区数</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>~ &gt; kafka-topics --bootstrap-server 127.0.0.1:9092 --topic first --alter --partitions 3
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">==</span>修改后
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>~ &gt; kafka-topics --bootstrap-server 127.0.0.1:9092 --topic first --describe
+</span></span><span style="display:flex;"><span>Topic: first	TopicId: XMyZmRawTo6_DGxtYS7v1A	PartitionCount: 3	ReplicationFactor: 1	Configs: segment.bytes<span style="color:#f92672">=</span><span style="color:#ae81ff">1073741824</span>
+</span></span><span style="display:flex;"><span>	Topic: first	Partition: 0	Leader: 0	Replicas: 0	Isr: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>	Topic: first	Partition: 1	Leader: 0	Replicas: 0	Isr: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>	Topic: first	Partition: 2	Leader: 0	Replicas: 0	Isr: <span style="color:#ae81ff">0</span>
+</span></span></code></pre></div><h2 id="成产">成产</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>~ &gt; kafka-console-producer --bootstrap-server localhost:9092 --topic first
+</span></span></code></pre></div><h2 id="消费">消费</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">==</span> 从执行开始接受发送的数据，未开始执行前生产者发送的数据不接受
+</span></span><span style="display:flex;"><span>~ &gt; kafka-console-consumer --bootstrap-server localhost:9092 --topic first
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">==</span> 接受全部数据，包括未执行前发送的数据
+</span></span><span style="display:flex;"><span>~ &gt; kafka-console-consumer --bootstrap-server localhost:9092 --topic first --from-beginnin
+</span></span><span style="display:flex;"><span>g
+</span></span></code></pre></div><ul class="pa0">
+  
+   <li class="list di">
+     <a href="/tags/kafka/" class="link f5 grow br-pill ba ph3 pv2 mb2 dib black sans-serif no-underline">Kafka</a>
+   </li>
+  
+</ul>
+<div class="mt6 instapaper_ignoref">
+      
+      
+      </div>
+    </div>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white white-70 dn dib-ns pv2 ph3 no-underline" href="http://localhost:1313/" >
+    &copy;  loveyu233 2025 
+  </a>
+    <div><div class="ananke-socials"></div>
+</div>
+  </div>
+</footer>
+
+  </body>
+</html>

@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>fiber基础 | loveyu233</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="获取参数
+Params: 获取url参数
+Query: 获取get请求参数
+Get: 获取请求头参数
+FormValue: 获取表单参数
+BodyParser: 获取json格式参数
+FormFile: 获取文件类型参数, 配合SaveFile使用
+
+
+APP
+Name: 给路由起一个名字
+GetRoute: 获取指定name的路由信息
+Stack: 获取全部的路由信息
+
+Mount: 挂载
+MountPath: 获取挂载后的路由path地址
+
+GetRoutes: 参数为true过滤中间件,false则不过滤
+
+ListenTLS: 用于设置https, 参数分别为地址,pem,key
+
+hooks := app.Hooks():
+onRoute 是请求路由注册时的钩子函数切片。可以通过 app.OnRoute() 方法向切片中添加钩子函数，这些函数将在每次调用 app.Method() 注册路由时触发。
+onName 是命名路由注册时的钩子函数切片。可以通过 app.OnName() 方法向切片中添加钩子函数，这些函数将在每次调用 app.Get(&quot;/path&quot;, handler).Name(&ldquo;name&rdquo;) 设置命名路由时触发。">
+    <meta name="generator" content="Hugo 0.147.7">
+    
+    
+    
+      <meta name="robots" content="noindex, nofollow">
+    
+    <meta name="author" content="loveyu">
+    
+
+    
+<link rel="stylesheet" href="/ananke/css/main.min.css" >
+
+
+
+
+    
+
+
+    
+      
+
+    
+
+    
+
+    
+      <link rel="canonical" href="http://localhost:1313/posts/go/fiber%E7%AC%94%E8%AE%B0/">
+    
+
+    <meta property="og:url" content="http://localhost:1313/posts/go/fiber%E7%AC%94%E8%AE%B0/">
+  <meta property="og:site_name" content="loveyu233">
+  <meta property="og:title" content="fiber基础">
+  <meta property="og:description" content="获取参数 Params: 获取url参数
+Query: 获取get请求参数
+Get: 获取请求头参数
+FormValue: 获取表单参数
+BodyParser: 获取json格式参数
+FormFile: 获取文件类型参数, 配合SaveFile使用
+APP Name: 给路由起一个名字
+GetRoute: 获取指定name的路由信息
+Stack: 获取全部的路由信息
+Mount: 挂载
+MountPath: 获取挂载后的路由path地址
+GetRoutes: 参数为true过滤中间件,false则不过滤
+ListenTLS: 用于设置https, 参数分别为地址,pem,key
+hooks := app.Hooks():
+onRoute 是请求路由注册时的钩子函数切片。可以通过 app.OnRoute() 方法向切片中添加钩子函数，这些函数将在每次调用 app.Method() 注册路由时触发。
+onName 是命名路由注册时的钩子函数切片。可以通过 app.OnName() 方法向切片中添加钩子函数，这些函数将在每次调用 app.Get(&#34;/path&#34;, handler).Name(“name”) 设置命名路由时触发。">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2023-07-10T11:18:37+08:00">
+    <meta property="article:modified_time" content="2023-07-10T11:18:37+08:00">
+    <meta property="article:tag" content="Go">
+    <meta property="article:tag" content="Fiber">
+
+  <meta itemprop="name" content="fiber基础">
+  <meta itemprop="description" content="获取参数 Params: 获取url参数
+Query: 获取get请求参数
+Get: 获取请求头参数
+FormValue: 获取表单参数
+BodyParser: 获取json格式参数
+FormFile: 获取文件类型参数, 配合SaveFile使用
+APP Name: 给路由起一个名字
+GetRoute: 获取指定name的路由信息
+Stack: 获取全部的路由信息
+Mount: 挂载
+MountPath: 获取挂载后的路由path地址
+GetRoutes: 参数为true过滤中间件,false则不过滤
+ListenTLS: 用于设置https, 参数分别为地址,pem,key
+hooks := app.Hooks():
+onRoute 是请求路由注册时的钩子函数切片。可以通过 app.OnRoute() 方法向切片中添加钩子函数，这些函数将在每次调用 app.Method() 注册路由时触发。
+onName 是命名路由注册时的钩子函数切片。可以通过 app.OnName() 方法向切片中添加钩子函数，这些函数将在每次调用 app.Get(&#34;/path&#34;, handler).Name(“name”) 设置命名路由时触发。">
+  <meta itemprop="datePublished" content="2023-07-10T11:18:37+08:00">
+  <meta itemprop="dateModified" content="2023-07-10T11:18:37+08:00">
+  <meta itemprop="wordCount" content="108">
+  <meta itemprop="keywords" content="Go,Fiber">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="fiber基础">
+  <meta name="twitter:description" content="获取参数 Params: 获取url参数
+Query: 获取get请求参数
+Get: 获取请求头参数
+FormValue: 获取表单参数
+BodyParser: 获取json格式参数
+FormFile: 获取文件类型参数, 配合SaveFile使用
+APP Name: 给路由起一个名字
+GetRoute: 获取指定name的路由信息
+Stack: 获取全部的路由信息
+Mount: 挂载
+MountPath: 获取挂载后的路由path地址
+GetRoutes: 参数为true过滤中间件,false则不过滤
+ListenTLS: 用于设置https, 参数分别为地址,pem,key
+hooks := app.Hooks():
+onRoute 是请求路由注册时的钩子函数切片。可以通过 app.OnRoute() 方法向切片中添加钩子函数，这些函数将在每次调用 app.Method() 注册路由时触发。
+onName 是命名路由注册时的钩子函数切片。可以通过 app.OnName() 方法向切片中添加钩子函数，这些函数将在每次调用 app.Get(&#34;/path&#34;, handler).Name(“name”) 设置命名路由时触发。">
+
+	
+  </head><body class="ma0 avenir bg-near-white development">
+
+    
+   
+  
+
+  <header>
+    <div class="bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l center items-center justify-between">
+    <a href="/" class="f3 fw2 hover-white white-90 dib no-underline">
+      
+        loveyu233
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      <div class="ananke-socials"></div>
+
+    </div>
+  </div>
+</nav>
+
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  
+  <article class="flex-l mw8 center ph3 flex-wrap justify-between">
+    <header class="mt4 w-100">
+      <aside class="instapaper_ignoref b helvetica tracked ttu">
+          
+        go
+      </aside><div id="sharing" class="mt3 ananke-socials"></div>
+<h1 class="f1 athelas mt3 mb1">fiber基础</h1>
+      
+      <p class="tracked"><strong>loveyu</strong>
+      </p>
+      
+      
+      
+      <time class="f6 mv4 dib tracked" datetime="2023-07-10T11:18:37+08:00">July 10, 2023</time>
+      
+
+      
+      
+    </header>
+    <div class="nested-copy-line-height lh-copy serif f4 nested-links mid-gray pr4-l w-two-thirds-l"><h1 id="获取参数">获取参数</h1>
+<p>Params: 获取url参数</p>
+<p>Query: 获取get请求参数</p>
+<p>Get: 获取请求头参数</p>
+<p>FormValue: 获取表单参数</p>
+<p>BodyParser: 获取json格式参数</p>
+<p>FormFile: 获取文件类型参数, 配合SaveFile使用</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<h1 id="app">APP</h1>
+<p>Name: 给路由起一个名字</p>
+<p>GetRoute: 获取指定name的路由信息</p>
+<p>Stack: 获取全部的路由信息</p>
+<!-- raw HTML omitted -->
+<p>Mount: 挂载</p>
+<p>MountPath: 获取挂载后的路由path地址</p>
+<!-- raw HTML omitted -->
+<p>GetRoutes: 参数为true过滤中间件,false则不过滤</p>
+<!-- raw HTML omitted -->
+<p>ListenTLS: 用于设置https, 参数分别为地址,pem,key</p>
+<!-- raw HTML omitted -->
+<p>hooks := app.Hooks():</p>
+<p>onRoute 是请求路由注册时的钩子函数切片。可以通过 app.OnRoute() 方法向切片中添加钩子函数，这些函数将在每次调用 app.Method() 注册路由时触发。</p>
+<p>onName 是命名路由注册时的钩子函数切片。可以通过 app.OnName() 方法向切片中添加钩子函数，这些函数将在每次调用 app.Get(&quot;/path&quot;, handler).Name(&ldquo;name&rdquo;) 设置命名路由时触发。</p>
+<p>onGroup 是路由组注册时的钩子函数切片。可以通过 app.OnGroup() 方法向切片中添加钩子函数，这些函数将在每次调用 app.Group(&quot;/prefix&quot;) 创建路由组时触发。</p>
+<p>onGroupName 是命名路由组注册时的钩子函数切片。可以通过 app.OnGroupName() 方法向切片中添加钩子函数，这些函数将在每次调用 app.Group(&quot;/prefix&quot;).Name(&ldquo;name&rdquo;) 设置命名路由组时触发。</p>
+<p>onListen 是应用程序监听端口时的钩子函数切片。可以通过 app.OnListen() 方法向切片中添加钩子函数，这些函数将在调用 app.Listen(address) 时触发。</p>
+<p>onShutdown 是应用程序关闭时的钩子函数切片。可以通过 app.OnShutdown() 方法向切片中添加钩子函数，这些函数将在调用 app.Shutdown() 时触发。</p>
+<p>onFork 是应用程序分叉处理时的钩子函数切片。可以通过 app.OnFork() 方法向切片中添加钩子函数，这些函数将在调用 app.Fork() 时触发。</p>
+<p>onMount 是应用程序挂载子应用程序时的钩子函数切片。可以通过 app.OnMount() 方法向切片中添加钩子函数，这些函数将在调用 app.Mount(&quot;/prefix&quot;, subApp) 时触发。</p>
+<!-- raw HTML omitted -->
+<h1 id="ctx">CTX</h1>
+<p>Params: 获取路径参数</p>
+<p>AllParams: 获取全部</p>
+<!-- raw HTML omitted -->
+<p>Append: 添加请求响应头信息</p>
+<!-- raw HTML omitted -->
+<p>Download: 设置下载的文件和指定文件的名称,可以指定中文无需其他设置</p>
+<!-- raw HTML omitted -->
+<p>Locals: 上下文中添加kv, 只有一个参数则是获取参数对应的value值</p>
+<!-- raw HTML omitted -->
+<p>Redirect: 重定向</p>
+<!-- raw HTML omitted -->
+<h1 id="middleware">middleware</h1>
+<p>BasicAuth,Cache,CORS,CSRF</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<h1 id="other">Other</h1>
+<p>Content-Disposition: 响应头字段,用于指定浏览器是展示资源还是下载资源</p>
+<p>内容显示：通过设置 Content-Disposition: inline，浏览器可以将响应的内容直接显示在页面上，例如显示图片、视频、PDF等文件。</p>
+<p>下载保存：通过设置 Content-Disposition: attachment，浏览器会将响应的内容作为下载文件，而不是直接在浏览器中打开。这对于提供下载链接非常有用，使用户可以保存文件到本地或者查看下载进度。</p>
+<ul class="pa0">
+  
+   <li class="list di">
+     <a href="/tags/go/" class="link f5 grow br-pill ba ph3 pv2 mb2 dib black sans-serif no-underline">Go</a>
+   </li>
+  
+   <li class="list di">
+     <a href="/tags/fiber/" class="link f5 grow br-pill ba ph3 pv2 mb2 dib black sans-serif no-underline">Fiber</a>
+   </li>
+  
+</ul>
+<div class="mt6 instapaper_ignoref">
+      
+      
+      </div>
+    </div>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+  <div class="bg-light-gray pa3 nested-list-reset nested-copy-line-height nested-links">
+    <p class="f5 b mb3">Related</p>
+    <ul class="pa0 list">
+	   
+	     <li  class="mb2">
+          <a href="/posts/other/%E9%93%BE%E8%B7%AF%E8%BF%BD%E8%B8%AA%E7%9B%91%E6%8E%A7/">链路追踪</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/go%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86%E4%BD%BF%E7%94%A8/">Go非对称加密使用</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/interview/">面试指南</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/%E5%AE%9E%E6%88%98%E6%8A%80%E5%B7%A7/">实战技巧</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/%E6%BB%91%E5%9D%97%E9%AA%8C%E8%AF%81%E7%A0%81%E5%AE%9E%E7%8E%B0/">滑块验证码实现</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/go-redis%E9%A1%B9%E7%9B%AE%E4%BD%BF%E7%94%A8/">Go Redis项目使用</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/grpc/">go GRPC使用</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/go-swagger/">Go Swagger</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/go%E5%8D%95%E7%82%B9%E7%99%BB%E5%BD%95/">Go单点登录</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/go-redis%E4%BD%BF%E7%94%A8lua%E8%84%9A%E6%9C%AC/">Go Redis使用lua脚本</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/gorm/">Gorm</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/gin%E6%96%87%E4%BB%B6%E4%B8%8B%E8%BD%BD%E4%B9%B1%E7%A0%81/">Gin文件下载乱码</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/casbin/">go使用casbin</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/jwt/">go使用Jwt</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/%E9%BC%A0%E6%A0%87%E8%87%AA%E5%8A%A8%E5%8C%96/">鼠标自动化</a>
+        </li>
+	    
+    </ul>
+</div>
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white white-70 dn dib-ns pv2 ph3 no-underline" href="http://localhost:1313/" >
+    &copy;  loveyu233 2025 
+  </a>
+    <div><div class="ananke-socials"></div>
+</div>
+  </div>
+</footer>
+
+  </body>
+</html>

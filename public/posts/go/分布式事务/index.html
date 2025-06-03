@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>分布式事务 | loveyu233</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="来源文章:
+万字长文漫谈分布式事务实现原理
+从零到一搭建 TCC 分布式事务框架
+微软SAGA解答
+10分钟说透Saga分布式事务
+现有实现:
+DTM
+事务的核心特征ACID
+
+
+Atomicity原子性
+
+全部成功或者全部失败
+
+
+
+Consistency一致性
+
+宏观角度下的全局数据保持一致
+
+
+
+Isolation隔离性
+
+并发事务不互相干扰
+
+
+
+Durability持久性
+
+事务提交后，变更永久生效
+
+
+
+什么是分布式事务
+
+对两个或以上独立服务进行调用操作,保证这些操作同时成功或失败,在失败时要做到回滚操作,恢复到失败前的状态
+例如订单创建操作,分别有账户系统和库存系统
+在处理一笔来自用户创建订单的请求时，需要执行两步操作：
+
+从账户系统中，扣减用户的账户余额
+从库存系统中，扣减商品的剩余库存
+
+从技术流程上来讲，两个步骤是相对独立的两个操作，底层涉及到的存储介质也是相互独立的，因此无法基于本地事务的实现方式,所以需要分布式事务解决问题
+事务消息实现方案
+概念
+偏狭义的分布式事务解决方案是基于消息队列 MessageQueue（后续简称 MQ）实现的事务消息 Transaction Message.
+at least once :  投递到 MQ 中的消息能至少被下游消费者 consumer 消费到一次.
+基于此，MQ 组件能够保证消息不会在消费环节丢失，但是无法解决消息的重复性问题. 因此，倘若我们需要追求精确消费一次的目标，则下游的 consumer 还需要基于消息的唯一键执行幂等去重操作，在 at least once 的基础上过滤掉重复消息，最终达到 exactly once 的语义.
+依赖于 MQ 中 at least once 的性质，我们简单认为，只要把一条消息成功投递到 MQ 组件中，它就一定被下游 consumer 端消费端，至少不会发生消息丢失的问题.
+场景
+假如执行一个分布式事务，事务流程中包含需要在服务 A 中执行的动作 I 以及需要在服务 B 中执行的动作 II">
+    <meta name="generator" content="Hugo 0.147.7">
+    
+    
+    
+      <meta name="robots" content="noindex, nofollow">
+    
+    <meta name="author" content="loveyu">
+    
+
+    
+<link rel="stylesheet" href="/ananke/css/main.min.css" >
+
+
+
+
+    
+
+
+    
+      
+
+    
+
+    
+
+    
+      <link rel="canonical" href="http://localhost:1313/posts/go/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/">
+    
+
+    <meta property="og:url" content="http://localhost:1313/posts/go/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/">
+  <meta property="og:site_name" content="loveyu233">
+  <meta property="og:title" content="分布式事务">
+  <meta property="og:description" content="来源文章:
+万字长文漫谈分布式事务实现原理
+从零到一搭建 TCC 分布式事务框架
+微软SAGA解答
+10分钟说透Saga分布式事务
+现有实现:
+DTM
+事务的核心特征ACID Atomicity原子性 全部成功或者全部失败 Consistency一致性 宏观角度下的全局数据保持一致 Isolation隔离性 并发事务不互相干扰 Durability持久性 事务提交后，变更永久生效 什么是分布式事务 对两个或以上独立服务进行调用操作,保证这些操作同时成功或失败,在失败时要做到回滚操作,恢复到失败前的状态
+例如订单创建操作,分别有账户系统和库存系统
+在处理一笔来自用户创建订单的请求时，需要执行两步操作：
+从账户系统中，扣减用户的账户余额 从库存系统中，扣减商品的剩余库存 从技术流程上来讲，两个步骤是相对独立的两个操作，底层涉及到的存储介质也是相互独立的，因此无法基于本地事务的实现方式,所以需要分布式事务解决问题
+事务消息实现方案 概念 偏狭义的分布式事务解决方案是基于消息队列 MessageQueue（后续简称 MQ）实现的事务消息 Transaction Message.
+at least once : 投递到 MQ 中的消息能至少被下游消费者 consumer 消费到一次.
+基于此，MQ 组件能够保证消息不会在消费环节丢失，但是无法解决消息的重复性问题. 因此，倘若我们需要追求精确消费一次的目标，则下游的 consumer 还需要基于消息的唯一键执行幂等去重操作，在 at least once 的基础上过滤掉重复消息，最终达到 exactly once 的语义.
+依赖于 MQ 中 at least once 的性质，我们简单认为，只要把一条消息成功投递到 MQ 组件中，它就一定被下游 consumer 端消费端，至少不会发生消息丢失的问题.
+场景 假如执行一个分布式事务，事务流程中包含需要在服务 A 中执行的动作 I 以及需要在服务 B 中执行的动作 II">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2023-09-22T16:54:10+08:00">
+    <meta property="article:modified_time" content="2023-09-22T16:54:10+08:00">
+    <meta property="article:tag" content="分布式事务">
+    <meta property="article:tag" content="TTC">
+    <meta property="article:tag" content="SAGA">
+    <meta property="article:tag" content="事务消息">
+
+  <meta itemprop="name" content="分布式事务">
+  <meta itemprop="description" content="来源文章:
+万字长文漫谈分布式事务实现原理
+从零到一搭建 TCC 分布式事务框架
+微软SAGA解答
+10分钟说透Saga分布式事务
+现有实现:
+DTM
+事务的核心特征ACID Atomicity原子性 全部成功或者全部失败 Consistency一致性 宏观角度下的全局数据保持一致 Isolation隔离性 并发事务不互相干扰 Durability持久性 事务提交后，变更永久生效 什么是分布式事务 对两个或以上独立服务进行调用操作,保证这些操作同时成功或失败,在失败时要做到回滚操作,恢复到失败前的状态
+例如订单创建操作,分别有账户系统和库存系统
+在处理一笔来自用户创建订单的请求时，需要执行两步操作：
+从账户系统中，扣减用户的账户余额 从库存系统中，扣减商品的剩余库存 从技术流程上来讲，两个步骤是相对独立的两个操作，底层涉及到的存储介质也是相互独立的，因此无法基于本地事务的实现方式,所以需要分布式事务解决问题
+事务消息实现方案 概念 偏狭义的分布式事务解决方案是基于消息队列 MessageQueue（后续简称 MQ）实现的事务消息 Transaction Message.
+at least once : 投递到 MQ 中的消息能至少被下游消费者 consumer 消费到一次.
+基于此，MQ 组件能够保证消息不会在消费环节丢失，但是无法解决消息的重复性问题. 因此，倘若我们需要追求精确消费一次的目标，则下游的 consumer 还需要基于消息的唯一键执行幂等去重操作，在 at least once 的基础上过滤掉重复消息，最终达到 exactly once 的语义.
+依赖于 MQ 中 at least once 的性质，我们简单认为，只要把一条消息成功投递到 MQ 组件中，它就一定被下游 consumer 端消费端，至少不会发生消息丢失的问题.
+场景 假如执行一个分布式事务，事务流程中包含需要在服务 A 中执行的动作 I 以及需要在服务 B 中执行的动作 II">
+  <meta itemprop="datePublished" content="2023-09-22T16:54:10+08:00">
+  <meta itemprop="dateModified" content="2023-09-22T16:54:10+08:00">
+  <meta itemprop="wordCount" content="900">
+  <meta itemprop="keywords" content="分布式事务,TTC,SAGA,事务消息">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="分布式事务">
+  <meta name="twitter:description" content="来源文章:
+万字长文漫谈分布式事务实现原理
+从零到一搭建 TCC 分布式事务框架
+微软SAGA解答
+10分钟说透Saga分布式事务
+现有实现:
+DTM
+事务的核心特征ACID Atomicity原子性 全部成功或者全部失败 Consistency一致性 宏观角度下的全局数据保持一致 Isolation隔离性 并发事务不互相干扰 Durability持久性 事务提交后，变更永久生效 什么是分布式事务 对两个或以上独立服务进行调用操作,保证这些操作同时成功或失败,在失败时要做到回滚操作,恢复到失败前的状态
+例如订单创建操作,分别有账户系统和库存系统
+在处理一笔来自用户创建订单的请求时，需要执行两步操作：
+从账户系统中，扣减用户的账户余额 从库存系统中，扣减商品的剩余库存 从技术流程上来讲，两个步骤是相对独立的两个操作，底层涉及到的存储介质也是相互独立的，因此无法基于本地事务的实现方式,所以需要分布式事务解决问题
+事务消息实现方案 概念 偏狭义的分布式事务解决方案是基于消息队列 MessageQueue（后续简称 MQ）实现的事务消息 Transaction Message.
+at least once : 投递到 MQ 中的消息能至少被下游消费者 consumer 消费到一次.
+基于此，MQ 组件能够保证消息不会在消费环节丢失，但是无法解决消息的重复性问题. 因此，倘若我们需要追求精确消费一次的目标，则下游的 consumer 还需要基于消息的唯一键执行幂等去重操作，在 at least once 的基础上过滤掉重复消息，最终达到 exactly once 的语义.
+依赖于 MQ 中 at least once 的性质，我们简单认为，只要把一条消息成功投递到 MQ 组件中，它就一定被下游 consumer 端消费端，至少不会发生消息丢失的问题.
+场景 假如执行一个分布式事务，事务流程中包含需要在服务 A 中执行的动作 I 以及需要在服务 B 中执行的动作 II">
+
+	
+  </head><body class="ma0 avenir bg-near-white development">
+
+    
+   
+  
+
+  <header>
+    <div class="bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l center items-center justify-between">
+    <a href="/" class="f3 fw2 hover-white white-90 dib no-underline">
+      
+        loveyu233
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      <div class="ananke-socials"></div>
+
+    </div>
+  </div>
+</nav>
+
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  
+  <article class="flex-l mw8 center ph3 flex-wrap justify-between">
+    <header class="mt4 w-100">
+      <aside class="instapaper_ignoref b helvetica tracked ttu">
+          
+        go
+      </aside><div id="sharing" class="mt3 ananke-socials"></div>
+<h1 class="f1 athelas mt3 mb1">分布式事务</h1>
+      
+      <p class="tracked"><strong>loveyu</strong>
+      </p>
+      
+      
+      
+      <time class="f6 mv4 dib tracked" datetime="2023-09-22T16:54:10+08:00">September 22, 2023</time>
+      
+
+      
+      
+    </header>
+    <div class="nested-copy-line-height lh-copy serif f4 nested-links mid-gray pr4-l w-two-thirds-l"><p>来源文章:</p>
+<p><a href="https://mp.weixin.qq.com/s/Z-ZY9VYUzNER8iwk80XSxA">万字长文漫谈分布式事务实现原理</a></p>
+<p><a href="https://mp.weixin.qq.com/s/aTQ6mgVUbUqn69NLmXh_7A">从零到一搭建 TCC 分布式事务框架</a></p>
+<p><a href="https://learn.microsoft.com/zh-cn/azure/architecture/reference-architectures/saga/saga">微软SAGA解答</a></p>
+<p><a href="https://cloud.tencent.com/developer/article/1839642">10分钟说透Saga分布式事务</a></p>
+<p>现有实现:</p>
+<p><a href="https://dtm.pub/guide/start.html">DTM</a></p>
+<h1 id="事务的核心特征acid">事务的核心特征ACID</h1>
+<ol>
+<li>
+<h3 id="atomicity原子性">Atomicity原子性</h3>
+<ol>
+<li>全部成功或者全部失败</li>
+</ol>
+</li>
+<li>
+<h3 id="consistency一致性">Consistency一致性</h3>
+<ol>
+<li>宏观角度下的全局数据保持一致</li>
+</ol>
+</li>
+<li>
+<h3 id="isolation隔离性">Isolation隔离性</h3>
+<ol>
+<li>并发事务不互相干扰</li>
+</ol>
+</li>
+<li>
+<h3 id="durability持久性">Durability持久性</h3>
+<ol>
+<li>事务提交后，变更永久生效</li>
+</ol>
+</li>
+</ol>
+<h1 id="什么是分布式事务">什么是分布式事务</h1>
+<blockquote>
+<p><code>对两个或以上独立服务进行调用操作,保证这些操作同时成功或失败,在失败时要做到回滚操作,恢复到失败前的状态</code></p>
+<p>例如订单创建操作,分别有账户系统和库存系统</p>
+<p>在处理一笔来自用户创建订单的请求时，需要执行两步操作：</p>
+<ul>
+<li>从账户系统中，扣减用户的账户余额</li>
+<li>从库存系统中，扣减商品的剩余库存</li>
+</ul>
+<p>从技术流程上来讲，两个步骤是相对独立的两个操作，底层涉及到的存储介质也是相互独立的，因此无法基于本地事务的实现方式,所以需要分布式事务解决问题</p></blockquote>
+<h1 id="事务消息实现方案">事务消息实现方案</h1>
+<h2 id="概念">概念</h2>
+<p>偏狭义的分布式事务解决方案是<code>基于消息队列</code> MessageQueue（后续简称 MQ）实现的事务消息 Transaction Message.</p>
+<p><code>at least once : </code> 投递到 MQ 中的消息能至少被下游消费者 consumer 消费到一次.</p>
+<p>基于此，MQ 组件能够保证消息不会在消费环节丢失，但是无法解决消息的重复性问题. 因此，倘若我们需要追求精确消费一次的目标，则下游的 consumer 还需要<code>基于消息的唯一键执行幂等去重操作</code>，在 at least once 的基础上过滤掉重复消息，最终达到 <code>exactly once</code> 的语义.</p>
+<p>依赖于 MQ 中 at least once 的性质，我们简单认为，只要把一条消息成功投递到 MQ 组件中，它就<code>一定被下游 consumer 端消费端</code>，至少不会发生消息丢失的问题.</p>
+<h2 id="场景">场景</h2>
+<p>假如执行一个分布式事务，事务流程中包含需要在服务 A 中执行的动作 I 以及需要在服务 B 中执行的动作 II</p>
+<h2 id="方案">方案</h2>
+<p>使用消息队列</p>
+<h2 id="流程">流程</h2>
+<ul>
+<li>以服务 A 作为 MQ 生产方 producer，服务 B 作为 MQ 消费方 consumer</li>
+<li>服务 A 首先在执行动作 I，执行成功后往 MQ 中投递消息，驱动服务 B 执行动作 II</li>
+<li>服务 B 消费到消息后，完成动作 II 的执行</li>
+</ul>
+<h2 id="优点">优点:</h2>
+<ul>
+<li>服务 A 和服务 B 通过 MQ 组件实现<code>异步解耦</code>，从而提高系统处理整个事务流程的吞吐量</li>
+<li>当服务 A 执行 动作 I 失败后，可以选择不投递消息从而<code>熔断流程</code>，因此保证不会出现动作 II 执行成功，而动作 I 执行失败的不一致问题</li>
+<li>基于 MQ at least once 的语义，服务 A 只要<code>成功消息的投递</code>，就可以相信服务 B <code>一定能消费到该消息</code>，至少服务 B 能感知到动作 II 需要执行的这一项情报</li>
+<li>依赖于 MQ 消费侧的 <code>ack 机制</code>，可以实现服务 B 有限轮次的<code>重试能力</code>. 即当服务 B 执行动作 II 失败后，可以给予 MQ bad ack，从而通过消息重发的机制实现动作 II 的重试，提高动作 II 的执行成功率</li>
+</ul>
+<h2 id="缺点">缺点:</h2>
+<ul>
+<li>问题 1：服务 B 消费到消息执行动作 II 可能发生失败，即便依赖于 MQ 重试也无法保证动作一定能执行成功，此时缺乏令服务 A 回滚动作 I 的机制. 因此很可能出现动作 I 执行成功，而动作 II 执行失败的不一致问题</li>
+<li>问题 2：在这个流程中，服务 A 需要执行的操作有两步：（1）执行动作 I；（2）投递消息. 这两个步骤本质上也无法保证原子性，即可能出现服务 A 执行动作 I 成功，而投递消息失败的问题.</li>
+</ul>
+<h2 id="优化">优化</h2>
+<blockquote>
+<p><code>对于问题1使用事务消息方案无法解决</code></p>
+<p>一下的方案均是为解决问题2提出</p></blockquote>
+<h3 id="方案一">方案一</h3>
+<blockquote>
+<p><code>先执行本地事务，后执行消息投递</code></p></blockquote>
+<p>优势：<strong>不会出现消息投递成功而本地事务执行失败的情况</strong>. 这是因为在本地事务执行失败时，可以主动熔断消息投递的动作.</p>
+<p>劣势：<strong>可能出现本地事务执行成功而消息投递失败的问题.</strong> 比如本地事务成功后，想要尝试执行消息投递操作时一直出现失败，最终消息无法发出. 此时由于本地事务已经提交，要执行回滚操作会存在着很高的成本.</p>
+<h3 id="方案二">方案二</h3>
+<blockquote>
+<p><code>先执行消息投递，后执行本地事务</code></p></blockquote>
+<p>优势：<strong>不会出现本地事务执行成功而消息投递失败的问题</strong>. 因为在消息投递失败时，可以不开启本地事务的执行操作.</p>
+<p>劣势：<strong>可能出现消息投递成功而本地事务执行失败问题.</strong> 比如消息投递成功后，本地事务始终无法成功执行，而消息一经发出，就已经覆水难收了.</p>
+<h3 id="方案三">方案三</h3>
+<blockquote>
+<p><code>基于本地事务包裹消息投递操作的实现方式</code></p></blockquote>
+<p>流程:</p>
+<ul>
+<li>首先 begin transaction，开启本地事务</li>
+<li>在事务中，执行本地状态数据的更新</li>
+<li>完成数据更新后，不立即 commit transaction</li>
+<li>执行消息投递操作</li>
+<li>倘若消息投递成功，则 commit transaction</li>
+<li>倘若消息投递失败，则 rollback transaction</li>
+</ul>
+<p>产生的问题:</p>
+<ul>
+<li>在和数据库交互的本地事务中，夹杂了和第三方组件的 IO 操作，可能存在<code>引发长事务的风险</code></li>
+<li>执行消息投递时，可能因为超时或其他意外原因，导致出现消息在事实上已投递成功，但 producer 获得的<code>投递响应发生异常的问题</code>，这样就会导致本地事务被误回滚的问题</li>
+<li>在执行事务提交操作时，可能发生失败. 此时事务内的数据库修改操作自然能够回滚，然而 <code>MQ 消息一经发出，就已经无法回收了</code>.</li>
+</ul>
+<h3 id="方案四">*方案四</h3>
+<blockquote>
+<p><code>事务消息 Transaction Message.</code></p>
+<p>以<code>RocketMQ 中 TX Msg</code>的实现方案为例展开介绍. 首先抛出结论，TX Msg 能保证我们做到在本地事务执行成功的情况下，后置的投递消息操作能以<code>接近百分之百的概率被发出</code>.</p>
+<p><code>也就是对发送消息加上需要确认发送或者回滚消息的操作</code></p></blockquote>
+<p>流程:</p>
+<ul>
+<li>producer 执行本地事务</li>
+<li>如果本地事务执行成功，producer 直接提交本地事务，并且向 RocketMQ 发出一条确认消息</li>
+<li>如果本地事务执行失败，producer 向 RocketMQ 发出一条回滚指令</li>
+<li>倘若 RocketMQ 接收到确认消息，则会执行消息的发送操作，供下游消费者 consumer 消费</li>
+<li>倘若 RocketMQ 接收到回滚指令，则会删除对应的半事务消息，不会执行实际的消息发送操作</li>
+<li>此外，在 RocketMQ 侧，针对半事务消息会有一个轮询任务，倘若半事务消息一直未收到来自 producer 侧的二次确认，则 RocketMQ 会持续主动询问 producer 侧本地事务的执行状态，从而引导半事务消息走向终态</li>
+</ul>
+<p>优点:</p>
+<ul>
+<li>倘若本地事务执行失败，则 producer 会向 RocketMQ 发出删除半事务消息的回滚指令，因此保证消息不会被发出</li>
+<li>倘若本地事务执行成功， 则 producer 会向 RocketMQ 发出事务成功的确认指令，因此消息能够被正常发出</li>
+<li>倘若 producer 端在发出第二轮的确认或回滚指令前发生意外状况，导致第二轮结果指令确实. 则 RocketMQ 会基于自身的轮询机制主动询问本地事务的执行状况，最终帮助半事务消息推进进度.</li>
+</ul>
+<p>缺点:</p>
+<ul>
+<li><strong>流程高度抽象：</strong> TX Msg 把流程抽象成本地事务+投递消息两个步骤. 然而在实际业务场景中，分布式事务内包含的步骤数量可能很多，因此就需要把更多的内容更重的内容糅合在所谓的“本地事务”环节中，上游 producer 侧可能会存在比较大的压力</li>
+<li><strong>不具备逆向回滚能力：</strong> 倘若接收消息的下游 consumer 侧执行操作失败，此时至多只能依赖于 MQ 的重发机制通过重试动作的方式提高执行成功率，但是无法从根本上解决下游 consumer 操作失败后回滚上游 producer 的问题. 这一点正是 TX Msg 中存在的最大的局限性.</li>
+</ul>
+<h1 id="tcc">TCC</h1>
+<p><code>（Two-Phase Commit with Timeout and Heartbeat）</code></p>
+<h2 id="概念-1">概念</h2>
+<blockquote>
+<p><code>TCC，全称 Try-Confirm-Cancel，指的是将一笔状态数据的修改操作拆分成两个阶段</code></p></blockquote>
+<p>流程:</p>
+<ul>
+<li>第一个阶段是 Try，指的是先对资源进行锁定，资源处于中间态但不处于最终态</li>
+<li>第二个阶段分为 Confirm 和 Cancel，指的是在 Try 操作的基础上，真正提交这次修改操作还是回滚这次变更操作</li>
+</ul>
+<p><img src="https://www.loveyu.asia//img/640.png" alt=""></p>
+<p>在 TCC 分布式事务架构中，包含三类角色：</p>
+<ul>
+<li>应用方 Application：指的是需要使用到分布式事务能力的应用方，即这套 TCC 框架服务的甲方</li>
+<li>TCC 组件 TCC Component：指的是需要完成分布式事务中某个特定步骤的子模块. 这个模块通常负责一些状态数据的维护和更新操作，需要对外暴露出 Try、Confirm 和 Cancel 三个 API：
+<ul>
+<li>Try：锁定资源，通常以类似【冻结】的语义对资源的状态进行描述，保留后续变化的可能性</li>
+<li>Confirm：对 Try 操作进行二次确认，将记录中的【冻结】态改为【成功】态</li>
+<li>Cancel：对 Try 操作进行回滚，将记录中的【冻结】状消除或者改为【失败】态. 其底层对应的状态数据会进行回滚</li>
+</ul>
+</li>
+<li>事务协调器 TX Manager：负责统筹分布式事务的执行：
+<ul>
+<li>实现 TCC Component 的注册管理功能</li>
+<li>负责和 Application 交互，提供分布式事务的创建入口，给予 Application 事务执行结果的响应</li>
+<li>串联 Try -&gt; Confirm/Cancel 的两阶段流程. 在第一阶段中批量调用 TCC Component 的 Try 接口，根据其结果，决定第二阶段是批量调用 TCC Component 的 Confirm 接口还是 Cancel 接口</li>
+</ul>
+</li>
+</ul>
+<h2 id="场景-1">场景</h2>
+<p>每当有一笔支付请求到达，我们需要执行下述三步操作，并要求其前后状态保持一致性：</p>
+<ul>
+<li>在订单模块中，创建出这笔订单流水记录</li>
+<li>在账户模块中，对用户的账户进行相应金额的扣减</li>
+<li>在库存模块中，对商品的库存数量进行扣减</li>
+</ul>
+<blockquote>
+<p>这三步操作分别需要对接订单、账户、库存三个不同的子模块，<code>底层的状态数据是基于不同的数据库和存储组件实现的</code>，并且我们这套后台系统是基于当前流行的微服务架构实现的，这三子个模块本身对应的就是三个相互独立的微服务，因此如何实现在一笔支付请求处理流程中，使得这三笔操作对应的状态数据始终保持高度一致性，就成了一个非常具有技术挑战性的问题.</p></blockquote>
+<h2 id="方案-1">方案</h2>
+<p>首先，我们基于 TCC 的设计理念，将订单模块、账户模块、库存模块<code>分别改造成三个 TCC Component</code>，每个 Component 对应需要暴露出<code> Try、Confirm、Cancel 三个 API</code>，对应于冻结资源、确认更新资源、回滚解冻资源三个行为.</p>
+<p>同时，为了能够简化后续 TX Manager 和 Application 之间的交互协议，<code>每个 TCC Component 会以插件的形式提前注册到 TX Manager 维护的组件市场 Component Market 中</code>，并提前声明好一个全局唯一键与之进行映射关联.</p>
+<p><img src="https://www.loveyu.asia//img/640-20230923155552557.png" alt=""></p>
+<p>由于每个 TCC Component 需要支持 Try 接口的锁定操作，因此其中维护的数据需要在明细记录中拆出一个用于标识 “冻结” 状态的标签，或者在状态机中拆出一个 “冻结” 状态.</p>
+<p>最终在第二阶段的 Confirm 或者 Cancel 请求到达时，再把 ”冻结“ 状态调整为 ”成功“ 或者 ”失败“ 的终态.</p>
+<p><img src="https://www.loveyu.asia//img/640-20230923155643457.png" alt=""></p>
+<h2 id="流程-1">流程</h2>
+<ul>
+<li>Application 调用 TX Manager 的接口，创建一轮分布式事务：</li>
+<li>Application 需要向 TX Manager 声明，这次操作涉及到的 TCC Component 范围，包括 订单组件、账户组件和库存组件</li>
+<li>Application 需要向 TX Manager 提前传递好，用于和每个 TCC Component 交互的请求参数（ TX Manager 调用 Component Try 接口时需要传递）</li>
+<li>TX Manager 需要为这笔新开启的分布式事务分配一个全局唯一的事务主键 Transaction ID</li>
+<li>TX Manager 将这笔分布式事务的明细记录添加到事务日志表中</li>
+<li>TX Manager 分别调用订单、账户、库存组件的 Try 接口，试探各个子模块的响应状况，比并尝试锁定对应的资源</li>
+<li>TX Manager 收集每个 TCC Component Try 接口的响应结果，根据结果决定下一轮的动作是 Confirm 还是 Cancel</li>
+<li>倘若三笔 Try 请求中，有任意一笔未请求成功：</li>
+<li>TX Manager 给予 Application 事务执行失败的 Response</li>
+<li>TX Manager 批量调用订单、账户、库存 Component 的 Cancel 接口，回滚释放对应的资源</li>
+<li>在三笔 Cancel 请求都响应成功后，TX Manager 在事务日志表中将这笔事务记录置为【失败】状态</li>
+<li>倘若三笔 Try 请求均响应成功了：</li>
+<li>TX Manager 给予 Application 事务执行成功的 ACK</li>
+<li>TX Manager 批量调用订单、账户、库存 Component 的 Confirm 接口，使得对应的变更记录实际生效</li>
+<li>在三笔 Confirm 请求都响应成功后，TX Manager 将这笔事务日志置为【成功】状态</li>
+</ul>
+<p><img src="https://www.loveyu.asia//img/640-20230923155858297.png" alt=""></p>
+<h2 id="说明">说明</h2>
+<p>首先，TCC 本质上是一个两阶段提交（Two Phase Commitment Protocol，2PC）的实现方案，分为 Try 和 Confirm/Cancel 的两个阶段：</p>
+<ul>
+<li><code>Try 操作的容错率是比较高的</code>，原因在于有人帮它兜底. Try 只是一个试探性的操作，不论成功或失败，后续可以通过第二轮的 Confirm 或 Cancel 操作对最终结果进行修正</li>
+<li><code>Confirm/Cancel 操作是没有容错的</code>，倘若在第二阶段出现问题，可能会导致 Component 中的状态数据被长时间”冻结“或者数据状态不一致的问题</li>
+</ul>
+<p>针对于这个场景，TCC 架构中采用的解决方案是：<code>在第二阶段中，TX Manager 轮询重试 + TCC Component 幂等去重. 通过这两套动作形成的组合拳，保证 Confirm/ Cancel 操作至少会被 TCC Component 执行一次.</code></p>
+<p>首先，针对于 TX Manager 而言：</p>
+<ul>
+<li>需要启动一个定时轮询任务</li>
+<li>对于事务日志表中，所有未被更新为【成功/失败】对应终态的事务，需要摘出进行检查</li>
+<li>检查时查看其涉及的每个组件的 Try 接口的响应状态以及这笔事务的持续时长</li>
+<li>倘若事务应该被置为【失败】（存在某个 TCC Component Try 接口请求失败），但状态却并未更新，说明之前批量执行 Cancel 操作时可能发生了错误. 此时需要补偿性地批量调用事务所涉及的所有 Component 的 Cancel 操作，待所有 Cancel 操作都成功后，将事务置为【失败】状态</li>
+<li>倘若事务应该被置为【成功】（所有 TCC Component Try 接口均请求成功），但状态却并未更新，说明之前批量执行 Confirm 操作时可能发生了错误. 此时需要补偿性地批量调用事务所涉及的所有 Component 的 Confirm 操作，待所有 Confirm 操作都成功后，将事务置为【成功】状态</li>
+<li>倘若事务仍处于【进行中】状态（TCC Component Try 接口请求未出现失败，但并非所有 Component Try 接口都请求成功），则检查事务的创建时间，倘若其耗时过长，同样需要按照事务失败的方式进行处理</li>
+</ul>
+<p>需要注意，在 TX Manager 轮询重试的流程中，针对下游 TCC Component 的 Confirm 和 Cancel 请求只能保证 at least once 的语义，换句话说，这部分请求是可能出现重复的.</p>
+<p>因此，<code>在下游 TCC Component 中，需要在接收到 Confirm/Cancel 请求时，执行幂等去重操作</code>. 幂等去重操作需要有一个唯一键作为去重的标识，这个标识键就是 TX Manager 在<code>开启事务时为其分配的全局唯一的 Transaction ID</code>，它既要作为这项事务在事务日志表中的唯一键，同时在 TX Manager 每次向 TCC Component 发起请求时，都要<code>携带上这笔 Transaction ID.</code></p>
+<p><img src="https://www.loveyu.asia//img/640-20230923160311120.png" alt=""></p>
+<h2 id="tx-manager-职责">TX Manager 职责</h2>
+<ul>
+<li><code>暴露出注册 TCC Component 的接口，进行 Component 的注册和管理</code></li>
+<li>暴露出启动分布式事务的接口，<code>作为和 Application 交互的唯一入口</code>，并基于 Application 事务执行结果的反馈</li>
+<li>为每个事务<code>维护全局唯一的 Transaction ID</code>，基于事务日志表记录每项分布式事务的进展明细</li>
+<li><code>串联 Try——Confirm/Cancel 的两阶段流程</code>，根据 Try 的结果，推进执行 Confirm 或 Cancel 流程</li>
+<li><code>持续运行轮询检查任务，推进每个处于中间态的分布式事务流转到终态</code></li>
+</ul>
+<h2 id="tcc-component-职责">TCC Component 职责</h2>
+<p><img src="https://www.loveyu.asia//img/640-20230923160527271.png" alt=""></p>
+<ul>
+<li><code>暴露出 Try、Confirm、Cancel 三个入口，对应于 TCC 的语义</code></li>
+<li>针对数据记录，新增出一个对应于 Try 操作的中间状态枚举值</li>
+<li>针对于同一笔事务的重复请求，需要执行幂等性校验</li>
+<li>需要支持空回滚操作. 即针对于一笔新的 Transaction ID，在没收到 Try 的前提下，若提前收到了 Cancel 操作，也需要将这个信息记录下来，但不需要对真实的状态数据发生变更</li>
+</ul>
+<h2 id="空悬挂">空悬挂</h2>
+<blockquote>
+<p><code>本应先执行try后confirm/cancel,但因为网络问题TX Manager执行try后长时间没得到回应当做失败执行cancel但是执行cancel后try操作到达Component即为空悬挂</code></p></blockquote>
+<ul>
+<li>TX Manager 在向 Component A 发起 Try 请求时，由于出现网络拥堵，导致请求超时</li>
+<li>TX Manager 发现存在 Try 请求超时，将其判定为失败，因此批量执行 Component 的 Cancel 操作</li>
+<li>Component A 率先收到了后发先至的 Cancel 请求</li>
+<li>过了一会儿，之前阻塞在网络链路中的 Try 请求也到达了 Component A</li>
+</ul>
+<p>从执行逻辑上，Try 应该先于 Cancel 到达和处理，然而在事实上，由于网络环境的不稳定性，请求到达的先后次序可能颠倒. 在这个场景中，Component A 需要保证的是，针对于同一笔事务，只要接受过对应的 Cancel 请求，之后到来的 Try 请求需要被忽略. 这就是 TCC Component 需要支持空回滚操作的原因所在.</p>
+<p><img src="https://www.loveyu.asia//img/640-20230923160807495.png" alt=""></p>
+<h2 id="优势">优势</h2>
+<ul>
+<li>TCC 可以称得上是真正意义上的分布式事务：任意一个 Component 的 Try 操作发生问题，都能支持事务的整体回滚操作</li>
+<li>TCC 流程中，分布式事务中数据的状态一致性能够趋近于 100%，这是因为第二阶段 Confirm/Cancel 的成功率是很高的，原因在于如下三个方面：</li>
+<li>TX Manager 在此前刚和 Component 经历过一轮 Try 请求的交互并获得了成功的 ACK，因此短时间内，Component 出现网络问题或者自身节点状态问题的概率是比较小的</li>
+<li>TX Manager 已经通过 Try 操作，让 Component 提前锁定了对应的资源，因此确保了资源是充分的，且由于执行了状态锁定，出现并发问题的概率也会比较小</li>
+<li>TX Manager 中通过轮询重试机制，保证了在 Confirm 和 Cancel 操作执行失败时，也能够通过重试机制得到补偿</li>
+</ul>
+<h2 id="劣势">劣势</h2>
+<ul>
+<li>TCC 分布式事务中，涉及的状态数据变更只能趋近于最终一致性，无法做到即时一致性</li>
+<li>事务的原子性只能做到趋近于 100%，而无法做到真正意义上的 100%，原因就在于第二阶段的 Confirm 和 Cancel 仍然存在极小概率发生失败，即便通过重试机制也无法挽救. 这部分小概率事件，就需要通过人为介入进行兜底处理</li>
+<li>TCC 架构的实现成本是很高的，需要所有子模块改造成 TCC 组件的格式，且整个事务的处理流程是相对繁重且复杂的. 因此在针对数据一致性要求不那么高的场景中，通常不会使用到这套架构.</li>
+</ul>
+<h1 id="saga">SAGA</h1>
+<p><code>（Saga Pattern）</code></p>
+<h2 id="概念-2">概念</h2>
+<p><code>每个事务存在多个子事务，每个子事务都有一个补偿事务，其在事务回滚的时候使用。</code></p>
+<p>相对于TTC的优点:<code>更适合业务流程长、业务流程多,无法实现try,confirm,cancel接口的事务操作</code></p>
+<p>优点: 一阶段提交本地事务，无锁，高性能；参与者可异步执行，高吞吐；补偿服务易于实现，因为一个更新操作的反向操作是比较容易理解的</p>
+<p>缺点: 就是不保证隔离性。</p>
+<p><code>每个Saga由一系列sub-transaction Ti组成。</code>每个Ti都有对应的补偿动作Ci，补偿动作用于撤销Ti造成的结果。这里可以理解为，针对每一个分布式事务的每个执行操作或者是步骤都是一个 Ti，例如扣减库存是T1、创建订单是T2、支付服务是T3。那么针对每个Ti都对应一个补偿动作Ci，例如回复库存C1、订单回滚C2、支付回滚C3。</p>
+<h2 id="恢复策略">恢复策略</h2>
+<blockquote>
+<p><code>对于执行不通过的事务，会尝试重试事务，这里有一个假设就是每个子事务最终都会成功。这种方式适用于必须要成功的场景</code></p></blockquote>
+<p>例如执行操作为: T1 -&gt; T2 -&gt; T3 如果执行到T3失败则恢复顺序为</p>
+<h3 id="向前恢复forward-recovery">向前恢复（forward recovery</h3>
+<p>C1 -&gt; C2 -&gt; C3</p>
+<h3 id="向后恢复backward-recovery">向后恢复（backward recovery）</h3>
+<p>C3 -&gt; C2 -&gt; C1</p>
+<h2 id="事务协调">事务协调</h2>
+<h3 id="协调">协调</h3>
+<blockquote>
+<p>协调是协调 Saga 的一种方法，参与者在没有集中控制点的情况下交换事件。 通过协调，每个本地事务都会发布在其他服务中触发本地事务的域事件。</p></blockquote>
+<p><img src="https://www.loveyu.asia//img/choreography-pattern.png" alt=""></p>
+<h4 id="好处">好处</h4>
+<ul>
+<li>适用于只需很少参与者且不需要协调逻辑的简单工作流。</li>
+<li>不需要额外的服务实现和维护。</li>
+<li>不会引入单一故障点，因为责任在各个 Saga 参与者之间进行分配。</li>
+</ul>
+<h4 id="缺点-1">缺点</h4>
+<ul>
+<li>添加新步骤时，工作流可能会变得混乱，因为很难跟踪哪些 Saga 参与者侦听哪些命令。</li>
+<li>由于 Saga 参与者必须使用彼此的命令，因此他们之间存在循环依赖的风险。</li>
+<li>集成测试很困难，因为必须运行所有服务才能模拟事务。</li>
+</ul>
+<h3 id="编排">编排</h3>
+<blockquote>
+<p>编排是协调 Saga 的一种方法，在此方法中，中央控制器告诉 Saga 参与者要执行的本地事务。 Saga 编排器处理所有事务，并告知参与者根据事件执行哪项操作。 编排器执行 Saga 请求、存储和解释每个任务的状态，并通过补偿事务处理故障恢复。</p></blockquote>
+<p><img src="https://www.loveyu.asia//img/orchestrator.png" alt=""></p>
+<h4 id="好处-1">好处</h4>
+<ul>
+<li>适用于涉及许多参与者或随时间推移增加了新参与者的复杂工作流。</li>
+<li>适用于可控制流程中的每个参与者和活动流的情况。</li>
+<li>不会引入循环依赖项，因为编排器单方面依赖于 Saga 参与者。</li>
+<li>Saga 参与者无需了解其他参与者的命令。 明确的关注点分离可简化业务逻辑。</li>
+</ul>
+<h4 id="缺点-2">缺点</h4>
+<ul>
+<li>其他设计复杂性需要协调逻辑的实现。</li>
+<li>还有一个额外的故障点，因为编排器管理完整的工作流。</li>
+</ul>
+<h1 id="xa">XA</h1>
+<p><code>（Two-Phase Commit）</code></p>
+<p>XA协议是一种两阶段提交协议。在XA中，有一个主事务管理器和多个参与者。事务管理器协调并控制多个参与者的操作。XA协议通过预提交和确认提交两个阶段来保证事务的一致性。</p>
+<ul>
+<li>预提交阶段：参与者将待提交的操作记录在事务日志中，等待主事务管理器的指令。</li>
+<li>提交阶段：主事务管理器收到所有参与者的预提交请求后，发送提交指令给各个参与者。如果所有参与者都能成功提交，则主事务管理器发送确认提交指令给各个参与者，完成整个事务的提交。如果任何参与者在提交阶段遇到问题，主事务管理器发送回滚指令给各个参与者，放弃整个事务的提交。</li>
+</ul>
+<h1 id="at">AT</h1>
+<p><code>（Application-Level Transaction）</code></p>
+<p>AT协议是一种应用层面的事务处理方式，相对于XA协议更加灵活。AT协议通过在应用程序中嵌入事务逻辑，将事务操作划分为多个小步骤，并在每个步骤之后记录操作的状态，以便在失败时进行回滚。AT协议通常使用补偿机制来实现事务的回滚，在发生失败时执行相反操作进行补偿，恢复到事务开始之前的状态。</p>
+<h1 id="总结">总结</h1>
+<h2 id="transaction-message">Transaction Message</h2>
+<p>能够支持狭义的分布式事务. 基于消息队列组件中半事务消息以及轮询检查机制，保证了本地事务和消息生产两个动作的原子性，但不具备事务的逆向回滚能力</p>
+<h2 id="tcc-transaction">TCC Transaction</h2>
+<p>能够支持广义的分布式事务. 架构中每个模块需要改造成实现 Try/Confirm/Cancel 能力的 TCC 组件，通过事务协调器进行全局 Try——Confirm/Cancel 两阶段流程的串联，保证数据的最终一致性趋近于 100%</p>
+<h2 id="saga-1">SAGA</h2>
+<p>在以下情况下，请使用 Saga 模式：</p>
+<ul>
+<li>需确保分布式系统中的数据一致性，而无需紧密耦合。</li>
+<li>需要在序列中的某个操作失败时进行回滚或补偿。</li>
+</ul>
+<p>Saga 模式不太适合用于：</p>
+<ul>
+<li>紧密耦合事务。</li>
+<li>补偿早期参与者中发生的事务。</li>
+<li>循环依赖项。</li>
+</ul>
+<ul class="pa0">
+  
+   <li class="list di">
+     <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/" class="link f5 grow br-pill ba ph3 pv2 mb2 dib black sans-serif no-underline">分布式事务</a>
+   </li>
+  
+   <li class="list di">
+     <a href="/tags/ttc/" class="link f5 grow br-pill ba ph3 pv2 mb2 dib black sans-serif no-underline">TTC</a>
+   </li>
+  
+   <li class="list di">
+     <a href="/tags/saga/" class="link f5 grow br-pill ba ph3 pv2 mb2 dib black sans-serif no-underline">SAGA</a>
+   </li>
+  
+   <li class="list di">
+     <a href="/tags/%E4%BA%8B%E5%8A%A1%E6%B6%88%E6%81%AF/" class="link f5 grow br-pill ba ph3 pv2 mb2 dib black sans-serif no-underline">事务消息</a>
+   </li>
+  
+</ul>
+<div class="mt6 instapaper_ignoref">
+      
+      
+      </div>
+    </div>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white white-70 dn dib-ns pv2 ph3 no-underline" href="http://localhost:1313/" >
+    &copy;  loveyu233 2025 
+  </a>
+    <div><div class="ananke-socials"></div>
+</div>
+  </div>
+</footer>
+
+  </body>
+</html>

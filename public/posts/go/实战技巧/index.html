@@ -1,0 +1,1091 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>实战技巧 | loveyu233</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="Redis
+SETNX
+
+命令在指定的 key 不存在时，为 key 设置指定的值。
+设置成功，返回 1 。 设置失败，返回 0 。
+可以用在分布式锁中
+SETNX KEY_NAME VALUE
+
+redis&gt; EXISTS job                # job 不存在
+(integer) 0
+
+redis&gt; SETNX job &#34;programmer&#34;    # job 设置成功
+(integer) 1
+
+redis&gt; SETNX job &#34;code-farmer&#34;   # 尝试覆盖 job ，失败
+(integer) 0
+
+redis&gt; GET job                   # 没有被覆盖
+&#34;programmer&#34;
+分布式锁实现
+type RedisLock struct {
+	LockName  string
+	LockValue string
+	TTl       time.Duration
+}
+
+func NewRedisLock(lockName, lockValue string, tll time.Duration) *RedisLock {
+	return &amp;RedisLock{
+		LockName:  lockName,
+		LockValue: lockValue,
+		TTl:       tll,
+	}
+}
+
+func (r *RedisLock) TryLock() bool {
+	result, err := redisClient.SetNX(global.Content, lockPrefix&#43;r.LockName, r.LockValue, r.TTl).Result()
+	if err != nil {
+		log.Println(err)
+	}
+	return result
+}
+
+// 使用lua脚本使多条命令具有原子性
+var UnLockLuaScript string = `     if redis.call(&#34;GET&#34;,KEYS[1]) == ARGV[1] then     return redis.call(&#34;DEL&#34;,KEYS[1])     else         return 0     end`
+
+func (r *RedisLock) UnLock() {
+	script := redis.NewScript(global.UnLockLuaScript)
+	script.Run(global.Content, redisClient, []string{lockPrefix &#43; r.LockName}, r.LockValue)
+}
+Setbit
+
+Setbit 命令用于对 key 所储存的字符串值，设置或清除指定偏移量上的位(bit)。">
+    <meta name="generator" content="Hugo 0.147.7">
+    
+    
+    
+      <meta name="robots" content="noindex, nofollow">
+    
+    <meta name="author" content="loveyu">
+    
+
+    
+<link rel="stylesheet" href="/ananke/css/main.min.css" >
+
+
+
+
+    
+
+
+    
+      
+
+    
+
+    
+
+    
+      <link rel="canonical" href="http://localhost:1313/posts/go/%E5%AE%9E%E6%88%98%E6%8A%80%E5%B7%A7/">
+    
+
+    <meta property="og:url" content="http://localhost:1313/posts/go/%E5%AE%9E%E6%88%98%E6%8A%80%E5%B7%A7/">
+  <meta property="og:site_name" content="loveyu233">
+  <meta property="og:title" content="实战技巧">
+  <meta property="og:description" content="Redis SETNX 命令在指定的 key 不存在时，为 key 设置指定的值。
+设置成功，返回 1 。 设置失败，返回 0 。
+可以用在分布式锁中
+SETNX KEY_NAME VALUE redis&gt; EXISTS job # job 不存在 (integer) 0 redis&gt; SETNX job &#34;programmer&#34; # job 设置成功 (integer) 1 redis&gt; SETNX job &#34;code-farmer&#34; # 尝试覆盖 job ，失败 (integer) 0 redis&gt; GET job # 没有被覆盖 &#34;programmer&#34; 分布式锁实现 type RedisLock struct { LockName string LockValue string TTl time.Duration } func NewRedisLock(lockName, lockValue string, tll time.Duration) *RedisLock { return &amp;RedisLock{ LockName: lockName, LockValue: lockValue, TTl: tll, } } func (r *RedisLock) TryLock() bool { result, err := redisClient.SetNX(global.Content, lockPrefix&#43;r.LockName, r.LockValue, r.TTl).Result() if err != nil { log.Println(err) } return result } // 使用lua脚本使多条命令具有原子性 var UnLockLuaScript string = ` if redis.call(&#34;GET&#34;,KEYS[1]) == ARGV[1] then return redis.call(&#34;DEL&#34;,KEYS[1]) else return 0 end` func (r *RedisLock) UnLock() { script := redis.NewScript(global.UnLockLuaScript) script.Run(global.Content, redisClient, []string{lockPrefix &#43; r.LockName}, r.LockValue) } Setbit Setbit 命令用于对 key 所储存的字符串值，设置或清除指定偏移量上的位(bit)。">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2022-12-04T19:38:37+08:00">
+    <meta property="article:modified_time" content="2022-12-04T19:38:37+08:00">
+    <meta property="article:tag" content="Go">
+    <meta property="article:tag" content="Mysql">
+    <meta property="article:tag" content="Mongodb">
+    <meta property="article:tag" content="Zap">
+
+  <meta itemprop="name" content="实战技巧">
+  <meta itemprop="description" content="Redis SETNX 命令在指定的 key 不存在时，为 key 设置指定的值。
+设置成功，返回 1 。 设置失败，返回 0 。
+可以用在分布式锁中
+SETNX KEY_NAME VALUE redis&gt; EXISTS job # job 不存在 (integer) 0 redis&gt; SETNX job &#34;programmer&#34; # job 设置成功 (integer) 1 redis&gt; SETNX job &#34;code-farmer&#34; # 尝试覆盖 job ，失败 (integer) 0 redis&gt; GET job # 没有被覆盖 &#34;programmer&#34; 分布式锁实现 type RedisLock struct { LockName string LockValue string TTl time.Duration } func NewRedisLock(lockName, lockValue string, tll time.Duration) *RedisLock { return &amp;RedisLock{ LockName: lockName, LockValue: lockValue, TTl: tll, } } func (r *RedisLock) TryLock() bool { result, err := redisClient.SetNX(global.Content, lockPrefix&#43;r.LockName, r.LockValue, r.TTl).Result() if err != nil { log.Println(err) } return result } // 使用lua脚本使多条命令具有原子性 var UnLockLuaScript string = ` if redis.call(&#34;GET&#34;,KEYS[1]) == ARGV[1] then return redis.call(&#34;DEL&#34;,KEYS[1]) else return 0 end` func (r *RedisLock) UnLock() { script := redis.NewScript(global.UnLockLuaScript) script.Run(global.Content, redisClient, []string{lockPrefix &#43; r.LockName}, r.LockValue) } Setbit Setbit 命令用于对 key 所储存的字符串值，设置或清除指定偏移量上的位(bit)。">
+  <meta itemprop="datePublished" content="2022-12-04T19:38:37+08:00">
+  <meta itemprop="dateModified" content="2022-12-04T19:38:37+08:00">
+  <meta itemprop="wordCount" content="1542">
+  <meta itemprop="keywords" content="Go,Mysql,Mongodb,Zap">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="实战技巧">
+  <meta name="twitter:description" content="Redis SETNX 命令在指定的 key 不存在时，为 key 设置指定的值。
+设置成功，返回 1 。 设置失败，返回 0 。
+可以用在分布式锁中
+SETNX KEY_NAME VALUE redis&gt; EXISTS job # job 不存在 (integer) 0 redis&gt; SETNX job &#34;programmer&#34; # job 设置成功 (integer) 1 redis&gt; SETNX job &#34;code-farmer&#34; # 尝试覆盖 job ，失败 (integer) 0 redis&gt; GET job # 没有被覆盖 &#34;programmer&#34; 分布式锁实现 type RedisLock struct { LockName string LockValue string TTl time.Duration } func NewRedisLock(lockName, lockValue string, tll time.Duration) *RedisLock { return &amp;RedisLock{ LockName: lockName, LockValue: lockValue, TTl: tll, } } func (r *RedisLock) TryLock() bool { result, err := redisClient.SetNX(global.Content, lockPrefix&#43;r.LockName, r.LockValue, r.TTl).Result() if err != nil { log.Println(err) } return result } // 使用lua脚本使多条命令具有原子性 var UnLockLuaScript string = ` if redis.call(&#34;GET&#34;,KEYS[1]) == ARGV[1] then return redis.call(&#34;DEL&#34;,KEYS[1]) else return 0 end` func (r *RedisLock) UnLock() { script := redis.NewScript(global.UnLockLuaScript) script.Run(global.Content, redisClient, []string{lockPrefix &#43; r.LockName}, r.LockValue) } Setbit Setbit 命令用于对 key 所储存的字符串值，设置或清除指定偏移量上的位(bit)。">
+
+	
+  </head><body class="ma0 avenir bg-near-white development">
+
+    
+   
+  
+
+  <header>
+    <div class="bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l center items-center justify-between">
+    <a href="/" class="f3 fw2 hover-white white-90 dib no-underline">
+      
+        loveyu233
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      <div class="ananke-socials"></div>
+
+    </div>
+  </div>
+</nav>
+
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  
+  <article class="flex-l mw8 center ph3 flex-wrap justify-between">
+    <header class="mt4 w-100">
+      <aside class="instapaper_ignoref b helvetica tracked ttu">
+          
+        go
+      </aside><div id="sharing" class="mt3 ananke-socials"></div>
+<h1 class="f1 athelas mt3 mb1">实战技巧</h1>
+      
+      <p class="tracked"><strong>loveyu</strong>
+      </p>
+      
+      
+      
+      <time class="f6 mv4 dib tracked" datetime="2022-12-04T19:38:37+08:00">December 4, 2022</time>
+      
+
+      
+      
+    </header>
+    <div class="nested-copy-line-height lh-copy serif f4 nested-links mid-gray pr4-l w-two-thirds-l"><h1 id="redis">Redis</h1>
+<h2 id="setnx">SETNX</h2>
+<blockquote>
+<p>命令在指定的 key 不存在时，为 key 设置指定的值。</p>
+<p>设置成功，返回 1 。 设置失败，返回 0 。</p>
+<p>可以用在分布式锁中</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>SETNX KEY_NAME VALUE
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>redis&gt; EXISTS job                <span style="color:#75715e"># job 不存在</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>redis&gt; SETNX job <span style="color:#e6db74">&#34;programmer&#34;</span>    <span style="color:#75715e"># job 设置成功</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>redis&gt; SETNX job <span style="color:#e6db74">&#34;code-farmer&#34;</span>   <span style="color:#75715e"># 尝试覆盖 job ，失败</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>redis&gt; GET job                   <span style="color:#75715e"># 没有被覆盖</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;programmer&#34;</span>
+</span></span></code></pre></div><h2 id="分布式锁实现">分布式锁实现</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">RedisLock</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">LockName</span>  <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">LockValue</span> <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">TTl</span>       <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Duration</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">NewRedisLock</span>(<span style="color:#a6e22e">lockName</span>, <span style="color:#a6e22e">lockValue</span> <span style="color:#66d9ef">string</span>, <span style="color:#a6e22e">tll</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Duration</span>) <span style="color:#f92672">*</span><span style="color:#a6e22e">RedisLock</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">RedisLock</span>{
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">LockName</span>:  <span style="color:#a6e22e">lockName</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">LockValue</span>: <span style="color:#a6e22e">lockValue</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">TTl</span>:       <span style="color:#a6e22e">tll</span>,
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">RedisLock</span>) <span style="color:#a6e22e">TryLock</span>() <span style="color:#66d9ef">bool</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">result</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">redisClient</span>.<span style="color:#a6e22e">SetNX</span>(<span style="color:#a6e22e">global</span>.<span style="color:#a6e22e">Content</span>, <span style="color:#a6e22e">lockPrefix</span><span style="color:#f92672">+</span><span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">LockName</span>, <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">LockValue</span>, <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">TTl</span>).<span style="color:#a6e22e">Result</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">result</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 使用lua脚本使多条命令具有原子性</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">UnLockLuaScript</span> <span style="color:#66d9ef">string</span> = <span style="color:#e6db74">`     if redis.call(&#34;GET&#34;,KEYS[1]) == ARGV[1] then     return redis.call(&#34;DEL&#34;,KEYS[1])     else         return 0     end`</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">RedisLock</span>) <span style="color:#a6e22e">UnLock</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">script</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">redis</span>.<span style="color:#a6e22e">NewScript</span>(<span style="color:#a6e22e">global</span>.<span style="color:#a6e22e">UnLockLuaScript</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">script</span>.<span style="color:#a6e22e">Run</span>(<span style="color:#a6e22e">global</span>.<span style="color:#a6e22e">Content</span>, <span style="color:#a6e22e">redisClient</span>, []<span style="color:#66d9ef">string</span>{<span style="color:#a6e22e">lockPrefix</span> <span style="color:#f92672">+</span> <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">LockName</span>}, <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">LockValue</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="setbit">Setbit</h2>
+<blockquote>
+<p>Setbit 命令用于对 key 所储存的字符串值，设置或清除指定偏移量上的位(bit)。</p>
+<p>可以用来做签到统计</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>Setbit KEY_NAME OFFSET
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">==</span> 设置key为bit的第10086位为1，默认为0
+</span></span><span style="display:flex;"><span>redis&gt; SETBIT bit <span style="color:#ae81ff">10086</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>redis&gt; GETBIT bit <span style="color:#ae81ff">10086</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>redis&gt; GETBIT bit <span style="color:#ae81ff">100</span>   <span style="color:#75715e"># bit 默认被初始化为 0</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">0</span>
+</span></span></code></pre></div><h2 id="签到统计">签到统计</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">RedisBitmapUtil</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 签到</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">RedisBitmapUtil</span>) <span style="color:#a6e22e">Sign</span>(<span style="color:#a6e22e">userId</span> <span style="color:#66d9ef">int</span>) <span style="color:#66d9ef">bool</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">key</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Sprintf</span>(<span style="color:#e6db74">&#34;%s%d:%d-%s&#34;</span>, <span style="color:#a6e22e">global</span>.<span style="color:#a6e22e">RedisSign</span>, <span style="color:#a6e22e">userId</span>, <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Now</span>().<span style="color:#a6e22e">Year</span>(), <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Now</span>().<span style="color:#a6e22e">Format</span>(<span style="color:#e6db74">&#34;01&#34;</span>))
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">day</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Now</span>().<span style="color:#a6e22e">Day</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">result</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">redisClient</span>.<span style="color:#a6e22e">SetBit</span>(<span style="color:#a6e22e">global</span>.<span style="color:#a6e22e">Content</span>, <span style="color:#a6e22e">key</span>, int64(<span style="color:#a6e22e">day</span>), <span style="color:#ae81ff">1</span>).<span style="color:#a6e22e">Result</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> <span style="color:#f92672">||</span> <span style="color:#a6e22e">result</span> <span style="color:#f92672">&lt;=</span> <span style="color:#ae81ff">0</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 统计签到</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">RedisBitmapUtil</span>) <span style="color:#a6e22e">SignCount</span>(<span style="color:#a6e22e">userId</span> <span style="color:#66d9ef">int</span>, <span style="color:#a6e22e">year</span>, <span style="color:#a6e22e">moth</span> <span style="color:#66d9ef">string</span>) <span style="color:#66d9ef">int64</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">key</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Sprintf</span>(<span style="color:#e6db74">&#34;%s%d:%s-%s&#34;</span>, <span style="color:#a6e22e">global</span>.<span style="color:#a6e22e">RedisSign</span>, <span style="color:#a6e22e">userId</span>, <span style="color:#a6e22e">year</span>, <span style="color:#a6e22e">moth</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">result</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">redisClient</span>.<span style="color:#a6e22e">BitCount</span>(<span style="color:#a6e22e">global</span>.<span style="color:#a6e22e">Content</span>, <span style="color:#a6e22e">key</span>, <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">redis</span>.<span style="color:#a6e22e">BitCount</span>{
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">Start</span>: <span style="color:#ae81ff">0</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">End</span>:   <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>,
+</span></span><span style="display:flex;"><span>	}).<span style="color:#a6e22e">Result</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">result</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="set">set</h2>
+<blockquote>
+<p>无序集合，集合成员是唯一的</p></blockquote>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: center">命令</th>
+          <th style="text-align: center">解释</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: center">SADD key member1 [member2]</td>
+          <td style="text-align: center">向集合添加一个或多个成员</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">SCARD key</td>
+          <td style="text-align: center">获取集合的成员数</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">SDIFF key1 [key2]</td>
+          <td style="text-align: center">返回第一个集合与其他集合之间的差异。</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">SDIFFSTORE destination key1 [key2]</td>
+          <td style="text-align: center">返回给定所有集合的差集并存储在 destination 中</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">SINTER key1 [key2]</td>
+          <td style="text-align: center">返回给定所有集合的交集</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">SINTERSTORE destination key1 [key2]</td>
+          <td style="text-align: center">返回给定所有集合的交集并存储在 destination 中</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">SISMEMBER key member</td>
+          <td style="text-align: center">判断 member 元素是否是集合 key 的成员</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">SMEMBERS key</td>
+          <td style="text-align: center">返回集合中的所有成员</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">SMOVE source destination member</td>
+          <td style="text-align: center">将 member 元素从 source 集合移动到 destination 集合</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">SPOP key</td>
+          <td style="text-align: center">移除并返回集合中的一个随机元素</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">SRANDMEMBER key [count]</td>
+          <td style="text-align: center">返回集合中一个或多个随机数</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">SREM key member1 [member2]</td>
+          <td style="text-align: center">移除集合中一个或多个成员</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">SUNION key1 [key2]</td>
+          <td style="text-align: center">返回所有给定集合的并集</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">SUNIONSTORE destination key1 [key2]</td>
+          <td style="text-align: center">所有给定集合的并集存储在 destination 集合中</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">SSCAN key cursor [MATCH pattern] [COUNT count]</td>
+          <td style="text-align: center">迭代集合中的元素</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="关注功能实现">关注功能实现</h2>
+<blockquote>
+<p>分别实现关注，是否关注，共同关注功能</p>
+<ol>
+<li>关注实现</li>
+<li>使用set集合，集合名称为用户id</li>
+<li>集合内容为用户关注的其他用户</li>
+<li>是否关注</li>
+<li>查询用户集合是否有被关注人</li>
+<li>有则是关注了没有则是没有关注</li>
+<li>共同关注</li>
+<li>使用：SINTER key1 [key2]</li>
+<li>该命令返回的是多个key的交集</li>
+</ol></blockquote>
+<h2 id="zset">zset</h2>
+<blockquote>
+<p>有序集合</p></blockquote>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: center">命令</th>
+          <th style="text-align: center">解释</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: center">zadd key score member</td>
+          <td style="text-align: center">把分数为score值为member的数据添加到有序集合key中</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">zrem key value</td>
+          <td style="text-align: center">删除key有序集合中的value</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">zrange key start end</td>
+          <td style="text-align: center">获取key有序集合中从start到end间的数据,升序</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">zrevrange</td>
+          <td style="text-align: center">获取key有序集合中从start到end间的数据,降序</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">zrangebyscore key min max</td>
+          <td style="text-align: center">获取有序集合key中分数大于等于min小于等于max的value，升序</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">zrevrangebyscore key min max</td>
+          <td style="text-align: center">获取有序集合key中分数大于等于min小于等于max的value，降序</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">zcount key min max</td>
+          <td style="text-align: center">统计有序集合key中分数在min到max的value数量</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">zrank key value</td>
+          <td style="text-align: center">返回有序集合key的排名从0开始</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="点赞排行实现">点赞排行实现</h2>
+<blockquote>
+<p>实现的为点赞时间的排行</p>
+<p>使用zset实现，分数为当前时间戳，key为blogId，value为点赞的用户</p>
+<p>判断用户是否点赞该blog的方法为：查看key集合中是否有用户的value</p></blockquote>
+<h2 id="滚动查询实现">滚动查询实现</h2>
+<blockquote>
+<p>难点：例如现在有数据v1,v2,v3,v4,v5,v6，按照角标进行分页的话，</p>
+<p>第一次分页zrange key (page-1)✖️pagesize pagesize	(假设pagesize为3)</p>
+<p>可以查出来v1,v2,v3 如果现在插入数据v0的话</p>
+<p>再次分页zrange key  (page-1)✖️pagesize pagesize可以查出来v3，v4，v5重复数据v3</p>
+<p>解决办法：</p>
+<p>不使用角标查询，使用分数查询，这里的分数在存储时存储为当前的时间戳</p>
+<p>使用分数查询：第一次查询：zrangebyscore key 当前时间戳 0 limit 0 pagesize	(这里是0)</p>
+<p>最大分数设置为当前时间戳因为第一次查询需要的是最新的数据所以最大使用当前时间戳，最小为0因为后边后数量限制所以这里为时间的最小值0</p>
+<p>第二次及之后查询：zrangescore key 上次查询的最后一条数据 0  1 pagesize	（这里必须是1，因为是从上次查询的最后一条数据开始所以偏移量必须是1，也就是跳过上次查询的最后一条数据）</p></blockquote>
+<h2 id="hash">hash</h2>
+<blockquote>
+<p>hash 是一个 string 类型的 field（字段） 和 value（值） 的映射表，hash 特别适合用于存储对象。</p></blockquote>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: center">命令</th>
+          <th style="text-align: center">解释</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: center">hdel key v1 v2</td>
+          <td style="text-align: center">删除一个或多个哈希表字段</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">hexists key value</td>
+          <td style="text-align: center">查看哈希表key是否存在value</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">hget key value</td>
+          <td style="text-align: center">获取哈希表key中的value</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">hgetall key</td>
+          <td style="text-align: center">获取哈希表key中的全部value</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">hekys key</td>
+          <td style="text-align: center">获取所有哈希表中的字段</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">hlen key</td>
+          <td style="text-align: center">获取哈希表key中字段数量</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="string">string</h2>
+<blockquote>
+<p>INCRBY KEY_NAME INCR_AMOUNT</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>redis&gt; SET rank <span style="color:#ae81ff">50</span>
+</span></span><span style="display:flex;"><span>OK
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>redis&gt; INCRBY rank <span style="color:#ae81ff">20</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">70</span>
+</span></span></code></pre></div><h2 id="geo">GEO</h2>
+<blockquote>
+<p>GEO 主要用于存储地理位置信息，并对存储的信息进行操作</p></blockquote>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: center">命令</th>
+          <th style="text-align: center">解释</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: center">GEOADD key longitude latitude member [longitude latitude member &hellip;]</td>
+          <td style="text-align: center">geoadd 用于存储指定的地理空间位置，可以将一个或多个经度(longitude)、纬度(latitude)、位置名称(member)添加到指定的 key 中。</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">GEOPOS key member [member &hellip;]</td>
+          <td style="text-align: center">geopos 用于从给定的 key 里返回所有指定名称(member)的位置（经度和纬度），不存在的返回 nil。</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">GEODIST key member1 member2 [m|km|ft|mi]</td>
+          <td style="text-align: center">geodist 用于返回两个给定位置之间的距离。</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="附近商铺实现">附近商铺实现</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">RedisGeoUtil</span>) <span style="color:#a6e22e">SearchGeo</span>(<span style="color:#a6e22e">key</span> <span style="color:#66d9ef">string</span>, <span style="color:#a6e22e">x</span>, <span style="color:#a6e22e">y</span> <span style="color:#66d9ef">float64</span>, <span style="color:#a6e22e">current</span> <span style="color:#66d9ef">int</span>) []<span style="color:#a6e22e">redis</span>.<span style="color:#a6e22e">GeoLocation</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">from</span> <span style="color:#f92672">:=</span> (<span style="color:#a6e22e">current</span> <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>) <span style="color:#f92672">*</span> <span style="color:#a6e22e">global</span>.<span style="color:#a6e22e">NaxPageSize</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">end</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">current</span> <span style="color:#f92672">*</span> <span style="color:#a6e22e">global</span>.<span style="color:#a6e22e">NaxPageSize</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">result</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">redisClient</span>.<span style="color:#a6e22e">GeoSearchLocation</span>(<span style="color:#a6e22e">global</span>.<span style="color:#a6e22e">Content</span>, <span style="color:#a6e22e">key</span>, <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">redis</span>.<span style="color:#a6e22e">GeoSearchLocationQuery</span>{
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">GeoSearchQuery</span>: <span style="color:#a6e22e">redis</span>.<span style="color:#a6e22e">GeoSearchQuery</span>{
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">Longitude</span>:  <span style="color:#a6e22e">x</span>,
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">Latitude</span>:   <span style="color:#a6e22e">y</span>,
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">Radius</span>:     <span style="color:#ae81ff">10000</span>,
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">RadiusUnit</span>: <span style="color:#e6db74">&#34;m&#34;</span>,
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">Count</span>:      <span style="color:#a6e22e">end</span>,
+</span></span><span style="display:flex;"><span>		},
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">WithCoord</span>: <span style="color:#66d9ef">false</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">WithDist</span>:  <span style="color:#66d9ef">true</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">WithHash</span>:  <span style="color:#66d9ef">false</span>,
+</span></span><span style="display:flex;"><span>	}).<span style="color:#a6e22e">Result</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> <span style="color:#f92672">||</span> len(<span style="color:#a6e22e">result</span>) <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">||</span> <span style="color:#a6e22e">from</span> &gt; len(<span style="color:#a6e22e">result</span>) {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> []<span style="color:#a6e22e">redis</span>.<span style="color:#a6e22e">GeoLocation</span>{}
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">result</span>[<span style="color:#a6e22e">from</span>:]
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="常用lua脚本">常用lua脚本</h2>
+<blockquote>
+<p>释放锁的lua脚本</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span><span style="color:#66d9ef">if</span> redis.call(<span style="color:#e6db74">&#34;GET&#34;</span>,KEYS[<span style="color:#ae81ff">1</span>]) <span style="color:#f92672">==</span> ARGV[<span style="color:#ae81ff">1</span>] <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">return</span> redis.call(<span style="color:#e6db74">&#34;DEL&#34;</span>,KEYS[<span style="color:#ae81ff">1</span>])
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">end</span>
+</span></span></code></pre></div><blockquote>
+<p>判断是否有条件抢购的lua脚本</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span><span style="color:#66d9ef">local</span> voucherId <span style="color:#f92672">=</span> ARGV[<span style="color:#ae81ff">1</span>]
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">local</span> userId <span style="color:#f92672">=</span> ARGV[<span style="color:#ae81ff">2</span>]
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">local</span> stockKey <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;seckill:stock:&#39;</span> <span style="color:#f92672">..</span> voucherId
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">local</span> orderKey <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;seckill:order&#39;</span> <span style="color:#f92672">..</span> voucherId
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 判断是否有库存</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> (tonumber(redis.call(<span style="color:#e6db74">&#39;get&#39;</span>,stockKey)) <span style="color:#f92672">&lt;=</span> <span style="color:#ae81ff">0</span>) <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">end</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 判断用户是否下过单</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> (redis.call(<span style="color:#e6db74">&#39;sismember&#39;</span>,orderKey,userId) <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span>) <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">end</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 扣库存，吧stockKey的值-1</span>
+</span></span><span style="display:flex;"><span>redis.call(<span style="color:#e6db74">&#39;incrby&#39;</span>,stockKey,<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 下单，把用户id存到orderKey这个set集合中</span>
+</span></span><span style="display:flex;"><span>redis.call(<span style="color:#e6db74">&#39;sadd&#39;</span>,orderKey,userId)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>
+</span></span></code></pre></div><h2 id="go生成全局唯一id">go生成全局唯一Id</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">NextId</span>(<span style="color:#a6e22e">keyPrefix</span> <span style="color:#66d9ef">string</span>) <span style="color:#66d9ef">int64</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 生成时间戳</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">timestamp</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Now</span>().<span style="color:#a6e22e">Unix</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 获取当前的年月日</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">timeData</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Now</span>().<span style="color:#a6e22e">Format</span>(<span style="color:#e6db74">&#34;2006:01:02&#34;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// redis自增，key拼接为：icr + key前缀 + 当前年月日</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">count</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">redisClient</span>.<span style="color:#a6e22e">Incr</span>(<span style="color:#a6e22e">global</span>.<span style="color:#a6e22e">Content</span>, <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Sprintf</span>(<span style="color:#e6db74">&#34;%s:%s:%s:&#34;</span>, <span style="color:#e6db74">&#34;icr&#34;</span>, <span style="color:#a6e22e">keyPrefix</span>, <span style="color:#a6e22e">timeData</span>)).<span style="color:#a6e22e">Result</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 左移32位，为序列号留出位置，然后 或运算 上序列号就得到最后的全局唯一ID</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">timestamp</span><span style="color:#f92672">&lt;&lt;</span><span style="color:#ae81ff">32</span> | <span style="color:#a6e22e">count</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="feed流模式">Feed流模式</h2>
+<blockquote>
+<p>feed流就是向用户推送内容而不是让用户自己去检索，例如我关注了一个作者当这个作者更新内容的时候服务器会把我关注的这个作者的内容推送给我</p>
+<p>feed流模式有两种：</p>
+<ol>
+<li>TimeLine模式：把全部内容都进行推送，一般是按照时间戳进行排序</li>
+<li>智能排序模式：对内容进行筛选，筛选出用户喜欢的需要的内容再进行推送</li>
+</ol>
+<p>两种模式在不同环境下各有各的好</p>
+<p>实现方式又有三种：</p>
+<ol>
+<li>拉模式（读扩散）</li>
+</ol>
+<p>1.2 被关注者的内容保存在自己的数据库中</p>
+<p>1.3 关注着需要内容时再去他所关注的用户中去拉取然后按照时间戳排序</p>
+<p>1.4 优点为节省内存空间，因为内容只保存了一份在被关注者的数据库中</p>
+<p>1.5 缺点为当一个用户关注的太多时拉取内容比较耗费时间</p>
+<ol start="2">
+<li>推模式（写扩散）</li>
+</ol>
+<p>2.1 被关注者的内容不保存在自己数据库中</p>
+<p>2.2 被关注者的内容直接保存在关注他的用户数据库中</p>
+<p>2.3 优点用户获取内容快不需要等待拉取</p>
+<p>2.4 缺点为浪费空间，因为内容被保存了n份</p>
+<ol start="3">
+<li>推拉结合模式（读写混合模式）</li>
+</ol>
+<p>3.1 结合上边两种模式的优点</p>
+<p>3.2 当一个用户的粉丝少的时候直接使用推模式直接把内容推送给其粉丝</p>
+<p>3.3 当一个用户的粉丝多的时候，将其粉丝分为活跃的和不活跃的，对于活跃的粉丝使用推模式，直接把内容推送给活跃粉丝，对于不活跃的粉丝则使用拉模式，只有当这些不活跃的粉丝上线获取内容的时候将其关注人的内容拉过来进行显示</p>
+<p>使用zset即可实现，分数即为时间戳</p></blockquote>
+<h1 id="mongodb">Mongodb</h1>
+<h2 id="init">Init</h2>
+<blockquote>
+<p>创建结构体MongoClient，其有字段databases为*mongo.Database指针类型</p>
+<p>需要使用到mongodb几个数据库就创建对应的方法，返回值为对应数据库的指针类型</p>
+<p>后续使用只需要mongodbClient.对应需要使用数据库即可快捷操作</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">MongoClient</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">databases</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">mongo</span>.<span style="color:#a6e22e">Database</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">m</span> <span style="color:#a6e22e">MongoClient</span>) <span style="color:#a6e22e">database1</span>() <span style="color:#f92672">*</span><span style="color:#a6e22e">mongo</span>.<span style="color:#a6e22e">Collection</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">m</span>.<span style="color:#a6e22e">databases</span>.<span style="color:#a6e22e">Collection</span>(<span style="color:#e6db74">&#34;数据库名称1&#34;</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">m</span> <span style="color:#a6e22e">MongoClient</span>) <span style="color:#a6e22e">database2</span>() <span style="color:#f92672">*</span><span style="color:#a6e22e">mongo</span>.<span style="color:#a6e22e">Collection</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">m</span>.<span style="color:#a6e22e">databases</span>.<span style="color:#a6e22e">Collection</span>(<span style="color:#e6db74">&#34;数据库名称2&#34;</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">mongodbClient</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">MongoClient</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 初始化mongodb连接</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">init</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">url</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Sprintf</span>(<span style="color:#e6db74">&#34;mongodb://%s:%s@%s:%s/?%s&#34;</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">viper</span>.<span style="color:#a6e22e">GetString</span>(<span style="color:#e6db74">&#34;mongodb.username&#34;</span>),
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">viper</span>.<span style="color:#a6e22e">GetString</span>(<span style="color:#e6db74">&#34;mongodb.password&#34;</span>),
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">viper</span>.<span style="color:#a6e22e">GetString</span>(<span style="color:#e6db74">&#34;mongodb.host&#34;</span>),
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">viper</span>.<span style="color:#a6e22e">GetString</span>(<span style="color:#e6db74">&#34;mongodb.port&#34;</span>),
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">viper</span>.<span style="color:#a6e22e">GetString</span>(<span style="color:#e6db74">&#34;mongodb.param&#34;</span>),
+</span></span><span style="display:flex;"><span>	)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">client</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">mongo</span>.<span style="color:#a6e22e">Connect</span>(<span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">TODO</span>(), <span style="color:#a6e22e">options</span>.<span style="color:#a6e22e">Client</span>().<span style="color:#a6e22e">ApplyURI</span>(<span style="color:#a6e22e">url</span>))
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Fatalln</span>(<span style="color:#e6db74">&#34;客户端连接错误：&#34;</span>, <span style="color:#a6e22e">err</span>.<span style="color:#a6e22e">Error</span>())
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">mongodbClient</span> = <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">MongoClient</span>{<span style="color:#a6e22e">databases</span>: <span style="color:#a6e22e">client</span>.<span style="color:#a6e22e">Database</span>(<span style="color:#a6e22e">viper</span>.<span style="color:#a6e22e">GetString</span>(<span style="color:#e6db74">&#34;mongodb.datasource&#34;</span>))}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;mongodb连接成功&#34;</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">GetmongodbClient</span>() <span style="color:#f92672">*</span><span style="color:#a6e22e">MongoClient</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">mongodbClient</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">User</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 使用</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">test</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">user</span> <span style="color:#a6e22e">User</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 使用那个表就用对应表的方法</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">GetmongodbClient</span>().<span style="color:#a6e22e">database1</span>().<span style="color:#a6e22e">FindOne</span>(<span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">TODO</span>(), <span style="color:#a6e22e">bson</span>.<span style="color:#a6e22e">M</span>{<span style="color:#e6db74">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;zhangsan&#34;</span>}).<span style="color:#a6e22e">Decode</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">user</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="评论功能实现">评论功能实现</h1>
+<blockquote>
+<p>go对应的mongodb的id字段设计为：ID       primitive.ObjectID <code>json:&quot;_id,omitempty&quot; bson:&quot;_id&quot;</code></p>
+<p>必须是primitive.ObjectID，且bson:&quot;_id&quot; 必须是下划线id</p>
+<p>字符串转primitive.ObjectID类型方法：hex, _ := primitive.ObjectIDFromHex(&ldquo;字符串也可以是别的类型&rdquo;)</p>
+<p>而这个hex即为primitive.ObjectID类型</p></blockquote>
+<h2 id="mongodb数据库设计">mongodb数据库设计</h2>
+<blockquote>
+<p>评论数据库字段：</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Comment</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">ID</span>       <span style="color:#a6e22e">primitive</span>.<span style="color:#a6e22e">ObjectID</span> <span style="color:#e6db74">`json:&#34;_id,omitempty&#34; bson:&#34;_id&#34;`</span>           <span style="color:#75715e">//id字段</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">UserId</span>   <span style="color:#66d9ef">int</span>                <span style="color:#e6db74">`json:&#34;userId,omitempty&#34; bson:&#34;userId&#34;`</span>     <span style="color:#75715e">//评论者用户id</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Vid</span>      <span style="color:#66d9ef">int</span>                <span style="color:#e6db74">`json:&#34;vid,omitempty&#34; bson:&#34;vid&#34;`</span>           <span style="color:#75715e">//视频id</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Content</span>  <span style="color:#66d9ef">string</span>             <span style="color:#e6db74">`json:&#34;content,omitempty&#34; bson:&#34;content&#34;`</span>   <span style="color:#75715e">//评论内容</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">AtUserId</span> []<span style="color:#66d9ef">int</span>              <span style="color:#e6db74">`json:&#34;atUserId,omitempty&#34; bson:&#34;atUserId&#34;`</span> <span style="color:#75715e">//@的用户</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">Author</span>    <span style="color:#a6e22e">User</span>              <span style="color:#e6db74">`bson:&#34;-&#34;`</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Reply</span>    []<span style="color:#a6e22e">ReplyModel</span>       <span style="color:#e6db74">`json:&#34;reply,omitempty&#34; bson:&#34;reply&#34;`</span>       <span style="color:#75715e">//这条评论的回复内容</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">CreateAt</span> <span style="color:#66d9ef">int64</span>              <span style="color:#e6db74">`json:&#34;createAt,omitempty&#34; bson:&#34;createAt&#34;`</span> <span style="color:#75715e">//创建时间</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">IsDelete</span> <span style="color:#66d9ef">bool</span>               <span style="color:#e6db74">`json:&#34;isDelete,omitempty&#34; bson:&#34;isDelete&#34;`</span> <span style="color:#75715e">//是否删除</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><blockquote>
+<p>回复数据库字段：</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Reply</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">ID</span>        <span style="color:#a6e22e">primitive</span>.<span style="color:#a6e22e">ObjectID</span> <span style="color:#e6db74">`json:&#34;_id&#34; bson:&#34;_id&#34;`</span>           <span style="color:#75715e">//id字段</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">CreatedAt</span> <span style="color:#66d9ef">int64</span>              <span style="color:#e6db74">`json:&#34;createAt&#34; bson:&#34;createAt&#34;`</span> <span style="color:#75715e">//创建时间</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Content</span>   <span style="color:#66d9ef">string</span>             <span style="color:#e6db74">`json:&#34;content&#34; bson:&#34;content&#34;`</span>   <span style="color:#75715e">//回复内容</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Uid</span>       <span style="color:#66d9ef">uint</span>               <span style="color:#e6db74">`json:&#34;uid&#34; bson:&#34;uid&#34;`</span>           <span style="color:#75715e">//回复用户ID</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Author</span>    <span style="color:#a6e22e">User</span>               <span style="color:#e6db74">`bson:&#34;-&#34;`</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">At</span>        []<span style="color:#66d9ef">uint</span>             <span style="color:#e6db74">`json:&#34;at&#34; bson:&#34;at&#34;`</span>             <span style="color:#75715e">//@的用户</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">IsDelete</span>  <span style="color:#66d9ef">bool</span>               <span style="color:#e6db74">`json:&#34;isDelete&#34; bson:&#34;isDelete&#34;`</span> <span style="color:#75715e">//是否删除</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="添加评论">添加评论</h2>
+<blockquote>
+<p>InsertOne</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">InsertComment</span>(<span style="color:#a6e22e">comment</span> <span style="color:#a6e22e">model</span>.<span style="color:#a6e22e">Comment</span>) (<span style="color:#a6e22e">primitive</span>.<span style="color:#a6e22e">ObjectID</span>, <span style="color:#66d9ef">error</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">mongoClient</span>.<span style="color:#a6e22e">Comment</span>().<span style="color:#a6e22e">InsertOne</span>(<span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">TODO</span>(), <span style="color:#a6e22e">comment</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">comment</span>.<span style="color:#a6e22e">ID</span>, <span style="color:#a6e22e">err</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="获取评论">获取评论</h2>
+<blockquote>
+<p>需要使用的函数为Aggregate聚合操作，第一个参数为上下文，第二个操作为判断条件</p>
+<p>获取评论的时候默认每条评论只查询其下的两条回复：&quot;$slice&quot;: bson.A{&quot;$reply&quot;, 0, 2},</p></blockquote>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: center">关键字</th>
+          <th style="text-align: center">描述</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: center">$match</td>
+          <td style="text-align: center">where条件判断</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">$projec</td>
+          <td style="text-align: center">选择需要的字段</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">$filter</td>
+          <td style="text-align: center">过滤，用于mongodb中数组类型数据的判断，也就相当于go中一个结构体嵌套一个数组类型的其他结构体，filter就是用来判断嵌套的这个数组结构体</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">&ldquo;input&rdquo;: &ldquo;$reply&rdquo;</td>
+          <td style="text-align: center">获取数据库中的reply字段</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">&ldquo;as&rdquo;:    &ldquo;item&rdquo;</td>
+          <td style="text-align: center">把获取到的reply字段设置为item</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">&ldquo;cond&rdquo;: bson.M{&quot;$eq&quot;: bson.A{&quot;$$item.isDelete&quot;, false},},</td>
+          <td style="text-align: center">过滤条件为isDelete值为false，这里注意false和&quot;false&quot;的区别，一个是布尔一个是字符串，上文中设置的改字段为布尔类型所以这里必须为布尔类型的false</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">&ldquo;$slice&rdquo;: bson.A{&quot;$reply&quot;, 0, 2},</td>
+          <td style="text-align: center">选取数量，对数组使用</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">$skip</td>
+          <td style="text-align: center">跳过；公式为 (获取的页面数 - 1) * 一页的最大数量；即(page - 1) * pageSize</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">$limit</td>
+          <td style="text-align: center">选取数量</td>
+      </tr>
+  </tbody>
+</table>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">SelectCommentList</span>(<span style="color:#a6e22e">videoId</span> <span style="color:#66d9ef">uint</span>, <span style="color:#a6e22e">page</span>, <span style="color:#a6e22e">pageSize</span> <span style="color:#66d9ef">int</span>) ([]<span style="color:#a6e22e">model</span>.<span style="color:#a6e22e">Comment</span>, <span style="color:#66d9ef">error</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">comments</span> []<span style="color:#a6e22e">model</span>.<span style="color:#a6e22e">Comment</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">cursor</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">mongoClient</span>.<span style="color:#a6e22e">Comment</span>().<span style="color:#a6e22e">Aggregate</span>(<span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">TODO</span>(), <span style="color:#a6e22e">bson</span>.<span style="color:#a6e22e">A</span>{
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">bson</span>.<span style="color:#a6e22e">M</span>{
+</span></span><span style="display:flex;"><span>			<span style="color:#e6db74">&#34;$match&#34;</span>: <span style="color:#a6e22e">bson</span>.<span style="color:#a6e22e">M</span>{
+</span></span><span style="display:flex;"><span>				<span style="color:#e6db74">&#34;vid&#34;</span>:       <span style="color:#a6e22e">videoId</span>,
+</span></span><span style="display:flex;"><span>				<span style="color:#e6db74">&#34;is_delete&#34;</span>: <span style="color:#66d9ef">false</span>,
+</span></span><span style="display:flex;"><span>			},
+</span></span><span style="display:flex;"><span>		},
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">bson</span>.<span style="color:#a6e22e">M</span>{
+</span></span><span style="display:flex;"><span>			<span style="color:#e6db74">&#34;$project&#34;</span>: <span style="color:#a6e22e">bson</span>.<span style="color:#a6e22e">M</span>{
+</span></span><span style="display:flex;"><span>				<span style="color:#e6db74">&#34;uid&#34;</span>:        <span style="color:#e6db74">&#34;$uid&#34;</span>,
+</span></span><span style="display:flex;"><span>				<span style="color:#e6db74">&#34;content&#34;</span>:    <span style="color:#e6db74">&#34;$content&#34;</span>,
+</span></span><span style="display:flex;"><span>				<span style="color:#e6db74">&#34;created_at&#34;</span>: <span style="color:#e6db74">&#34;$created_at&#34;</span>,
+</span></span><span style="display:flex;"><span>				<span style="color:#e6db74">&#34;reply&#34;</span>: <span style="color:#a6e22e">bson</span>.<span style="color:#a6e22e">M</span>{
+</span></span><span style="display:flex;"><span>					<span style="color:#e6db74">&#34;$filter&#34;</span>: <span style="color:#a6e22e">bson</span>.<span style="color:#a6e22e">M</span>{
+</span></span><span style="display:flex;"><span>						<span style="color:#e6db74">&#34;input&#34;</span>: <span style="color:#e6db74">&#34;$reply&#34;</span>,
+</span></span><span style="display:flex;"><span>						<span style="color:#e6db74">&#34;as&#34;</span>:    <span style="color:#e6db74">&#34;item&#34;</span>,
+</span></span><span style="display:flex;"><span>						<span style="color:#e6db74">&#34;cond&#34;</span>: <span style="color:#a6e22e">bson</span>.<span style="color:#a6e22e">M</span>{
+</span></span><span style="display:flex;"><span>							<span style="color:#e6db74">&#34;$eq&#34;</span>: <span style="color:#a6e22e">bson</span>.<span style="color:#a6e22e">A</span>{<span style="color:#e6db74">&#34;$$item.is_delete&#34;</span>, <span style="color:#66d9ef">false</span>},
+</span></span><span style="display:flex;"><span>						},
+</span></span><span style="display:flex;"><span>					},
+</span></span><span style="display:flex;"><span>				},
+</span></span><span style="display:flex;"><span>			},
+</span></span><span style="display:flex;"><span>		},
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">bson</span>.<span style="color:#a6e22e">M</span>{
+</span></span><span style="display:flex;"><span>			<span style="color:#e6db74">&#34;$project&#34;</span>: <span style="color:#a6e22e">bson</span>.<span style="color:#a6e22e">M</span>{
+</span></span><span style="display:flex;"><span>				<span style="color:#e6db74">&#34;uid&#34;</span>:        <span style="color:#e6db74">&#34;$uid&#34;</span>,
+</span></span><span style="display:flex;"><span>				<span style="color:#e6db74">&#34;content&#34;</span>:    <span style="color:#e6db74">&#34;$content&#34;</span>,
+</span></span><span style="display:flex;"><span>				<span style="color:#e6db74">&#34;created_at&#34;</span>: <span style="color:#e6db74">&#34;$created_at&#34;</span>,
+</span></span><span style="display:flex;"><span>				<span style="color:#e6db74">&#34;reply&#34;</span>: <span style="color:#a6e22e">bson</span>.<span style="color:#a6e22e">M</span>{
+</span></span><span style="display:flex;"><span>					<span style="color:#e6db74">&#34;$slice&#34;</span>: <span style="color:#a6e22e">bson</span>.<span style="color:#a6e22e">A</span>{<span style="color:#e6db74">&#34;$reply&#34;</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">2</span>},
+</span></span><span style="display:flex;"><span>				},
+</span></span><span style="display:flex;"><span>			},
+</span></span><span style="display:flex;"><span>		},
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">bson</span>.<span style="color:#a6e22e">M</span>{
+</span></span><span style="display:flex;"><span>			<span style="color:#e6db74">&#34;$skip&#34;</span>: (<span style="color:#a6e22e">page</span> <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>) <span style="color:#f92672">*</span> <span style="color:#a6e22e">pageSize</span>,
+</span></span><span style="display:flex;"><span>		},
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">bson</span>.<span style="color:#a6e22e">M</span>{
+</span></span><span style="display:flex;"><span>			<span style="color:#e6db74">&#34;$limit&#34;</span>: <span style="color:#a6e22e">pageSize</span>,
+</span></span><span style="display:flex;"><span>		},
+</span></span><span style="display:flex;"><span>	})
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">comments</span>, <span style="color:#a6e22e">err</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">cursor</span>.<span style="color:#a6e22e">All</span>(<span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">TODO</span>(), <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">comments</span>); <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">comments</span>, <span style="color:#a6e22e">err</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">comments</span>, <span style="color:#66d9ef">nil</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="删除评论">删除评论</h2>
+<blockquote>
+<p>直接拿评论id找到该评论设置isdelete为true即可</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">DeleteComment</span>(<span style="color:#a6e22e">objectId</span> <span style="color:#a6e22e">primitive</span>.<span style="color:#a6e22e">ObjectID</span>) <span style="color:#66d9ef">error</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">mongoClient</span>.<span style="color:#a6e22e">Comment</span>().<span style="color:#a6e22e">UpdateOne</span>(<span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">TODO</span>(), <span style="color:#a6e22e">bson</span>.<span style="color:#a6e22e">M</span>{<span style="color:#e6db74">&#34;_id&#34;</span>: <span style="color:#a6e22e">objectId</span>}, <span style="color:#a6e22e">bson</span>.<span style="color:#a6e22e">M</span>{
+</span></span><span style="display:flex;"><span>		<span style="color:#e6db74">&#34;$set&#34;</span>: <span style="color:#a6e22e">bson</span>.<span style="color:#a6e22e">M</span>{
+</span></span><span style="display:flex;"><span>			<span style="color:#e6db74">&#34;is_delete&#34;</span>: <span style="color:#66d9ef">true</span>,
+</span></span><span style="display:flex;"><span>		},
+</span></span><span style="display:flex;"><span>	})
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">err</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="添加回复">添加回复</h2>
+<blockquote>
+<p>$addToSet ： 在原有的数据中再添加数据</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">InsertReply</span>(<span style="color:#a6e22e">commentId</span> <span style="color:#a6e22e">primitive</span>.<span style="color:#a6e22e">ObjectID</span>, <span style="color:#a6e22e">reply</span> <span style="color:#a6e22e">model</span>.<span style="color:#a6e22e">Reply</span>) (<span style="color:#a6e22e">primitive</span>.<span style="color:#a6e22e">ObjectID</span>, <span style="color:#66d9ef">error</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">mongoClient</span>.<span style="color:#a6e22e">Comment</span>().<span style="color:#a6e22e">UpdateOne</span>(<span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">TODO</span>(), <span style="color:#a6e22e">bson</span>.<span style="color:#a6e22e">M</span>{<span style="color:#e6db74">&#34;_id&#34;</span>: <span style="color:#a6e22e">commentId</span>}, <span style="color:#a6e22e">bson</span>.<span style="color:#a6e22e">M</span>{
+</span></span><span style="display:flex;"><span>		<span style="color:#e6db74">&#34;$addToSet&#34;</span>: <span style="color:#a6e22e">bson</span>.<span style="color:#a6e22e">M</span>{
+</span></span><span style="display:flex;"><span>			<span style="color:#e6db74">&#34;reply&#34;</span>: <span style="color:#a6e22e">reply</span>,
+</span></span><span style="display:flex;"><span>		},
+</span></span><span style="display:flex;"><span>	})
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">reply</span>.<span style="color:#a6e22e">ID</span>, <span style="color:#a6e22e">err</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="获取回复">获取回复</h2>
+<blockquote>
+<p>注意点为：&quot;$unwind&quot;: &ldquo;$reply&rdquo;,</p>
+<p>吧reply数组拆分为单独条目的文档数据</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">SelectReplyList</span>(<span style="color:#a6e22e">id</span> <span style="color:#66d9ef">string</span>, <span style="color:#a6e22e">page</span>, <span style="color:#a6e22e">pageSize</span> <span style="color:#66d9ef">int</span>) ([]<span style="color:#a6e22e">model</span>.<span style="color:#a6e22e">Reply</span>, <span style="color:#66d9ef">error</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">replies</span> []<span style="color:#a6e22e">model</span>.<span style="color:#a6e22e">Reply</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">objectId</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">primitive</span>.<span style="color:#a6e22e">ObjectIDFromHex</span>(<span style="color:#a6e22e">id</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">cursor</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">mongoClient</span>.<span style="color:#a6e22e">Comment</span>().<span style="color:#a6e22e">Aggregate</span>(<span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">TODO</span>(), <span style="color:#a6e22e">bson</span>.<span style="color:#a6e22e">A</span>{
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">bson</span>.<span style="color:#a6e22e">M</span>{
+</span></span><span style="display:flex;"><span>			<span style="color:#e6db74">&#34;$match&#34;</span>: <span style="color:#a6e22e">bson</span>.<span style="color:#a6e22e">M</span>{
+</span></span><span style="display:flex;"><span>				<span style="color:#e6db74">&#34;_id&#34;</span>:       <span style="color:#a6e22e">objectId</span>,
+</span></span><span style="display:flex;"><span>				<span style="color:#e6db74">&#34;is_delete&#34;</span>: <span style="color:#66d9ef">false</span>,
+</span></span><span style="display:flex;"><span>			},
+</span></span><span style="display:flex;"><span>		},
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">bson</span>.<span style="color:#a6e22e">M</span>{
+</span></span><span style="display:flex;"><span>			<span style="color:#e6db74">&#34;$project&#34;</span>: <span style="color:#a6e22e">bson</span>.<span style="color:#a6e22e">M</span>{
+</span></span><span style="display:flex;"><span>				<span style="color:#e6db74">&#34;reply&#34;</span>: <span style="color:#a6e22e">bson</span>.<span style="color:#a6e22e">M</span>{
+</span></span><span style="display:flex;"><span>					<span style="color:#e6db74">&#34;$filter&#34;</span>: <span style="color:#a6e22e">bson</span>.<span style="color:#a6e22e">M</span>{
+</span></span><span style="display:flex;"><span>						<span style="color:#e6db74">&#34;input&#34;</span>: <span style="color:#e6db74">&#34;$reply&#34;</span>,
+</span></span><span style="display:flex;"><span>						<span style="color:#e6db74">&#34;as&#34;</span>:    <span style="color:#e6db74">&#34;item&#34;</span>,
+</span></span><span style="display:flex;"><span>						<span style="color:#e6db74">&#34;cond&#34;</span>: <span style="color:#a6e22e">bson</span>.<span style="color:#a6e22e">M</span>{
+</span></span><span style="display:flex;"><span>							<span style="color:#e6db74">&#34;$eq&#34;</span>: <span style="color:#a6e22e">bson</span>.<span style="color:#a6e22e">A</span>{<span style="color:#e6db74">&#34;$$item.is_delete&#34;</span>, <span style="color:#66d9ef">false</span>},
+</span></span><span style="display:flex;"><span>						},
+</span></span><span style="display:flex;"><span>					},
+</span></span><span style="display:flex;"><span>				},
+</span></span><span style="display:flex;"><span>			},
+</span></span><span style="display:flex;"><span>		},
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">bson</span>.<span style="color:#a6e22e">M</span>{
+</span></span><span style="display:flex;"><span>			<span style="color:#e6db74">&#34;$unwind&#34;</span>: <span style="color:#e6db74">&#34;$reply&#34;</span>,
+</span></span><span style="display:flex;"><span>		},
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">bson</span>.<span style="color:#a6e22e">M</span>{
+</span></span><span style="display:flex;"><span>			<span style="color:#e6db74">&#34;$project&#34;</span>: <span style="color:#a6e22e">bson</span>.<span style="color:#a6e22e">M</span>{
+</span></span><span style="display:flex;"><span>				<span style="color:#e6db74">&#34;_id&#34;</span>:        <span style="color:#e6db74">&#34;$reply._id&#34;</span>,
+</span></span><span style="display:flex;"><span>				<span style="color:#e6db74">&#34;uid&#34;</span>:        <span style="color:#e6db74">&#34;$reply.uid&#34;</span>,
+</span></span><span style="display:flex;"><span>				<span style="color:#e6db74">&#34;content&#34;</span>:    <span style="color:#e6db74">&#34;$reply.content&#34;</span>,
+</span></span><span style="display:flex;"><span>				<span style="color:#e6db74">&#34;created_at&#34;</span>: <span style="color:#e6db74">&#34;$reply.created_at&#34;</span>,
+</span></span><span style="display:flex;"><span>			},
+</span></span><span style="display:flex;"><span>		},
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">bson</span>.<span style="color:#a6e22e">M</span>{
+</span></span><span style="display:flex;"><span>			<span style="color:#e6db74">&#34;$skip&#34;</span>: (<span style="color:#a6e22e">page</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>)<span style="color:#f92672">*</span><span style="color:#a6e22e">pageSize</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">2</span>,
+</span></span><span style="display:flex;"><span>		},
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">bson</span>.<span style="color:#a6e22e">M</span>{
+</span></span><span style="display:flex;"><span>			<span style="color:#e6db74">&#34;$limit&#34;</span>: <span style="color:#a6e22e">pageSize</span>,
+</span></span><span style="display:flex;"><span>		},
+</span></span><span style="display:flex;"><span>	})
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">replies</span>, <span style="color:#a6e22e">err</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">cursor</span>.<span style="color:#a6e22e">All</span>(<span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">TODO</span>(), <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">replies</span>); <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">replies</span>, <span style="color:#a6e22e">err</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">replies</span>, <span style="color:#66d9ef">nil</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="删除回复">删除回复</h2>
+<blockquote>
+<p>通过评论id和回复id可以确定数据</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">DeleteReply</span>(<span style="color:#a6e22e">commentId</span>, <span style="color:#a6e22e">replyId</span> <span style="color:#a6e22e">primitive</span>.<span style="color:#a6e22e">ObjectID</span>) <span style="color:#66d9ef">error</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">filter</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">bson</span>.<span style="color:#a6e22e">M</span>{
+</span></span><span style="display:flex;"><span>		<span style="color:#e6db74">&#34;_id&#34;</span>:       <span style="color:#a6e22e">commentId</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#e6db74">&#34;reply._id&#34;</span>: <span style="color:#a6e22e">replyId</span>,
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">mongoClient</span>.<span style="color:#a6e22e">Comment</span>().<span style="color:#a6e22e">UpdateOne</span>(<span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">TODO</span>(), <span style="color:#a6e22e">filter</span>, <span style="color:#a6e22e">bson</span>.<span style="color:#a6e22e">M</span>{
+</span></span><span style="display:flex;"><span>		<span style="color:#e6db74">&#34;$set&#34;</span>: <span style="color:#a6e22e">bson</span>.<span style="color:#a6e22e">M</span>{
+</span></span><span style="display:flex;"><span>			<span style="color:#e6db74">&#34;reply.$.is_delete&#34;</span>: <span style="color:#66d9ef">true</span>,
+</span></span><span style="display:flex;"><span>		},
+</span></span><span style="display:flex;"><span>	})
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">err</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="viper">Viper</h1>
+<h2 id="init-1">Init</h2>
+<blockquote>
+<p>viper.SetConfigName()：只需要配置文件名称即可不需要后缀，加后缀会识别不到</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">InitViper</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">viper</span>.<span style="color:#a6e22e">AddConfigPath</span>(<span style="color:#e6db74">&#34;./&#34;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 不能加文件类型后缀</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">viper</span>.<span style="color:#a6e22e">SetConfigName</span>(<span style="color:#e6db74">&#34;application&#34;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">viper</span>.<span style="color:#a6e22e">ReadInConfig</span>(); <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Fatalln</span>(<span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">viper</span>.<span style="color:#a6e22e">WriteConfig</span>(); <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Fatalln</span>(<span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><blockquote>
+<p>当使用viper.WriteConfig()后，后续使用viper的配置时只需：viper.getxxx即可</p></blockquote>
+<h1 id="zap">Zap</h1>
+<h1 id="滑块验证码实现">滑块验证码实现</h1>
+<blockquote>
+<p>思路：</p>
+<ol>
+<li>随机数生成x，y两个随机数；x，y随机数大小不能超过背景图片的大小，不能小于遮盖图片的大小</li>
+<li>uuid生成bgId作为最后背景图的标识</li>
+<li>把x，y作为最大坐标值，x，y分别减去遮盖图片的大小作为最小坐标值，通过最大和最小坐标值可以得到一个矩形</li>
+<li>在背景图片中裁剪出这个矩形大小的图片，这个图片为滑块图片</li>
+<li>把背景图中裁剪的区域填充进遮盖图片，填充后的图片为真正的背景图</li>
+<li>分别把滑块图片和背景图进行base64编码</li>
+<li>把背景图的bgid以及x轴坐标保存在服务器缓存中，把bgid保存在客户端缓存中</li>
+<li>返回给前端滑块图片和背景图片的base64编码以及y轴坐标</li>
+<li>用户滑动滑块后前端返回用户滑动后的x轴坐标</li>
+<li>后端拿到客户端缓存中的bgId以及前端返回的x轴坐标把这些数据和服务器缓存中的数据做对比，在允许的误差内即为验证通过</li>
+</ol>
+<p>用到的第三方库为：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#e6db74">&#34;github.com/disintegration/imaging&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;github.com/google/uuid&#34;</span>
+</span></span></code></pre></div></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">GetRandInt</span>(<span style="color:#a6e22e">max</span> <span style="color:#66d9ef">int</span>) <span style="color:#66d9ef">int</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">num</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">rand</span>.<span style="color:#a6e22e">Int</span>(<span style="color:#a6e22e">rand</span>.<span style="color:#a6e22e">Reader</span>, <span style="color:#a6e22e">big</span>.<span style="color:#a6e22e">NewInt</span>(int64(<span style="color:#a6e22e">max</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>)))
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> int(<span style="color:#a6e22e">num</span>.<span style="color:#a6e22e">Int64</span>())
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">CreateCode</span>() (<span style="color:#66d9ef">string</span>, <span style="color:#66d9ef">string</span>, <span style="color:#66d9ef">int</span>, <span style="color:#66d9ef">int</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//生成随机数,用来随机选取图片</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">nums</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">GetRandInt</span>(<span style="color:#ae81ff">10</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//用于生成的图片名称</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">imageId</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">uuid</span>.<span style="color:#a6e22e">New</span>().<span style="color:#a6e22e">String</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//获取图片</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">f</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Open</span>(<span style="color:#e6db74">&#34;./jigsaw/bg/&#34;</span> <span style="color:#f92672">+</span> <span style="color:#a6e22e">strconv</span>.<span style="color:#a6e22e">Itoa</span>(<span style="color:#a6e22e">nums</span>) <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;.png&#34;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//获取随机x坐标</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">imageRandX</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">GetRandInt</span>(<span style="color:#ae81ff">480</span> <span style="color:#f92672">-</span> <span style="color:#ae81ff">100</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">imageRandX</span> &lt; <span style="color:#ae81ff">200</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">imageRandX</span> <span style="color:#f92672">+=</span> <span style="color:#ae81ff">200</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//获取随机y坐标</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">imageRandY</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">GetRandInt</span>(<span style="color:#ae81ff">240</span> <span style="color:#f92672">-</span> <span style="color:#ae81ff">100</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">imageRandY</span> &lt; <span style="color:#ae81ff">100</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">imageRandY</span> <span style="color:#f92672">+=</span> <span style="color:#ae81ff">100</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//转化为image对象</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">m</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">png</span>.<span style="color:#a6e22e">Decode</span>(<span style="color:#a6e22e">f</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		panic(<span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//设置截取的最大坐标值和最小坐标值</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">maxPotion</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">image</span>.<span style="color:#a6e22e">Point</span>{
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">X</span>: <span style="color:#a6e22e">imageRandX</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">Y</span>: <span style="color:#a6e22e">imageRandY</span>,
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">minPotion</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">image</span>.<span style="color:#a6e22e">Point</span>{
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">X</span>: <span style="color:#a6e22e">imageRandX</span> <span style="color:#f92672">-</span> <span style="color:#ae81ff">100</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">Y</span>: <span style="color:#a6e22e">imageRandY</span> <span style="color:#f92672">-</span> <span style="color:#ae81ff">100</span>,
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">subimg</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">image</span>.<span style="color:#a6e22e">Rectangle</span>{
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">Max</span>: <span style="color:#a6e22e">maxPotion</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">Min</span>: <span style="color:#a6e22e">minPotion</span>,
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">f</span>, <span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Create</span>(<span style="color:#e6db74">&#34;./jigsaw/code/&#34;</span> <span style="color:#f92672">+</span> <span style="color:#a6e22e">imageId</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;screenshot.jpeg&#34;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">f</span>.<span style="color:#a6e22e">Close</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//截取图像</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">data</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">imaging</span>.<span style="color:#a6e22e">Crop</span>(<span style="color:#a6e22e">m</span>, <span style="color:#a6e22e">subimg</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">jpeg</span>.<span style="color:#a6e22e">Encode</span>(<span style="color:#a6e22e">f</span>, <span style="color:#a6e22e">data</span>, <span style="color:#66d9ef">nil</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">//base64编码</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">buffer</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">bytes</span>.<span style="color:#a6e22e">NewBuffer</span>(<span style="color:#66d9ef">nil</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">jpeg</span>.<span style="color:#a6e22e">Encode</span>(<span style="color:#a6e22e">buffer</span>, <span style="color:#a6e22e">data</span>, <span style="color:#66d9ef">nil</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">maskBase64</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">base64</span>.<span style="color:#a6e22e">StdEncoding</span>.<span style="color:#a6e22e">EncodeToString</span>(<span style="color:#a6e22e">buffer</span>.<span style="color:#a6e22e">Bytes</span>())
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//设置遮罩</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">bkBase64</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">createCodeImg</span>(<span style="color:#e6db74">&#34;./jigsaw/bg/&#34;</span><span style="color:#f92672">+</span><span style="color:#a6e22e">strconv</span>.<span style="color:#a6e22e">Itoa</span>(<span style="color:#a6e22e">nums</span>)<span style="color:#f92672">+</span><span style="color:#e6db74">&#34;.png&#34;</span>, <span style="color:#a6e22e">minPotion</span>, <span style="color:#a6e22e">imageId</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">maskBase64</span>, <span style="color:#a6e22e">bkBase64</span>, <span style="color:#a6e22e">imageRandX</span>, <span style="color:#a6e22e">imageRandY</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">createCodeImg</span>(<span style="color:#a6e22e">path</span> <span style="color:#66d9ef">string</span>, <span style="color:#a6e22e">minPotion</span> <span style="color:#a6e22e">image</span>.<span style="color:#a6e22e">Point</span>, <span style="color:#a6e22e">imageId</span> <span style="color:#66d9ef">string</span>) <span style="color:#66d9ef">string</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">bg</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Open</span>(<span style="color:#a6e22e">path</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		panic(<span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">maskFile</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Open</span>(<span style="color:#e6db74">&#34;./jigsaw/mask.png&#34;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		panic(<span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">bgimg</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">png</span>.<span style="color:#a6e22e">Decode</span>(<span style="color:#a6e22e">bg</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">maskimg</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">png</span>.<span style="color:#a6e22e">Decode</span>(<span style="color:#a6e22e">maskFile</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">//参数：背景图，遮盖图，坐标，透明度</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">data</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">imaging</span>.<span style="color:#a6e22e">Overlay</span>(<span style="color:#a6e22e">bgimg</span>, <span style="color:#a6e22e">maskimg</span>, <span style="color:#a6e22e">minPotion</span>, <span style="color:#ae81ff">1.0</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">f</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Create</span>(<span style="color:#e6db74">&#34;./jigsaw/code/&#34;</span> <span style="color:#f92672">+</span> <span style="color:#a6e22e">imageId</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;.jpeg&#34;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">f</span>.<span style="color:#a6e22e">Close</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">jpeg</span>.<span style="color:#a6e22e">Encode</span>(<span style="color:#a6e22e">f</span>, <span style="color:#a6e22e">data</span>, <span style="color:#66d9ef">nil</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">//base64编码</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">buffer</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">bytes</span>.<span style="color:#a6e22e">NewBuffer</span>(<span style="color:#66d9ef">nil</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">jpeg</span>.<span style="color:#a6e22e">Encode</span>(<span style="color:#a6e22e">buffer</span>, <span style="color:#a6e22e">data</span>, <span style="color:#66d9ef">nil</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">base64</span>.<span style="color:#a6e22e">StdEncoding</span>.<span style="color:#a6e22e">EncodeToString</span>(<span style="color:#a6e22e">buffer</span>.<span style="color:#a6e22e">Bytes</span>())
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="other">Other</h1>
+<h2 id="doman">doman</h2>
+<p>model：和数据库对应的</p>
+<p>dto：前端传入数据对应的</p>
+<p>vo：返回给前端数据的</p>
+<ul class="pa0">
+  
+   <li class="list di">
+     <a href="/tags/go/" class="link f5 grow br-pill ba ph3 pv2 mb2 dib black sans-serif no-underline">Go</a>
+   </li>
+  
+   <li class="list di">
+     <a href="/tags/mysql/" class="link f5 grow br-pill ba ph3 pv2 mb2 dib black sans-serif no-underline">Mysql</a>
+   </li>
+  
+   <li class="list di">
+     <a href="/tags/mongodb/" class="link f5 grow br-pill ba ph3 pv2 mb2 dib black sans-serif no-underline">Mongodb</a>
+   </li>
+  
+   <li class="list di">
+     <a href="/tags/zap/" class="link f5 grow br-pill ba ph3 pv2 mb2 dib black sans-serif no-underline">Zap</a>
+   </li>
+  
+</ul>
+<div class="mt6 instapaper_ignoref">
+      
+      
+      </div>
+    </div>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+  <div class="bg-light-gray pa3 nested-list-reset nested-copy-line-height nested-links">
+    <p class="f5 b mb3">Related</p>
+    <ul class="pa0 list">
+	   
+	     <li  class="mb2">
+          <a href="/posts/go/zap/">Zap</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/%E6%BB%91%E5%9D%97%E9%AA%8C%E8%AF%81%E7%A0%81%E5%AE%9E%E7%8E%B0/">滑块验证码实现</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/go-redis%E9%A1%B9%E7%9B%AE%E4%BD%BF%E7%94%A8/">Go Redis项目使用</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/databases/mysql%E6%97%A5%E5%BF%97/">mysql日志</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/grpc/">go GRPC使用</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/go-swagger/">Go Swagger</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/go%E5%8D%95%E7%82%B9%E7%99%BB%E5%BD%95/">Go单点登录</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/go-redis%E4%BD%BF%E7%94%A8lua%E8%84%9A%E6%9C%AC/">Go Redis使用lua脚本</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/gorm/">Gorm</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/gin%E6%96%87%E4%BB%B6%E4%B8%8B%E8%BD%BD%E4%B9%B1%E7%A0%81/">Gin文件下载乱码</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/casbin/">go使用casbin</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/jwt/">go使用Jwt</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/%E9%BC%A0%E6%A0%87%E8%87%AA%E5%8A%A8%E5%8C%96/">鼠标自动化</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/gowebsocket/">GoWebsocket</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/go-email/">Go Email</a>
+        </li>
+	    
+    </ul>
+</div>
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white white-70 dn dib-ns pv2 ph3 no-underline" href="http://localhost:1313/" >
+    &copy;  loveyu233 2025 
+  </a>
+    <div><div class="ananke-socials"></div>
+</div>
+  </div>
+</footer>
+
+  </body>
+</html>

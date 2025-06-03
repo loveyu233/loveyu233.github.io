@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>gitlab-ci使用 | loveyu233</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="GItlab预定义变量
+before_script:
+  - export SYSTEM_VERSION=$CI_COMMIT_REF_NAME
+  - export CI_PIPELINE_ID=$CI_PIPELINE_ID
+  - export CI_COMMIT_SHA=$CI_COMMIT_SHA
+  - export CI_PROJECT_ID=$CI_PROJECT_ID
+  - export CI_PROJECT_NAME=$CI_PROJECT_NAME
+  - export CI_JOB_ID=$CI_JOB_ID
+  - export CI_RUNNER_DESCRIPTION=$CI_RUNNER_DESCRIPTION
+  - export CI_RUNNER_TAGS=$CI_RUNNER_TAGS
+  - export CI_COMMIT_MESSAGE=$CI_COMMIT_MESSAGE
+  - export CI_PIPELINE_SOURCE=$CI_PIPELINE_SOURCE
+
+stages:
+  - build
+
+job:
+  stage: build
+  script:
+    - echo &#34;当前提交的分支或标签名称 $SYSTEM_VERSION&#34;
+    - echo &#34;当前流水线的唯一ID $CI_PIPELINE_ID&#34;
+    - echo &#34;当前提交的 SHA 标识 $CI_COMMIT_SHA&#34;
+    - echo &#34;当前项目的唯一 ID $CI_PROJECT_ID&#34;
+    - echo &#34;当前项目的名称 $CI_PROJECT_NAME&#34;
+    - echo &#34;当前作业的唯一 ID $CI_JOB_ID&#34;
+    - echo &#34;运行作业的 GitLab Runner 的描述 $CI_RUNNER_DESCRIPTION&#34;
+    - echo &#34;运行作业的 GitLab Runner 的标签 $CI_RUNNER_TAGS&#34;
+    - echo &#34;当前提交的提交信息 $CI_COMMIT_MESSAGE&#34;
+    - echo &#34;触发流水线的来源 $CI_PIPELINE_SOURCE&#34;
+执行k8s命令
+
+项目设置&gt;变量&gt;添加变量 key为KUBECONFIGvalue为k8s配置文件,minikube的在~/.minikube/">
+    <meta name="generator" content="Hugo 0.147.7">
+    
+    
+    
+      <meta name="robots" content="noindex, nofollow">
+    
+    <meta name="author" content="loveyu">
+    
+
+    
+<link rel="stylesheet" href="/ananke/css/main.min.css" >
+
+
+
+
+    
+
+
+    
+      
+
+    
+
+    
+
+    
+      <link rel="canonical" href="http://localhost:1313/posts/other/gitlab-ci%E4%BD%BF%E7%94%A8/">
+    
+
+    <meta property="og:url" content="http://localhost:1313/posts/other/gitlab-ci%E4%BD%BF%E7%94%A8/">
+  <meta property="og:site_name" content="loveyu233">
+  <meta property="og:title" content="gitlab-ci使用">
+  <meta property="og:description" content="GItlab预定义变量 before_script: - export SYSTEM_VERSION=$CI_COMMIT_REF_NAME - export CI_PIPELINE_ID=$CI_PIPELINE_ID - export CI_COMMIT_SHA=$CI_COMMIT_SHA - export CI_PROJECT_ID=$CI_PROJECT_ID - export CI_PROJECT_NAME=$CI_PROJECT_NAME - export CI_JOB_ID=$CI_JOB_ID - export CI_RUNNER_DESCRIPTION=$CI_RUNNER_DESCRIPTION - export CI_RUNNER_TAGS=$CI_RUNNER_TAGS - export CI_COMMIT_MESSAGE=$CI_COMMIT_MESSAGE - export CI_PIPELINE_SOURCE=$CI_PIPELINE_SOURCE stages: - build job: stage: build script: - echo &#34;当前提交的分支或标签名称 $SYSTEM_VERSION&#34; - echo &#34;当前流水线的唯一ID $CI_PIPELINE_ID&#34; - echo &#34;当前提交的 SHA 标识 $CI_COMMIT_SHA&#34; - echo &#34;当前项目的唯一 ID $CI_PROJECT_ID&#34; - echo &#34;当前项目的名称 $CI_PROJECT_NAME&#34; - echo &#34;当前作业的唯一 ID $CI_JOB_ID&#34; - echo &#34;运行作业的 GitLab Runner 的描述 $CI_RUNNER_DESCRIPTION&#34; - echo &#34;运行作业的 GitLab Runner 的标签 $CI_RUNNER_TAGS&#34; - echo &#34;当前提交的提交信息 $CI_COMMIT_MESSAGE&#34; - echo &#34;触发流水线的来源 $CI_PIPELINE_SOURCE&#34; 执行k8s命令 项目设置&gt;变量&gt;添加变量 key为KUBECONFIGvalue为k8s配置文件,minikube的在~/.minikube/">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2023-08-15T11:18:37+08:00">
+    <meta property="article:modified_time" content="2023-08-15T11:18:37+08:00">
+    <meta property="article:tag" content="Gitlab">
+    <meta property="article:tag" content="Cicd">
+
+  <meta itemprop="name" content="gitlab-ci使用">
+  <meta itemprop="description" content="GItlab预定义变量 before_script: - export SYSTEM_VERSION=$CI_COMMIT_REF_NAME - export CI_PIPELINE_ID=$CI_PIPELINE_ID - export CI_COMMIT_SHA=$CI_COMMIT_SHA - export CI_PROJECT_ID=$CI_PROJECT_ID - export CI_PROJECT_NAME=$CI_PROJECT_NAME - export CI_JOB_ID=$CI_JOB_ID - export CI_RUNNER_DESCRIPTION=$CI_RUNNER_DESCRIPTION - export CI_RUNNER_TAGS=$CI_RUNNER_TAGS - export CI_COMMIT_MESSAGE=$CI_COMMIT_MESSAGE - export CI_PIPELINE_SOURCE=$CI_PIPELINE_SOURCE stages: - build job: stage: build script: - echo &#34;当前提交的分支或标签名称 $SYSTEM_VERSION&#34; - echo &#34;当前流水线的唯一ID $CI_PIPELINE_ID&#34; - echo &#34;当前提交的 SHA 标识 $CI_COMMIT_SHA&#34; - echo &#34;当前项目的唯一 ID $CI_PROJECT_ID&#34; - echo &#34;当前项目的名称 $CI_PROJECT_NAME&#34; - echo &#34;当前作业的唯一 ID $CI_JOB_ID&#34; - echo &#34;运行作业的 GitLab Runner 的描述 $CI_RUNNER_DESCRIPTION&#34; - echo &#34;运行作业的 GitLab Runner 的标签 $CI_RUNNER_TAGS&#34; - echo &#34;当前提交的提交信息 $CI_COMMIT_MESSAGE&#34; - echo &#34;触发流水线的来源 $CI_PIPELINE_SOURCE&#34; 执行k8s命令 项目设置&gt;变量&gt;添加变量 key为KUBECONFIGvalue为k8s配置文件,minikube的在~/.minikube/">
+  <meta itemprop="datePublished" content="2023-08-15T11:18:37+08:00">
+  <meta itemprop="dateModified" content="2023-08-15T11:18:37+08:00">
+  <meta itemprop="wordCount" content="765">
+  <meta itemprop="keywords" content="Gitlab,Cicd">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="gitlab-ci使用">
+  <meta name="twitter:description" content="GItlab预定义变量 before_script: - export SYSTEM_VERSION=$CI_COMMIT_REF_NAME - export CI_PIPELINE_ID=$CI_PIPELINE_ID - export CI_COMMIT_SHA=$CI_COMMIT_SHA - export CI_PROJECT_ID=$CI_PROJECT_ID - export CI_PROJECT_NAME=$CI_PROJECT_NAME - export CI_JOB_ID=$CI_JOB_ID - export CI_RUNNER_DESCRIPTION=$CI_RUNNER_DESCRIPTION - export CI_RUNNER_TAGS=$CI_RUNNER_TAGS - export CI_COMMIT_MESSAGE=$CI_COMMIT_MESSAGE - export CI_PIPELINE_SOURCE=$CI_PIPELINE_SOURCE stages: - build job: stage: build script: - echo &#34;当前提交的分支或标签名称 $SYSTEM_VERSION&#34; - echo &#34;当前流水线的唯一ID $CI_PIPELINE_ID&#34; - echo &#34;当前提交的 SHA 标识 $CI_COMMIT_SHA&#34; - echo &#34;当前项目的唯一 ID $CI_PROJECT_ID&#34; - echo &#34;当前项目的名称 $CI_PROJECT_NAME&#34; - echo &#34;当前作业的唯一 ID $CI_JOB_ID&#34; - echo &#34;运行作业的 GitLab Runner 的描述 $CI_RUNNER_DESCRIPTION&#34; - echo &#34;运行作业的 GitLab Runner 的标签 $CI_RUNNER_TAGS&#34; - echo &#34;当前提交的提交信息 $CI_COMMIT_MESSAGE&#34; - echo &#34;触发流水线的来源 $CI_PIPELINE_SOURCE&#34; 执行k8s命令 项目设置&gt;变量&gt;添加变量 key为KUBECONFIGvalue为k8s配置文件,minikube的在~/.minikube/">
+
+	
+  </head><body class="ma0 avenir bg-near-white development">
+
+    
+   
+  
+
+  <header>
+    <div class="bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l center items-center justify-between">
+    <a href="/" class="f3 fw2 hover-white white-90 dib no-underline">
+      
+        loveyu233
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      <div class="ananke-socials"></div>
+
+    </div>
+  </div>
+</nav>
+
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  
+  <article class="flex-l mw8 center ph3 flex-wrap justify-between">
+    <header class="mt4 w-100">
+      <aside class="instapaper_ignoref b helvetica tracked ttu">
+          
+        other
+      </aside><div id="sharing" class="mt3 ananke-socials"></div>
+<h1 class="f1 athelas mt3 mb1">gitlab-ci使用</h1>
+      
+      <p class="tracked"><strong>loveyu</strong>
+      </p>
+      
+      
+      
+      <time class="f6 mv4 dib tracked" datetime="2023-08-15T11:18:37+08:00">August 15, 2023</time>
+      
+
+      
+      
+    </header>
+    <div class="nested-copy-line-height lh-copy serif f4 nested-links mid-gray pr4-l w-two-thirds-l"><h1 id="gitlab预定义变量">GItlab预定义变量</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yml" data-lang="yml"><span style="display:flex;"><span><span style="color:#f92672">before_script</span>:
+</span></span><span style="display:flex;"><span>  - <span style="color:#ae81ff">export SYSTEM_VERSION=$CI_COMMIT_REF_NAME</span>
+</span></span><span style="display:flex;"><span>  - <span style="color:#ae81ff">export CI_PIPELINE_ID=$CI_PIPELINE_ID</span>
+</span></span><span style="display:flex;"><span>  - <span style="color:#ae81ff">export CI_COMMIT_SHA=$CI_COMMIT_SHA</span>
+</span></span><span style="display:flex;"><span>  - <span style="color:#ae81ff">export CI_PROJECT_ID=$CI_PROJECT_ID</span>
+</span></span><span style="display:flex;"><span>  - <span style="color:#ae81ff">export CI_PROJECT_NAME=$CI_PROJECT_NAME</span>
+</span></span><span style="display:flex;"><span>  - <span style="color:#ae81ff">export CI_JOB_ID=$CI_JOB_ID</span>
+</span></span><span style="display:flex;"><span>  - <span style="color:#ae81ff">export CI_RUNNER_DESCRIPTION=$CI_RUNNER_DESCRIPTION</span>
+</span></span><span style="display:flex;"><span>  - <span style="color:#ae81ff">export CI_RUNNER_TAGS=$CI_RUNNER_TAGS</span>
+</span></span><span style="display:flex;"><span>  - <span style="color:#ae81ff">export CI_COMMIT_MESSAGE=$CI_COMMIT_MESSAGE</span>
+</span></span><span style="display:flex;"><span>  - <span style="color:#ae81ff">export CI_PIPELINE_SOURCE=$CI_PIPELINE_SOURCE</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">stages</span>:
+</span></span><span style="display:flex;"><span>  - <span style="color:#ae81ff">build</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">job</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">stage</span>: <span style="color:#ae81ff">build</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">script</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">echo &#34;当前提交的分支或标签名称 $SYSTEM_VERSION&#34;</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">echo &#34;当前流水线的唯一ID $CI_PIPELINE_ID&#34;</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">echo &#34;当前提交的 SHA 标识 $CI_COMMIT_SHA&#34;</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">echo &#34;当前项目的唯一 ID $CI_PROJECT_ID&#34;</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">echo &#34;当前项目的名称 $CI_PROJECT_NAME&#34;</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">echo &#34;当前作业的唯一 ID $CI_JOB_ID&#34;</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">echo &#34;运行作业的 GitLab Runner 的描述 $CI_RUNNER_DESCRIPTION&#34;</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">echo &#34;运行作业的 GitLab Runner 的标签 $CI_RUNNER_TAGS&#34;</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">echo &#34;当前提交的提交信息 $CI_COMMIT_MESSAGE&#34;</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">echo &#34;触发流水线的来源 $CI_PIPELINE_SOURCE&#34;</span>
+</span></span></code></pre></div><h1 id="执行k8s命令">执行k8s命令</h1>
+<blockquote>
+<p>项目<code>设置</code>&gt;<code>变量</code>&gt;<code>添加变量</code> key为<code>KUBECONFIG</code>value为<code>k8s配置文件,minikube的在~/.minikube/</code></p>
+<p>不配置执行命令会报错没有权限或者连接失败超时等错误</p></blockquote>
+<h1 id="job运行顺序">job运行顺序</h1>
+<blockquote>
+<p><code>.pre</code> 无论在哪个位置都是最先运行,<code>.post</code>则是最后运行,然后按照定义的<code>stages</code>的顺序运行</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">stages</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">s1</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">s2</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">job0</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">stage</span>: <span style="color:#ae81ff">.pre</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">script</span>:
+</span></span><span style="display:flex;"><span>        - <span style="color:#ae81ff">echo &#34;pre&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">job1</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">stage</span>: <span style="color:#ae81ff">s1</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">script</span>:
+</span></span><span style="display:flex;"><span>        - <span style="color:#ae81ff">echo &#34;job1&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">job2</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">stage</span>: <span style="color:#ae81ff">s2</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">script</span>:
+</span></span><span style="display:flex;"><span>        - <span style="color:#ae81ff">echo &#34;job2&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">job</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">stage</span>: <span style="color:#ae81ff">.post</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">script</span>:
+</span></span><span style="display:flex;"><span>        - <span style="color:#ae81ff">echo &#34;post&#34;</span>
+</span></span></code></pre></div><h1 id="script运行顺序">script运行顺序</h1>
+<blockquote>
+<p>job内如果有<code>before_script</code>则不会运行公共的<code>before_script</code>,job内没有才会运行;如果<code>before_script</code>失败则整个流水线就会失败</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yml" data-lang="yml"><span style="display:flex;"><span><span style="color:#f92672">before_script</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">echo &#34;b1&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">job1</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">before_script</span>:
+</span></span><span style="display:flex;"><span>        - <span style="color:#ae81ff">echo &#34;b2&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">script</span>: <span style="color:#ae81ff">echo &#34;job1&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">after_script</span>:
+</span></span><span style="display:flex;"><span>        - <span style="color:#ae81ff">echo &#34;a1&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">job2</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">script</span>:
+</span></span><span style="display:flex;"><span>        - <span style="color:#ae81ff">echo &#34;job2&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 运行结果</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">echo &#34;b2&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">echo &#34;job1&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">echo &#34;a1&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">echo &#34;b1&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">echo &#34;job2&#34;</span>
+</span></span></code></pre></div><h1 id="是否允许失败">是否允许失败</h1>
+<blockquote>
+<p><code>allow_failure</code>默认为<code>false</code>当前<code>job</code>失败默认下一个job会不执行</p>
+<p><code>true</code>则不影响下一个<code>job</code>的执行</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yml" data-lang="yml"><span style="display:flex;"><span><span style="color:#f92672">job</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">tags</span>:
+</span></span><span style="display:flex;"><span>        - <span style="color:#ae81ff">tag1</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">script</span>:
+</span></span><span style="display:flex;"><span>        - <span style="color:#ae81ff">echo &#34;job&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">allow_failure</span>: <span style="color:#66d9ef">true</span>
+</span></span></code></pre></div><h1 id="job执行模式">job执行模式</h1>
+<blockquote>
+<p><code>when</code>当前job的执行模式</p>
+<ul>
+<li>on_success: 默认模式,前面job执行成功才会执行</li>
+<li>on_failure: 当前面job执行失败才会执行</li>
+<li>always: 总是执行无论前边job成功与否</li>
+<li>manual: 手动执行,执行到该job需要自己手动点击运行才会执行</li>
+<li>delayed: 延时执行,<code>start_in</code>单位为秒,经过设置的时间后才会执行</li>
+<li><code>start_in的值是一个字符串不是数字一定要加引号</code></li>
+</ul></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yml" data-lang="yml"><span style="display:flex;"><span><span style="color:#f92672">job</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">tags</span>:
+</span></span><span style="display:flex;"><span>        - <span style="color:#ae81ff">tag1</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">script</span>:
+</span></span><span style="display:flex;"><span>        - <span style="color:#ae81ff">echo &#34;job&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">when</span>: <span style="color:#ae81ff">delayed</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">start_in</span>: <span style="color:#e6db74">&#34;10&#34;</span>
+</span></span></code></pre></div><h1 id="重试">重试</h1>
+<blockquote>
+<p><code>retry</code>当前job运行失败后重试次数,最大重试次数为<code>2</code>,设置为<code>2</code>如果一直失败的情况下会运行<code>1+重试次</code>也就是<code>三次</code></p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yml" data-lang="yml"><span style="display:flex;"><span><span style="color:#f92672">job</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">script</span>: <span style="color:#ae81ff">echo1 &#34;hello&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">retry</span>: <span style="color:#ae81ff">2</span>
+</span></span></code></pre></div><h1 id="超时时间">超时时间</h1>
+<blockquote>
+<p><code>timeout</code>超时时间. 可以用缩写也可以用全拼; 如果<code>runner超时时间 &gt; 项目设置的超时时间 则按照runner的超时时间为准</code></p>
+<p>例如: runner的超时时间设置为<code>1h</code>,timeout设置为<code>2h</code>,此时的最大超时时间按照runner的超时时间为准也就是<code>1h</code></p>
+<p>如果runner没有设置超时时间或者超时时间小于timeout时间则按照timeout时间为准</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yml" data-lang="yml"><span style="display:flex;"><span><span style="color:#f92672">job</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">script</span>: <span style="color:#ae81ff">echo1 &#34;hello&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">timeout</span>: <span style="color:#ae81ff">1h 1m 1s</span>
+</span></span></code></pre></div><h1 id="变量">变量</h1>
+<blockquote>
+<p><code>variables</code>:声明变量,<code>kv形式</code>,使用变量需要加上<code>$</code>符号,在<code>CI Lint</code>中会出现无法识别变量把<code>$变量名</code>当做字符串的情况,但runner执行没有问题</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yml" data-lang="yml"><span style="display:flex;"><span><span style="color:#f92672">variables</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">VAR</span>: <span style="color:#ae81ff">abc</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">job</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">script</span>: <span style="color:#ae81ff">echo &#34;Hello, Rules! $VAR&#34;</span>
+</span></span></code></pre></div><h1 id="并行job">并行job</h1>
+<blockquote>
+<p><code>parallel</code> 最小为<code>2</code>最大为<code>50</code>,创建N个当前job并行运行,jobname从jobname 1/N 到jobname N/N</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yml" data-lang="yml"><span style="display:flex;"><span><span style="color:#f92672">job</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">script</span>: <span style="color:#ae81ff">echo &#34;hello&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">parallel</span>: <span style="color:#ae81ff">3</span>
+</span></span></code></pre></div><h1 id="限制分支标签">限制分支标签</h1>
+<blockquote>
+<p><code>only</code>: 定义哪些分支的项目会被job执行</p>
+<p><code>except</code>:定制哪些分支和标签的项目不会被job执行</p>
+<p><code>only和except将会慢慢被淘汰,rules成为主流使用方式</code></p>
+<h4 id="rules-规则按顺序评估直到第一次匹配"><code>rules</code>: 规则按顺序评估，直到第一次匹配</h4>
+<p><code>文档:</code> <a href="https://docs.gitlab.cn/jh/ci/jobs/job_control.html">https://docs.gitlab.cn/jh/ci/jobs/job_control.html</a></p>
+<ul>
+<li>
+<p><code>if</code> 如果条件匹配</p>
+</li>
+<li>
+<p><code>if: $CI_PIPELINE_SOURCE == &quot;merge_request_event&quot;</code></p>
+<ul>
+<li>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: center">merge_request_event</th>
+          <th style="text-align: center">对于在创建或更新合并请求时创建的流水线</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: center">push</td>
+          <td style="text-align: center">对于由 <code>git push</code> 事件触发的流水线，包括分支和标签</td>
+      </tr>
+  </tbody>
+</table>
+</li>
+</ul>
+</li>
+<li>
+<p><code>if: $CI_COMMIT_TAG</code>：如果为标签推送更改</p>
+</li>
+<li>
+<p><code>if: $CI_COMMIT_BRANCH</code>：如果更改被推送到任何分支。</p>
+</li>
+<li>
+<p><code>if: $CI_COMMIT_BRANCH == &quot;main&quot;</code> ：如果更改被推送到 <code>main</code></p>
+</li>
+<li>
+<p><code>changes</code> 指定文件发生变化</p>
+</li>
+<li>
+<p><code>exists</code> 指定文件存在</p>
+</li>
+</ul></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yml" data-lang="yml"><span style="display:flex;"><span><span style="color:#f92672">job</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">script</span>: <span style="color:#ae81ff">echo &#34;hello&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">only</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">main</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">except</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">dev</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yml" data-lang="yml"><span style="display:flex;"><span><span style="color:#f92672">job</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">script</span>: <span style="color:#ae81ff">echo &#34;Hello, Rules!&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">rules</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#f92672">if</span>: <span style="color:#ae81ff">$CI_PIPELINE_SOURCE == &#34;merge_request_event&#34;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">when</span>: <span style="color:#ae81ff">manual</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#f92672">changes</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">Dockerfile</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">when</span>: <span style="color:#ae81ff">manual</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#f92672">exists</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">main.go</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">when</span>: <span style="color:#ae81ff">manual</span>
+</span></span></code></pre></div><blockquote>
+<p><code>workflow</code>: 用来检测<code>管道</code>是否运行,<code>when只有always执行和never不执行两个值</code></p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yml" data-lang="yml"><span style="display:flex;"><span><span style="color:#f92672">variables</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">VAR</span>: <span style="color:#ae81ff">abc</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">workflow</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">rules</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#f92672">if</span>: <span style="color:#e6db74">&#39;$VAR == &#34;abc&#34;&#39;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">when</span>: <span style="color:#ae81ff">always</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#f92672">when</span>: <span style="color:#ae81ff">never</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">job</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">script</span>: <span style="color:#ae81ff">echo &#34;Hello, Rules!&#34;</span>
+</span></span></code></pre></div><h1 id="限制runner">限制runner</h1>
+<blockquote>
+<p><code>tags</code> 只运行在有该标签的runner上</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yml" data-lang="yml"><span style="display:flex;"><span><span style="color:#f92672">stages</span>:
+</span></span><span style="display:flex;"><span>  - <span style="color:#ae81ff">build</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">job1</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">stage</span>: <span style="color:#ae81ff">build</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">tags</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">main-dev</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">script</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">ls</span>
+</span></span></code></pre></div><h1 id="缓存">缓存</h1>
+<blockquote>
+<p>缓存目录为home/gitlab-runner/cache</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yml" data-lang="yml"><span style="display:flex;"><span><span style="color:#f92672">stages</span>:
+</span></span><span style="display:flex;"><span>  - <span style="color:#ae81ff">build</span>
+</span></span><span style="display:flex;"><span>  - <span style="color:#ae81ff">run</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">cache</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">paths</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">target/*</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">job-build</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">stage</span>: <span style="color:#ae81ff">build</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">script</span>: 
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">mkdir target</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">echo &#34;build&#34; &gt; target/build.txt</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">ls</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">job-run</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">stage</span>: <span style="color:#ae81ff">run</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">script</span>: 
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">echo &#34;run&#34; &gt; target/run.txt</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">ls</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">tar -cvf target.tar target</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">artifacts</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">paths</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">target</span>
+</span></span></code></pre></div><h1 id="制品">制品</h1>
+<blockquote>
+<p>指定文件可以在运行后下载</p>
+<p><code>expose_as</code>: 用于在合并请求UI中公开显示</p>
+<p><code>name</code>:制品命令</p>
+<p><code>when</code>:什么时候会有这个制品,<code>on_success 默认,只有成功才会有,on_failure:失败,always:总是</code></p>
+<p><code>expire_in</code>:默认单位为秒,可以指定单位,默认为30天</p>
+<p><code>paths</code>:提供下载的文件位置</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yml" data-lang="yml"><span style="display:flex;"><span><span style="color:#f92672">job</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">script</span>: <span style="color:#ae81ff">echo &#34;adsad&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">artifacts</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">expose_as</span>: <span style="color:#e6db74">&#34;name_1&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">name</span>: <span style="color:#e6db74">&#34;main&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">when</span>: <span style="color:#ae81ff">always</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">expire_in</span>: <span style="color:#ae81ff">1</span> <span style="color:#ae81ff">week</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">paths</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">main.go</span>
+</span></span></code></pre></div><blockquote>
+<p><code>dependencies</code>: 获取前边job的制品下载</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yml" data-lang="yml"><span style="display:flex;"><span><span style="color:#f92672">job</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">script</span>: <span style="color:#ae81ff">echo &#34;adsad&#34; &gt;&gt; a.txt</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">artifacts</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">expose_as</span>: <span style="color:#e6db74">&#34;name_1&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">name</span>: <span style="color:#e6db74">&#34;a&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">when</span>: <span style="color:#ae81ff">always</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">expire_in</span>: <span style="color:#ae81ff">1</span> <span style="color:#ae81ff">week</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">paths</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">a.txt</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">job2</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">dependencies</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">job</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">script</span>: <span style="color:#ae81ff">ls</span>
+</span></span></code></pre></div><h1 id="needs多阶段依赖运行">needs多阶段依赖运行</h1>
+<blockquote>
+<p><code>needs</code>: 指定的job运行后当前job就会运行<code>最多指定10个</code>,而不是等上一个阶段的job全部运行完才运行</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yml" data-lang="yml"><span style="display:flex;"><span><span style="color:#f92672">stages</span>:
+</span></span><span style="display:flex;"><span>  - <span style="color:#ae81ff">build</span>
+</span></span><span style="display:flex;"><span>  - <span style="color:#ae81ff">test</span>
+</span></span><span style="display:flex;"><span>  - <span style="color:#ae81ff">deploy</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">module-a-build</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">stage</span>: <span style="color:#ae81ff">build</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">script</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">echo &#34;hello module-a-build&#34;</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">sleep 10</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">module-b-build</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">stage</span>: <span style="color:#ae81ff">build</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">script</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">echo &#34;hello module-b-build&#34;</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">sleep 10</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">module-a-test</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">stage</span>: <span style="color:#ae81ff">test</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">script</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">echo &#34;hello module-a-test&#34;</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">sleep 10</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">needs</span>: [<span style="color:#e6db74">&#34;module-a-build&#34;</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">module-b-test</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">stage</span>: <span style="color:#ae81ff">test</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">script</span>: 
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">echo &#34;ehllo module-b-test&#34;</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">sleep 10</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">needs</span>: [<span style="color:#e6db74">&#34;module-b-build&#34;</span>]
+</span></span></code></pre></div><blockquote>
+<p><code>job</code>指定要下载制品的job名称</p>
+<p><code>artifacts</code>指定是否下载,默认为true</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yml" data-lang="yml"><span style="display:flex;"><span><span style="color:#f92672">module-b-test</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">stage</span>: <span style="color:#ae81ff">test</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">script</span>: 
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">echo &#34;ehllo module-b-test&#34;</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">sleep 10</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">needs</span>: 
+</span></span><span style="display:flex;"><span>    - <span style="color:#f92672">job</span>: <span style="color:#e6db74">&#34;module-b-build&#34;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">artifacts</span>: <span style="color:#66d9ef">true</span>
+</span></span></code></pre></div><h1 id="引用外部ci文件">引用外部ci文件</h1>
+<blockquote>
+<p>如果引入有同名job,会被.gitlab-ci.yml覆盖</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yml" data-lang="yml"><span style="display:flex;"><span><span style="color:#75715e">### ci/config1-ci.yml</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">config1-ci-job</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">stage</span>: <span style="color:#ae81ff">run</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">script</span>: <span style="color:#ae81ff">echo &#34;config1-ci&#34;</span>
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">### .gitlab-ci.yml</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">stages</span>:
+</span></span><span style="display:flex;"><span>  - <span style="color:#ae81ff">build</span>
+</span></span><span style="display:flex;"><span>  - <span style="color:#ae81ff">run</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">### 引用本仓库的内容</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">include</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">local</span>: <span style="color:#ae81ff">ci/config1-ci.yml</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">### 引用其他仓库内容</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">include</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">project</span>: <span style="color:#ae81ff">HuangZhenyu/config  // 项目位置</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">ref</span>: <span style="color:#ae81ff">main					   // 分支</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">file</span>: <span style="color:#e6db74">&#34;.gitlab-ci.yml&#34;</span>       <span style="color:#ae81ff">// yml文件名称</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">### 引入官方配置</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">include</span>:
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">tmplate</span>: <span style="color:#ae81ff">yml文件名称        // yml文件在官方仓库里面找,只需要文件名称就行</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">### 引入远程配置</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">include</span>:
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">remote</span>: <span style="color:#ae81ff">http://xxxx/.gitlab-ci.yml</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">job</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">stage</span>: <span style="color:#ae81ff">build</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">script</span>: <span style="color:#ae81ff">echo &#34;build&#34;</span>
+</span></span></code></pre></div><h1 id="继承">继承</h1>
+<blockquote>
+<p><code>job1继承了.jobjob1和.job都有的以job1为主,.job有的job1没得则按照.job</code></p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yml" data-lang="yml"><span style="display:flex;"><span><span style="color:#f92672">stages</span>:
+</span></span><span style="display:flex;"><span>  - <span style="color:#ae81ff">build</span>
+</span></span><span style="display:flex;"><span>  - <span style="color:#ae81ff">run</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">.job</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">script</span>: <span style="color:#ae81ff">echo &#34;...job&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">stage</span>: <span style="color:#ae81ff">build</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">job1</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">extends</span>: <span style="color:#ae81ff">.job</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">script</span>: <span style="color:#ae81ff">echo &#34;job1&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">### 合并后的job1: </span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">job1</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">stage</span>: <span style="color:#ae81ff">build</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">script</span>: <span style="color:#ae81ff">echo &#34;job1&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">job2</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">stage</span>: <span style="color:#ae81ff">run</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">script</span>: <span style="color:#ae81ff">echo &#34;job2&#34;</span>
+</span></span></code></pre></div><h1 id="docker实例">docker实例</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yml" data-lang="yml"><span style="display:flex;"><span><span style="color:#75715e"># 声明任务且按照顺序执行,相同类型的任务如果runner有剩余则并行执行</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">stages</span>:
+</span></span><span style="display:flex;"><span>  - <span style="color:#ae81ff">pre</span>
+</span></span><span style="display:flex;"><span>  - <span style="color:#ae81ff">build</span>
+</span></span><span style="display:flex;"><span>  - <span style="color:#ae81ff">run</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 声明一个工作流</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">workflow</span>:
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#  配置什么时候会触发流水线</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">rules</span>:
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#    如果当前的 CI 合并请求目标分支名称是 &#34;main&#34;，则运行</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#f92672">if</span>: <span style="color:#e6db74">&#39;$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == &#34;main&#34;&#39;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">when</span>: <span style="color:#ae81ff">always</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#    如果 CI 流水线源是通过推送触发的，则不运行</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#f92672">if</span>: <span style="color:#e6db74">&#39;$CI_PIPELINE_SOURCE  == &#34;push&#34;&#39;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">when</span>: <span style="color:#ae81ff">never</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#    如果 CI 流水线源是通过拉取请求触发的，则运行。</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#f92672">if</span>: <span style="color:#e6db74">&#39;$CI_PIPELINE_SOURCE == &#34;pull_request&#34;&#39;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">when</span>: <span style="color:#ae81ff">always</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">pre-job</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">stage</span>: <span style="color:#ae81ff">pre</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#  如果这个任务失败不会停止,而是继续下一个任务执行</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">allow_failure</span>: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">script</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">docker stop t1</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">docker rm t1</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">docker rmi cicd-test</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#    - docker stop $(docker ps -q)</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#    - docker rm -f $(docker ps -aq)</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#    - docker rmi -f $(docker images -aq)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">build-job</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">stage</span>: <span style="color:#ae81ff">build</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">script</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">docker build . -t cicd-test</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#   保存镜像cicd-test 为  cicd-test.tar.gz</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">docker save cicd-test -o cicd-test.tar.gz</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#   保存流水线所产出的文件，可以再流水线中下载这个文件</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">artifacts</span>:
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#   位置</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">paths</span>:
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#     docker load -i image.tar 使用这个镜像</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">cicd-test.tar.gz</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">run-job</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">stage</span>: <span style="color:#ae81ff">run</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">script</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">docker run -d -p 9999:9999 --name t1 cicd-test</span>
+</span></span></code></pre></div><ul class="pa0">
+  
+   <li class="list di">
+     <a href="/tags/gitlab/" class="link f5 grow br-pill ba ph3 pv2 mb2 dib black sans-serif no-underline">Gitlab</a>
+   </li>
+  
+   <li class="list di">
+     <a href="/tags/cicd/" class="link f5 grow br-pill ba ph3 pv2 mb2 dib black sans-serif no-underline">Cicd</a>
+   </li>
+  
+</ul>
+<div class="mt6 instapaper_ignoref">
+      
+      
+      </div>
+    </div>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+  <div class="bg-light-gray pa3 nested-list-reset nested-copy-line-height nested-links">
+    <p class="f5 b mb3">Related</p>
+    <ul class="pa0 list">
+	   
+	     <li  class="mb2">
+          <a href="/posts/other/gitlab-ci%E9%85%8D%E7%BD%AE/">gitlab-ci配置</a>
+        </li>
+	    
+    </ul>
+</div>
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white white-70 dn dib-ns pv2 ph3 no-underline" href="http://localhost:1313/" >
+    &copy;  loveyu233 2025 
+  </a>
+    <div><div class="ananke-socials"></div>
+</div>
+  </div>
+</footer>
+
+  </body>
+</html>

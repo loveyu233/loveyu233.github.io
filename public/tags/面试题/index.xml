@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>面试题 on loveyu233</title>
+    <link>http://localhost:1313/tags/%E9%9D%A2%E8%AF%95%E9%A2%98/</link>
+    <description>Recent content in 面试题 on loveyu233</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 05 Jun 2023 18:14:04 +0800</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/%E9%9D%A2%E8%AF%95%E9%A2%98/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>前端面试题</title>
+      <link>http://localhost:1313/posts/frontend/%E5%89%8D%E7%AB%AF%E9%9D%A2%E8%AF%95%E9%A2%98/</link>
+      <pubDate>Mon, 05 Jun 2023 18:14:04 +0800</pubDate>
+      <guid>http://localhost:1313/posts/frontend/%E5%89%8D%E7%AB%AF%E9%9D%A2%E8%AF%95%E9%A2%98/</guid>
+      <description>&lt;p&gt;HTML 的字符实体是什么&lt;/p&gt;&#xA;&lt;p&gt;js底层数据结构如何存储在V8里面&lt;/p&gt;&#xA;&lt;p&gt;H5新特性&lt;/p&gt;&#xA;&lt;p&gt;如果提到localstorage 就追问 localstorage API 以及 localStorage 实现原理 以及 localStorage 存在哪儿 以及localStorage 跨域&lt;/p&gt;&#xA;&lt;p&gt;如果提到PWA技术 就追问 PWA优点 继续追问 Service Workers 继续追问 PWA和hybrid的不同&lt;/p&gt;&#xA;&lt;p&gt;如果提到canvas 就追问 canvas 常用API&lt;/p&gt;&#xA;&lt;p&gt;如果提到webSocket 就追问 webSocket 的用法 以及手动实现ws协议 继续追问SSE技术 和 ws的区别&lt;/p&gt;&#xA;&lt;p&gt;如果提到webWorker 就追问 webWorker 用法 以及实现原理&lt;/p&gt;&#xA;&lt;p&gt;如何区分强网弱网&lt;/p&gt;&#xA;&lt;p&gt;什么是灰度&lt;/p&gt;&#xA;&lt;p&gt;async defer&lt;/p&gt;&#xA;&lt;p&gt;SEO&lt;/p&gt;&#xA;&lt;p&gt;BFC&lt;/p&gt;&#xA;&lt;p&gt;回流与重绘 以及优化方案&lt;/p&gt;&#xA;&lt;p&gt;webComponents 以及 微前端 以及 emp 模块联邦&lt;/p&gt;&#xA;&lt;p&gt;Css盒模型 和 怪异盒模型区别 以及统一策略&lt;/p&gt;&#xA;&lt;p&gt;css 伪类&lt;/p&gt;&#xA;&lt;p&gt;为什么哔哩哔哩用vmin 不用 vh&lt;/p&gt;&#xA;&lt;p&gt;css变量&lt;/p&gt;&#xA;&lt;p&gt;css flex grid&lt;/p&gt;&#xA;&lt;p&gt;Css 动画 关键帧等&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

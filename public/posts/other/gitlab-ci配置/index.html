@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>gitlab-ci配置 | loveyu233</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="Dockerfile报错
+FROM golang:1.20.6-alpine3.18 AS build
+
+WORKDIR /app
+
+COPY . .
+
+ENV GOPROXY=https://goproxy.cn
+
+RUN go mod tidy &amp;&amp; go build main.go
+
+FROM alpine:3.18
+
+WORKDIR /app
+
+COPY --from=build /app/main .
+
+EXPOSE 9999
+
+CMD [&#34;./main&#34;]
+
+当使用多阶段构建时且每个阶段的alpine版本不同会产生错误:&quot;xxx no such file or directory&quot;
+这里的&quot;no such file or directory&quot; 是指/lib64/ld-linux-x86-64.so.2找不到而不是main文件找不到
+原因是go的net包关于域名解析有两种选项:
+
+使用纯Go解析器直接发送DNS请求给/etc/resolv.conf文件中的服务器
+使用基于CGo的解析器调用C库程序，例如getaddrinfo和getnameinfo
+
+默认使用纯Go解析器，因为对于调用一个阻塞的DNS请求，Go仅需要消耗一个goroutine，而C程序需要消耗一个操作系统线程。但当CGo可用时（CGO_ENABLE=1），则会使用基于CGo的解析器，除非有如下情况：
+
+系统不允许程序直接发起DNS请求（OS X）
+LOCALDOMAIN 环境变量存在，即使值为空
+RES_OPTIONS 或者 HOSTALIASES 环境变量不为空
+ASR_CONFIG 环境变量不为空（仅OpenBSD）
+Go解析器没有实现 /etc/resolv.conf 或 /etc/nsswitch.conf 中指定的特性
+名称以 .local 结尾，或是一个 mDNS 名称
+
+但有些镜像默认是用cgo所以会导致找不到文件">
+    <meta name="generator" content="Hugo 0.147.7">
+    
+    
+    
+      <meta name="robots" content="noindex, nofollow">
+    
+    <meta name="author" content="loveyu">
+    
+
+    
+<link rel="stylesheet" href="/ananke/css/main.min.css" >
+
+
+
+
+    
+
+
+    
+      
+
+    
+
+    
+
+    
+      <link rel="canonical" href="http://localhost:1313/posts/other/gitlab-ci%E9%85%8D%E7%BD%AE/">
+    
+
+    <meta property="og:url" content="http://localhost:1313/posts/other/gitlab-ci%E9%85%8D%E7%BD%AE/">
+  <meta property="og:site_name" content="loveyu233">
+  <meta property="og:title" content="gitlab-ci配置">
+  <meta property="og:description" content="Dockerfile报错 FROM golang:1.20.6-alpine3.18 AS build WORKDIR /app COPY . . ENV GOPROXY=https://goproxy.cn RUN go mod tidy &amp;&amp; go build main.go FROM alpine:3.18 WORKDIR /app COPY --from=build /app/main . EXPOSE 9999 CMD [&#34;./main&#34;] 当使用多阶段构建时且每个阶段的alpine版本不同会产生错误:&#34;xxx no such file or directory&#34;
+这里的&#34;no such file or directory&#34; 是指/lib64/ld-linux-x86-64.so.2找不到而不是main文件找不到
+原因是go的net包关于域名解析有两种选项:
+使用纯Go解析器直接发送DNS请求给/etc/resolv.conf文件中的服务器 使用基于CGo的解析器调用C库程序，例如getaddrinfo和getnameinfo 默认使用纯Go解析器，因为对于调用一个阻塞的DNS请求，Go仅需要消耗一个goroutine，而C程序需要消耗一个操作系统线程。但当CGo可用时（CGO_ENABLE=1），则会使用基于CGo的解析器，除非有如下情况：
+系统不允许程序直接发起DNS请求（OS X） LOCALDOMAIN 环境变量存在，即使值为空 RES_OPTIONS 或者 HOSTALIASES 环境变量不为空 ASR_CONFIG 环境变量不为空（仅OpenBSD） Go解析器没有实现 /etc/resolv.conf 或 /etc/nsswitch.conf 中指定的特性 名称以 .local 结尾，或是一个 mDNS 名称 但有些镜像默认是用cgo所以会导致找不到文件">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2023-08-14T11:18:37+08:00">
+    <meta property="article:modified_time" content="2023-08-14T11:18:37+08:00">
+    <meta property="article:tag" content="Gitlab">
+    <meta property="article:tag" content="Cicd">
+
+  <meta itemprop="name" content="gitlab-ci配置">
+  <meta itemprop="description" content="Dockerfile报错 FROM golang:1.20.6-alpine3.18 AS build WORKDIR /app COPY . . ENV GOPROXY=https://goproxy.cn RUN go mod tidy &amp;&amp; go build main.go FROM alpine:3.18 WORKDIR /app COPY --from=build /app/main . EXPOSE 9999 CMD [&#34;./main&#34;] 当使用多阶段构建时且每个阶段的alpine版本不同会产生错误:&#34;xxx no such file or directory&#34;
+这里的&#34;no such file or directory&#34; 是指/lib64/ld-linux-x86-64.so.2找不到而不是main文件找不到
+原因是go的net包关于域名解析有两种选项:
+使用纯Go解析器直接发送DNS请求给/etc/resolv.conf文件中的服务器 使用基于CGo的解析器调用C库程序，例如getaddrinfo和getnameinfo 默认使用纯Go解析器，因为对于调用一个阻塞的DNS请求，Go仅需要消耗一个goroutine，而C程序需要消耗一个操作系统线程。但当CGo可用时（CGO_ENABLE=1），则会使用基于CGo的解析器，除非有如下情况：
+系统不允许程序直接发起DNS请求（OS X） LOCALDOMAIN 环境变量存在，即使值为空 RES_OPTIONS 或者 HOSTALIASES 环境变量不为空 ASR_CONFIG 环境变量不为空（仅OpenBSD） Go解析器没有实现 /etc/resolv.conf 或 /etc/nsswitch.conf 中指定的特性 名称以 .local 结尾，或是一个 mDNS 名称 但有些镜像默认是用cgo所以会导致找不到文件">
+  <meta itemprop="datePublished" content="2023-08-14T11:18:37+08:00">
+  <meta itemprop="dateModified" content="2023-08-14T11:18:37+08:00">
+  <meta itemprop="wordCount" content="1285">
+  <meta itemprop="keywords" content="Gitlab,Cicd">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="gitlab-ci配置">
+  <meta name="twitter:description" content="Dockerfile报错 FROM golang:1.20.6-alpine3.18 AS build WORKDIR /app COPY . . ENV GOPROXY=https://goproxy.cn RUN go mod tidy &amp;&amp; go build main.go FROM alpine:3.18 WORKDIR /app COPY --from=build /app/main . EXPOSE 9999 CMD [&#34;./main&#34;] 当使用多阶段构建时且每个阶段的alpine版本不同会产生错误:&#34;xxx no such file or directory&#34;
+这里的&#34;no such file or directory&#34; 是指/lib64/ld-linux-x86-64.so.2找不到而不是main文件找不到
+原因是go的net包关于域名解析有两种选项:
+使用纯Go解析器直接发送DNS请求给/etc/resolv.conf文件中的服务器 使用基于CGo的解析器调用C库程序，例如getaddrinfo和getnameinfo 默认使用纯Go解析器，因为对于调用一个阻塞的DNS请求，Go仅需要消耗一个goroutine，而C程序需要消耗一个操作系统线程。但当CGo可用时（CGO_ENABLE=1），则会使用基于CGo的解析器，除非有如下情况：
+系统不允许程序直接发起DNS请求（OS X） LOCALDOMAIN 环境变量存在，即使值为空 RES_OPTIONS 或者 HOSTALIASES 环境变量不为空 ASR_CONFIG 环境变量不为空（仅OpenBSD） Go解析器没有实现 /etc/resolv.conf 或 /etc/nsswitch.conf 中指定的特性 名称以 .local 结尾，或是一个 mDNS 名称 但有些镜像默认是用cgo所以会导致找不到文件">
+
+	
+  </head><body class="ma0 avenir bg-near-white development">
+
+    
+   
+  
+
+  <header>
+    <div class="bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l center items-center justify-between">
+    <a href="/" class="f3 fw2 hover-white white-90 dib no-underline">
+      
+        loveyu233
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      <div class="ananke-socials"></div>
+
+    </div>
+  </div>
+</nav>
+
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  
+  <article class="flex-l mw8 center ph3 flex-wrap justify-between">
+    <header class="mt4 w-100">
+      <aside class="instapaper_ignoref b helvetica tracked ttu">
+          
+        other
+      </aside><div id="sharing" class="mt3 ananke-socials"></div>
+<h1 class="f1 athelas mt3 mb1">gitlab-ci配置</h1>
+      
+      <p class="tracked"><strong>loveyu</strong>
+      </p>
+      
+      
+      
+      <time class="f6 mv4 dib tracked" datetime="2023-08-14T11:18:37+08:00">August 14, 2023</time>
+      
+
+      
+      
+    </header>
+    <div class="nested-copy-line-height lh-copy serif f4 nested-links mid-gray pr4-l w-two-thirds-l"><h1 id="dockerfile报错">Dockerfile报错</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yml" data-lang="yml"><span style="display:flex;"><span><span style="color:#ae81ff">FROM golang:1.20.6-alpine3.18 AS build</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">WORKDIR /app</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">COPY . .</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">ENV GOPROXY=https://goproxy.cn</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">RUN go mod tidy &amp;&amp; go build main.go</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">FROM alpine:3.18</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">WORKDIR /app</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">COPY --from=build /app/main .</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">EXPOSE 9999</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">CMD [&#34;./main&#34;]</span>
+</span></span></code></pre></div><blockquote>
+<p>当使用多阶段构建时且每个阶段的alpine版本不同会产生错误:<code>&quot;xxx no such file or directory&quot;</code></p>
+<p>这里的<code>&quot;no such file or directory&quot;</code> 是指<code>/lib64/ld-linux-x86-64.so.2</code>找不到而不是<code>main</code>文件找不到</p>
+<p>原因是go的<code>net</code>包关于域名解析有两种选项:</p>
+<ol>
+<li>使用纯Go解析器直接发送DNS请求给/etc/resolv.conf文件中的服务器</li>
+<li>使用基于CGo的解析器调用C库程序，例如getaddrinfo和getnameinfo</li>
+</ol>
+<p>默认使用纯Go解析器，因为对于调用一个阻塞的DNS请求，Go仅需要消耗一个goroutine，而C程序需要消耗一个操作系统线程。但当CGo可用时（CGO_ENABLE=1），则会使用基于CGo的解析器，除非有如下情况：</p>
+<ol>
+<li>系统不允许程序直接发起DNS请求（OS X）</li>
+<li>LOCALDOMAIN 环境变量存在，即使值为空</li>
+<li>RES_OPTIONS 或者 HOSTALIASES 环境变量不为空</li>
+<li>ASR_CONFIG 环境变量不为空（仅OpenBSD）</li>
+<li>Go解析器没有实现 /etc/resolv.conf 或 /etc/nsswitch.conf 中指定的特性</li>
+<li>名称以 .local 结尾，或是一个 mDNS 名称</li>
+</ol>
+<p>但有些镜像默认是用cgo所以会导致找不到文件</p>
+<p>在go build的时候可以通过-tags netgo或-tags netcgo来指定net包使用纯Go还是CGo。于是在Dockerfile中的go build指令中添加-tags netgo参数即可解决</p></blockquote>
+<p>解决</p>
+<blockquote>
+<ol>
+<li>每个阶段使用的alpine版本一致</li>
+<li>在go build 命令添加参数<code>-tags netgo</code>即<code>RUN go build -tags netgo main.go</code></li>
+</ol></blockquote>
+<p>为什么会找不到c库</p>
+<blockquote>
+<p>golang镜像使用的C标准库是gnu-libc。再在alpine镜像中执行ldd命令发现使用的C标准库是musl-libc。</p>
+<p>所以Go编译的可执行程序在动态链接了C库后在不同的libc库上编译和运行，自然会出现文件找不到的问题。</p></blockquote>
+<h1 id="docker-compose">docker-compose</h1>
+<blockquote>
+<h3 id="创建网络"><code>创建网络:</code></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yml" data-lang="yml"><span style="display:flex;"><span><span style="color:#f92672">networks</span>:
+</span></span><span style="display:flex;"><span><span style="color:#f92672">mynet</span>:
+</span></span><span style="display:flex;"><span><span style="color:#f92672">driver</span>: <span style="color:#ae81ff">bridge</span>
+</span></span></code></pre></div><h3 id="在每一个服务中指定使用该网络"><code>在每一个服务中指定使用该网络:</code></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yml" data-lang="yml"><span style="display:flex;"><span><span style="color:#f92672">networks</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">mynet</span>
+</span></span></code></pre></div><h3 id="不同容器间访问直接使用容器名称即可">不同容器间访问直接使用<code>容器名称即可</code></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">// 例如在main中连接pgsql和redis</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">gorm</span>.<span style="color:#a6e22e">Open</span>(<span style="color:#a6e22e">postgres</span>.<span style="color:#a6e22e">Open</span>(<span style="color:#e6db74">&#34;host=pgsql user=pgsql password=pgsql dbname=pgsql port=5432 TimeZone=Asia/Shanghai&#34;</span>))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">redis</span>.<span style="color:#a6e22e">NewClient</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">redis</span>.<span style="color:#a6e22e">Options</span>{
+</span></span><span style="display:flex;"><span>  	<span style="color:#a6e22e">Addr</span>: <span style="color:#e6db74">&#34;redis:6379&#34;</span>,
+</span></span><span style="display:flex;"><span>  })
+</span></span></code></pre></div></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">version</span>: <span style="color:#e6db74">&#34;1.0&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">services</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">redis</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">image</span>: <span style="color:#e6db74">&#34;redis:latest&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">container_name</span>: <span style="color:#e6db74">&#34;redis&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">networks</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">mynet</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">ports</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#e6db74">&#34;6379:6379&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">pgsql</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">image</span>: <span style="color:#e6db74">&#34;postgres:12&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">container_name</span>: <span style="color:#e6db74">&#34;pgsql&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">networks</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">mynet</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">environment</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">POSTGRES_USER</span>: <span style="color:#ae81ff">pgsql</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">POSTGRES_PASSWORD</span>: <span style="color:#ae81ff">pgsql</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">POSTGRES_DB</span>: <span style="color:#ae81ff">pgsql</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">ports</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#e6db74">&#34;5432:5432&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">main</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">image</span>: <span style="color:#ae81ff">test</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">container_name</span>: <span style="color:#ae81ff">main</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">networks</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">mynet</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">links</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">pgsql</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">redis</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">depends_on</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">pgsql</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">redis</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">ports</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#e6db74">&#34;9001:9001&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">networks</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">mynet</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">driver</span>: <span style="color:#ae81ff">bridge</span>
+</span></span></code></pre></div><h1 id="docker-image上传">docker image上传</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># 1.登录dockerhub</span>
+</span></span><span style="display:flex;"><span>docker login
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 2. 给本地镜像打标签</span>
+</span></span><span style="display:flex;"><span>docker tag local_image:tag_name username/repository:tag_name
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 3. 上传镜像</span>
+</span></span><span style="display:flex;"><span>docker push username/repository:tag_name
+</span></span></code></pre></div><h1 id="gitlab-runner">Gitlab-runner</h1>
+<blockquote>
+<p>安装: <a href="https://docs.gitlab.cn/runner/install/linux-repository.html">https://docs.gitlab.cn/runner/install/linux-repository.html</a></p>
+<p>注册: sudo gitlab-runner register</p>
+<p>启动: sudo gitlab-runner run</p>
+<p>启动后如果gitlab显示未灰色三角形则删除gitlab-runner配置文件然后重新注册</p></blockquote>
+<h1 id="gitlab-cicd">Gitlab CICD</h1>
+<p>没有docker权限解决办法:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>usermod -a -G docker gitlab-runner
+</span></span></code></pre></div><p>重新初始化现存的 Git 版本库于xxx,解决办法更新git</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>sudo yum -y remove git
+</span></span><span style="display:flex;"><span>sudo yum -y remove git-*
+</span></span><span style="display:flex;"><span>sudo yum -y install https://packages.endpointdev.com/rhel/7/os/x86_64/endpoint-repo.x86_64.rpm
+</span></span><span style="display:flex;"><span>sudo yum -y install git
+</span></span><span style="display:flex;"><span>git version
+</span></span></code></pre></div><p><code>.gitlab-ci.yml</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yml" data-lang="yml"><span style="display:flex;"><span><span style="color:#75715e"># 声明任务且按照顺序执行,相同类型的任务如果runner有剩余则并行执行</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">stages</span>:
+</span></span><span style="display:flex;"><span>  - <span style="color:#ae81ff">pre</span>
+</span></span><span style="display:flex;"><span>  - <span style="color:#ae81ff">build</span>
+</span></span><span style="display:flex;"><span>  - <span style="color:#ae81ff">run</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 声明一个工作流</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">workflow</span>:
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#  配置什么时候会触发流水线</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">rules</span>:
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#    如果当前的 CI 合并请求目标分支名称是 &#34;main&#34;，则运行</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#f92672">if</span>: <span style="color:#e6db74">&#39;$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == &#34;main&#34;&#39;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">when</span>: <span style="color:#ae81ff">always</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#    如果 CI 流水线源是通过推送触发的，则不运行</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#f92672">if</span>: <span style="color:#e6db74">&#39;$CI_PIPELINE_SOURCE  == &#34;push&#34;&#39;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">when</span>: <span style="color:#ae81ff">never</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#    如果 CI 流水线源是通过拉取请求触发的，则运行。</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#f92672">if</span>: <span style="color:#e6db74">&#39;$CI_PIPELINE_SOURCE == &#34;pull_request&#34;&#39;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">when</span>: <span style="color:#ae81ff">always</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">pre-job</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">stage</span>: <span style="color:#ae81ff">pre</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#  如果这个任务失败不会停止,而是继续下一个任务执行</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">allow_failure</span>: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">script</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">docker stop t1</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">docker rm t1</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">docker rmi cicd-test</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#    - docker stop $(docker ps -q)</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#    - docker rm -f $(docker ps -aq)</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#    - docker rmi -f $(docker images -aq)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">build-job</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">stage</span>: <span style="color:#ae81ff">build</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">before_script</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">echo &#34;开始build镜像.&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">after_script</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">echo &#34;镜像build完成.&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">script</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">docker build . -t cicd-test</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#   保存镜像cicd-test 为  cicd-test.tar.gz</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">docker save cicd-test -o cicd-test.tar.gz</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#   保存流水线所产出的文件，可以再流水线中下载这个文件</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">artifacts</span>:
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#   位置</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">paths</span>:
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#     docker load -i image.tar 使用这个镜像</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">cicd-test.tar.gz</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">run-job</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">stage</span>: <span style="color:#ae81ff">run</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">script</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">docker run -d -p 9999:9999 --name t1 cicd-test</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">push-job</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">stage</span>: <span style="color:#ae81ff">run</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">script</span>:
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#   给镜像添加tag</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">docker tag cicd-test 123/cicd-test</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#   上传镜像备份</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">docker push 123/cicd-test</span>
+</span></span></code></pre></div><h1 id="minikube">minikube</h1>
+<h2 id="安装minikube">安装minikube</h2>
+<blockquote>
+<p>前提安装完成docker</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>adduser newUser
+</span></span><span style="display:flex;"><span>usermod -aG sudo newUser
+</span></span><span style="display:flex;"><span>su - newUser
+</span></span><span style="display:flex;"><span>sudo groupadd docker
+</span></span><span style="display:flex;"><span>sudo usermod -aG docker $USER
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">===</span> 如果报错 xxx不在 sudoers 文件中。此事将被报告。
+</span></span><span style="display:flex;"><span>vim /etc/sudoers
+</span></span><span style="display:flex;"><span><span style="color:#f92672">===</span> 在root    ALL<span style="color:#f92672">=(</span>ALL:ALL<span style="color:#f92672">)</span> ALL 下添加 newUser    ALL<span style="color:#f92672">=(</span>ALL:ALL<span style="color:#f92672">)</span> ALL
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">===</span> 使用root用户执行
+</span></span><span style="display:flex;"><span>curl -Lo minikube https://kubernetes.oss-cn-hangzhou.aliyuncs.com/minikube/releases/v1.23.1/minikube-linux-amd64 <span style="color:#f92672">&amp;&amp;</span> chmod +x minikube <span style="color:#f92672">&amp;&amp;</span> sudo mv minikube /usr/local/bin/
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">===</span> 使用创建的普通用户执行
+</span></span><span style="display:flex;"><span>minikube start --image-mirror-country<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;cn&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">===</span> 如果失败则使用:
+</span></span><span style="display:flex;"><span>minikube start --registry-mirror<span style="color:#f92672">=</span>https://registry.docker-cn.com --image-mirror-country<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;cn&#39;</span> --kubernetes-version<span style="color:#f92672">=</span>v1.23.3
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">===</span> 验证
+</span></span><span style="display:flex;"><span>minikube kubectl -- get po -A
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">===</span> 普通用户
+</span></span><span style="display:flex;"><span>// 启动
+</span></span><span style="display:flex;"><span>minikube start
+</span></span><span style="display:flex;"><span>// 开启网页显示
+</span></span><span style="display:flex;"><span>minikube dashboard
+</span></span><span style="display:flex;"><span>//开启代理不然无法打开网页
+</span></span><span style="display:flex;"><span>kubectl proxy --address<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;0.0.0.0&#39;</span> --disable-filter<span style="color:#f92672">=</span>true
+</span></span><span style="display:flex;"><span>执行结果:
+</span></span><span style="display:flex;"><span>W0720 10:18:55.891119   <span style="color:#ae81ff">52250</span> proxy.go:175<span style="color:#f92672">]</span> Request filter disabled, your proxy is vulnerable to XSRF attacks, please be cautious
+</span></span><span style="display:flex;"><span>Starting to serve on <span style="color:#f92672">[</span>::<span style="color:#f92672">]</span>:8001
+</span></span><span style="display:flex;"><span>打开<span style="color:#f92672">(</span>端口为执行后输出的端口<span style="color:#f92672">)</span>:
+</span></span><span style="display:flex;"><span>http://服务器ip:8001/api/v1/namespaces/kubernetes-dashboard/services/http:kubernetes-dashboard:/proxy/#/workloads?namespace<span style="color:#f92672">=</span>default
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>必须添加/http:kubernetes-dashboard:/proxy/#/workloads?namespace<span style="color:#f92672">=</span>default,不然返回的是json数据而不是网页可视化<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">===</span> 执行minikube 命令需要在普通用户执行
+</span></span></code></pre></div><h2 id="安装kubectl">安装kubectl</h2>
+<blockquote>
+<p>不安装则需要在使用kubectl前加上minikube</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">===</span> root用户执行
+</span></span><span style="display:flex;"><span>cat <span style="color:#e6db74">&lt;&lt;EOF &gt; /etc/yum.repos.d/kubernetes.repo
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">[kubernetes]
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">name=Kubernetes
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">baseurl=https://mirrors.aliyun.com/kubernetes/yum/repos/kubernetes-el7-x86_64
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">enabled=1
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">gpgcheck=1
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">repo_gpgcheck=1
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">gpgkey=https://mirrors.aliyun.com/kubernetes/yum/doc/yum-key.gpg https://mirrors.aliyun.com/kubernetes/yum/doc/rpm-package-key.gpg
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">EOF</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>yum install -y kubectl 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">===</span> 需要在普通用户上执行
+</span></span><span style="display:flex;"><span>kubectl get pod
+</span></span></code></pre></div><h2 id="网络问题安装方式">网络问题安装方式</h2>
+<ol>
+<li>下载minikube安装包</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+</span></span><span style="display:flex;"><span>下载到本地然后scp到服务器
+</span></span><span style="display:flex;"><span>服务器执行
+</span></span><span style="display:flex;"><span>sudo install minikube-linux-amd64 /usr/local/bin/minikube <span style="color:#f92672">&amp;&amp;</span> rm minikube-linux-amd64
+</span></span></code></pre></div><ol start="2">
+<li>下载镜像</li>
+</ol>
+<pre tabindex="0"><code class="language-shel" data-lang="shel">docker pull anjone/kicbase
+</code></pre><ol start="3">
+<li>指定镜像启动</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>minikube start --vm-driver<span style="color:#f92672">=</span>docker --base-image<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;anjone/kicbase&#34;</span> --image-mirror-country<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;cn&#39;</span> --image-repository<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;registry.cn-hangzhou.aliyuncs.com/google_containers&#39;</span> --kubernetes-version<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;v1.22.0&#39;</span> --force
+</span></span></code></pre></div><p>参数	说明	值
+–base-image	指定镜像，忽略SHA校验	anjone/kicbase
+–vm-driver	使用docker	docker
+–image-mirror-country	镜像所在的国家是中国	cn
+–image-repository	镜像仓库地址为阿里云	registry.cn-hangzhou.aliyuncs.com/google_containers
+–logtostderr	输出日志到stderr
+–kubernetes-version	指定kubernetes版本	v1.22.0
+–force	强制使用root账户</p>
+<h2 id="外网服务访问">外网服务访问</h2>
+<blockquote>
+<p>直接访问nodeport类型的pod是无法访问成功的,因为minikube是用docker安装的,需要指定下边命令进入到minikube里面才可以访问到<code>minikube ssh</code></p>
+<p>开启代理<code>--address 10.220.10.50</code>不指定默认为本机只能通过localhost或者127.0.0.1进行访问,必须指定本机ip后才可以使用ip访问到<code>9001:8000</code> 外网访问的端口:这个service的端口</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>kubectl port-forward --address 10.10.10.10 service/nginx-demo 9001:8000
+</span></span></code></pre></div><ol>
+<li><strong>kubectl port-forward</strong>:</li>
+</ol>
+<ul>
+<li><strong>功能</strong>：<code>kubectl port-forward</code> 允许您将本地端口映射到 Kubernetes 集群中运行的 Pod 的端口，从而可以直接与这些 Pod 进行交互，而无需通过公共网络。</li>
+<li><strong>用途</strong>：通常用于调试和测试，以便在本地主机上访问运行在 Kubernetes 中的应用程序或服务。</li>
+</ul>
+<ol start="2">
+<li><strong>kubectl proxy</strong>:</li>
+</ol>
+<ul>
+<li><strong>功能</strong>：<code>kubectl proxy</code> 创建一个代理服务器，通过该代理服务器可以访问 Kubernetes API 服务器。它将 API 服务器的 REST API 映射到本地端口，从而允许您在不直接暴露 API 服务器的情况下与其交互。</li>
+<li><strong>用途</strong>：通常用于访问 Kubernetes API 服务器，执行诸如查看集群状态、执行操作、监视事件等任务。</li>
+</ul></blockquote>
+<h2 id="minikube-外部访问可视化">minikube 外部访问可视化</h2>
+<blockquote>
+<p>注意开放端口:  <code>sudo iptables -A IN_public_allow -p tcp -w --dport 9898 -j ACCEPT</code></p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>kubectl proxy --port<span style="color:#f92672">=</span><span style="color:#ae81ff">9898</span> --address<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;10.220.10.50&#39;</span> --accept-hosts<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;^.*&#39;</span> &amp;
+</span></span></code></pre></div><h2 id="镜像">镜像</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>gcr.dockerproxy.com/kaniko-project/executor:debug
+</span></span></code></pre></div><h1 id="kaniko">kaniko</h1>
+<blockquote>
+<p>在本地登录dockerhub,命令:<code>docker login</code>,登录成功后会显示docker的config.json文件位置,一般为<code>~/.docker/config.json</code></p>
+<p><code>kubectl create secret generic kaniko-secret --from-file=~/.docker/config.json</code></p>
+<p>kubectl apply -f 下边yaml的文件,这种方式的每次都是需要执行不方便,下边的runner+kaniko是完全体</p>
+<p><code>k8s中配置使用效果更好</code></p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Pod</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">metadata</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">kaniko</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">spec</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">containers</span>:
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">kaniko</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">image</span>: <span style="color:#ae81ff">gcr.dockerproxy.com/kaniko-project/executor:latest</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">args</span>: [ <span style="color:#e6db74">&#34;--context=git://github.com/xxx/cicd.git&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;--destination=xxx/cicd:1.0&#34;</span>]
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">volumeMounts</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">kaniko-secret</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">mountPath</span>: <span style="color:#ae81ff">/kaniko/.docker</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">volumes</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">kaniko-secret</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">secret</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">secretName</span>: <span style="color:#ae81ff">kaniko-secret</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">items</span>:
+</span></span><span style="display:flex;"><span>          - <span style="color:#f92672">key</span>: <span style="color:#ae81ff">config.json</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">path</span>: <span style="color:#ae81ff">config.json</span>
+</span></span></code></pre></div><h1 id="runnerkaniko">runner+kaniko</h1>
+<h2 id="部署gitlab-runner">部署gitlab-runner</h2>
+<blockquote>
+<p>官方链接:https://docs.gitlab.com/runner/install/kubernetes.html#prerequisites</p>
+<p>helm安装:https://helm.sh/zh/docs/intro/install/</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>helm repo add gitlab https://charts.gitlab.io
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>helm show values gitlab/gitlab-runner &gt; values.yaml
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 去掉values.yaml里面的gitlabUrl 和 runnerRegistrationToken注释</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 在项目设置cicd runner注册页面找到对应的值写入即可,修改rbac:create为true</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 修改values.yaml中image镜像指定为: image = &#34;gcr.dockerproxy.com/kaniko-project/executor:debug&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>helm install --namespace default gitlab-runner -f ./values.yaml gitlab/gitlab-runner
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 删除使用</span>
+</span></span><span style="display:flex;"><span>helm delete --namespace default gitlab-runner
+</span></span></code></pre></div><h2 id="添加权限">添加权限</h2>
+<blockquote>
+<p>runner添加权限,创建yaml文件写入下边内容,执行<code>kubectl apply -f 文件位置</code></p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>apiVersion: rbac.authorization.k8s.io/v1
+</span></span><span style="display:flex;"><span>kind: <span style="color:#e6db74">&#34;ClusterRole&#34;</span>
+</span></span><span style="display:flex;"><span>metadata:
+</span></span><span style="display:flex;"><span>  name: gitlab-runner
+</span></span><span style="display:flex;"><span>  labels:
+</span></span><span style="display:flex;"><span>    app: gitlab-runner
+</span></span><span style="display:flex;"><span>rules:
+</span></span><span style="display:flex;"><span>  - apiGroups: <span style="color:#f92672">[</span><span style="color:#e6db74">&#34;&#34;</span><span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>    resources: <span style="color:#f92672">[</span><span style="color:#e6db74">&#34;*&#34;</span><span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>    verbs: <span style="color:#f92672">[</span><span style="color:#e6db74">&#34;*&#34;</span><span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>  - apiGroups: <span style="color:#f92672">[</span><span style="color:#e6db74">&#34;networking.k8s.io&#34;</span><span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>    resources: <span style="color:#f92672">[</span><span style="color:#e6db74">&#34;ingresses&#34;</span><span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>    verbs: <span style="color:#f92672">[</span><span style="color:#e6db74">&#34;*&#34;</span><span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>  - apiGroups: <span style="color:#f92672">[</span><span style="color:#e6db74">&#34;apps&#34;</span><span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>    resources: <span style="color:#f92672">[</span><span style="color:#e6db74">&#34;deployments&#34;</span><span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>    verbs: <span style="color:#f92672">[</span><span style="color:#e6db74">&#34;*&#34;</span><span style="color:#f92672">]</span>
+</span></span></code></pre></div><h2 id="示例">示例</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">before_script</span>:
+</span></span><span style="display:flex;"><span>  - <span style="color:#ae81ff">export SYSTEM_VERSION=$CI_COMMIT_REF_NAME-v4.0</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">stages</span>:
+</span></span><span style="display:flex;"><span>  - <span style="color:#ae81ff">build</span>
+</span></span><span style="display:flex;"><span>  - <span style="color:#ae81ff">deploy</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">build</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">stage</span>: <span style="color:#ae81ff">build</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">tags</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">k8s</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 不需要指定image,默认就是拉取kaniko在kaniko里面执行</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#  image:</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#    name: gcr.dockerproxy.com/kaniko-project/executor:v1.9.0-debug</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#    entrypoint: [&#34;&#34;]</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">script</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">export CI_REGISTRY_AUTH_API_IMAGE=&#34;loveyu233/cicd:${SYSTEM_VERSION}&#34;</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">export CI_DOCKERFILE=&#34;$CI_PROJECT_DIR/Dockerfile&#34;</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">export CI_REGISTRY_AUTH_API=&#34;https://index.docker.io/v1/&#34;</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">export CI_REGISTRY_USERNAME=&#34;xxx@gmail.com&#34;</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">export CI_REGISTRY_PASSWORD=&#34;xxxxxx&#34;</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">mkdir -p /kaniko/.docker</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">echo &#34;{\&#34;auths\&#34;:{\&#34;${CI_REGISTRY_AUTH_API}\&#34;:{\&#34;auth\&#34;:\&#34;$(printf &#34;%s:%s&#34; &#34;${CI_REGISTRY_USERNAME}&#34; &#34;${CI_REGISTRY_PASSWORD}&#34; | base64 | tr -d &#39;\n&#39;)\&#34;}}}&#34; &gt; /kaniko/.docker/config.json</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">/kaniko/executor --insecure-pull --insecure --context &#34;${CI_PROJECT_DIR}&#34; --dockerfile &#34;${CI_DOCKERFILE}&#34; --destination &#34;${CI_REGISTRY_AUTH_API_IMAGE}&#34;</span>
+</span></span></code></pre></div><h1 id="k8s-yaml文件">k8s Yaml文件</h1>
+<h2 id="pod">Pod</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#75715e"># 版本</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 资源类型</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Pod</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 数据</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">metadata</span>:
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e"># 在那个名称空间下创建这个pod</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">namespace</span>: <span style="color:#ae81ff">hello</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># pod的名称是什么</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">name</span>: <span style="color:#ae81ff">my-pod-redis</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 信息</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">spec</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">containers</span>:
+</span></span><span style="display:flex;"><span>    	<span style="color:#75715e"># 容器名称</span>
+</span></span><span style="display:flex;"><span>        - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">abcredis</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># 那个容器</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">image</span>: <span style="color:#ae81ff">redis</span>
+</span></span></code></pre></div><h2 id="deployment">deployment</h2>
+<blockquote>
+<p>apiVersion: apps/v1 表示使用的 Kubernetes API 版本是 apps/v1。
+kind: Deployment 表示定义了一个 Deployment 资源对象。
+metadata 用于定义资源对象的元数据，如标签和名称等。
+labels 是一个键值对集合，用于标识资源对象的属性。这里的 app: app1 表示将该 Deployment 标记为属于 &ldquo;app1&rdquo; 应用程序。
+name: app1 指定了该 Deployment 的名称为 &ldquo;app1&rdquo;。
+spec 用于定义资源对象的规格，即 Deployment 的具体配置。
+replicas: 3 表示要创建 3 个副本（Pod）。
+selector 是用于选择要管理的 Pod 的标签。
+matchLabels 是匹配 Pod 标签的条件，这里的 app: app1 表示只选择具有 &ldquo;app: app1&rdquo; 标签的 Pod。
+template 定义了要创建的 Pod 的模板。
+metadata 定义了 Pod 元数据，包括标签。
+labels 定义了 Pod 的标签，这里同样是 app: app1。
+spec 定义了 Pod 的规格。
+containers 定义了要在 Pod 中运行的容器列表。每个容器包含以下信息：
+name 定义了容器的名称，这里有两个容器，一个是名为 &ldquo;app1&rdquo; 的容器，另一个是名为 &ldquo;nginx&rdquo; 的容器。
+image 指定了容器使用的镜像。</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">apps/v1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Deployment</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">metadata</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">namespace</span>: <span style="color:#ae81ff">hello</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">name</span>: <span style="color:#ae81ff">my-deploy</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">spec</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">replicas</span>: <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">selector</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">matchLabels</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">app</span>: <span style="color:#ae81ff">hello-deploy</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">template</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">metadata</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">labels</span>:
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">app</span>: <span style="color:#ae81ff">hello-deploy</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">spec</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">containers</span>:
+</span></span><span style="display:flex;"><span>                - <span style="color:#f92672">image</span>: <span style="color:#ae81ff">redis</span>
+</span></span><span style="display:flex;"><span>                  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">h-d-p-redis</span>
+</span></span></code></pre></div><h2 id="service">Service</h2>
+<blockquote>
+<p>apiVersion: v1 表示使用的 Kubernetes API 版本是 v1。
+kind: Service 表示定义了一个 Service 资源对象。
+metadata 用于定义资源对象的元数据，包括标签和名称等。
+labels 是一个键值对集合，用于标识资源对象的属性。这里的 app: app1 表示将该 Service 标记为属于 &ldquo;app1&rdquo; 应用程序。
+name: app1 指定了该 Service 的名称为 &ldquo;app1&rdquo;。
+spec 用于定义资源对象的规格，即 Service 的具体配置。
+selector 定义了要与之关联的 Pod 的选择器，这里的 app: app1 表示只选择具有 &ldquo;app: app1&rdquo; 标签的 Pod。
+ports 定义了 Service 的端口转发规则。
+port: 8000 表示 Service 所监听的端口号是 8000。
+protocol: TCP 表示使用 TCP 协议。
+targetPort: 80 表示将请求转发到 Pod 内部的 80 端口上。</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Service</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">metadata</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">labels</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">app</span>: <span style="color:#ae81ff">app1</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">app1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">spec</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">selector</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">app</span>: <span style="color:#ae81ff">app1</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">ports</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#f92672">port</span>: <span style="color:#ae81ff">8000</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">protocol</span>: <span style="color:#ae81ff">TCP</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">targetPort</span>: <span style="color:#ae81ff">80</span>
+</span></span></code></pre></div><h1 id="deployment记录">deployment记录</h1>
+<blockquote>
+<h4 id="--record-新版本被弃用取而代之的是使用-annotate-加-kubernetesiochange-cause"><code>--record 新版本被弃用</code>,取而代之的是使用<code> annotate 加 kubernetes.io/change-cause</code></h4>
+<p><code>如果使用annotate则每次更新后都需要指定一次,不然会沿用上一次的annotate的变更描述</code></p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>user@practice ~<span style="color:#f92672">]</span>$ kubectl rollout history deployment/nginx
+</span></span><span style="display:flex;"><span>deployment.apps/nginx 
+</span></span><span style="display:flex;"><span>REVISION  CHANGE-CAUSE
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">2</span>         &lt;none&gt;
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">3</span>         &lt;none&gt;
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">4</span>         kubectl set image deployment/nginx nginx<span style="color:#f92672">=</span>nginx:1.16.1 --cluster<span style="color:#f92672">=</span>minikube --record<span style="color:#f92672">=</span>true
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>user@practice ~<span style="color:#f92672">]</span>$ kubectl set image deployment/nginx nginx<span style="color:#f92672">=</span>nginx:stable-alpine3.17
+</span></span><span style="display:flex;"><span>deployment.apps/nginx image updated
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>user@practice ~<span style="color:#f92672">]</span>$ kubectl annotate deployment/nginx kubernetes.io/change-cause<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;image updated to 3.17&#34;</span>
+</span></span><span style="display:flex;"><span>deployment.apps/nginx annotate
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>user@practice ~<span style="color:#f92672">]</span>$ kubectl rollout history deployment/nginx
+</span></span><span style="display:flex;"><span>deployment.apps/nginx 
+</span></span><span style="display:flex;"><span>REVISION  CHANGE-CAUSE
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">3</span>         &lt;none&gt;
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">4</span>         kubectl set image deployment/nginx nginx<span style="color:#f92672">=</span>nginx:1.16.1 --cluster<span style="color:#f92672">=</span>minikube --record<span style="color:#f92672">=</span>true
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">5</span>         image updated to 3.17
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>user@practice ~<span style="color:#f92672">]</span>$ kubectl set image deployment/nginx nginx<span style="color:#f92672">=</span>nginx:alpine3.18
+</span></span><span style="display:flex;"><span>deployment.apps/nginx image updated
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>user@practice ~<span style="color:#f92672">]</span>$ kubectl rollout history deployment/nginx
+</span></span><span style="display:flex;"><span>deployment.apps/nginx 
+</span></span><span style="display:flex;"><span>REVISION  CHANGE-CAUSE
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">3</span>         &lt;none&gt;
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">4</span>         kubectl set image deployment/nginx nginx<span style="color:#f92672">=</span>nginx:1.16.1 --cluster<span style="color:#f92672">=</span>minikube --record<span style="color:#f92672">=</span>true
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">5</span>         image updated to 3.17
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">6</span>         image updated to 3.17
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>user@practice ~<span style="color:#f92672">]</span>$ kubectl annotate deployment/nginx kubernetes.io/change-cause<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;image updated to 3.18&#34;</span>
+</span></span><span style="display:flex;"><span>deployment.apps/nginx annotate
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>user@practice ~<span style="color:#f92672">]</span>$ kubectl rollout history deployment/nginx
+</span></span><span style="display:flex;"><span>deployment.apps/nginx 
+</span></span><span style="display:flex;"><span>REVISION  CHANGE-CAUSE
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">3</span>         &lt;none&gt;
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">4</span>         kubectl set image deployment/nginx nginx<span style="color:#f92672">=</span>nginx:1.16.1 --cluster<span style="color:#f92672">=</span>minikube --record<span style="color:#f92672">=</span>true
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">5</span>         image updated to 3.17
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">6</span>         image updated to 3.18
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># 修改镜像</span>
+</span></span><span style="display:flex;"><span>kubectl set image deployment/nginx nginx<span style="color:#f92672">=</span>nginx:1.16.1
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 添加修改说明,每次修改都需要执行一次</span>
+</span></span><span style="display:flex;"><span>kubectl annotate deployment/nginx kubernetes.io/change-cause<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;image updated to 1.16.1&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># --record 被弃用不推荐,建议使用上一条来添加变更说明</span>
+</span></span><span style="display:flex;"><span>kubectl set image deployment/nginx nginx<span style="color:#f92672">=</span>nginx:1.16.1 --record
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 查看某一次的变更详情</span>
+</span></span><span style="display:flex;"><span>kubectl rollout history deployment/nginx --revision<span style="color:#f92672">=</span><span style="color:#ae81ff">5</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 回滚到上次</span>
+</span></span><span style="display:flex;"><span>kubectl rollout undo deployment/nginx
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 回滚到指定的版本</span>
+</span></span><span style="display:flex;"><span>kubectl rollout undo deployment/nginx --to-revision<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>
+</span></span></code></pre></div><ul class="pa0">
+  
+   <li class="list di">
+     <a href="/tags/gitlab/" class="link f5 grow br-pill ba ph3 pv2 mb2 dib black sans-serif no-underline">Gitlab</a>
+   </li>
+  
+   <li class="list di">
+     <a href="/tags/cicd/" class="link f5 grow br-pill ba ph3 pv2 mb2 dib black sans-serif no-underline">Cicd</a>
+   </li>
+  
+</ul>
+<div class="mt6 instapaper_ignoref">
+      
+      
+      </div>
+    </div>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white white-70 dn dib-ns pv2 ph3 no-underline" href="http://localhost:1313/" >
+    &copy;  loveyu233 2025 
+  </a>
+    <div><div class="ananke-socials"></div>
+</div>
+  </div>
+</footer>
+
+  </body>
+</html>

@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>pgsql | loveyu233</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="命令行
+-- 登录
+psql -U username -d dbname -h hostname
+
+-- 查看用户权限
+\du
+
+-- 查看有哪些库
+\l
+
+-- 切换库
+\c dbname
+
+-- 查看当前库有哪些表
+\dt
+用户管理
+
+登录权限（LOGIN）：允许角色登录到数据库。
+超级用户权限（SUPERUSER）：赋予角色超级用户权限，使其可以执行任何操作，包括修改系统表。
+创建数据库权限（CREATEDB）：允许角色创建新的数据库。
+创建角色权限（CREATEROLE）：允许角色创建新的数据库角色。
+创建临时表权限（TEMPORARY）：允许角色创建临时表。
+连接限制（CONNECTION LIMIT）：限制角色同时连接到数据库的最大数量。
+继承权限（INHERIT）：允许角色继承其他角色的权限。
+授权权限（GRANT）：允许角色授权给其他角色权限。
+修改其他角色权限（ALTER ANY ROLE）：允许角色修改其他角色的属性。
+删除其他角色权限（DROP ANY ROLE）：允许角色删除其他角色。
+超时限制（PASSWORD EXPIRY）：设置角色密码的过期时间。
+加密方式（ENCRYPTED）：指定角色密码是否加密存储。
+-- 创建用户
+create role 用户名 with superuser login password &#39;密码&#39;;
+
+-- 删除用户
+drop role 用户名;
+
+-- 修改用户密码
+alter role 用户名 with password &#39;新密码&#39;;
+
+REVOKE privilege_name ON object_name FROM username;
+如：
+# 撤销数据库权限
+revoke all privileges on database mydata from jinjin;
+# 撤销表权限
+revoke all privileges on all tables in schema public from jinjin;
+时区管理
+-- 显示当前数据库使用的时区
+show time zone ;
+
+-- 查看当前时间
+select now();
+
+-- 查看可以设置的时区有哪些
+select * from pg_timezone_names;
+
+-- 设置当前时区为PRC
+set timezone = &#39;PRC&#39;;
+
+-- 设置全部用户的时区
+alter role all set timezone = &#39;PRC&#39;;
+序列
+CREATE SEQUENCE my_sequence
+    START 1  序列从 1 开始
+    INCREMENT BY 1 每次递增 1
+    MINVALUE 1  序列的最小值是 1
+    MAXVALUE 10000 序列的最大值是 10000
+    CYCLE; 当序列到达最大值后，循环回到最小值
+
+-- 创建了一个名为 user_id_seq 的简单序列，未指定起始值或者增量等属性，默认情况下会从 1 开始，每次增加 1。
+create sequence user_id_seq;
+
+-- 将 user_id_seq 序列的所有权修改为 pgsql 用户。只有序列的所有者（或超级用户）可以修改序列的属性。
+alter sequence user_id_seq owner to pgsql;
+
+-- 指定了 user_id_seq 序列由 users.id 列拥有。这通常用于确保序列与特定表的列相关联，以便自动管理默认值。
+alter sequence user_id_seq owned by users.id;
+
+-- 将 users 表的 id 列设置默认值为 user_id_seq 序列的下一个值。这意味着每次插入新行时，如果不提供 id 列的值，则会自动使用序列生成的下一个值。
+alter table users alter column id set default nextval(&#39;user_id_seq&#39;::regclass);
+
+-- 向 users 表中插入一行数据，设置 username 列的值为 &#39;a&#39;。由于 id 列已经设置为序列 user_id_seq 的默认值，它会自动为 id 列生成一个递增的唯一值。
+select setval(&#39;user_id_seq&#39;,(select max(id) from users));
+错误码
+SQLSTATE 23505
+
+SQLSTATE 23505: 发生在尝试向数据库中插入一条记录时，违反了表中的唯一约束。例如，如果尝试插入一个已经在表中存在的唯一键值，就会触发 SQLSTATE 23505 错误。">
+    <meta name="generator" content="Hugo 0.147.7">
+    
+    
+    
+      <meta name="robots" content="noindex, nofollow">
+    
+    <meta name="author" content="loveyu">
+    
+
+    
+<link rel="stylesheet" href="/ananke/css/main.min.css" >
+
+
+
+
+    
+
+
+    
+      
+
+    
+
+    
+
+    
+      <link rel="canonical" href="http://localhost:1313/posts/databases/pgsql/">
+    
+
+    <meta property="og:url" content="http://localhost:1313/posts/databases/pgsql/">
+  <meta property="og:site_name" content="loveyu233">
+  <meta property="og:title" content="pgsql">
+  <meta property="og:description" content="命令行 -- 登录 psql -U username -d dbname -h hostname -- 查看用户权限 \du -- 查看有哪些库 \l -- 切换库 \c dbname -- 查看当前库有哪些表 \dt 用户管理 登录权限（LOGIN）：允许角色登录到数据库。 超级用户权限（SUPERUSER）：赋予角色超级用户权限，使其可以执行任何操作，包括修改系统表。 创建数据库权限（CREATEDB）：允许角色创建新的数据库。 创建角色权限（CREATEROLE）：允许角色创建新的数据库角色。 创建临时表权限（TEMPORARY）：允许角色创建临时表。 连接限制（CONNECTION LIMIT）：限制角色同时连接到数据库的最大数量。 继承权限（INHERIT）：允许角色继承其他角色的权限。 授权权限（GRANT）：允许角色授权给其他角色权限。 修改其他角色权限（ALTER ANY ROLE）：允许角色修改其他角色的属性。 删除其他角色权限（DROP ANY ROLE）：允许角色删除其他角色。 超时限制（PASSWORD EXPIRY）：设置角色密码的过期时间。 加密方式（ENCRYPTED）：指定角色密码是否加密存储。
+-- 创建用户 create role 用户名 with superuser login password &#39;密码&#39;; -- 删除用户 drop role 用户名; -- 修改用户密码 alter role 用户名 with password &#39;新密码&#39;; REVOKE privilege_name ON object_name FROM username; 如： # 撤销数据库权限 revoke all privileges on database mydata from jinjin; # 撤销表权限 revoke all privileges on all tables in schema public from jinjin; 时区管理 -- 显示当前数据库使用的时区 show time zone ; -- 查看当前时间 select now(); -- 查看可以设置的时区有哪些 select * from pg_timezone_names; -- 设置当前时区为PRC set timezone = &#39;PRC&#39;; -- 设置全部用户的时区 alter role all set timezone = &#39;PRC&#39;; 序列 CREATE SEQUENCE my_sequence START 1 序列从 1 开始 INCREMENT BY 1 每次递增 1 MINVALUE 1 序列的最小值是 1 MAXVALUE 10000 序列的最大值是 10000 CYCLE; 当序列到达最大值后，循环回到最小值 -- 创建了一个名为 user_id_seq 的简单序列，未指定起始值或者增量等属性，默认情况下会从 1 开始，每次增加 1。 create sequence user_id_seq; -- 将 user_id_seq 序列的所有权修改为 pgsql 用户。只有序列的所有者（或超级用户）可以修改序列的属性。 alter sequence user_id_seq owner to pgsql; -- 指定了 user_id_seq 序列由 users.id 列拥有。这通常用于确保序列与特定表的列相关联，以便自动管理默认值。 alter sequence user_id_seq owned by users.id; -- 将 users 表的 id 列设置默认值为 user_id_seq 序列的下一个值。这意味着每次插入新行时，如果不提供 id 列的值，则会自动使用序列生成的下一个值。 alter table users alter column id set default nextval(&#39;user_id_seq&#39;::regclass); -- 向 users 表中插入一行数据，设置 username 列的值为 &#39;a&#39;。由于 id 列已经设置为序列 user_id_seq 的默认值，它会自动为 id 列生成一个递增的唯一值。 select setval(&#39;user_id_seq&#39;,(select max(id) from users)); 错误码 SQLSTATE 23505 SQLSTATE 23505: 发生在尝试向数据库中插入一条记录时，违反了表中的唯一约束。例如，如果尝试插入一个已经在表中存在的唯一键值，就会触发 SQLSTATE 23505 错误。">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2022-11-24T19:38:37+08:00">
+    <meta property="article:modified_time" content="2022-11-24T19:38:37+08:00">
+    <meta property="article:tag" content="Pgsql">
+    <meta property="article:tag" content="Databases">
+
+  <meta itemprop="name" content="pgsql">
+  <meta itemprop="description" content="命令行 -- 登录 psql -U username -d dbname -h hostname -- 查看用户权限 \du -- 查看有哪些库 \l -- 切换库 \c dbname -- 查看当前库有哪些表 \dt 用户管理 登录权限（LOGIN）：允许角色登录到数据库。 超级用户权限（SUPERUSER）：赋予角色超级用户权限，使其可以执行任何操作，包括修改系统表。 创建数据库权限（CREATEDB）：允许角色创建新的数据库。 创建角色权限（CREATEROLE）：允许角色创建新的数据库角色。 创建临时表权限（TEMPORARY）：允许角色创建临时表。 连接限制（CONNECTION LIMIT）：限制角色同时连接到数据库的最大数量。 继承权限（INHERIT）：允许角色继承其他角色的权限。 授权权限（GRANT）：允许角色授权给其他角色权限。 修改其他角色权限（ALTER ANY ROLE）：允许角色修改其他角色的属性。 删除其他角色权限（DROP ANY ROLE）：允许角色删除其他角色。 超时限制（PASSWORD EXPIRY）：设置角色密码的过期时间。 加密方式（ENCRYPTED）：指定角色密码是否加密存储。
+-- 创建用户 create role 用户名 with superuser login password &#39;密码&#39;; -- 删除用户 drop role 用户名; -- 修改用户密码 alter role 用户名 with password &#39;新密码&#39;; REVOKE privilege_name ON object_name FROM username; 如： # 撤销数据库权限 revoke all privileges on database mydata from jinjin; # 撤销表权限 revoke all privileges on all tables in schema public from jinjin; 时区管理 -- 显示当前数据库使用的时区 show time zone ; -- 查看当前时间 select now(); -- 查看可以设置的时区有哪些 select * from pg_timezone_names; -- 设置当前时区为PRC set timezone = &#39;PRC&#39;; -- 设置全部用户的时区 alter role all set timezone = &#39;PRC&#39;; 序列 CREATE SEQUENCE my_sequence START 1 序列从 1 开始 INCREMENT BY 1 每次递增 1 MINVALUE 1 序列的最小值是 1 MAXVALUE 10000 序列的最大值是 10000 CYCLE; 当序列到达最大值后，循环回到最小值 -- 创建了一个名为 user_id_seq 的简单序列，未指定起始值或者增量等属性，默认情况下会从 1 开始，每次增加 1。 create sequence user_id_seq; -- 将 user_id_seq 序列的所有权修改为 pgsql 用户。只有序列的所有者（或超级用户）可以修改序列的属性。 alter sequence user_id_seq owner to pgsql; -- 指定了 user_id_seq 序列由 users.id 列拥有。这通常用于确保序列与特定表的列相关联，以便自动管理默认值。 alter sequence user_id_seq owned by users.id; -- 将 users 表的 id 列设置默认值为 user_id_seq 序列的下一个值。这意味着每次插入新行时，如果不提供 id 列的值，则会自动使用序列生成的下一个值。 alter table users alter column id set default nextval(&#39;user_id_seq&#39;::regclass); -- 向 users 表中插入一行数据，设置 username 列的值为 &#39;a&#39;。由于 id 列已经设置为序列 user_id_seq 的默认值，它会自动为 id 列生成一个递增的唯一值。 select setval(&#39;user_id_seq&#39;,(select max(id) from users)); 错误码 SQLSTATE 23505 SQLSTATE 23505: 发生在尝试向数据库中插入一条记录时，违反了表中的唯一约束。例如，如果尝试插入一个已经在表中存在的唯一键值，就会触发 SQLSTATE 23505 错误。">
+  <meta itemprop="datePublished" content="2022-11-24T19:38:37+08:00">
+  <meta itemprop="dateModified" content="2022-11-24T19:38:37+08:00">
+  <meta itemprop="wordCount" content="920">
+  <meta itemprop="keywords" content="Pgsql,Databases">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="pgsql">
+  <meta name="twitter:description" content="命令行 -- 登录 psql -U username -d dbname -h hostname -- 查看用户权限 \du -- 查看有哪些库 \l -- 切换库 \c dbname -- 查看当前库有哪些表 \dt 用户管理 登录权限（LOGIN）：允许角色登录到数据库。 超级用户权限（SUPERUSER）：赋予角色超级用户权限，使其可以执行任何操作，包括修改系统表。 创建数据库权限（CREATEDB）：允许角色创建新的数据库。 创建角色权限（CREATEROLE）：允许角色创建新的数据库角色。 创建临时表权限（TEMPORARY）：允许角色创建临时表。 连接限制（CONNECTION LIMIT）：限制角色同时连接到数据库的最大数量。 继承权限（INHERIT）：允许角色继承其他角色的权限。 授权权限（GRANT）：允许角色授权给其他角色权限。 修改其他角色权限（ALTER ANY ROLE）：允许角色修改其他角色的属性。 删除其他角色权限（DROP ANY ROLE）：允许角色删除其他角色。 超时限制（PASSWORD EXPIRY）：设置角色密码的过期时间。 加密方式（ENCRYPTED）：指定角色密码是否加密存储。
+-- 创建用户 create role 用户名 with superuser login password &#39;密码&#39;; -- 删除用户 drop role 用户名; -- 修改用户密码 alter role 用户名 with password &#39;新密码&#39;; REVOKE privilege_name ON object_name FROM username; 如： # 撤销数据库权限 revoke all privileges on database mydata from jinjin; # 撤销表权限 revoke all privileges on all tables in schema public from jinjin; 时区管理 -- 显示当前数据库使用的时区 show time zone ; -- 查看当前时间 select now(); -- 查看可以设置的时区有哪些 select * from pg_timezone_names; -- 设置当前时区为PRC set timezone = &#39;PRC&#39;; -- 设置全部用户的时区 alter role all set timezone = &#39;PRC&#39;; 序列 CREATE SEQUENCE my_sequence START 1 序列从 1 开始 INCREMENT BY 1 每次递增 1 MINVALUE 1 序列的最小值是 1 MAXVALUE 10000 序列的最大值是 10000 CYCLE; 当序列到达最大值后，循环回到最小值 -- 创建了一个名为 user_id_seq 的简单序列，未指定起始值或者增量等属性，默认情况下会从 1 开始，每次增加 1。 create sequence user_id_seq; -- 将 user_id_seq 序列的所有权修改为 pgsql 用户。只有序列的所有者（或超级用户）可以修改序列的属性。 alter sequence user_id_seq owner to pgsql; -- 指定了 user_id_seq 序列由 users.id 列拥有。这通常用于确保序列与特定表的列相关联，以便自动管理默认值。 alter sequence user_id_seq owned by users.id; -- 将 users 表的 id 列设置默认值为 user_id_seq 序列的下一个值。这意味着每次插入新行时，如果不提供 id 列的值，则会自动使用序列生成的下一个值。 alter table users alter column id set default nextval(&#39;user_id_seq&#39;::regclass); -- 向 users 表中插入一行数据，设置 username 列的值为 &#39;a&#39;。由于 id 列已经设置为序列 user_id_seq 的默认值，它会自动为 id 列生成一个递增的唯一值。 select setval(&#39;user_id_seq&#39;,(select max(id) from users)); 错误码 SQLSTATE 23505 SQLSTATE 23505: 发生在尝试向数据库中插入一条记录时，违反了表中的唯一约束。例如，如果尝试插入一个已经在表中存在的唯一键值，就会触发 SQLSTATE 23505 错误。">
+
+	
+  </head><body class="ma0 avenir bg-near-white development">
+
+    
+   
+  
+
+  <header>
+    <div class="bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l center items-center justify-between">
+    <a href="/" class="f3 fw2 hover-white white-90 dib no-underline">
+      
+        loveyu233
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      <div class="ananke-socials"></div>
+
+    </div>
+  </div>
+</nav>
+
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  
+  <article class="flex-l mw8 center ph3 flex-wrap justify-between">
+    <header class="mt4 w-100">
+      <aside class="instapaper_ignoref b helvetica tracked ttu">
+          
+        databases
+      </aside><div id="sharing" class="mt3 ananke-socials"></div>
+<h1 class="f1 athelas mt3 mb1">pgsql</h1>
+      
+      <p class="tracked"><strong>loveyu</strong>
+      </p>
+      
+      
+      
+      <time class="f6 mv4 dib tracked" datetime="2022-11-24T19:38:37+08:00">November 24, 2022</time>
+      
+
+      
+      
+    </header>
+    <div class="nested-copy-line-height lh-copy serif f4 nested-links mid-gray pr4-l w-two-thirds-l"><h1 id="命令行">命令行</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#75715e">-- 登录
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>psql <span style="color:#f92672">-</span>U username <span style="color:#f92672">-</span>d dbname <span style="color:#f92672">-</span>h hostname
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 查看用户权限
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#960050;background-color:#1e0010">\</span>du
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 查看有哪些库
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#960050;background-color:#1e0010">\</span>l
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 切换库
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#960050;background-color:#1e0010">\</span><span style="color:#66d9ef">c</span> dbname
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 查看当前库有哪些表
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#960050;background-color:#1e0010">\</span>dt
+</span></span></code></pre></div><h1 id="用户管理">用户管理</h1>
+<blockquote>
+<p>登录权限（LOGIN）：允许角色登录到数据库。
+超级用户权限（SUPERUSER）：赋予角色超级用户权限，使其可以执行任何操作，包括修改系统表。
+创建数据库权限（CREATEDB）：允许角色创建新的数据库。
+创建角色权限（CREATEROLE）：允许角色创建新的数据库角色。
+创建临时表权限（TEMPORARY）：允许角色创建临时表。
+连接限制（CONNECTION LIMIT）：限制角色同时连接到数据库的最大数量。
+继承权限（INHERIT）：允许角色继承其他角色的权限。
+授权权限（GRANT）：允许角色授权给其他角色权限。
+修改其他角色权限（ALTER ANY ROLE）：允许角色修改其他角色的属性。
+删除其他角色权限（DROP ANY ROLE）：允许角色删除其他角色。
+超时限制（PASSWORD EXPIRY）：设置角色密码的过期时间。
+加密方式（ENCRYPTED）：指定角色密码是否加密存储。</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#75715e">-- 创建用户
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">create</span> <span style="color:#66d9ef">role</span> <span style="color:#960050;background-color:#1e0010">用户名</span> <span style="color:#66d9ef">with</span> superuser login password <span style="color:#e6db74">&#39;密码&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 删除用户
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">drop</span> <span style="color:#66d9ef">role</span> <span style="color:#960050;background-color:#1e0010">用户名</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 修改用户密码
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">alter</span> <span style="color:#66d9ef">role</span> <span style="color:#960050;background-color:#1e0010">用户名</span> <span style="color:#66d9ef">with</span> password <span style="color:#e6db74">&#39;新密码&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">REVOKE</span> privilege_name <span style="color:#66d9ef">ON</span> object_name <span style="color:#66d9ef">FROM</span> username;
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">如：</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">#</span> <span style="color:#960050;background-color:#1e0010">撤销数据库权限</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">revoke</span> <span style="color:#66d9ef">all</span> <span style="color:#66d9ef">privileges</span> <span style="color:#66d9ef">on</span> <span style="color:#66d9ef">database</span> mydata <span style="color:#66d9ef">from</span> jinjin;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">#</span> <span style="color:#960050;background-color:#1e0010">撤销表权限</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">revoke</span> <span style="color:#66d9ef">all</span> <span style="color:#66d9ef">privileges</span> <span style="color:#66d9ef">on</span> <span style="color:#66d9ef">all</span> tables <span style="color:#66d9ef">in</span> <span style="color:#66d9ef">schema</span> <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">from</span> jinjin;
+</span></span></code></pre></div><h1 id="时区管理">时区管理</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#75715e">-- 显示当前数据库使用的时区
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">show</span> time <span style="color:#66d9ef">zone</span> ;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 查看当前时间
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">select</span> now();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 查看可以设置的时区有哪些
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">select</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">from</span> pg_timezone_names;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 设置当前时区为PRC
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">set</span> timezone <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;PRC&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 设置全部用户的时区
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">alter</span> <span style="color:#66d9ef">role</span> <span style="color:#66d9ef">all</span> <span style="color:#66d9ef">set</span> timezone <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;PRC&#39;</span>;
+</span></span></code></pre></div><h1 id="序列">序列</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">CREATE</span> SEQUENCE my_sequence
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">START</span> <span style="color:#ae81ff">1</span>  <span style="color:#960050;background-color:#1e0010">序列从</span> <span style="color:#ae81ff">1</span> <span style="color:#960050;background-color:#1e0010">开始</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">INCREMENT</span> <span style="color:#66d9ef">BY</span> <span style="color:#ae81ff">1</span> <span style="color:#960050;background-color:#1e0010">每次递增</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">MINVALUE</span> <span style="color:#ae81ff">1</span>  <span style="color:#960050;background-color:#1e0010">序列的最小值是</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">MAXVALUE</span> <span style="color:#ae81ff">10000</span> <span style="color:#960050;background-color:#1e0010">序列的最大值是</span> <span style="color:#ae81ff">10000</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">CYCLE</span>; <span style="color:#960050;background-color:#1e0010">当序列到达最大值后，循环回到最小值</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 创建了一个名为 user_id_seq 的简单序列，未指定起始值或者增量等属性，默认情况下会从 1 开始，每次增加 1。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">create</span> sequence user_id_seq;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 将 user_id_seq 序列的所有权修改为 pgsql 用户。只有序列的所有者（或超级用户）可以修改序列的属性。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">alter</span> sequence user_id_seq <span style="color:#66d9ef">owner</span> <span style="color:#66d9ef">to</span> pgsql;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 指定了 user_id_seq 序列由 users.id 列拥有。这通常用于确保序列与特定表的列相关联，以便自动管理默认值。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">alter</span> sequence user_id_seq owned <span style="color:#66d9ef">by</span> users.id;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 将 users 表的 id 列设置默认值为 user_id_seq 序列的下一个值。这意味着每次插入新行时，如果不提供 id 列的值，则会自动使用序列生成的下一个值。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">alter</span> <span style="color:#66d9ef">table</span> users <span style="color:#66d9ef">alter</span> <span style="color:#66d9ef">column</span> id <span style="color:#66d9ef">set</span> <span style="color:#66d9ef">default</span> nextval(<span style="color:#e6db74">&#39;user_id_seq&#39;</span>::regclass);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 向 users 表中插入一行数据，设置 username 列的值为 &#39;a&#39;。由于 id 列已经设置为序列 user_id_seq 的默认值，它会自动为 id 列生成一个递增的唯一值。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">select</span> setval(<span style="color:#e6db74">&#39;user_id_seq&#39;</span>,(<span style="color:#66d9ef">select</span> <span style="color:#66d9ef">max</span>(id) <span style="color:#66d9ef">from</span> users));
+</span></span></code></pre></div><h1 id="错误码">错误码</h1>
+<h2 id="sqlstate-23505">SQLSTATE 23505</h2>
+<blockquote>
+<p><code>SQLSTATE 23505</code>: 发生在尝试向数据库中插入一条记录时，违反了表中的唯一约束。例如，如果尝试插入一个已经在表中存在的唯一键值，就会触发 SQLSTATE 23505 错误。</p>
+<p>例如在使用gorm初始化后添加默认数据时表内已经有这条数据就会爆这个错误,只需判断是这个错误则忽略即可</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">if</span> len(<span style="color:#a6e22e">defaultRoles</span>) &gt; <span style="color:#a6e22e">total</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">item</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">defaultRoles</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">Create</span>(<span style="color:#a6e22e">item</span>).<span style="color:#a6e22e">Error</span>; <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> !<span style="color:#a6e22e">strings</span>.<span style="color:#a6e22e">Contains</span>(<span style="color:#a6e22e">err</span>.<span style="color:#a6e22e">Error</span>(), <span style="color:#e6db74">&#34;SQLSTATE 23505&#34;</span>) {
+</span></span><span style="display:flex;"><span>                panic(<span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">pg</span>.<span style="color:#a6e22e">Client</span>.<span style="color:#a6e22e">Exec</span>(<span style="color:#e6db74">`SELECT setval(&#39;roles_id_seq&#39;, (SELECT MAX(id) FROM roles))`</span>).<span style="color:#a6e22e">Error</span>; <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">logrus</span>.<span style="color:#a6e22e">Panicf</span>(<span style="color:#e6db74">&#34;reset roles_id_seq err: %v&#34;</span>, <span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="sqlstate-42723">SQLSTATE 42723</h2>
+<blockquote>
+<p><code>SQLSTATE 42723</code>: 创建一个已存在的函数</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> (
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">err</span> <span style="color:#66d9ef">error</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">sql</span> = <span style="color:#e6db74">`CREATE FUNCTION array_intersect(anyarray, anyarray)
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">RETURNS anyarray
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">language sql
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">as $FUNCTION$
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SELECT ARRAY(
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    SELECT UNNEST($1)
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    INTERSECT
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    SELECT UNNEST($2)
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">);
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">$FUNCTION$;`</span>
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">Exec</span>(<span style="color:#a6e22e">sql</span>).<span style="color:#a6e22e">Error</span>; <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> !<span style="color:#a6e22e">strings</span>.<span style="color:#a6e22e">Contains</span>(<span style="color:#a6e22e">err</span>.<span style="color:#a6e22e">Error</span>(), <span style="color:#e6db74">&#34;SQLSTATE 42723&#34;</span>) {
+</span></span><span style="display:flex;"><span>        panic(<span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="关键字">关键字</h1>
+<h2 id="any">any</h2>
+<blockquote>
+<p>返回any数组内满足全部条件的数据</p>
+<p>例如下面sql语句就相当于,遍历any的数组然后判断满足uuid = array[i] 且 user_id = 1 且 view = true 的数据</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">select</span> <span style="color:#f92672">*</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">from</span> test
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">where</span> user_id <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span> <span style="color:#66d9ef">and</span> uuid <span style="color:#f92672">=</span> <span style="color:#66d9ef">any</span> (array [<span style="color:#ae81ff">1001</span>,<span style="color:#ae81ff">1002</span>,<span style="color:#ae81ff">1003</span>,<span style="color:#ae81ff">1004</span>]) <span style="color:#66d9ef">and</span> <span style="color:#66d9ef">view</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span>;
+</span></span></code></pre></div><h2 id="conflict">conflict</h2>
+<blockquote>
+<p><code>ON CONFLICT</code> 是用于处理插入数据时发生唯一性冲突的关键字。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">INSERT</span> <span style="color:#66d9ef">INTO</span> <span style="color:#66d9ef">table_name</span> (column1, column2, ...)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">VALUES</span> (value1, value2, ...)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">ON</span> CONFLICT (conflict_target) <span style="color:#66d9ef">DO</span> <span style="color:#66d9ef">UPDATE</span> <span style="color:#66d9ef">SET</span> column1 <span style="color:#f92672">=</span> value1, column2 <span style="color:#f92672">=</span> value2, ...
+</span></span></code></pre></div><p><strong>conflict_target</strong>：指定可能引起唯一性冲突的列或约束，可以是单个列名或列名的组合，也可以是约束名称。</p>
+<p>处理方式:</p>
+<ul>
+<li><code>DO NOTHING</code>：当发生冲突时不执行任何操作。</li>
+<li><code>DO UPDATE SET column1 = value1, column2 = value2, ...</code>：当发生冲突时执行更新操作，将指定列更新为相应的值</li>
+</ul>
+<p>示例:</p>
+<ul>
+<li>INSERT INTO users (id, name) VALUES (1, &lsquo;Alice&rsquo;) ON CONFLICT (id) DO UPDATE SET name = &lsquo;Alice&rsquo;;</li>
+<li>如果 <code>users</code> 表中已存在 <code>id</code> 为 1 的记录，那么将更新该记录的 <code>name</code> 为 &lsquo;Alice&rsquo;；如果不存在，则插入新的记录。</li>
+<li>INSERT INTO users (id, name) VALUES (1, &lsquo;Alice&rsquo;) ON CONFLICT (id) DO NOTHING;</li>
+<li>如果<code>id</code>为1的记录已存在，则<code>不执行任何操作</code>；如果不存在，则插入新记录</li>
+</ul></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">// 向 `sonar_contact_logs` 表中插入数据，如果 `(user_id, uuid)` 存在冲突（即已存在对应记录），则执行更新操作将 `view` 字段设置为 `true`。如果 `(user_id, uuid)` 不存在冲突，则插入新的记录。具体的值会通过占位符 `?` 动态传入。</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">errors</span>.<span style="color:#a6e22e">Join</span>(<span style="color:#a6e22e">tx</span>.
+</span></span><span style="display:flex;"><span>					<span style="color:#a6e22e">Clauses</span>(<span style="color:#a6e22e">clause</span>.<span style="color:#a6e22e">OnConflict</span>{
+</span></span><span style="display:flex;"><span>						<span style="color:#a6e22e">Columns</span>: []<span style="color:#a6e22e">clause</span>.<span style="color:#a6e22e">Column</span>{{<span style="color:#a6e22e">Name</span>: <span style="color:#e6db74">&#34;user_id&#34;</span>}, {<span style="color:#a6e22e">Name</span>: <span style="color:#e6db74">&#34;uuid&#34;</span>}},
+</span></span><span style="display:flex;"><span>						<span style="color:#a6e22e">DoUpdates</span>: <span style="color:#a6e22e">clause</span>.<span style="color:#a6e22e">Assignments</span>(<span style="color:#66d9ef">map</span>[<span style="color:#66d9ef">string</span>]<span style="color:#66d9ef">any</span>{
+</span></span><span style="display:flex;"><span>							<span style="color:#e6db74">&#34;view&#34;</span>: <span style="color:#66d9ef">true</span>,
+</span></span><span style="display:flex;"><span>						}),
+</span></span><span style="display:flex;"><span>					}).
+</span></span><span style="display:flex;"><span>					<span style="color:#a6e22e">Create</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">model</span>.<span style="color:#a6e22e">SonarContactLog</span>{
+</span></span><span style="display:flex;"><span>						<span style="color:#a6e22e">UserId</span>:   <span style="color:#a6e22e">op</span>.<span style="color:#a6e22e">Id</span>,
+</span></span><span style="display:flex;"><span>						<span style="color:#a6e22e">Username</span>: <span style="color:#a6e22e">op</span>.<span style="color:#a6e22e">Username</span>,
+</span></span><span style="display:flex;"><span>						<span style="color:#a6e22e">Uuid</span>:     <span style="color:#a6e22e">newList</span>[<span style="color:#a6e22e">idx</span>],
+</span></span><span style="display:flex;"><span>						<span style="color:#a6e22e">View</span>:     <span style="color:#66d9ef">true</span>,
+</span></span><span style="display:flex;"><span>					}).<span style="color:#a6e22e">Error</span>)
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 对应的sql语句</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">sql</span> <span style="color:#f92672">:=</span> <span style="color:#e6db74">&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">INSERT INTO sonar_contact_logs (user_id, username, uuid, view)
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">VALUES (?, ?, ?, ?)
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">ON CONFLICT (user_id, uuid) DO UPDATE SET view = true;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;</span>
+</span></span></code></pre></div><h2 id="like--ilike--">Like / iLike / ~</h2>
+<blockquote>
+<p><code>~ 和 LIKE 和 ILIKE</code> 操作符可以<strong>模糊匹配字符串</strong>，LIKE是一般用法，ILIKE匹配时则<strong>不区分字符串的大小写，~</strong> 波浪号则可以使用<strong>正则匹配</strong></p></blockquote>
+<h2 id="josnb">JOSNB</h2>
+<blockquote>
+<ol>
+<li><strong>存储格式</strong>：</li>
+</ol>
+<ul>
+<li>json数据类型存储输入文本的精准拷贝，即原始的JSON文本格式，保留了语法上不明显的空格和JSON对象内部的键的顺序。</li>
+<li>jsonb数据类型则存储在一种分解好的二进制格式中，不保留原始JSON文本的空格和键的顺序。</li>
+</ul>
+<ol start="2">
+<li><strong>处理效率</strong>：</li>
+</ol>
+<ul>
+<li>json类型在处理时需要每次重新解析输入文本，因此在处理速度上较慢。</li>
+<li>jsonb类型由于存储在二进制格式中，不需要解析，因此在处理速度上更快。</li>
+</ul>
+<ol start="3">
+<li><strong>索引支持</strong>：</li>
+</ol>
+<ul>
+<li>json类型在列上无法直接创建索引，但可以在列上建函数索引。</li>
+<li>jsonb类型的列上可以直接创建索引，并且支持GIN索引，这可以高效地从jsonb内部的key/value中搜索数据。</li>
+</ul>
+<ol start="4">
+<li><strong>数据保留特性</strong>：</li>
+</ol>
+<ul>
+<li>json类型保留重复的对象键，所有的键/值对都会被保留。</li>
+<li>jsonb类型不保留重复的对象键，如果在输入中指定了重复的键，只有最后一个值会被保留。</li>
+</ul></blockquote>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">操作符</th>
+          <th style="text-align: left">右操作数类型</th>
+          <th style="text-align: left">描述</th>
+          <th style="text-align: left">例子</th>
+          <th style="text-align: left">例子结果</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">-&gt;</td>
+          <td style="text-align: left">int</td>
+          <td style="text-align: left">获得 JSON 数组元素（索引从 0 开始，负整数结束）</td>
+          <td style="text-align: left">‘[{“a”:“foo”},{“b”:“bar”},{“c”:“baz”}]’::json-&gt;2</td>
+          <td style="text-align: left">{“c”:“baz”}</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">-&gt;</td>
+          <td style="text-align: left">text</td>
+          <td style="text-align: left">通过键获得 JSON 对象域</td>
+          <td style="text-align: left">‘{“a”: {“b”:“foo”}}’::json-&gt;‘a’</td>
+          <td style="text-align: left">{“b”:“foo”}</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">-&raquo;</td>
+          <td style="text-align: left">int</td>
+          <td style="text-align: left">以文本形式获得 JSON 数组元素</td>
+          <td style="text-align: left">‘[1,2,3]’::json-&raquo;2</td>
+          <td style="text-align: left">3</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">-&raquo;</td>
+          <td style="text-align: left">text</td>
+          <td style="text-align: left">以文本形式获得 JSON 对象域</td>
+          <td style="text-align: left">‘{“a”:1,“b”:2}’::json-&raquo;‘b’</td>
+          <td style="text-align: left">2</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">#&gt;</td>
+          <td style="text-align: left">text[]</td>
+          <td style="text-align: left">获取在指定路径的 JSON 对象</td>
+          <td style="text-align: left">‘{“a”: {“b”:{“c”: “foo”}}}’::json#&gt;‘{a,b}’</td>
+          <td style="text-align: left">{“c”: “foo”}</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">#&raquo;</td>
+          <td style="text-align: left">text[]</td>
+          <td style="text-align: left">以文本形式获取在指定路径的 JSON 对象</td>
+          <td style="text-align: left">‘{“a”:[1,2,3],“b”:[4,5,6]}’::json#&raquo;‘{a,2}’</td>
+          <td style="text-align: left">3</td>
+      </tr>
+  </tbody>
+</table>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">select</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">from</span> tags <span style="color:#66d9ef">where</span> <span style="color:#e6db74">&#39;a&#39;</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">any</span> (ids);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">select</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">from</span> tags <span style="color:#66d9ef">where</span> name <span style="color:#f92672">-&gt;&gt;</span> <span style="color:#e6db74">&#39;name&#39;</span> <span style="color:#66d9ef">like</span> <span style="color:#e6db74">&#39;%a%&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">select</span> <span style="color:#f92672">*</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">from</span> tags
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">where</span> name <span style="color:#f92672">-&gt;</span> <span style="color:#e6db74">&#39;one&#39;</span> <span style="color:#f92672">-&gt;&gt;</span> <span style="color:#e6db74">&#39;two&#39;</span> <span style="color:#66d9ef">like</span> <span style="color:#e6db74">&#39;%a%&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">select</span> jsonb_array_length(name <span style="color:#f92672">-&gt;</span> <span style="color:#e6db74">&#39;arr&#39;</span>) <span style="color:#66d9ef">as</span> len
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">from</span> tags;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">//</span> <span style="color:#960050;background-color:#1e0010">{</span><span style="color:#e6db74">&#34;arr&#34;</span>: [<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">5</span>], <span style="color:#e6db74">&#34;one&#34;</span>: <span style="color:#960050;background-color:#1e0010">{</span><span style="color:#e6db74">&#34;two&#34;</span>: <span style="color:#e6db74">&#34;1234&#34;</span><span style="color:#960050;background-color:#1e0010">}</span>, <span style="color:#e6db74">&#34;name&#34;</span>: <span style="color:#66d9ef">null</span>, <span style="color:#e6db74">&#34;test&#34;</span>: <span style="color:#e6db74">&#34;abc&#34;</span><span style="color:#960050;background-color:#1e0010">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">//</span> jsonb_set <span style="color:#960050;background-color:#1e0010">有则更新没有添加</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">update</span> tags <span style="color:#66d9ef">set</span> name <span style="color:#f92672">=</span> jsonb_set(name,<span style="color:#e6db74">&#39;{name}&#39;</span>,<span style="color:#e6db74">&#39;&#34;lisi&#34;&#39;</span>) <span style="color:#66d9ef">where</span> id <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">update</span> tags <span style="color:#66d9ef">set</span> name <span style="color:#f92672">=</span> jsonb_set(name,<span style="color:#e6db74">&#39;{one,two}&#39;</span>,<span style="color:#e6db74">&#39;&#34;1234&#34;&#39;</span>) <span style="color:#66d9ef">where</span> id <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">select</span> tags.name <span style="color:#f92672">-&gt;</span> <span style="color:#e6db74">&#39;arr&#39;</span> <span style="color:#66d9ef">from</span> tags;
+</span></span></code></pre></div><h2 id="array">Array</h2>
+<table>
+  <thead>
+      <tr>
+          <th>操作符</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>=	等于	ARRAY[1,2,3] = ARRAY[1,2,3]	true</td>
+      </tr>
+      <tr>
+          <td>&lt;&gt;	不等于	ARRAY[1,2,3] &lt;&gt; ARRAY[1,2,4]	true</td>
+      </tr>
+      <tr>
+          <td>&lt;	小于	ARRAY[1,2,3] &lt; ARRAY[1,2,4]	true</td>
+      </tr>
+      <tr>
+          <td>&gt;	大于	ARRAY[1,4,3] &gt; ARRAY[1,2,4]	true</td>
+      </tr>
+      <tr>
+          <td>&lt;=	小于或等于	ARRAY[1,2,3] &lt;= ARRAY[1,2,3]	true</td>
+      </tr>
+      <tr>
+          <td>&gt;=	大于或等于	ARRAY[1,4,3] &gt;= ARRAY[1,4,3]	true</td>
+      </tr>
+      <tr>
+          <td>@&gt;	包含	ARRAY[1,4,3] @&gt; ARRAY[3,1]	true</td>
+      </tr>
+      <tr>
+          <td>&lt;@	被包含于	ARRAY[2,7] &lt;@ ARRAY[1,7,4,2,6]	true</td>
+      </tr>
+      <tr>
+          <td>&amp;&amp;	重叠(有共同元素)	ARRAY[1,4,3] &amp;&amp; ARRAY[2,1]	true</td>
+      </tr>
+      <tr>
+          <td>||         数组与数组连接	ARRAY[1,2,3]  || ARRAY[4,5,6]	{1,2,3,4,5,6}</td>
+      </tr>
+  </tbody>
+</table>
+<p>array_append	向数组的末尾添加元素	array_append(ARRAY[1,2], 3)	{1,2,3}
+array_prepend	向数组的开头添加函数	array_prepend(1, ARRAY[2,3])	{1,2,3}
+array_cat	连接两个数组	array_cat(ARRAY[1,2,3], ARRAY[4,5])	{1,2,3,4,5}
+array_replace	用新值替换每个等于给定值的数组元素	array_replace(ARRAY[1,2,5,4], 5, 3)	{1,2,3,4}
+array_remove	删除某个给定值的数组元素	array_remove(ARRAY[1,2,3,4],4)	{1,2,3}
+[start:end]	通过下标范围数组元素	select (ARRAY[‘a’,‘b’,‘c’,‘d’])[1:2]	{a,b}
+array_position	数组中指定元素出现的位置	array_position(ARRAY[1,8,3,7], 8)	2
+array_dims	返回数组维数的文本表示	array_dims(ARRAY[[1,2,3], [4,5,6]])	[1:2][1:3]
+array_lower	返回数组维数的下界	array_lower(ARRAY[1,2,3,4], 1)	1
+array_upper	返回数组维数的上界	array_upper(ARRAY[1,2,3,4], 1)	4
+array_ndims	返回数组的维数	array_ndims(ARRAY[[1,2,3], [4,5,6]])	2
+array_length	返回数组维度的长度	array_length(array[1,2,3], 1)	3
+cardinality	返回数组中的总元素数量，如果数组是空的则为0	cardinality(ARRAY[1,2,3,5])	4
+array_to_string	将数组转换为字符串，使用分隔符连接数组元素	select array_to_string(ARRAY[1, 2, 3], ‘,’)	1,2,3
+string_to_array	使用指定的分隔符把字符串分隔成数组元素	select string_to_array(‘a,b,c’,‘,’)	{a,b,c}
+array_agg	把多个值合并到一个数组中	SELECT id, array_agg(label) FROM t_label group by id	{label1,label2}
+unnest	分解一个数组为一组行	select unnest(ARRAY[1,2,3])	1     2    3</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#75715e">-- 添加
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">UPDATE</span> messages <span style="color:#66d9ef">SET</span> status <span style="color:#f92672">=</span> status <span style="color:#f92672">||</span> <span style="color:#e6db74">&#39;{uuid1,uuid2}&#39;</span> <span style="color:#66d9ef">WHERE</span> id <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">update</span> messages <span style="color:#66d9ef">SET</span> status <span style="color:#f92672">=</span> array_append(status,<span style="color:#e6db74">&#39;uuid3&#39;</span>) <span style="color:#66d9ef">where</span> id <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 删除
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">UPDATE</span> messages <span style="color:#66d9ef">SET</span> cat_user_ids <span style="color:#f92672">=</span> array_remove(cat_user_ids, <span style="color:#e6db74">&#39;3&#39;</span>) <span style="color:#66d9ef">WHERE</span> id <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 判断元素是否在某一个字段内
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">select</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">from</span> messages <span style="color:#66d9ef">where</span> <span style="color:#e6db74">&#39;1&#39;</span>::text <span style="color:#f92672">=</span> <span style="color:#66d9ef">any</span>(cat_user_ids);
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">select</span> <span style="color:#66d9ef">version</span>();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">select</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">from</span> tags <span style="color:#66d9ef">where</span> array[<span style="color:#e6db74">&#39;a&#39;</span>]<span style="color:#f92672">&lt;@</span> ids;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">alter</span> <span style="color:#66d9ef">table</span> tags <span style="color:#66d9ef">add</span> <span style="color:#66d9ef">column</span> ns text[];
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">alter</span> <span style="color:#66d9ef">table</span> tags <span style="color:#66d9ef">alter</span> <span style="color:#66d9ef">column</span> ns <span style="color:#66d9ef">type</span> text, <span style="color:#66d9ef">alter</span> <span style="color:#66d9ef">column</span> <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">set</span> <span style="color:#66d9ef">default</span> <span style="color:#e6db74">&#39;default&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">alter</span> <span style="color:#66d9ef">table</span> tags <span style="color:#66d9ef">rename</span> <span style="color:#66d9ef">column</span> ns <span style="color:#66d9ef">to</span> <span style="color:#66d9ef">new</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">alter</span> <span style="color:#66d9ef">table</span> tags <span style="color:#66d9ef">drop</span> <span style="color:#66d9ef">column</span> ns;
+</span></span></code></pre></div><ul class="pa0">
+  
+   <li class="list di">
+     <a href="/tags/pgsql/" class="link f5 grow br-pill ba ph3 pv2 mb2 dib black sans-serif no-underline">Pgsql</a>
+   </li>
+  
+   <li class="list di">
+     <a href="/tags/databases/" class="link f5 grow br-pill ba ph3 pv2 mb2 dib black sans-serif no-underline">Databases</a>
+   </li>
+  
+</ul>
+<div class="mt6 instapaper_ignoref">
+      
+      
+      </div>
+    </div>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+  <div class="bg-light-gray pa3 nested-list-reset nested-copy-line-height nested-links">
+    <p class="f5 b mb3">Related</p>
+    <ul class="pa0 list">
+	   
+	     <li  class="mb2">
+          <a href="/posts/databases/mysql%E6%97%A5%E5%BF%97/">mysql日志</a>
+        </li>
+	    
+    </ul>
+</div>
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white white-70 dn dib-ns pv2 ph3 no-underline" href="http://localhost:1313/" >
+    &copy;  loveyu233 2025 
+  </a>
+    <div><div class="ananke-socials"></div>
+</div>
+  </div>
+</footer>
+
+  </body>
+</html>

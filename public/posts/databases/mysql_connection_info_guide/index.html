@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>查询mysql连接信息 | loveyu233</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="MySQL 连接信息查看完整指南
+概述
+在MySQL数据库管理中，查看当前连接信息是监控数据库性能、排查问题和管理连接的重要手段。本文档详细介绍了各种查看连接信息的SQL命令及其返回结果的含义。
+常用查看连接信息的SQL命令
+1. 基础连接查看命令
+查看所有连接
+SHOW PROCESSLIST;
+显示当前所有连接的基本信息，SQL语句会被截断到前100个字符。
+查看完整连接信息
+SHOW FULL PROCESSLIST;
+与上面命令功能相同，但显示完整的SQL语句，不会被截断。
+2. 通过系统表查询
+基础查询
+SELECT * FROM INFORMATION_SCHEMA.PROCESSLIST;
+通过系统表获取详细的连接信息，支持WHERE条件过滤。
+查看当前用户连接
+SELECT * FROM INFORMATION_SCHEMA.PROCESSLIST WHERE USER = USER();
+查看特定数据库连接
+SELECT * FROM INFORMATION_SCHEMA.PROCESSLIST WHERE DB = &#39;数据库名&#39;;
+3. 连接统计信息
+-- 当前连接数
+SHOW STATUS LIKE &#39;Threads_connected&#39;;
+
+-- 当前活跃连接数
+SHOW STATUS LIKE &#39;Threads_running&#39;;
+
+-- 历史最大连接数
+SHOW STATUS LIKE &#39;Max_used_connections&#39;;
+返回字段详细说明
+PROCESSLIST 核心字段
+
+  
+      
+          字段名
+          数据类型
+          说明
+          示例值
+      
+  
+  
+      
+          Id
+          整数
+          连接的唯一标识符（线程ID），可用于KILL命令
+          1, 2, 3&hellip;
+      
+      
+          User
+          字符串
+          发起连接的MySQL用户名
+          root, app_user
+      
+      
+          Host
+          字符串
+          客户端主机名或IP地址及端口号
+          localhost:3306, 192.168.1.100:52341
+      
+      
+          db
+          字符串
+          当前连接使用的数据库名，NULL表示未选择数据库
+          my_database, NULL
+      
+      
+          Command
+          字符串
+          当前连接正在执行的命令类型
+          Query, Sleep, Connect
+      
+      
+          Time
+          整数
+          当前状态持续的时间（秒）
+          0, 30, 120
+      
+      
+          State
+          字符串
+          连接的详细状态信息
+          Sending data, NULL
+      
+      
+          Info
+          文本
+          正在执行的SQL语句，NULL表示无查询
+          SELECT * FROM users
+      
+  
+
+Command 字段常见值
+
+  
+      
+          值
+          含义
+          说明
+      
+  
+  
+      
+          Query
+          正在执行查询
+          连接正在处理SQL语句
+      
+      
+          Sleep
+          连接空闲
+          等待客户端发送新命令
+      
+      
+          Connect
+          正在连接
+          客户端正在建立连接
+      
+      
+          Quit
+          正在断开连接
+          连接正在关闭
+      
+      
+          Init DB
+          切换数据库
+          正在执行USE database命令
+      
+      
+          Field List
+          获取字段列表
+          获取表结构信息
+      
+      
+          Statistics
+          获取统计信息
+          收集或计算统计数据
+      
+  
+
+State 字段常见值
+
+  
+      
+          状态
+          含义
+          解释
+      
+  
+  
+      
+          NULL 或 空
+          空闲状态
+          连接未执行任何操作
+      
+      
+          Sending data
+          发送数据
+          正在向客户端发送查询结果
+      
+      
+          Waiting for table level lock
+          等待表级锁
+          查询被表锁阻塞
+      
+      
+          Copying to tmp table
+          复制到临时表
+          创建临时表处理复杂查询
+      
+      
+          Sorting result
+          排序结果
+          正在对查询结果排序
+      
+      
+          Opening tables
+          打开表
+          正在打开和初始化表
+      
+      
+          Locked
+          被锁定
+          连接被某种锁机制阻塞
+      
+      
+          Statistics
+          计算统计信息
+          优化器正在收集表统计信息
+      
+  
+
+INFORMATION_SCHEMA.PROCESSLIST 额外字段
+
+  
+      
+          字段名
+          说明
+      
+  
+  
+      
+          TIME_MS
+          状态持续时间的毫秒精度版本
+      
+      
+          STAGE
+          查询执行的当前阶段信息
+      
+      
+          MAX_STAGE
+          查询执行的最大阶段数
+      
+      
+          PROGRESS
+          当前阶段的完成进度（百分比）
+      
+  
+
+连接状态统计说明
+重要统计指标
+
+  
+      
+          统计项
+          命令
+          含义
+          用途
+      
+  
+  
+      
+          当前连接数
+          SHOW STATUS LIKE &#39;Threads_connected&#39;
+          当前已连接的线程总数
+          监控当前连接负载
+      
+      
+          活跃连接数
+          SHOW STATUS LIKE &#39;Threads_running&#39;
+          当前正在运行的线程数（非Sleep状态）
+          监控数据库活跃度
+      
+      
+          历史最大连接数
+          SHOW STATUS LIKE &#39;Max_used_connections&#39;
+          自MySQL启动以来的最大同时连接数
+          了解连接峰值，规划容量
+      
+  
+
+实际应用示例
+性能监控查询
+-- 查找长时间运行的查询（超过60秒）
+SELECT Id, User, Host, DB, Time, State, Info 
+FROM INFORMATION_SCHEMA.PROCESSLIST 
+WHERE COMMAND = &#39;Query&#39; AND TIME &gt; 60
+ORDER BY TIME DESC;
+
+-- 查找占用CPU的活跃连接
+SELECT Id, User, Host, DB, Time, State, LEFT(Info, 50) AS Query_Preview
+FROM INFORMATION_SCHEMA.PROCESSLIST 
+WHERE COMMAND != &#39;Sleep&#39;
+ORDER BY TIME DESC;
+
+-- 统计各用户的连接数
+SELECT User, COUNT(*) AS Connection_Count
+FROM INFORMATION_SCHEMA.PROCESSLIST 
+GROUP BY User
+ORDER BY Connection_Count DESC;
+问题排查查询
+-- 查找被锁定的连接
+SELECT * FROM INFORMATION_SCHEMA.PROCESSLIST 
+WHERE State LIKE &#39;%lock%&#39; OR State LIKE &#39;%Lock%&#39;;
+
+-- 查找特定数据库的所有连接
+SELECT Id, User, Host, Command, Time, State 
+FROM INFORMATION_SCHEMA.PROCESSLIST 
+WHERE DB = &#39;your_database_name&#39;;
+
+-- 查找来自特定IP的连接
+SELECT * FROM INFORMATION_SCHEMA.PROCESSLIST 
+WHERE Host LIKE &#39;192.168.1.%&#39;;
+连接管理操作
+-- 终止特定连接（谨慎使用）
+KILL 123;  -- 123是连接ID
+
+-- 终止特定用户的所有连接（批量操作，极其谨慎）
+SELECT CONCAT(&#39;KILL &#39;, Id, &#39;;&#39;) AS kill_command
+FROM INFORMATION_SCHEMA.PROCESSLIST 
+WHERE User = &#39;problematic_user&#39; AND Command = &#39;Sleep&#39;;
+最佳实践建议
+1. 定期监控
+
+建议定期检查长时间运行的查询
+监控连接数是否接近最大连接限制
+观察Sleep状态连接的累积情况
+
+2. 性能优化
+
+Time值较大的Query状态连接需要重点关注
+频繁出现的等锁状态需要优化查询或索引
+合理设置连接超时参数
+
+3. 安全考虑
+
+定期检查异常的连接来源
+监控特权用户的连接活动
+及时清理异常或可疑连接
+
+4. 故障排除
+
+结合慢查询日志分析长时间运行的查询
+使用EXPLAIN分析有问题的SQL语句
+监控锁等待和死锁情况
+
+注意事项
+
+权限要求：查看连接信息需要PROCESS权限
+性能影响：频繁执行SHOW PROCESSLIST对性能影响很小
+KILL命令：使用KILL命令终止连接时要格外谨慎
+连接限制：注意max_connections参数设置，避免连接数耗尽
+监控频率：建议结合监控工具定期自动检查连接状态
+
+通过掌握这些连接信息查看和分析技能，可以更好地管理MySQL数据库，及时发现和解决性能问题。">
+    <meta name="generator" content="Hugo 0.147.7">
+    
+    
+    
+      <meta name="robots" content="noindex, nofollow">
+    
+    <meta name="author" content="loveyu">
+    
+
+    
+<link rel="stylesheet" href="/ananke/css/main.min.css" >
+
+
+
+
+    
+
+
+    
+      
+
+    
+
+    
+
+    
+      <link rel="canonical" href="http://localhost:1313/posts/databases/mysql_connection_info_guide/">
+    
+
+    <meta property="og:url" content="http://localhost:1313/posts/databases/mysql_connection_info_guide/">
+  <meta property="og:site_name" content="loveyu233">
+  <meta property="og:title" content="查询mysql连接信息">
+  <meta property="og:description" content="MySQL 连接信息查看完整指南 概述 在MySQL数据库管理中，查看当前连接信息是监控数据库性能、排查问题和管理连接的重要手段。本文档详细介绍了各种查看连接信息的SQL命令及其返回结果的含义。
+常用查看连接信息的SQL命令 1. 基础连接查看命令 查看所有连接 SHOW PROCESSLIST; 显示当前所有连接的基本信息，SQL语句会被截断到前100个字符。
+查看完整连接信息 SHOW FULL PROCESSLIST; 与上面命令功能相同，但显示完整的SQL语句，不会被截断。
+2. 通过系统表查询 基础查询 SELECT * FROM INFORMATION_SCHEMA.PROCESSLIST; 通过系统表获取详细的连接信息，支持WHERE条件过滤。
+查看当前用户连接 SELECT * FROM INFORMATION_SCHEMA.PROCESSLIST WHERE USER = USER(); 查看特定数据库连接 SELECT * FROM INFORMATION_SCHEMA.PROCESSLIST WHERE DB = &#39;数据库名&#39;; 3. 连接统计信息 -- 当前连接数 SHOW STATUS LIKE &#39;Threads_connected&#39;; -- 当前活跃连接数 SHOW STATUS LIKE &#39;Threads_running&#39;; -- 历史最大连接数 SHOW STATUS LIKE &#39;Max_used_connections&#39;; 返回字段详细说明 PROCESSLIST 核心字段 字段名 数据类型 说明 示例值 Id 整数 连接的唯一标识符（线程ID），可用于KILL命令 1, 2, 3… User 字符串 发起连接的MySQL用户名 root, app_user Host 字符串 客户端主机名或IP地址及端口号 localhost:3306, 192.168.1.100:52341 db 字符串 当前连接使用的数据库名，NULL表示未选择数据库 my_database, NULL Command 字符串 当前连接正在执行的命令类型 Query, Sleep, Connect Time 整数 当前状态持续的时间（秒） 0, 30, 120 State 字符串 连接的详细状态信息 Sending data, NULL Info 文本 正在执行的SQL语句，NULL表示无查询 SELECT * FROM users Command 字段常见值 值 含义 说明 Query 正在执行查询 连接正在处理SQL语句 Sleep 连接空闲 等待客户端发送新命令 Connect 正在连接 客户端正在建立连接 Quit 正在断开连接 连接正在关闭 Init DB 切换数据库 正在执行USE database命令 Field List 获取字段列表 获取表结构信息 Statistics 获取统计信息 收集或计算统计数据 State 字段常见值 状态 含义 解释 NULL 或 空 空闲状态 连接未执行任何操作 Sending data 发送数据 正在向客户端发送查询结果 Waiting for table level lock 等待表级锁 查询被表锁阻塞 Copying to tmp table 复制到临时表 创建临时表处理复杂查询 Sorting result 排序结果 正在对查询结果排序 Opening tables 打开表 正在打开和初始化表 Locked 被锁定 连接被某种锁机制阻塞 Statistics 计算统计信息 优化器正在收集表统计信息 INFORMATION_SCHEMA.PROCESSLIST 额外字段 字段名 说明 TIME_MS 状态持续时间的毫秒精度版本 STAGE 查询执行的当前阶段信息 MAX_STAGE 查询执行的最大阶段数 PROGRESS 当前阶段的完成进度（百分比） 连接状态统计说明 重要统计指标 统计项 命令 含义 用途 当前连接数 SHOW STATUS LIKE &#39;Threads_connected&#39; 当前已连接的线程总数 监控当前连接负载 活跃连接数 SHOW STATUS LIKE &#39;Threads_running&#39; 当前正在运行的线程数（非Sleep状态） 监控数据库活跃度 历史最大连接数 SHOW STATUS LIKE &#39;Max_used_connections&#39; 自MySQL启动以来的最大同时连接数 了解连接峰值，规划容量 实际应用示例 性能监控查询 -- 查找长时间运行的查询（超过60秒） SELECT Id, User, Host, DB, Time, State, Info FROM INFORMATION_SCHEMA.PROCESSLIST WHERE COMMAND = &#39;Query&#39; AND TIME &gt; 60 ORDER BY TIME DESC; -- 查找占用CPU的活跃连接 SELECT Id, User, Host, DB, Time, State, LEFT(Info, 50) AS Query_Preview FROM INFORMATION_SCHEMA.PROCESSLIST WHERE COMMAND != &#39;Sleep&#39; ORDER BY TIME DESC; -- 统计各用户的连接数 SELECT User, COUNT(*) AS Connection_Count FROM INFORMATION_SCHEMA.PROCESSLIST GROUP BY User ORDER BY Connection_Count DESC; 问题排查查询 -- 查找被锁定的连接 SELECT * FROM INFORMATION_SCHEMA.PROCESSLIST WHERE State LIKE &#39;%lock%&#39; OR State LIKE &#39;%Lock%&#39;; -- 查找特定数据库的所有连接 SELECT Id, User, Host, Command, Time, State FROM INFORMATION_SCHEMA.PROCESSLIST WHERE DB = &#39;your_database_name&#39;; -- 查找来自特定IP的连接 SELECT * FROM INFORMATION_SCHEMA.PROCESSLIST WHERE Host LIKE &#39;192.168.1.%&#39;; 连接管理操作 -- 终止特定连接（谨慎使用） KILL 123; -- 123是连接ID -- 终止特定用户的所有连接（批量操作，极其谨慎） SELECT CONCAT(&#39;KILL &#39;, Id, &#39;;&#39;) AS kill_command FROM INFORMATION_SCHEMA.PROCESSLIST WHERE User = &#39;problematic_user&#39; AND Command = &#39;Sleep&#39;; 最佳实践建议 1. 定期监控 建议定期检查长时间运行的查询 监控连接数是否接近最大连接限制 观察Sleep状态连接的累积情况 2. 性能优化 Time值较大的Query状态连接需要重点关注 频繁出现的等锁状态需要优化查询或索引 合理设置连接超时参数 3. 安全考虑 定期检查异常的连接来源 监控特权用户的连接活动 及时清理异常或可疑连接 4. 故障排除 结合慢查询日志分析长时间运行的查询 使用EXPLAIN分析有问题的SQL语句 监控锁等待和死锁情况 注意事项 权限要求：查看连接信息需要PROCESS权限 性能影响：频繁执行SHOW PROCESSLIST对性能影响很小 KILL命令：使用KILL命令终止连接时要格外谨慎 连接限制：注意max_connections参数设置，避免连接数耗尽 监控频率：建议结合监控工具定期自动检查连接状态 通过掌握这些连接信息查看和分析技能，可以更好地管理MySQL数据库，及时发现和解决性能问题。">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2025-06-03T15:52:30+08:00">
+    <meta property="article:modified_time" content="2025-06-03T15:52:30+08:00">
+    <meta property="article:tag" content="Mysql">
+
+  <meta itemprop="name" content="查询mysql连接信息">
+  <meta itemprop="description" content="MySQL 连接信息查看完整指南 概述 在MySQL数据库管理中，查看当前连接信息是监控数据库性能、排查问题和管理连接的重要手段。本文档详细介绍了各种查看连接信息的SQL命令及其返回结果的含义。
+常用查看连接信息的SQL命令 1. 基础连接查看命令 查看所有连接 SHOW PROCESSLIST; 显示当前所有连接的基本信息，SQL语句会被截断到前100个字符。
+查看完整连接信息 SHOW FULL PROCESSLIST; 与上面命令功能相同，但显示完整的SQL语句，不会被截断。
+2. 通过系统表查询 基础查询 SELECT * FROM INFORMATION_SCHEMA.PROCESSLIST; 通过系统表获取详细的连接信息，支持WHERE条件过滤。
+查看当前用户连接 SELECT * FROM INFORMATION_SCHEMA.PROCESSLIST WHERE USER = USER(); 查看特定数据库连接 SELECT * FROM INFORMATION_SCHEMA.PROCESSLIST WHERE DB = &#39;数据库名&#39;; 3. 连接统计信息 -- 当前连接数 SHOW STATUS LIKE &#39;Threads_connected&#39;; -- 当前活跃连接数 SHOW STATUS LIKE &#39;Threads_running&#39;; -- 历史最大连接数 SHOW STATUS LIKE &#39;Max_used_connections&#39;; 返回字段详细说明 PROCESSLIST 核心字段 字段名 数据类型 说明 示例值 Id 整数 连接的唯一标识符（线程ID），可用于KILL命令 1, 2, 3… User 字符串 发起连接的MySQL用户名 root, app_user Host 字符串 客户端主机名或IP地址及端口号 localhost:3306, 192.168.1.100:52341 db 字符串 当前连接使用的数据库名，NULL表示未选择数据库 my_database, NULL Command 字符串 当前连接正在执行的命令类型 Query, Sleep, Connect Time 整数 当前状态持续的时间（秒） 0, 30, 120 State 字符串 连接的详细状态信息 Sending data, NULL Info 文本 正在执行的SQL语句，NULL表示无查询 SELECT * FROM users Command 字段常见值 值 含义 说明 Query 正在执行查询 连接正在处理SQL语句 Sleep 连接空闲 等待客户端发送新命令 Connect 正在连接 客户端正在建立连接 Quit 正在断开连接 连接正在关闭 Init DB 切换数据库 正在执行USE database命令 Field List 获取字段列表 获取表结构信息 Statistics 获取统计信息 收集或计算统计数据 State 字段常见值 状态 含义 解释 NULL 或 空 空闲状态 连接未执行任何操作 Sending data 发送数据 正在向客户端发送查询结果 Waiting for table level lock 等待表级锁 查询被表锁阻塞 Copying to tmp table 复制到临时表 创建临时表处理复杂查询 Sorting result 排序结果 正在对查询结果排序 Opening tables 打开表 正在打开和初始化表 Locked 被锁定 连接被某种锁机制阻塞 Statistics 计算统计信息 优化器正在收集表统计信息 INFORMATION_SCHEMA.PROCESSLIST 额外字段 字段名 说明 TIME_MS 状态持续时间的毫秒精度版本 STAGE 查询执行的当前阶段信息 MAX_STAGE 查询执行的最大阶段数 PROGRESS 当前阶段的完成进度（百分比） 连接状态统计说明 重要统计指标 统计项 命令 含义 用途 当前连接数 SHOW STATUS LIKE &#39;Threads_connected&#39; 当前已连接的线程总数 监控当前连接负载 活跃连接数 SHOW STATUS LIKE &#39;Threads_running&#39; 当前正在运行的线程数（非Sleep状态） 监控数据库活跃度 历史最大连接数 SHOW STATUS LIKE &#39;Max_used_connections&#39; 自MySQL启动以来的最大同时连接数 了解连接峰值，规划容量 实际应用示例 性能监控查询 -- 查找长时间运行的查询（超过60秒） SELECT Id, User, Host, DB, Time, State, Info FROM INFORMATION_SCHEMA.PROCESSLIST WHERE COMMAND = &#39;Query&#39; AND TIME &gt; 60 ORDER BY TIME DESC; -- 查找占用CPU的活跃连接 SELECT Id, User, Host, DB, Time, State, LEFT(Info, 50) AS Query_Preview FROM INFORMATION_SCHEMA.PROCESSLIST WHERE COMMAND != &#39;Sleep&#39; ORDER BY TIME DESC; -- 统计各用户的连接数 SELECT User, COUNT(*) AS Connection_Count FROM INFORMATION_SCHEMA.PROCESSLIST GROUP BY User ORDER BY Connection_Count DESC; 问题排查查询 -- 查找被锁定的连接 SELECT * FROM INFORMATION_SCHEMA.PROCESSLIST WHERE State LIKE &#39;%lock%&#39; OR State LIKE &#39;%Lock%&#39;; -- 查找特定数据库的所有连接 SELECT Id, User, Host, Command, Time, State FROM INFORMATION_SCHEMA.PROCESSLIST WHERE DB = &#39;your_database_name&#39;; -- 查找来自特定IP的连接 SELECT * FROM INFORMATION_SCHEMA.PROCESSLIST WHERE Host LIKE &#39;192.168.1.%&#39;; 连接管理操作 -- 终止特定连接（谨慎使用） KILL 123; -- 123是连接ID -- 终止特定用户的所有连接（批量操作，极其谨慎） SELECT CONCAT(&#39;KILL &#39;, Id, &#39;;&#39;) AS kill_command FROM INFORMATION_SCHEMA.PROCESSLIST WHERE User = &#39;problematic_user&#39; AND Command = &#39;Sleep&#39;; 最佳实践建议 1. 定期监控 建议定期检查长时间运行的查询 监控连接数是否接近最大连接限制 观察Sleep状态连接的累积情况 2. 性能优化 Time值较大的Query状态连接需要重点关注 频繁出现的等锁状态需要优化查询或索引 合理设置连接超时参数 3. 安全考虑 定期检查异常的连接来源 监控特权用户的连接活动 及时清理异常或可疑连接 4. 故障排除 结合慢查询日志分析长时间运行的查询 使用EXPLAIN分析有问题的SQL语句 监控锁等待和死锁情况 注意事项 权限要求：查看连接信息需要PROCESS权限 性能影响：频繁执行SHOW PROCESSLIST对性能影响很小 KILL命令：使用KILL命令终止连接时要格外谨慎 连接限制：注意max_connections参数设置，避免连接数耗尽 监控频率：建议结合监控工具定期自动检查连接状态 通过掌握这些连接信息查看和分析技能，可以更好地管理MySQL数据库，及时发现和解决性能问题。">
+  <meta itemprop="datePublished" content="2025-06-03T15:52:30+08:00">
+  <meta itemprop="dateModified" content="2025-06-03T15:52:30+08:00">
+  <meta itemprop="wordCount" content="384">
+  <meta itemprop="keywords" content="Mysql">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="查询mysql连接信息">
+  <meta name="twitter:description" content="MySQL 连接信息查看完整指南 概述 在MySQL数据库管理中，查看当前连接信息是监控数据库性能、排查问题和管理连接的重要手段。本文档详细介绍了各种查看连接信息的SQL命令及其返回结果的含义。
+常用查看连接信息的SQL命令 1. 基础连接查看命令 查看所有连接 SHOW PROCESSLIST; 显示当前所有连接的基本信息，SQL语句会被截断到前100个字符。
+查看完整连接信息 SHOW FULL PROCESSLIST; 与上面命令功能相同，但显示完整的SQL语句，不会被截断。
+2. 通过系统表查询 基础查询 SELECT * FROM INFORMATION_SCHEMA.PROCESSLIST; 通过系统表获取详细的连接信息，支持WHERE条件过滤。
+查看当前用户连接 SELECT * FROM INFORMATION_SCHEMA.PROCESSLIST WHERE USER = USER(); 查看特定数据库连接 SELECT * FROM INFORMATION_SCHEMA.PROCESSLIST WHERE DB = &#39;数据库名&#39;; 3. 连接统计信息 -- 当前连接数 SHOW STATUS LIKE &#39;Threads_connected&#39;; -- 当前活跃连接数 SHOW STATUS LIKE &#39;Threads_running&#39;; -- 历史最大连接数 SHOW STATUS LIKE &#39;Max_used_connections&#39;; 返回字段详细说明 PROCESSLIST 核心字段 字段名 数据类型 说明 示例值 Id 整数 连接的唯一标识符（线程ID），可用于KILL命令 1, 2, 3… User 字符串 发起连接的MySQL用户名 root, app_user Host 字符串 客户端主机名或IP地址及端口号 localhost:3306, 192.168.1.100:52341 db 字符串 当前连接使用的数据库名，NULL表示未选择数据库 my_database, NULL Command 字符串 当前连接正在执行的命令类型 Query, Sleep, Connect Time 整数 当前状态持续的时间（秒） 0, 30, 120 State 字符串 连接的详细状态信息 Sending data, NULL Info 文本 正在执行的SQL语句，NULL表示无查询 SELECT * FROM users Command 字段常见值 值 含义 说明 Query 正在执行查询 连接正在处理SQL语句 Sleep 连接空闲 等待客户端发送新命令 Connect 正在连接 客户端正在建立连接 Quit 正在断开连接 连接正在关闭 Init DB 切换数据库 正在执行USE database命令 Field List 获取字段列表 获取表结构信息 Statistics 获取统计信息 收集或计算统计数据 State 字段常见值 状态 含义 解释 NULL 或 空 空闲状态 连接未执行任何操作 Sending data 发送数据 正在向客户端发送查询结果 Waiting for table level lock 等待表级锁 查询被表锁阻塞 Copying to tmp table 复制到临时表 创建临时表处理复杂查询 Sorting result 排序结果 正在对查询结果排序 Opening tables 打开表 正在打开和初始化表 Locked 被锁定 连接被某种锁机制阻塞 Statistics 计算统计信息 优化器正在收集表统计信息 INFORMATION_SCHEMA.PROCESSLIST 额外字段 字段名 说明 TIME_MS 状态持续时间的毫秒精度版本 STAGE 查询执行的当前阶段信息 MAX_STAGE 查询执行的最大阶段数 PROGRESS 当前阶段的完成进度（百分比） 连接状态统计说明 重要统计指标 统计项 命令 含义 用途 当前连接数 SHOW STATUS LIKE &#39;Threads_connected&#39; 当前已连接的线程总数 监控当前连接负载 活跃连接数 SHOW STATUS LIKE &#39;Threads_running&#39; 当前正在运行的线程数（非Sleep状态） 监控数据库活跃度 历史最大连接数 SHOW STATUS LIKE &#39;Max_used_connections&#39; 自MySQL启动以来的最大同时连接数 了解连接峰值，规划容量 实际应用示例 性能监控查询 -- 查找长时间运行的查询（超过60秒） SELECT Id, User, Host, DB, Time, State, Info FROM INFORMATION_SCHEMA.PROCESSLIST WHERE COMMAND = &#39;Query&#39; AND TIME &gt; 60 ORDER BY TIME DESC; -- 查找占用CPU的活跃连接 SELECT Id, User, Host, DB, Time, State, LEFT(Info, 50) AS Query_Preview FROM INFORMATION_SCHEMA.PROCESSLIST WHERE COMMAND != &#39;Sleep&#39; ORDER BY TIME DESC; -- 统计各用户的连接数 SELECT User, COUNT(*) AS Connection_Count FROM INFORMATION_SCHEMA.PROCESSLIST GROUP BY User ORDER BY Connection_Count DESC; 问题排查查询 -- 查找被锁定的连接 SELECT * FROM INFORMATION_SCHEMA.PROCESSLIST WHERE State LIKE &#39;%lock%&#39; OR State LIKE &#39;%Lock%&#39;; -- 查找特定数据库的所有连接 SELECT Id, User, Host, Command, Time, State FROM INFORMATION_SCHEMA.PROCESSLIST WHERE DB = &#39;your_database_name&#39;; -- 查找来自特定IP的连接 SELECT * FROM INFORMATION_SCHEMA.PROCESSLIST WHERE Host LIKE &#39;192.168.1.%&#39;; 连接管理操作 -- 终止特定连接（谨慎使用） KILL 123; -- 123是连接ID -- 终止特定用户的所有连接（批量操作，极其谨慎） SELECT CONCAT(&#39;KILL &#39;, Id, &#39;;&#39;) AS kill_command FROM INFORMATION_SCHEMA.PROCESSLIST WHERE User = &#39;problematic_user&#39; AND Command = &#39;Sleep&#39;; 最佳实践建议 1. 定期监控 建议定期检查长时间运行的查询 监控连接数是否接近最大连接限制 观察Sleep状态连接的累积情况 2. 性能优化 Time值较大的Query状态连接需要重点关注 频繁出现的等锁状态需要优化查询或索引 合理设置连接超时参数 3. 安全考虑 定期检查异常的连接来源 监控特权用户的连接活动 及时清理异常或可疑连接 4. 故障排除 结合慢查询日志分析长时间运行的查询 使用EXPLAIN分析有问题的SQL语句 监控锁等待和死锁情况 注意事项 权限要求：查看连接信息需要PROCESS权限 性能影响：频繁执行SHOW PROCESSLIST对性能影响很小 KILL命令：使用KILL命令终止连接时要格外谨慎 连接限制：注意max_connections参数设置，避免连接数耗尽 监控频率：建议结合监控工具定期自动检查连接状态 通过掌握这些连接信息查看和分析技能，可以更好地管理MySQL数据库，及时发现和解决性能问题。">
+
+	
+  </head><body class="ma0 avenir bg-near-white development">
+
+    
+   
+  
+
+  <header>
+    <div class="bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l center items-center justify-between">
+    <a href="/" class="f3 fw2 hover-white white-90 dib no-underline">
+      
+        loveyu233
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      <div class="ananke-socials"></div>
+
+    </div>
+  </div>
+</nav>
+
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  
+  <article class="flex-l mw8 center ph3 flex-wrap justify-between">
+    <header class="mt4 w-100">
+      <aside class="instapaper_ignoref b helvetica tracked ttu">
+          
+        databases
+      </aside><div id="sharing" class="mt3 ananke-socials"></div>
+<h1 class="f1 athelas mt3 mb1">查询mysql连接信息</h1>
+      
+      <p class="tracked"><strong>loveyu</strong>
+      </p>
+      
+      
+      
+      <time class="f6 mv4 dib tracked" datetime="2025-06-03T15:52:30+08:00">June 3, 2025</time>
+      
+
+      
+      
+    </header>
+    <div class="nested-copy-line-height lh-copy serif f4 nested-links mid-gray pr4-l w-two-thirds-l"><h1 id="mysql-连接信息查看完整指南">MySQL 连接信息查看完整指南</h1>
+<h2 id="概述">概述</h2>
+<p>在MySQL数据库管理中，查看当前连接信息是监控数据库性能、排查问题和管理连接的重要手段。本文档详细介绍了各种查看连接信息的SQL命令及其返回结果的含义。</p>
+<h2 id="常用查看连接信息的sql命令">常用查看连接信息的SQL命令</h2>
+<h3 id="1-基础连接查看命令">1. 基础连接查看命令</h3>
+<h4 id="查看所有连接">查看所有连接</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">SHOW</span> PROCESSLIST;
+</span></span></code></pre></div><p>显示当前所有连接的基本信息，SQL语句会被截断到前100个字符。</p>
+<h4 id="查看完整连接信息">查看完整连接信息</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">SHOW</span> <span style="color:#66d9ef">FULL</span> PROCESSLIST;
+</span></span></code></pre></div><p>与上面命令功能相同，但显示完整的SQL语句，不会被截断。</p>
+<h3 id="2-通过系统表查询">2. 通过系统表查询</h3>
+<h4 id="基础查询">基础查询</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> INFORMATION_SCHEMA.PROCESSLIST;
+</span></span></code></pre></div><p>通过系统表获取详细的连接信息，支持WHERE条件过滤。</p>
+<h4 id="查看当前用户连接">查看当前用户连接</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> INFORMATION_SCHEMA.PROCESSLIST <span style="color:#66d9ef">WHERE</span> <span style="color:#66d9ef">USER</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">USER</span>();
+</span></span></code></pre></div><h4 id="查看特定数据库连接">查看特定数据库连接</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> INFORMATION_SCHEMA.PROCESSLIST <span style="color:#66d9ef">WHERE</span> DB <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;数据库名&#39;</span>;
+</span></span></code></pre></div><h3 id="3-连接统计信息">3. 连接统计信息</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#75715e">-- 当前连接数
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SHOW</span> STATUS <span style="color:#66d9ef">LIKE</span> <span style="color:#e6db74">&#39;Threads_connected&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 当前活跃连接数
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SHOW</span> STATUS <span style="color:#66d9ef">LIKE</span> <span style="color:#e6db74">&#39;Threads_running&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 历史最大连接数
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SHOW</span> STATUS <span style="color:#66d9ef">LIKE</span> <span style="color:#e6db74">&#39;Max_used_connections&#39;</span>;
+</span></span></code></pre></div><h2 id="返回字段详细说明">返回字段详细说明</h2>
+<h3 id="processlist-核心字段">PROCESSLIST 核心字段</h3>
+<table>
+  <thead>
+      <tr>
+          <th>字段名</th>
+          <th>数据类型</th>
+          <th>说明</th>
+          <th>示例值</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>Id</strong></td>
+          <td>整数</td>
+          <td>连接的唯一标识符（线程ID），可用于KILL命令</td>
+          <td>1, 2, 3&hellip;</td>
+      </tr>
+      <tr>
+          <td><strong>User</strong></td>
+          <td>字符串</td>
+          <td>发起连接的MySQL用户名</td>
+          <td>root, app_user</td>
+      </tr>
+      <tr>
+          <td><strong>Host</strong></td>
+          <td>字符串</td>
+          <td>客户端主机名或IP地址及端口号</td>
+          <td>localhost:3306, 192.168.1.100:52341</td>
+      </tr>
+      <tr>
+          <td><strong>db</strong></td>
+          <td>字符串</td>
+          <td>当前连接使用的数据库名，NULL表示未选择数据库</td>
+          <td>my_database, NULL</td>
+      </tr>
+      <tr>
+          <td><strong>Command</strong></td>
+          <td>字符串</td>
+          <td>当前连接正在执行的命令类型</td>
+          <td>Query, Sleep, Connect</td>
+      </tr>
+      <tr>
+          <td><strong>Time</strong></td>
+          <td>整数</td>
+          <td>当前状态持续的时间（秒）</td>
+          <td>0, 30, 120</td>
+      </tr>
+      <tr>
+          <td><strong>State</strong></td>
+          <td>字符串</td>
+          <td>连接的详细状态信息</td>
+          <td>Sending data, NULL</td>
+      </tr>
+      <tr>
+          <td><strong>Info</strong></td>
+          <td>文本</td>
+          <td>正在执行的SQL语句，NULL表示无查询</td>
+          <td>SELECT * FROM users</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="command-字段常见值">Command 字段常见值</h3>
+<table>
+  <thead>
+      <tr>
+          <th>值</th>
+          <th>含义</th>
+          <th>说明</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>Query</strong></td>
+          <td>正在执行查询</td>
+          <td>连接正在处理SQL语句</td>
+      </tr>
+      <tr>
+          <td><strong>Sleep</strong></td>
+          <td>连接空闲</td>
+          <td>等待客户端发送新命令</td>
+      </tr>
+      <tr>
+          <td><strong>Connect</strong></td>
+          <td>正在连接</td>
+          <td>客户端正在建立连接</td>
+      </tr>
+      <tr>
+          <td><strong>Quit</strong></td>
+          <td>正在断开连接</td>
+          <td>连接正在关闭</td>
+      </tr>
+      <tr>
+          <td><strong>Init DB</strong></td>
+          <td>切换数据库</td>
+          <td>正在执行USE database命令</td>
+      </tr>
+      <tr>
+          <td><strong>Field List</strong></td>
+          <td>获取字段列表</td>
+          <td>获取表结构信息</td>
+      </tr>
+      <tr>
+          <td><strong>Statistics</strong></td>
+          <td>获取统计信息</td>
+          <td>收集或计算统计数据</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="state-字段常见值">State 字段常见值</h3>
+<table>
+  <thead>
+      <tr>
+          <th>状态</th>
+          <th>含义</th>
+          <th>解释</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>NULL</strong> 或 空</td>
+          <td>空闲状态</td>
+          <td>连接未执行任何操作</td>
+      </tr>
+      <tr>
+          <td><strong>Sending data</strong></td>
+          <td>发送数据</td>
+          <td>正在向客户端发送查询结果</td>
+      </tr>
+      <tr>
+          <td><strong>Waiting for table level lock</strong></td>
+          <td>等待表级锁</td>
+          <td>查询被表锁阻塞</td>
+      </tr>
+      <tr>
+          <td><strong>Copying to tmp table</strong></td>
+          <td>复制到临时表</td>
+          <td>创建临时表处理复杂查询</td>
+      </tr>
+      <tr>
+          <td><strong>Sorting result</strong></td>
+          <td>排序结果</td>
+          <td>正在对查询结果排序</td>
+      </tr>
+      <tr>
+          <td><strong>Opening tables</strong></td>
+          <td>打开表</td>
+          <td>正在打开和初始化表</td>
+      </tr>
+      <tr>
+          <td><strong>Locked</strong></td>
+          <td>被锁定</td>
+          <td>连接被某种锁机制阻塞</td>
+      </tr>
+      <tr>
+          <td><strong>Statistics</strong></td>
+          <td>计算统计信息</td>
+          <td>优化器正在收集表统计信息</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="information_schemaprocesslist-额外字段">INFORMATION_SCHEMA.PROCESSLIST 额外字段</h3>
+<table>
+  <thead>
+      <tr>
+          <th>字段名</th>
+          <th>说明</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>TIME_MS</strong></td>
+          <td>状态持续时间的毫秒精度版本</td>
+      </tr>
+      <tr>
+          <td><strong>STAGE</strong></td>
+          <td>查询执行的当前阶段信息</td>
+      </tr>
+      <tr>
+          <td><strong>MAX_STAGE</strong></td>
+          <td>查询执行的最大阶段数</td>
+      </tr>
+      <tr>
+          <td><strong>PROGRESS</strong></td>
+          <td>当前阶段的完成进度（百分比）</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="连接状态统计说明">连接状态统计说明</h2>
+<h3 id="重要统计指标">重要统计指标</h3>
+<table>
+  <thead>
+      <tr>
+          <th>统计项</th>
+          <th>命令</th>
+          <th>含义</th>
+          <th>用途</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>当前连接数</strong></td>
+          <td><code>SHOW STATUS LIKE 'Threads_connected'</code></td>
+          <td>当前已连接的线程总数</td>
+          <td>监控当前连接负载</td>
+      </tr>
+      <tr>
+          <td><strong>活跃连接数</strong></td>
+          <td><code>SHOW STATUS LIKE 'Threads_running'</code></td>
+          <td>当前正在运行的线程数（非Sleep状态）</td>
+          <td>监控数据库活跃度</td>
+      </tr>
+      <tr>
+          <td><strong>历史最大连接数</strong></td>
+          <td><code>SHOW STATUS LIKE 'Max_used_connections'</code></td>
+          <td>自MySQL启动以来的最大同时连接数</td>
+          <td>了解连接峰值，规划容量</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="实际应用示例">实际应用示例</h2>
+<h3 id="性能监控查询">性能监控查询</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#75715e">-- 查找长时间运行的查询（超过60秒）
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> Id, <span style="color:#66d9ef">User</span>, <span style="color:#66d9ef">Host</span>, DB, Time, <span style="color:#66d9ef">State</span>, Info 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span> INFORMATION_SCHEMA.PROCESSLIST 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">WHERE</span> COMMAND <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;Query&#39;</span> <span style="color:#66d9ef">AND</span> TIME <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">60</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">ORDER</span> <span style="color:#66d9ef">BY</span> TIME <span style="color:#66d9ef">DESC</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 查找占用CPU的活跃连接
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> Id, <span style="color:#66d9ef">User</span>, <span style="color:#66d9ef">Host</span>, DB, Time, <span style="color:#66d9ef">State</span>, <span style="color:#66d9ef">LEFT</span>(Info, <span style="color:#ae81ff">50</span>) <span style="color:#66d9ef">AS</span> Query_Preview
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span> INFORMATION_SCHEMA.PROCESSLIST 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">WHERE</span> COMMAND <span style="color:#f92672">!=</span> <span style="color:#e6db74">&#39;Sleep&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">ORDER</span> <span style="color:#66d9ef">BY</span> TIME <span style="color:#66d9ef">DESC</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 统计各用户的连接数
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> <span style="color:#66d9ef">User</span>, <span style="color:#66d9ef">COUNT</span>(<span style="color:#f92672">*</span>) <span style="color:#66d9ef">AS</span> Connection_Count
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span> INFORMATION_SCHEMA.PROCESSLIST 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">GROUP</span> <span style="color:#66d9ef">BY</span> <span style="color:#66d9ef">User</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">ORDER</span> <span style="color:#66d9ef">BY</span> Connection_Count <span style="color:#66d9ef">DESC</span>;
+</span></span></code></pre></div><h3 id="问题排查查询">问题排查查询</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#75715e">-- 查找被锁定的连接
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> INFORMATION_SCHEMA.PROCESSLIST 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">WHERE</span> <span style="color:#66d9ef">State</span> <span style="color:#66d9ef">LIKE</span> <span style="color:#e6db74">&#39;%lock%&#39;</span> <span style="color:#66d9ef">OR</span> <span style="color:#66d9ef">State</span> <span style="color:#66d9ef">LIKE</span> <span style="color:#e6db74">&#39;%Lock%&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 查找特定数据库的所有连接
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> Id, <span style="color:#66d9ef">User</span>, <span style="color:#66d9ef">Host</span>, Command, Time, <span style="color:#66d9ef">State</span> 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span> INFORMATION_SCHEMA.PROCESSLIST 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">WHERE</span> DB <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;your_database_name&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 查找来自特定IP的连接
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> INFORMATION_SCHEMA.PROCESSLIST 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">WHERE</span> <span style="color:#66d9ef">Host</span> <span style="color:#66d9ef">LIKE</span> <span style="color:#e6db74">&#39;192.168.1.%&#39;</span>;
+</span></span></code></pre></div><h3 id="连接管理操作">连接管理操作</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#75715e">-- 终止特定连接（谨慎使用）
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>KILL <span style="color:#ae81ff">123</span>;  <span style="color:#75715e">-- 123是连接ID
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 终止特定用户的所有连接（批量操作，极其谨慎）
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> CONCAT(<span style="color:#e6db74">&#39;KILL &#39;</span>, Id, <span style="color:#e6db74">&#39;;&#39;</span>) <span style="color:#66d9ef">AS</span> kill_command
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span> INFORMATION_SCHEMA.PROCESSLIST 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">WHERE</span> <span style="color:#66d9ef">User</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;problematic_user&#39;</span> <span style="color:#66d9ef">AND</span> Command <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;Sleep&#39;</span>;
+</span></span></code></pre></div><h2 id="最佳实践建议">最佳实践建议</h2>
+<h3 id="1-定期监控">1. 定期监控</h3>
+<ul>
+<li>建议定期检查长时间运行的查询</li>
+<li>监控连接数是否接近最大连接限制</li>
+<li>观察Sleep状态连接的累积情况</li>
+</ul>
+<h3 id="2-性能优化">2. 性能优化</h3>
+<ul>
+<li>Time值较大的Query状态连接需要重点关注</li>
+<li>频繁出现的等锁状态需要优化查询或索引</li>
+<li>合理设置连接超时参数</li>
+</ul>
+<h3 id="3-安全考虑">3. 安全考虑</h3>
+<ul>
+<li>定期检查异常的连接来源</li>
+<li>监控特权用户的连接活动</li>
+<li>及时清理异常或可疑连接</li>
+</ul>
+<h3 id="4-故障排除">4. 故障排除</h3>
+<ul>
+<li>结合慢查询日志分析长时间运行的查询</li>
+<li>使用EXPLAIN分析有问题的SQL语句</li>
+<li>监控锁等待和死锁情况</li>
+</ul>
+<h2 id="注意事项">注意事项</h2>
+<ol>
+<li><strong>权限要求</strong>：查看连接信息需要PROCESS权限</li>
+<li><strong>性能影响</strong>：频繁执行SHOW PROCESSLIST对性能影响很小</li>
+<li><strong>KILL命令</strong>：使用KILL命令终止连接时要格外谨慎</li>
+<li><strong>连接限制</strong>：注意max_connections参数设置，避免连接数耗尽</li>
+<li><strong>监控频率</strong>：建议结合监控工具定期自动检查连接状态</li>
+</ol>
+<p>通过掌握这些连接信息查看和分析技能，可以更好地管理MySQL数据库，及时发现和解决性能问题。</p>
+<ul class="pa0">
+  
+   <li class="list di">
+     <a href="/tags/mysql/" class="link f5 grow br-pill ba ph3 pv2 mb2 dib black sans-serif no-underline">Mysql</a>
+   </li>
+  
+</ul>
+<div class="mt6 instapaper_ignoref">
+      
+      
+      </div>
+    </div>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+  <div class="bg-light-gray pa3 nested-list-reset nested-copy-line-height nested-links">
+    <p class="f5 b mb3">Related</p>
+    <ul class="pa0 list">
+	   
+	     <li  class="mb2">
+          <a href="/posts/databases/sql-functions/">sql常用函数</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/interview/">面试指南</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/%E5%AE%9E%E6%88%98%E6%8A%80%E5%B7%A7/">实战技巧</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/databases/mysql%E6%97%A5%E5%BF%97/">mysql日志</a>
+        </li>
+	    
+    </ul>
+</div>
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white white-70 dn dib-ns pv2 ph3 no-underline" href="http://localhost:1313/" >
+    &copy;  loveyu233 2025 
+  </a>
+    <div><div class="ananke-socials"></div>
+</div>
+  </div>
+</footer>
+
+  </body>
+</html>

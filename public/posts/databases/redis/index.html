@@ -1,0 +1,1370 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>redis | loveyu233</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="Redis数据类型
+1. string字符串
+分布式锁
+setnx key value
+del key
+自增自减
+incrby key value
+decrby key value
+2. list双端队列
+消息订阅
+
+lpush key value
+rpop key value
+3. hash
+购物车
+// 新增商品
+hset shopcar:uid shopid number
+// 商品个数添加
+hincrby shopcar:uid shopid 1
+// 查看用户全部购物车商品总数
+hlen shopcar:uid
+// 全部选择
+hgetall shopcar:uid
+127.0.0.1:6379&gt; hset shopcar:01 001 1
+(integer) 1
+127.0.0.1:6379&gt; hset shopcar:01 002 1
+(integer) 1
+127.0.0.1:6379&gt; hlen shopcar:01
+(integer) 2
+127.0.0.1:6379&gt; hgetall shopcar:01
+1) &#34;001&#34;
+2) &#34;1&#34;
+3) &#34;002&#34;
+4) &#34;1&#34;
+127.0.0.1:6379&gt; hincrby shopcar:01 001 1
+(integer) 2
+127.0.0.1:6379&gt; hincrby shopcar:01 001 -1
+(integer) 1
+127.0.0.1:6379&gt; hgetall shopcar:01
+1) &#34;001&#34;
+2) &#34;1&#34;
+3) &#34;002&#34;
+4) &#34;1&#34;
+4. set无序无重复集合
+抽奖
+// 参与抽奖
+sadd key userid
+// 获取参与人数
+scard key
+// 开始抽奖,number为此次中奖人数
+srandmember key number // 抽完奖后还可以继续参与抽奖
+spop key number				// 抽完奖就弹出不可以参加下一轮抽奖
+127.0.0.1:6379&gt; sadd s 001
+(integer) 1
+127.0.0.1:6379&gt; sadd s 002
+(integer) 1
+127.0.0.1:6379&gt; sadd s 003
+(integer) 1
+127.0.0.1:6379&gt; sadd s 004
+(integer) 1
+127.0.0.1:6379&gt; scard s
+(integer) 4
+127.0.0.1:6379&gt; srandmember s 2
+1) &#34;003&#34;
+2) &#34;001&#34;
+127.0.0.1:6379&gt; scard s
+(integer) 4
+127.0.0.1:6379&gt; spop s 2
+1) &#34;003&#34;
+2) &#34;004&#34;
+127.0.0.1:6379&gt; scard s
+(integer) 2
+点赞
+// 新增点赞
+sadd msgid userid
+// 取消点赞
+srem msgid userid
+// 获取所有点赞的用户id
+smembers msgid
+// 点赞统计
+scard msgid
+// 判断用户是否点过赞
+sismember msgid userid
+127.0.0.1:6379&gt; sadd msg:1 001
+(integer) 1
+127.0.0.1:6379&gt; sadd msg:1 002
+(integer) 1
+127.0.0.1:6379&gt; sadd msg:1 003
+(integer) 1
+127.0.0.1:6379&gt; smembers msg:1
+1) &#34;003&#34;
+2) &#34;002&#34;
+3) &#34;001&#34;
+127.0.0.1:6379&gt; smembers msg:1
+1) &#34;003&#34;
+2) &#34;002&#34;
+3) &#34;001&#34;
+127.0.0.1:6379&gt; scard msg:1
+(integer) 3
+127.0.0.1:6379&gt; srem msg:1 002
+(integer) 1
+127.0.0.1:6379&gt; sismember msg:1 002
+(integer) 0
+127.0.0.1:6379&gt; sismember msg:1 001
+(integer) 1
+好友
+// 添加好友
+sadd uid huid
+// A和B共同好友,交集
+sinter uidA uidB
+// A没有B有的,差集
+sdiff uidA uidB
+// A和B都有的,并集
+sunion uidA uidB
+127.0.0.1:6379&gt; sadd uidA 001 002 003 004
+(integer) 4
+127.0.0.1:6379&gt; sadd uidB 002 003 004 005
+(integer) 4
+127.0.0.1:6379&gt; sinter uidA uidB
+1) &#34;003&#34;
+2) &#34;002&#34;
+3) &#34;004&#34;
+127.0.0.1:6379&gt; sdiff uidA uidB
+1) &#34;001&#34;
+127.0.0.1:6379&gt; sdiff uidB uidA
+1) &#34;005&#34;
+127.0.0.1:6379&gt; sunion uidA uidB
+1) &#34;001&#34;
+2) &#34;005&#34;
+3) &#34;002&#34;
+4) &#34;004&#34;
+5) &#34;003&#34;
+5. zset有序无重复集合
+排行榜相关
+
+例如: 点赞排行榜,商品热销排行榜,主播打赏排行榜,视频播放量排行榜">
+    <meta name="generator" content="Hugo 0.147.7">
+    
+    
+    
+      <meta name="robots" content="noindex, nofollow">
+    
+    <meta name="author" content="loveyu">
+    
+
+    
+<link rel="stylesheet" href="/ananke/css/main.min.css" >
+
+
+
+
+    
+
+
+    
+      
+
+    
+
+    
+
+    
+      <link rel="canonical" href="http://localhost:1313/posts/databases/redis/">
+    
+
+    <meta property="og:url" content="http://localhost:1313/posts/databases/redis/">
+  <meta property="og:site_name" content="loveyu233">
+  <meta property="og:title" content="redis">
+  <meta property="og:description" content="Redis数据类型 1. string字符串 分布式锁 setnx key value del key 自增自减 incrby key value decrby key value 2. list双端队列 消息订阅 lpush key value
+rpop key value
+3. hash 购物车 // 新增商品 hset shopcar:uid shopid number // 商品个数添加 hincrby shopcar:uid shopid 1 // 查看用户全部购物车商品总数 hlen shopcar:uid // 全部选择 hgetall shopcar:uid 127.0.0.1:6379&gt; hset shopcar:01 001 1 (integer) 1 127.0.0.1:6379&gt; hset shopcar:01 002 1 (integer) 1 127.0.0.1:6379&gt; hlen shopcar:01 (integer) 2 127.0.0.1:6379&gt; hgetall shopcar:01 1) &#34;001&#34; 2) &#34;1&#34; 3) &#34;002&#34; 4) &#34;1&#34; 127.0.0.1:6379&gt; hincrby shopcar:01 001 1 (integer) 2 127.0.0.1:6379&gt; hincrby shopcar:01 001 -1 (integer) 1 127.0.0.1:6379&gt; hgetall shopcar:01 1) &#34;001&#34; 2) &#34;1&#34; 3) &#34;002&#34; 4) &#34;1&#34; 4. set无序无重复集合 抽奖 // 参与抽奖 sadd key userid // 获取参与人数 scard key // 开始抽奖,number为此次中奖人数 srandmember key number // 抽完奖后还可以继续参与抽奖 spop key number	// 抽完奖就弹出不可以参加下一轮抽奖 127.0.0.1:6379&gt; sadd s 001 (integer) 1 127.0.0.1:6379&gt; sadd s 002 (integer) 1 127.0.0.1:6379&gt; sadd s 003 (integer) 1 127.0.0.1:6379&gt; sadd s 004 (integer) 1 127.0.0.1:6379&gt; scard s (integer) 4 127.0.0.1:6379&gt; srandmember s 2 1) &#34;003&#34; 2) &#34;001&#34; 127.0.0.1:6379&gt; scard s (integer) 4 127.0.0.1:6379&gt; spop s 2 1) &#34;003&#34; 2) &#34;004&#34; 127.0.0.1:6379&gt; scard s (integer) 2 点赞 // 新增点赞 sadd msgid userid // 取消点赞 srem msgid userid // 获取所有点赞的用户id smembers msgid // 点赞统计 scard msgid // 判断用户是否点过赞 sismember msgid userid 127.0.0.1:6379&gt; sadd msg:1 001 (integer) 1 127.0.0.1:6379&gt; sadd msg:1 002 (integer) 1 127.0.0.1:6379&gt; sadd msg:1 003 (integer) 1 127.0.0.1:6379&gt; smembers msg:1 1) &#34;003&#34; 2) &#34;002&#34; 3) &#34;001&#34; 127.0.0.1:6379&gt; smembers msg:1 1) &#34;003&#34; 2) &#34;002&#34; 3) &#34;001&#34; 127.0.0.1:6379&gt; scard msg:1 (integer) 3 127.0.0.1:6379&gt; srem msg:1 002 (integer) 1 127.0.0.1:6379&gt; sismember msg:1 002 (integer) 0 127.0.0.1:6379&gt; sismember msg:1 001 (integer) 1 好友 // 添加好友 sadd uid huid // A和B共同好友,交集 sinter uidA uidB // A没有B有的,差集 sdiff uidA uidB // A和B都有的,并集 sunion uidA uidB 127.0.0.1:6379&gt; sadd uidA 001 002 003 004 (integer) 4 127.0.0.1:6379&gt; sadd uidB 002 003 004 005 (integer) 4 127.0.0.1:6379&gt; sinter uidA uidB 1) &#34;003&#34; 2) &#34;002&#34; 3) &#34;004&#34; 127.0.0.1:6379&gt; sdiff uidA uidB 1) &#34;001&#34; 127.0.0.1:6379&gt; sdiff uidB uidA 1) &#34;005&#34; 127.0.0.1:6379&gt; sunion uidA uidB 1) &#34;001&#34; 2) &#34;005&#34; 3) &#34;002&#34; 4) &#34;004&#34; 5) &#34;003&#34; 5. zset有序无重复集合 排行榜相关 例如: 点赞排行榜,商品热销排行榜,主播打赏排行榜,视频播放量排行榜">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2020-12-04T19:38:37+08:00">
+    <meta property="article:modified_time" content="2020-12-04T19:38:37+08:00">
+    <meta property="article:tag" content="Redis">
+    <meta property="article:tag" content="Nosql">
+
+  <meta itemprop="name" content="redis">
+  <meta itemprop="description" content="Redis数据类型 1. string字符串 分布式锁 setnx key value del key 自增自减 incrby key value decrby key value 2. list双端队列 消息订阅 lpush key value
+rpop key value
+3. hash 购物车 // 新增商品 hset shopcar:uid shopid number // 商品个数添加 hincrby shopcar:uid shopid 1 // 查看用户全部购物车商品总数 hlen shopcar:uid // 全部选择 hgetall shopcar:uid 127.0.0.1:6379&gt; hset shopcar:01 001 1 (integer) 1 127.0.0.1:6379&gt; hset shopcar:01 002 1 (integer) 1 127.0.0.1:6379&gt; hlen shopcar:01 (integer) 2 127.0.0.1:6379&gt; hgetall shopcar:01 1) &#34;001&#34; 2) &#34;1&#34; 3) &#34;002&#34; 4) &#34;1&#34; 127.0.0.1:6379&gt; hincrby shopcar:01 001 1 (integer) 2 127.0.0.1:6379&gt; hincrby shopcar:01 001 -1 (integer) 1 127.0.0.1:6379&gt; hgetall shopcar:01 1) &#34;001&#34; 2) &#34;1&#34; 3) &#34;002&#34; 4) &#34;1&#34; 4. set无序无重复集合 抽奖 // 参与抽奖 sadd key userid // 获取参与人数 scard key // 开始抽奖,number为此次中奖人数 srandmember key number // 抽完奖后还可以继续参与抽奖 spop key number	// 抽完奖就弹出不可以参加下一轮抽奖 127.0.0.1:6379&gt; sadd s 001 (integer) 1 127.0.0.1:6379&gt; sadd s 002 (integer) 1 127.0.0.1:6379&gt; sadd s 003 (integer) 1 127.0.0.1:6379&gt; sadd s 004 (integer) 1 127.0.0.1:6379&gt; scard s (integer) 4 127.0.0.1:6379&gt; srandmember s 2 1) &#34;003&#34; 2) &#34;001&#34; 127.0.0.1:6379&gt; scard s (integer) 4 127.0.0.1:6379&gt; spop s 2 1) &#34;003&#34; 2) &#34;004&#34; 127.0.0.1:6379&gt; scard s (integer) 2 点赞 // 新增点赞 sadd msgid userid // 取消点赞 srem msgid userid // 获取所有点赞的用户id smembers msgid // 点赞统计 scard msgid // 判断用户是否点过赞 sismember msgid userid 127.0.0.1:6379&gt; sadd msg:1 001 (integer) 1 127.0.0.1:6379&gt; sadd msg:1 002 (integer) 1 127.0.0.1:6379&gt; sadd msg:1 003 (integer) 1 127.0.0.1:6379&gt; smembers msg:1 1) &#34;003&#34; 2) &#34;002&#34; 3) &#34;001&#34; 127.0.0.1:6379&gt; smembers msg:1 1) &#34;003&#34; 2) &#34;002&#34; 3) &#34;001&#34; 127.0.0.1:6379&gt; scard msg:1 (integer) 3 127.0.0.1:6379&gt; srem msg:1 002 (integer) 1 127.0.0.1:6379&gt; sismember msg:1 002 (integer) 0 127.0.0.1:6379&gt; sismember msg:1 001 (integer) 1 好友 // 添加好友 sadd uid huid // A和B共同好友,交集 sinter uidA uidB // A没有B有的,差集 sdiff uidA uidB // A和B都有的,并集 sunion uidA uidB 127.0.0.1:6379&gt; sadd uidA 001 002 003 004 (integer) 4 127.0.0.1:6379&gt; sadd uidB 002 003 004 005 (integer) 4 127.0.0.1:6379&gt; sinter uidA uidB 1) &#34;003&#34; 2) &#34;002&#34; 3) &#34;004&#34; 127.0.0.1:6379&gt; sdiff uidA uidB 1) &#34;001&#34; 127.0.0.1:6379&gt; sdiff uidB uidA 1) &#34;005&#34; 127.0.0.1:6379&gt; sunion uidA uidB 1) &#34;001&#34; 2) &#34;005&#34; 3) &#34;002&#34; 4) &#34;004&#34; 5) &#34;003&#34; 5. zset有序无重复集合 排行榜相关 例如: 点赞排行榜,商品热销排行榜,主播打赏排行榜,视频播放量排行榜">
+  <meta itemprop="datePublished" content="2020-12-04T19:38:37+08:00">
+  <meta itemprop="dateModified" content="2020-12-04T19:38:37+08:00">
+  <meta itemprop="wordCount" content="2117">
+  <meta itemprop="keywords" content="Redis,Nosql">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="redis">
+  <meta name="twitter:description" content="Redis数据类型 1. string字符串 分布式锁 setnx key value del key 自增自减 incrby key value decrby key value 2. list双端队列 消息订阅 lpush key value
+rpop key value
+3. hash 购物车 // 新增商品 hset shopcar:uid shopid number // 商品个数添加 hincrby shopcar:uid shopid 1 // 查看用户全部购物车商品总数 hlen shopcar:uid // 全部选择 hgetall shopcar:uid 127.0.0.1:6379&gt; hset shopcar:01 001 1 (integer) 1 127.0.0.1:6379&gt; hset shopcar:01 002 1 (integer) 1 127.0.0.1:6379&gt; hlen shopcar:01 (integer) 2 127.0.0.1:6379&gt; hgetall shopcar:01 1) &#34;001&#34; 2) &#34;1&#34; 3) &#34;002&#34; 4) &#34;1&#34; 127.0.0.1:6379&gt; hincrby shopcar:01 001 1 (integer) 2 127.0.0.1:6379&gt; hincrby shopcar:01 001 -1 (integer) 1 127.0.0.1:6379&gt; hgetall shopcar:01 1) &#34;001&#34; 2) &#34;1&#34; 3) &#34;002&#34; 4) &#34;1&#34; 4. set无序无重复集合 抽奖 // 参与抽奖 sadd key userid // 获取参与人数 scard key // 开始抽奖,number为此次中奖人数 srandmember key number // 抽完奖后还可以继续参与抽奖 spop key number	// 抽完奖就弹出不可以参加下一轮抽奖 127.0.0.1:6379&gt; sadd s 001 (integer) 1 127.0.0.1:6379&gt; sadd s 002 (integer) 1 127.0.0.1:6379&gt; sadd s 003 (integer) 1 127.0.0.1:6379&gt; sadd s 004 (integer) 1 127.0.0.1:6379&gt; scard s (integer) 4 127.0.0.1:6379&gt; srandmember s 2 1) &#34;003&#34; 2) &#34;001&#34; 127.0.0.1:6379&gt; scard s (integer) 4 127.0.0.1:6379&gt; spop s 2 1) &#34;003&#34; 2) &#34;004&#34; 127.0.0.1:6379&gt; scard s (integer) 2 点赞 // 新增点赞 sadd msgid userid // 取消点赞 srem msgid userid // 获取所有点赞的用户id smembers msgid // 点赞统计 scard msgid // 判断用户是否点过赞 sismember msgid userid 127.0.0.1:6379&gt; sadd msg:1 001 (integer) 1 127.0.0.1:6379&gt; sadd msg:1 002 (integer) 1 127.0.0.1:6379&gt; sadd msg:1 003 (integer) 1 127.0.0.1:6379&gt; smembers msg:1 1) &#34;003&#34; 2) &#34;002&#34; 3) &#34;001&#34; 127.0.0.1:6379&gt; smembers msg:1 1) &#34;003&#34; 2) &#34;002&#34; 3) &#34;001&#34; 127.0.0.1:6379&gt; scard msg:1 (integer) 3 127.0.0.1:6379&gt; srem msg:1 002 (integer) 1 127.0.0.1:6379&gt; sismember msg:1 002 (integer) 0 127.0.0.1:6379&gt; sismember msg:1 001 (integer) 1 好友 // 添加好友 sadd uid huid // A和B共同好友,交集 sinter uidA uidB // A没有B有的,差集 sdiff uidA uidB // A和B都有的,并集 sunion uidA uidB 127.0.0.1:6379&gt; sadd uidA 001 002 003 004 (integer) 4 127.0.0.1:6379&gt; sadd uidB 002 003 004 005 (integer) 4 127.0.0.1:6379&gt; sinter uidA uidB 1) &#34;003&#34; 2) &#34;002&#34; 3) &#34;004&#34; 127.0.0.1:6379&gt; sdiff uidA uidB 1) &#34;001&#34; 127.0.0.1:6379&gt; sdiff uidB uidA 1) &#34;005&#34; 127.0.0.1:6379&gt; sunion uidA uidB 1) &#34;001&#34; 2) &#34;005&#34; 3) &#34;002&#34; 4) &#34;004&#34; 5) &#34;003&#34; 5. zset有序无重复集合 排行榜相关 例如: 点赞排行榜,商品热销排行榜,主播打赏排行榜,视频播放量排行榜">
+
+	
+  </head><body class="ma0 avenir bg-near-white development">
+
+    
+   
+  
+
+  <header>
+    <div class="bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l center items-center justify-between">
+    <a href="/" class="f3 fw2 hover-white white-90 dib no-underline">
+      
+        loveyu233
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      <div class="ananke-socials"></div>
+
+    </div>
+  </div>
+</nav>
+
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  
+  <article class="flex-l mw8 center ph3 flex-wrap justify-between">
+    <header class="mt4 w-100">
+      <aside class="instapaper_ignoref b helvetica tracked ttu">
+          
+        databases
+      </aside><div id="sharing" class="mt3 ananke-socials"></div>
+<h1 class="f1 athelas mt3 mb1">redis</h1>
+      
+      <p class="tracked"><strong>loveyu</strong>
+      </p>
+      
+      
+      
+      <time class="f6 mv4 dib tracked" datetime="2020-12-04T19:38:37+08:00">December 4, 2020</time>
+      
+
+      
+      
+    </header>
+    <div class="nested-copy-line-height lh-copy serif f4 nested-links mid-gray pr4-l w-two-thirds-l"><h1 id="redis数据类型">Redis数据类型</h1>
+<h2 id="1-string字符串">1. string字符串</h2>
+<h3 id="分布式锁">分布式锁</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>setnx key value
+</span></span><span style="display:flex;"><span>del key
+</span></span></code></pre></div><h3 id="自增自减">自增自减</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>incrby key value
+</span></span><span style="display:flex;"><span>decrby key value
+</span></span></code></pre></div><h2 id="2-list双端队列">2. list双端队列</h2>
+<h3 id="消息订阅">消息订阅</h3>
+<blockquote>
+<p>lpush key value</p>
+<p>rpop key value</p></blockquote>
+<h2 id="3-hash">3. hash</h2>
+<h3 id="购物车">购物车</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>// 新增商品
+</span></span><span style="display:flex;"><span>hset shopcar:uid shopid number
+</span></span><span style="display:flex;"><span>// 商品个数添加
+</span></span><span style="display:flex;"><span>hincrby shopcar:uid shopid <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>// 查看用户全部购物车商品总数
+</span></span><span style="display:flex;"><span>hlen shopcar:uid
+</span></span><span style="display:flex;"><span>// 全部选择
+</span></span><span style="display:flex;"><span>hgetall shopcar:uid
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>127.0.0.1:6379&gt; hset shopcar:01 <span style="color:#ae81ff">001</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; hset shopcar:01 <span style="color:#ae81ff">002</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; hlen shopcar:01
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; hgetall shopcar:01
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;001&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;1&#34;</span>
+</span></span><span style="display:flex;"><span>3<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;002&#34;</span>
+</span></span><span style="display:flex;"><span>4<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;1&#34;</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; hincrby shopcar:01 <span style="color:#ae81ff">001</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; hincrby shopcar:01 <span style="color:#ae81ff">001</span> -1
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; hgetall shopcar:01
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;001&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;1&#34;</span>
+</span></span><span style="display:flex;"><span>3<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;002&#34;</span>
+</span></span><span style="display:flex;"><span>4<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;1&#34;</span>
+</span></span></code></pre></div><h2 id="4-set无序无重复集合">4. set无序无重复集合</h2>
+<h3 id="抽奖">抽奖</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>// 参与抽奖
+</span></span><span style="display:flex;"><span>sadd key userid
+</span></span><span style="display:flex;"><span>// 获取参与人数
+</span></span><span style="display:flex;"><span>scard key
+</span></span><span style="display:flex;"><span>// 开始抽奖,number为此次中奖人数
+</span></span><span style="display:flex;"><span>srandmember key number // 抽完奖后还可以继续参与抽奖
+</span></span><span style="display:flex;"><span>spop key number				// 抽完奖就弹出不可以参加下一轮抽奖
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>127.0.0.1:6379&gt; sadd s <span style="color:#ae81ff">001</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; sadd s <span style="color:#ae81ff">002</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; sadd s <span style="color:#ae81ff">003</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; sadd s <span style="color:#ae81ff">004</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; scard s
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">4</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; srandmember s <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;003&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;001&#34;</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; scard s
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">4</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; spop s <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;003&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;004&#34;</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; scard s
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">2</span>
+</span></span></code></pre></div><h3 id="点赞">点赞</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>// 新增点赞
+</span></span><span style="display:flex;"><span>sadd msgid userid
+</span></span><span style="display:flex;"><span>// 取消点赞
+</span></span><span style="display:flex;"><span>srem msgid userid
+</span></span><span style="display:flex;"><span>// 获取所有点赞的用户id
+</span></span><span style="display:flex;"><span>smembers msgid
+</span></span><span style="display:flex;"><span>// 点赞统计
+</span></span><span style="display:flex;"><span>scard msgid
+</span></span><span style="display:flex;"><span>// 判断用户是否点过赞
+</span></span><span style="display:flex;"><span>sismember msgid userid
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>127.0.0.1:6379&gt; sadd msg:1 <span style="color:#ae81ff">001</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; sadd msg:1 <span style="color:#ae81ff">002</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; sadd msg:1 <span style="color:#ae81ff">003</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; smembers msg:1
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;003&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;002&#34;</span>
+</span></span><span style="display:flex;"><span>3<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;001&#34;</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; smembers msg:1
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;003&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;002&#34;</span>
+</span></span><span style="display:flex;"><span>3<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;001&#34;</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; scard msg:1
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">3</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; srem msg:1 <span style="color:#ae81ff">002</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; sismember msg:1 <span style="color:#ae81ff">002</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; sismember msg:1 <span style="color:#ae81ff">001</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span></code></pre></div><h3 id="好友">好友</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>// 添加好友
+</span></span><span style="display:flex;"><span>sadd uid huid
+</span></span><span style="display:flex;"><span>// A和B共同好友,交集
+</span></span><span style="display:flex;"><span>sinter uidA uidB
+</span></span><span style="display:flex;"><span>// A没有B有的,差集
+</span></span><span style="display:flex;"><span>sdiff uidA uidB
+</span></span><span style="display:flex;"><span>// A和B都有的,并集
+</span></span><span style="display:flex;"><span>sunion uidA uidB
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>127.0.0.1:6379&gt; sadd uidA <span style="color:#ae81ff">001</span> <span style="color:#ae81ff">002</span> <span style="color:#ae81ff">003</span> <span style="color:#ae81ff">004</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">4</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; sadd uidB <span style="color:#ae81ff">002</span> <span style="color:#ae81ff">003</span> <span style="color:#ae81ff">004</span> <span style="color:#ae81ff">005</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">4</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; sinter uidA uidB
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;003&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;002&#34;</span>
+</span></span><span style="display:flex;"><span>3<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;004&#34;</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; sdiff uidA uidB
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;001&#34;</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; sdiff uidB uidA
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;005&#34;</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; sunion uidA uidB
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;001&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;005&#34;</span>
+</span></span><span style="display:flex;"><span>3<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;002&#34;</span>
+</span></span><span style="display:flex;"><span>4<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;004&#34;</span>
+</span></span><span style="display:flex;"><span>5<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;003&#34;</span>
+</span></span></code></pre></div><h2 id="5-zset有序无重复集合">5. zset有序无重复集合</h2>
+<h3 id="排行榜相关">排行榜相关</h3>
+<blockquote>
+<p>例如: 点赞排行榜,商品热销排行榜,主播打赏排行榜,视频播放量排行榜</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>// 添加key
+</span></span><span style="display:flex;"><span>zadd key score value
+</span></span><span style="display:flex;"><span>// 增加key的value值
+</span></span><span style="display:flex;"><span>zincrby key value number
+</span></span><span style="display:flex;"><span>// 从大到小排行前三
+</span></span><span style="display:flex;"><span>zrange key <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">2</span> withscores
+</span></span><span style="display:flex;"><span>// 查询从scoreA到scoreB之间的,不包括就加上<span style="color:#f92672">(</span>
+</span></span><span style="display:flex;"><span>zrangebyscore min max withscores limit offset
+</span></span><span style="display:flex;"><span>// 统计从scoreA到scoreB之间的个数
+</span></span><span style="display:flex;"><span>zcount key min max
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>127.0.0.1:6379&gt; zadd key <span style="color:#ae81ff">10</span> a <span style="color:#ae81ff">20</span> b <span style="color:#ae81ff">30</span> c <span style="color:#ae81ff">40</span> d <span style="color:#ae81ff">50</span> e
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">5</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; zrange key <span style="color:#ae81ff">0</span> -1 withscores
+</span></span><span style="display:flex;"><span> 1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;a&#34;</span>
+</span></span><span style="display:flex;"><span> 2<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;10&#34;</span>
+</span></span><span style="display:flex;"><span> 3<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;b&#34;</span>
+</span></span><span style="display:flex;"><span> 4<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;20&#34;</span>
+</span></span><span style="display:flex;"><span> 5<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;c&#34;</span>
+</span></span><span style="display:flex;"><span> 6<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;30&#34;</span>
+</span></span><span style="display:flex;"><span> 7<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;d&#34;</span>
+</span></span><span style="display:flex;"><span> 8<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;40&#34;</span>
+</span></span><span style="display:flex;"><span> 9<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;e&#34;</span>
+</span></span><span style="display:flex;"><span>10<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;50&#34;</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; zincrby key <span style="color:#ae81ff">100</span> a
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;110&#34;</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; zrange key <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">2</span> withscores
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;b&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;20&#34;</span>
+</span></span><span style="display:flex;"><span>3<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;c&#34;</span>
+</span></span><span style="display:flex;"><span>4<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;30&#34;</span>
+</span></span><span style="display:flex;"><span>5<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;d&#34;</span>
+</span></span><span style="display:flex;"><span>6<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;40&#34;</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; zrevrange key <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">2</span> withscores
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;a&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;110&#34;</span>
+</span></span><span style="display:flex;"><span>3<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;e&#34;</span>
+</span></span><span style="display:flex;"><span>4<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;50&#34;</span>
+</span></span><span style="display:flex;"><span>5<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;d&#34;</span>
+</span></span><span style="display:flex;"><span>6<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;40&#34;</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; zrangebyscore key <span style="color:#ae81ff">30</span> <span style="color:#ae81ff">100</span> withscores
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;c&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;30&#34;</span>
+</span></span><span style="display:flex;"><span>3<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;d&#34;</span>
+</span></span><span style="display:flex;"><span>4<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;40&#34;</span>
+</span></span><span style="display:flex;"><span>5<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;e&#34;</span>
+</span></span><span style="display:flex;"><span>6<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;50&#34;</span>
+</span></span></code></pre></div><h2 id="6-geo地理空间">6. geo地理空间</h2>
+<h3 id="附近商家之类的功能">附近商家之类的功能</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>// 添加经纬度
+</span></span><span style="display:flex;"><span>geoadd key 经度 维度 名称
+</span></span><span style="display:flex;"><span>// 查找经纬度
+</span></span><span style="display:flex;"><span>geopos key 名称
+</span></span><span style="display:flex;"><span>// 返回为编码后的
+</span></span><span style="display:flex;"><span>geohash key 名称
+</span></span><span style="display:flex;"><span>// 查找半径内的, withdist:返回结果中带上距离多少 withcoord:返回结果带上经纬度 withhash:返回结果带上编码后的 count:返回的个数
+</span></span><span style="display:flex;"><span>georadius key 当前位置的经度 当前位置的维度 距离 距离的单位 withdist withcoord withhash count 个数 desc
+</span></span><span style="display:flex;"><span>// 不用经纬度查询而是用已有的元素查询
+</span></span><span style="display:flex;"><span>georadiusbymember key 名称 距离 距离单位 withdist withcoord withhash count 个数 desc
+</span></span></code></pre></div><h2 id="7-hyperloglog基数统计">7. hyperLoglog基数统计</h2>
+<blockquote>
+<p>基数:去重后的数据,用来做大数据的统计,例如网站访问量,搜索统计等..</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>// 添加
+</span></span><span style="display:flex;"><span>pfadd key element...
+</span></span><span style="display:flex;"><span>// 统计
+</span></span><span style="display:flex;"><span>pfcount key
+</span></span><span style="display:flex;"><span>// 合并
+</span></span><span style="display:flex;"><span>pfcount newkey key1 key2
+</span></span></code></pre></div><h2 id="8-bitmap位图">8. bitmap位图</h2>
+<blockquote>
+<p>由0和1表现的二进制的bit数组</p></blockquote>
+<blockquote>
+<p>not/and/or/xor : 非/与/或/异或(同为0异为1)</p>
+<p>A: 1 1 1 0 0 1 0 0</p>
+<p>B: 1 1 0 0 0 0 1 0</p>
+<p>and: 1 1 0 0 0 0 0</p>
+<p>or:1 1 1 0 0 1 1</p>
+<p>xor: 0 0 1 0 0 1 1 0</p>
+<p>notA: 0 0 0 1 1 0 1 1</p></blockquote>
+<h3 id="签到">签到</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>// 签到,key为用户id:时间年月 日 <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>setbit userid:time day <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>// 统计一个月签到次数
+</span></span><span style="display:flex;"><span>bitcount userid:time
+</span></span></code></pre></div><h2 id="9-bitfield位域">9. bitfield位域</h2>
+<h2 id="10-stream流消息队列">10. stream流消息队列</h2>
+<h1 id="命令">命令</h1>
+<h2 id="string">String</h2>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: center">命令</th>
+          <th style="text-align: center">文档</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: center">set key value</td>
+          <td style="text-align: center">添加一个key value</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">get key</td>
+          <td style="text-align: center">获取指定key的value</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">append key value</td>
+          <td style="text-align: center">在原有值后面追加值,不存在则创建,返回值为追加后的长度</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">incr key</td>
+          <td style="text-align: center">自增相当于+=1</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">incrby key value</td>
+          <td style="text-align: center">增加指定的值,可以是正数也可以是负数,正数则是增加负数则是减少</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">decr key</td>
+          <td style="text-align: center">自减相当于-=1</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">decrby key value</td>
+          <td style="text-align: center">减去指定的值,可以是正数也可以是负数,正数则是减去负数则是增加</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">strlen key</td>
+          <td style="text-align: center">获取指定key的value长度</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">getrange key start end</td>
+          <td style="text-align: center">获取key从start到end长度的值,是左闭右闭</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">mset key1 value1 key2 value2</td>
+          <td style="text-align: center">添加多个kv</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">mget key1 key2</td>
+          <td style="text-align: center">获取多个key的value</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">setnx key value</td>
+          <td style="text-align: center">如果这个key不存在就创建返回1,存在则不创建返回0</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">setex key seconds value</td>
+          <td style="text-align: center">添加key value 并设置过期时间</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="list">List</h2>
+<blockquote>
+<p>列表,相当于一个管道两头都可以进都可以出</p></blockquote>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: center">命令</th>
+          <th style="text-align: center">文档</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: center">lpush key value&hellip;</td>
+          <td style="text-align: center">从左边添加值</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">rpush key value&hellip;</td>
+          <td style="text-align: center">从右边添加值</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">lrange key start end</td>
+          <td style="text-align: center">获取key从start到end的值,左闭右闭</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">lpop key count</td>
+          <td style="text-align: center">从左弹出count个值,弹出后就相当于删除了</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">rpop key count</td>
+          <td style="text-align: center">从右弹出count个值</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">lrem key count element</td>
+          <td style="text-align: center">删除key里面count个数的element,count大于0从表头开始,小于0从表尾开始,等于0则删除全部value等于element的值</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">lindex key index</td>
+          <td style="text-align: center">获取key里面索引为index的value</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">lset key index newvalue</td>
+          <td style="text-align: center">修改key里面索引为index的value为newvalue,没有index索引则报错</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">ltrim key start end</td>
+          <td style="text-align: center">删除key索引从start到end之外的全部值</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">linsert key before/after value newvalue</td>
+          <td style="text-align: center">在key的vlaue的前/后添加newvalue</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="set">Set</h2>
+<blockquote>
+<p>无序集合</p></blockquote>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: center">命令</th>
+          <th style="text-align: center">文档</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: center">sadd key value&hellip;</td>
+          <td style="text-align: center">添加集合key里面多个value值</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">scard key</td>
+          <td style="text-align: center">查询key集合里面元素个数</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">sdiff/sinter/sunion key1 key2</td>
+          <td style="text-align: center">查询key1与key2的差集/交集/并集元素</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">smembers key</td>
+          <td style="text-align: center">获取key集合里面全部的元素</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">sismember key value</td>
+          <td style="text-align: center">判断key集合里面有没有value,有返回1没有返回0</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">smove key1 key2 value</td>
+          <td style="text-align: center">把key1集合里面的value移动到key2的集合中</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">srandmember key count</td>
+          <td style="text-align: center">返回key里面count个数的随机值</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">srem key value&hellip;</td>
+          <td style="text-align: center">删除key里面指定value值,可以删除多个</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">sscan key cur match v1 count v2</td>
+          <td style="text-align: center">返回模糊查找key集合里面符合v1条件的v2个数的值的集合,cur为游标一般为0即可</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="zset">ZSET</h2>
+<blockquote>
+<p>有序集合,排序是按照score进行从小到大进行排序</p></blockquote>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: center">命令</th>
+          <th style="text-align: center">文档</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: center">zadd key score value&hellip;</td>
+          <td style="text-align: center">向key集合里面添加分数为score值为value的数据,如果有value这个值则会更新value这个值的score</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">zcard key</td>
+          <td style="text-align: center">返回key集合的元素个数</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">zcount key min max</td>
+          <td style="text-align: center">返回key集合里面分数从min到max的元素个数</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">zincrby key score member</td>
+          <td style="text-align: center">把key的集合里面member元素的分数加等上score</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">zrange key start end withscores</td>
+          <td style="text-align: center">返回key集合里面从start到end的元素,携带withscores参数则会返回时带上对应的分数,从小到大</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">zrevrange key start end</td>
+          <td style="text-align: center">返回key集合里面从start到end的元素,携带withscores参数则会返回时带上对应的分数,从大到小</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">zrevrangebyscore key max min</td>
+          <td style="text-align: center">返回key集合的分数从max到min的元素</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">zlexcount key min max</td>
+          <td style="text-align: center">返回key集合里面从min到max的个数,例如:zlexcount key - + , -表示最小+表示最大,可以用 [ 符号来指定元素,例如: zlexcount key [a [f 查询从a到f之间的元素包含a和f</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">zrank key member</td>
+          <td style="text-align: center">返回key集合里面member元素的索引</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">zrem key member</td>
+          <td style="text-align: center">删除key集合里面</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">zremrangebyscore key min max</td>
+          <td style="text-align: center">删除key集合里面分数大于等于min小于等于max的值</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">zremrangebyrank key min max</td>
+          <td style="text-align: center">删除key集合里面索引从min到max的值</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">zrevrank key member</td>
+          <td style="text-align: center">返回key集合里面member元素的排名,从大到小,从0开始</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">zmpop count key min/max count 1</td>
+          <td style="text-align: center">第一个count为有多少个key,第二个count为弹出的个数</td>
+      </tr>
+  </tbody>
+</table>
+<h1 id="事务">事务</h1>
+<blockquote>
+<p>redis的事务没有回滚功能,也不能保证原子性</p>
+<p>multi: 开启事务</p>
+<p>exec: 提交事务</p>
+<p>开启事务到提交事务过程中如果有语法上的错误的话这个事务会直接报错无法执行</p>
+<p>如果没有语法上的错误的话这个事务提交后就会逐条执行,正确的就执行错误的就报错,不会回滚不能保证原子性</p></blockquote>
+<h2 id="watch">watch</h2>
+<blockquote>
+<p>命令: watch key&hellip;</p>
+<p>监控key,当这个key被监控后开启事务并修改这个key,在没有提交前别的客户端对这个key做了修改,然后提交这个事务就会失败,这个事务中的所有命令都会执行失败,返回nil</p>
+<p>事务提交后监控会自己取消</p></blockquote>
+<h2 id="unwathch">unwathch</h2>
+<blockquote>
+<p>取消监控</p></blockquote>
+<h1 id="管道">管道</h1>
+<blockquote>
+<p>一次执行多条命令, 没有原子性</p>
+<p>先把命令保存到一个文件中</p>
+<p>然后执行</p>
+<p>文件名 | redis-cli &ndash; pipe</p></blockquote>
+<h1 id="bigkey问题">BigKey问题</h1>
+<h2 id="禁用keys--flushall-flushdb命令">禁用keys * flushall flushdb命令</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">==</span> SECURITY <span style="color:#f92672">==</span>
+</span></span><span style="display:flex;"><span>rename command keys <span style="color:#e6db74">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>rename command flushall <span style="color:#e6db74">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>rename command flushdb <span style="color:#e6db74">&#34;&#34;</span>
+</span></span></code></pre></div><h2 id="禁用了keys-后怎么获取指定前缀的key">禁用了keys *后怎么获取指定前缀的key</h2>
+<blockquote>
+<p>scan 游标 匹配表达式 返回个数</p>
+<p>分别有sscan hscan zscan</p>
+<p>第一次游标为0,查询后会返回一个游标,如果返回的游标为0则表示已经查询完了,不是0则下次查询的游标就为上次返回的游标值</p>
+<p>scan的遍历顺序不是从0到最后,而是采用高位进位加法来遍历,使用这样特殊的方式进行遍历是考虑到字典的扩容和缩容时避免槽位的遍历重复和遗漏</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>127.0.0.1:6379&gt; scan <span style="color:#ae81ff">0</span> match k* count <span style="color:#ae81ff">3</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">655360</span>
+</span></span><span style="display:flex;"><span>k788708
+</span></span><span style="display:flex;"><span>k952061
+</span></span><span style="display:flex;"><span>k621947
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; scan <span style="color:#ae81ff">655360</span> match k* count <span style="color:#ae81ff">3</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">327680</span>
+</span></span><span style="display:flex;"><span>k822248
+</span></span><span style="display:flex;"><span>k323028
+</span></span><span style="display:flex;"><span>k857178
+</span></span></code></pre></div><h2 id="多大的key算大key">多大的key算大key</h2>
+<ol>
+<li>string类型的10kb内</li>
+<li>其他类型元素个数不能超过5000</li>
+</ol>
+<h2 id="危害">危害</h2>
+<ol>
+<li>内存分布不均匀,集群建议困难</li>
+<li>超时删除</li>
+<li>网络流量阻塞</li>
+</ol>
+<h2 id="怎么产生的">怎么产生的</h2>
+<ol>
+<li>暴增式的,例如突然爆火的明星网红粉丝瞬间变多</li>
+<li>汇总式的,例如某个报表,每天积累上去的</li>
+</ol>
+<h2 id="如何发现">如何发现</h2>
+<ol>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>redis-cli --bigkeys
+</span></span><span style="display:flex;"><span><span style="color:#f92672">==</span> --bigkeys只会返回每个类型的最大的key并给出每种数据类型的个数和平均大小
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>~ &gt; redis-cli --bigkeys
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Scanning the entire keyspace to find biggest keys as well as</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># average sizes per key type.  You can use -i 0.1 to sleep 0.1 sec</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># per 100 SCAN commands (not usually needed).</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>00.00%<span style="color:#f92672">]</span> Biggest string found so far <span style="color:#e6db74">&#39;&#34;k788708&#34;&#39;</span> with <span style="color:#ae81ff">7</span> bytes
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>100.00%<span style="color:#f92672">]</span> Sampled <span style="color:#ae81ff">1000000</span> keys so far
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>-------- summary -------
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Sampled <span style="color:#ae81ff">1000000</span> keys in the keyspace!
+</span></span><span style="display:flex;"><span>Total key length in bytes is <span style="color:#ae81ff">6888889</span> <span style="color:#f92672">(</span>avg len 6.89<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Biggest string found <span style="color:#e6db74">&#39;&#34;k788708&#34;&#39;</span> has <span style="color:#ae81ff">7</span> bytes
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">0</span> lists with <span style="color:#ae81ff">0</span> items <span style="color:#f92672">(</span>00.00% of keys, avg size 0.00<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">0</span> hashs with <span style="color:#ae81ff">0</span> fields <span style="color:#f92672">(</span>00.00% of keys, avg size 0.00<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">1000000</span> strings with <span style="color:#ae81ff">6888889</span> bytes <span style="color:#f92672">(</span>100.00% of keys, avg size 6.89<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">0</span> streams with <span style="color:#ae81ff">0</span> entries <span style="color:#f92672">(</span>00.00% of keys, avg size 0.00<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">0</span> sets with <span style="color:#ae81ff">0</span> members <span style="color:#f92672">(</span>00.00% of keys, avg size 0.00<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">0</span> zsets with <span style="color:#ae81ff">0</span> members <span style="color:#f92672">(</span>00.00% of keys, avg size 0.00<span style="color:#f92672">)</span>
+</span></span></code></pre></div></li>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>memory usage key
+</span></span><span style="display:flex;"><span><span style="color:#f92672">==</span> 返回这个key占的大小
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; MEMORY USAGE k1000
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">72</span>
+</span></span></code></pre></div></li>
+</ol>
+<h2 id="如何删除">如何删除</h2>
+<blockquote>
+<p>非字符串类型的不要使用del直接删除,要使用scan渐进式的删除,注意大key的过期自动删除</p></blockquote>
+<ol>
+<li>string
+<ol>
+<li>一般 <code>del</code> , 特别大就用 <code>unlink</code></li>
+</ol>
+</li>
+<li>list
+<ol>
+<li>先使用 <code>llen</code> 获取list的大小</li>
+<li>然后使用 <code>ltrim</code> 渐进式删除</li>
+<li>最后使用 <code>del</code> 删除这个key</li>
+<li><code>ltrim key start end</code> 只保留从start到end的其余全部删除</li>
+</ol>
+</li>
+<li>hash
+<ol>
+<li>使用 <code>hscan</code> 每次获取少量的field-value</li>
+<li>然后使用 <code>hdel</code> 删除每个key</li>
+<li>最后使用 <code>del</code> 删除这个key</li>
+</ol>
+</li>
+<li>set
+<ol>
+<li>使用 <code>sscan</code> 扫描部分元素</li>
+<li>再使用 <code>srem</code> 逐步删除</li>
+<li>最后使用 <code>del</code> 删除这个key</li>
+<li><code>srem key member....</code></li>
+</ol>
+</li>
+<li>zset
+<ol>
+<li>使用 <code>zscan</code> 扫描部分元素</li>
+<li>再使用 <code>zremrangebyrank</code> 逐步删除</li>
+<li>最后使用 <code>del</code> 删除这个key</li>
+<li><code>zremrangebyrank key start end</code></li>
+</ol>
+</li>
+</ol>
+<h2 id="bigkey生产调优">bigkey生产调优</h2>
+<ol>
+<li><code>del</code> 阻塞删除</li>
+<li><code>unlink</code> 非阻塞删除</li>
+</ol>
+<p>在conf配置文件中的 <code>LAZY FREEING</code> 中</p>
+<ol>
+<li>
+<p>lazyfree- lazv- eviction no</p>
+<ol>
+<li>
+<blockquote>
+<p>针对redis内存使用达到maxmeory，并设置有淘汰策略时；在被动淘汰键时，是否采用lazy free机制； 因为此场景开启lazy free, 可能使用淘汰键的内存释放不及时，导致redis内存超用，超过maxmemory的限制。</p></blockquote>
+</li>
+</ol>
+</li>
+<li>
+<p>Lazyfree- lazy- expire no</p>
+<ol>
+<li>
+<blockquote>
+<p>针对设置有TTL的键，达到过期后，被redis清理删除时是否采用lazy free机制；</p></blockquote>
+</li>
+</ol>
+</li>
+<li>
+<p>lazyfree. lazy- server- del .no</p>
+<ol>
+<li>
+<blockquote>
+<p>针对有些指令在处理已存在的键时，会带有一个隐式的DEL键的操作。如rename命令，当目标键已存在, redis会先删除目标键，如果这些目标键是一个big key, 那就会引入阻塞删除的性能问题。 此参数设置就是解决这类问题，建议可开启。</p></blockquote>
+</li>
+</ol>
+</li>
+<li>
+<p>replica- lazy- flush no</p>
+<ol>
+<li>
+<blockquote>
+<p>针对slave进行全量数据同步，slave在加载master的RDB文件前，会运行flushall来清理自己的数据场景， 参数设置决定是否采用异常flush机制。</p>
+<p>如果内存变动不大，建议可开启。可减少全量同步耗时，从而减少主库因输出缓冲区爆涨引起的内存使用增长。</p></blockquote>
+</li>
+</ol>
+</li>
+<li>
+<p>lazyf ree- lazy- user- del no</p>
+<ol>
+<li>修改为yes</li>
+</ol>
+</li>
+</ol>
+<h1 id="双写一致性">双写一致性</h1>
+<h2 id="双检加锁策略">双检加锁策略</h2>
+<blockquote>
+<p>缓存失效后重构</p></blockquote>
+<ul>
+<li>多个线程同时去查询数据库的这条数据，就在第一个查询数据的请求上使用一个互斥锁来锁住他。</li>
+<li>其他线程获取不到锁就一直等待，等第一个线程查询到了数据，然后做了缓存</li>
+<li>后面的线程进来发现已经有了缓存，就直接走缓存</li>
+</ul>
+<h2 id="更新策略">更新策略</h2>
+<blockquote>
+<p>对数据库数据进行修改后缓存要更新的操作</p></blockquote>
+<h3 id="先更新数据库再更新缓存">先更新数据库再更新缓存</h3>
+<ol>
+<li>
+<h4 id="更新完数据库后缓存更新失败了">更新完数据库后缓存更新失败了</h4>
+<ol>
+<li>
+<blockquote>
+<p>例如数据库库存为 <code>100</code> ,现在下单</p>
+<ol>
+<li>修改数据库数据,从 <code>100</code> 修改成 <code>99</code></li>
+<li>数据库修改后开始修改缓存,但是缓存修改失败</li>
+<li>现在的缓存依旧是 <code>100</code></li>
+</ol></blockquote>
+</li>
+</ol>
+</li>
+<li>
+<h4 id="多线程情况下造成了缓存覆盖">多线程情况下造成了缓存覆盖</h4>
+<ol>
+<li>
+<blockquote>
+<p>例如数据库库存为 <code>100</code> ,现在A和B下单,在多线程的情况下</p>
+<ol>
+<li>A线程修改数据库库存为 <code>99</code> ,B线程修改数据库库存为 <code>98</code></li>
+<li>B线程抢先一步先修改了缓存为 <code>98</code></li>
+<li>A线程然后又修改了缓存为 <code>99</code></li>
+<li>现在缓存变为 <code>99</code>,但是实际应该为 <code>98</code> 才对</li>
+</ol></blockquote>
+</li>
+</ol>
+</li>
+</ol>
+<h3 id="先更新缓存再更新数据库">先更新缓存再更新数据库</h3>
+<ol>
+<li>
+<h4 id="不推荐">不推荐</h4>
+<ol>
+<li>原因为: 一般把数据库的数据库作为 <code>底单数据</code> 也就是最终数据</li>
+</ol>
+</li>
+<li>
+<h4 id="多线程情况下造成了数据库的数据库覆盖">多线程情况下造成了数据库的数据库覆盖</h4>
+<ol>
+<li>
+<blockquote>
+<p>例如数据库库存为 <code>100</code> ,现在A和B下单,在多线程的情况下</p>
+<ol>
+<li>A线程修改缓存为 <code>99</code> ,B线程修改缓存为 <code>98</code></li>
+<li>B线程抢先一步把数据库的数据修改为了 <code>98</code></li>
+<li>然后A线程又把数据库的数据修改为了 <code>99</code></li>
+<li>现在缓存数据为 <code>98</code> ,但是数据库的数据为 <code>99</code></li>
+</ol></blockquote>
+</li>
+</ol>
+</li>
+</ol>
+<h3 id="先删除缓存再更新数据库">先删除缓存再更新数据库</h3>
+<blockquote>
+<ol>
+<li>A删除缓存,然后更新数据库,但是因为某些原因例如网络问题,在数据库更新时B来查询数据</li>
+<li>B发现缓存里面没有数据,然后去数据库查询数据,但是这时A还没有给新的数据更新进去,于是B读取到了旧数据,然后把旧数据写入了缓存</li>
+<li>然后A线程更新数据库成功了,但是这时缓存有数据了,这个数据和数据库数据不一致了</li>
+</ol></blockquote>
+<h4 id="解决方案">解决方案</h4>
+<h5 id="延时双删">延时双删</h5>
+<blockquote>
+<h4 id="a先删除缓存然后更新数据库在数据库更新完毕后休眠一段时间再次把缓存数据删除">A先删除缓存然后更新数据库在数据库更新完毕后休眠一段时间再次把缓存数据删除</h4></blockquote>
+<h5 id="问题">问题</h5>
+<blockquote>
+<h4 id="a从更新数据到再次删除缓存的这段时间要大于b读取数据库并重建缓存的时间">A从更新数据到再次删除缓存的这段时间要大于B读取数据库并重建缓存的时间</h4>
+<p><code>那么这个时间要设置为多少?</code></p>
+<ol>
+<li>自行评估耗时时间,然后设置为这个时间</li>
+<li>新起一个后台监控程序, 使用WatchDog监控</li>
+</ol></blockquote>
+<h3 id="先更新数据库再删除缓存">先更新数据库再删除缓存</h3>
+<h4 id="问题-1">问题</h4>
+<blockquote>
+<ol>
+<li>A先修改数据库数据,在A修改的过程中,B来查询</li>
+<li>B查询到了旧的数据</li>
+<li>A修改完成,删除缓存数据</li>
+</ol>
+<p><code>问题就是在修改数据库数据到删除缓存过程中其他查询的线程会读取到旧数据</code></p></blockquote>
+<h2 id="工程案列">工程案列</h2>
+<h3 id="mysql主从复制原理">mysql主从复制原理</h3>
+<ol>
+<li>当master主服务器上的数据发生改变时，将其改变写入二进制事件日志文件中</li>
+<li>slave 从服务器会在一定时间间隔内对master 主服务器上的二进制日志进行探测，探测其是否发生过改变
+<ol>
+<li>如果探测到 master 主服务器的二进制时间发生了改变，则开始一个 I/O Thread 请求 master 二进制事件日志</li>
+</ol>
+</li>
+<li>同时 master 主服务器为每个 I/O Thread 启动一个 dump Thread，用于向其发送二进制事件日志</li>
+<li>slave 从服务器将接收到的二进制事件日志保存至自己本地的中继日志文件中</li>
+<li>slave 从服务器将启动 SQL Thread 从中继日志中读取二进制日志，在本地重放，使得其数据和主服务器保持一致</li>
+<li>最后 I/O Thread 和 SQL　Thread　将进入睡眠状态，等待下一次被唤醒</li>
+</ol>
+<h3 id="canal工作原理">canal工作原理</h3>
+<ol>
+<li>canal 模拟 Mysql slave 的交互协议，将自己作为 Mysql slave ，向 Mysql master 发送 dump 协议</li>
+<li>MySQL master 收到 dump 请求，开始推送 binary log 给 slave（即cancal）</li>
+<li>canal 解析 binary log 对象（原始为 byte 流）</li>
+</ol>
+<p><code>mysql设置</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">select</span> <span style="color:#66d9ef">version</span>();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">show</span> master status ;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">show</span> variables <span style="color:#66d9ef">like</span> <span style="color:#e6db74">&#39;log_bin&#39;</span> ;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">select</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">from</span> mysql.<span style="color:#66d9ef">user</span> ;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">create</span> <span style="color:#66d9ef">user</span> <span style="color:#e6db74">&#39;canal&#39;</span><span style="color:#f92672">@</span><span style="color:#e6db74">&#39;%&#39;</span> identified <span style="color:#66d9ef">by</span> <span style="color:#e6db74">&#39;canal&#39;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">GRANT</span> <span style="color:#66d9ef">ALL</span> <span style="color:#66d9ef">PRIVILEGES</span> <span style="color:#66d9ef">ON</span> <span style="color:#f92672">*</span>.<span style="color:#f92672">*</span> <span style="color:#66d9ef">TO</span> <span style="color:#e6db74">&#39;canal&#39;</span><span style="color:#f92672">@</span><span style="color:#e6db74">&#39;%&#39;</span> <span style="color:#66d9ef">WITH</span> <span style="color:#66d9ef">GRANT</span> <span style="color:#66d9ef">OPTION</span>;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">#</span> <span style="color:#960050;background-color:#1e0010">因为</span>mysql8.<span style="color:#ae81ff">0</span>.<span style="color:#ae81ff">3</span><span style="color:#960050;background-color:#1e0010">后身份检验方式为</span>caching_sha2_password<span style="color:#960050;background-color:#1e0010">，但</span>canal使用的是mysql_native_password<span style="color:#960050;background-color:#1e0010">，因此需要设置检验方式（如果该版本之前的可跳过），否则会报错</span>IOException: caching_sha2_password Auth failed
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">ALTER</span> <span style="color:#66d9ef">USER</span> <span style="color:#e6db74">&#39;canal&#39;</span><span style="color:#f92672">@</span><span style="color:#e6db74">&#39;%&#39;</span> IDENTIFIED <span style="color:#66d9ef">WITH</span> mysql_native_password <span style="color:#66d9ef">BY</span> <span style="color:#e6db74">&#39;canal&#39;</span>;
+</span></span><span style="display:flex;"><span>flush <span style="color:#66d9ef">privileges</span> ;
+</span></span></code></pre></div><h3 id="代码">代码</h3>
+<blockquote>
+<p>连接canal,进行监听,当获取到mysql的操作后再做对应的redis操作</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> (
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;fmt&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;log&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;os&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;redisDemo/services/redis&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;time&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;github.com/golang/protobuf/proto&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;github.com/withlin/canal-go/client&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">pbe</span> <span style="color:#e6db74">&#34;github.com/withlin/canal-go/protocol/entry&#34;</span>
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 192.168.199.17 替换成你的canal server的地址</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// example 替换成-e canal.destinations=example 你自己定义的名字</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">connector</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">client</span>.<span style="color:#a6e22e">NewSimpleCanalConnector</span>(<span style="color:#e6db74">&#34;127.0.0.1&#34;</span>, <span style="color:#ae81ff">11111</span>, <span style="color:#e6db74">&#34;&#34;</span>, <span style="color:#e6db74">&#34;&#34;</span>, <span style="color:#e6db74">&#34;example&#34;</span>, <span style="color:#ae81ff">60000</span>, <span style="color:#ae81ff">60</span><span style="color:#f92672">*</span><span style="color:#ae81ff">60</span><span style="color:#f92672">*</span><span style="color:#ae81ff">1000</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">connector</span>.<span style="color:#a6e22e">Connect</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Exit</span>(<span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">		// https://github.com/alibaba/canal/wiki/AdminGuide
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">		//mysql 数据解析关注的表，Perl正则表达式.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">		//
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">		//多个正则之间以逗号(,)分隔，转义符需要双斜杠(\\)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">		//
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">		//常见例子：
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">		//
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">		//  1.  所有表：.*   or  .*\\..*
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">		//	2.  canal schema下所有表： canal\\..*
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">		//	3.  canal下的以canal打头的表：canal\\.canal.*
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">		//	4.  canal schema下的一张表：canal\\.test1
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">		//  5.  多个规则组合使用：canal\\..*,mysql.test1,mysql.test2 (逗号分隔)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">	*/</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//err = connector.Subscribe(&#34;.*\\..*&#34;)</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">connector</span>.<span style="color:#a6e22e">Subscribe</span>(<span style="color:#e6db74">&#34;test\\.test1&#34;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Exit</span>(<span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">message</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">connector</span>.<span style="color:#a6e22e">Get</span>(<span style="color:#ae81ff">100</span>, <span style="color:#66d9ef">nil</span>, <span style="color:#66d9ef">nil</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Exit</span>(<span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">batchId</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">message</span>.<span style="color:#a6e22e">Id</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">batchId</span> <span style="color:#f92672">==</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span> <span style="color:#f92672">||</span> len(<span style="color:#a6e22e">message</span>.<span style="color:#a6e22e">Entries</span>) <span style="color:#f92672">&lt;=</span> <span style="color:#ae81ff">0</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Sleep</span>(<span style="color:#ae81ff">300</span> <span style="color:#f92672">*</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Millisecond</span>)
+</span></span><span style="display:flex;"><span>			<span style="color:#75715e">//fmt.Println(&#34;===没有数据了===&#34;)</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">continue</span>
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">printEntry</span>(<span style="color:#a6e22e">message</span>.<span style="color:#a6e22e">Entries</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">printEntry</span>(<span style="color:#a6e22e">entrys</span> []<span style="color:#a6e22e">pbe</span>.<span style="color:#a6e22e">Entry</span>) {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">entry</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">entrys</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">entry</span>.<span style="color:#a6e22e">GetEntryType</span>() <span style="color:#f92672">==</span> <span style="color:#a6e22e">pbe</span>.<span style="color:#a6e22e">EntryType_TRANSACTIONBEGIN</span> <span style="color:#f92672">||</span> <span style="color:#a6e22e">entry</span>.<span style="color:#a6e22e">GetEntryType</span>() <span style="color:#f92672">==</span> <span style="color:#a6e22e">pbe</span>.<span style="color:#a6e22e">EntryType_TRANSACTIONEND</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">continue</span>
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">rowChange</span> <span style="color:#f92672">:=</span> new(<span style="color:#a6e22e">pbe</span>.<span style="color:#a6e22e">RowChange</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">proto</span>.<span style="color:#a6e22e">Unmarshal</span>(<span style="color:#a6e22e">entry</span>.<span style="color:#a6e22e">GetStoreValue</span>(), <span style="color:#a6e22e">rowChange</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">checkError</span>(<span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">rowChange</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">eventType</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">rowChange</span>.<span style="color:#a6e22e">GetEventType</span>()
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">header</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">entry</span>.<span style="color:#a6e22e">GetHeader</span>()
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Sprintf</span>(<span style="color:#e6db74">&#34;================&gt; binlog[%s : %d],name[%s,%s], eventType: %s&#34;</span>, <span style="color:#a6e22e">header</span>.<span style="color:#a6e22e">GetLogfileName</span>(), <span style="color:#a6e22e">header</span>.<span style="color:#a6e22e">GetLogfileOffset</span>(), <span style="color:#a6e22e">header</span>.<span style="color:#a6e22e">GetSchemaName</span>(), <span style="color:#a6e22e">header</span>.<span style="color:#a6e22e">GetTableName</span>(), <span style="color:#a6e22e">header</span>.<span style="color:#a6e22e">GetEventType</span>()))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">rowData</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">rowChange</span>.<span style="color:#a6e22e">GetRowDatas</span>() {
+</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">eventType</span> <span style="color:#f92672">==</span> <span style="color:#a6e22e">pbe</span>.<span style="color:#a6e22e">EventType_DELETE</span> {
+</span></span><span style="display:flex;"><span>					<span style="color:#75715e">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">						====&gt;binlog[mysql-bin.ooe001 : 3292],name [test, test1], eventType ： DELETE id : 1 update= false
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">						name : aaa update= false
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">						age : 23 update= false
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">						password : updateTest update= false
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">						phoneNumber : update= false
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">						text : update= false
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">					*/</span>
+</span></span><span style="display:flex;"><span>					<span style="color:#a6e22e">cs</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">rowData</span>.<span style="color:#a6e22e">GetBeforeColumns</span>()
+</span></span><span style="display:flex;"><span>					<span style="color:#a6e22e">printColumn</span>(<span style="color:#a6e22e">cs</span>)
+</span></span><span style="display:flex;"><span>          <span style="color:#75715e">// 这里做对redis的操作</span>
+</span></span><span style="display:flex;"><span>					<span style="color:#a6e22e">redis</span>.<span style="color:#a6e22e">Delete</span>(<span style="color:#a6e22e">cs</span>)
+</span></span><span style="display:flex;"><span>				} <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">eventType</span> <span style="color:#f92672">==</span> <span style="color:#a6e22e">pbe</span>.<span style="color:#a6e22e">EventType_INSERT</span> {
+</span></span><span style="display:flex;"><span>					<span style="color:#75715e">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">						====&gt;binlog[mysql-bin.000001 : 26381,name [test, test1], eventType: INSERT id : 1 update= true
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">						name : abc update= true
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">						age : 11 update= true
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">						password : asdasdasd update= true
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">						phoneNumber : update= true
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">						text : update= true
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">					*/</span>
+</span></span><span style="display:flex;"><span>					<span style="color:#a6e22e">cs</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">rowData</span>.<span style="color:#a6e22e">GetAfterColumns</span>()
+</span></span><span style="display:flex;"><span>					<span style="color:#a6e22e">printColumn</span>(<span style="color:#a6e22e">cs</span>)
+</span></span><span style="display:flex;"><span>          <span style="color:#75715e">// 这里做对redis的操作</span>
+</span></span><span style="display:flex;"><span>					<span style="color:#a6e22e">redis</span>.<span style="color:#a6e22e">Update</span>(<span style="color:#a6e22e">cs</span>)
+</span></span><span style="display:flex;"><span>				} <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>					<span style="color:#75715e">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">						===&gt;binlog [mysql-bin.000001 : 2957],name [test, test1], eventType : UPDATE
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">						-&gt; before
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">						id : 1 update= false
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">						name : abc update= false
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">						age : 11 update= false
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">						password : asdasdasd update= false
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">						phoneNumber ： update= false
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">						text : update= false
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">						一------&gt; aften
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">						id : 1 update= false
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">						name : aaa update= trve
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">						age : 23 update= true
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">						password : updateTest update= true
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">						phoneNumber • update= false
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">						text • update= false
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">					*/</span>
+</span></span><span style="display:flex;"><span>					<span style="color:#75715e">//fmt.Println(&#34;-------&gt; before&#34;)</span>
+</span></span><span style="display:flex;"><span>					<span style="color:#75715e">//printColumn(rowData.GetBeforeColumns())</span>
+</span></span><span style="display:flex;"><span>					<span style="color:#75715e">//fmt.Println(&#34;-------&gt; after&#34;)</span>
+</span></span><span style="display:flex;"><span>					<span style="color:#a6e22e">cs</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">rowData</span>.<span style="color:#a6e22e">GetAfterColumns</span>()
+</span></span><span style="display:flex;"><span>					<span style="color:#a6e22e">printColumn</span>(<span style="color:#a6e22e">cs</span>)
+</span></span><span style="display:flex;"><span>          <span style="color:#75715e">// 这里做对redis的操作</span>
+</span></span><span style="display:flex;"><span>					<span style="color:#a6e22e">redis</span>.<span style="color:#a6e22e">Update</span>(<span style="color:#a6e22e">cs</span>)
+</span></span><span style="display:flex;"><span>				}
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">printColumn</span>(<span style="color:#a6e22e">columns</span> []<span style="color:#f92672">*</span><span style="color:#a6e22e">pbe</span>.<span style="color:#a6e22e">Column</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">col</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">columns</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Sprintf</span>(<span style="color:#e6db74">&#34;%s : %s  update= %t&#34;</span>, <span style="color:#a6e22e">col</span>.<span style="color:#a6e22e">GetName</span>(), <span style="color:#a6e22e">col</span>.<span style="color:#a6e22e">GetValue</span>(), <span style="color:#a6e22e">col</span>.<span style="color:#a6e22e">GetUpdated</span>()))
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">checkError</span>(<span style="color:#a6e22e">err</span> <span style="color:#66d9ef">error</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Fprintf</span>(<span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Stderr</span>, <span style="color:#e6db74">&#34;Fatal error: %s&#34;</span>, <span style="color:#a6e22e">err</span>.<span style="color:#a6e22e">Error</span>())
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Exit</span>(<span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="数据统计">数据统计</h1>
+<h2 id="统计类型">统计类型</h2>
+<ol>
+<li>聚合统计
+<ol>
+<li>求交集并集和差集</li>
+</ol>
+</li>
+<li>排序统计
+<ol>
+<li>求前n条数据</li>
+</ol>
+</li>
+<li>二值统计
+<ol>
+<li>统计结果只有0和1的数据</li>
+</ol>
+</li>
+<li>基数统计
+<ol>
+<li>不重复数据的统计</li>
+</ol>
+</li>
+</ol>
+<h2 id="hyperloglog">hyperLoglog</h2>
+<h3 id="uv">UV</h3>
+<blockquote>
+<p>Unique Visitor 独立访客一般为客户端ip, 需要去重</p></blockquote>
+<h3 id="pv">PV</h3>
+<blockquote>
+<p>Page View 页面浏览量, 不需要去重</p></blockquote>
+<h3 id="dau">DAU</h3>
+<blockquote>
+<p>Daily Active User 日活跃用户量, 登录或使用了某个产品的用户数,需要去重, 常用于反馈运营情况</p></blockquote>
+<h3 id="mau">MAU</h3>
+<blockquote>
+<p>Monthly Active User 月活跃用户量</p></blockquote>
+<h1 id="分布式锁-1">分布式锁</h1>
+<ol>
+<li>独占性
+<ol>
+<li>任何时刻有且仅有一个线程拥有这个锁</li>
+</ol>
+</li>
+<li>高可用
+<ol>
+<li>redis在集群环境下不能因为主节点挂了而导致这个锁不可用</li>
+<li>高并发下性能依旧好</li>
+</ol>
+</li>
+<li>防死锁
+<ol>
+<li>要有超时控制</li>
+</ol>
+</li>
+<li>不乱入
+<ol>
+<li>不能unlock别的线程的锁</li>
+</ol>
+</li>
+<li>重入性
+<ol>
+<li>同一个节点的同一个线程获得锁后它也可以再次获得这个锁</li>
+<li>重入锁也叫递归锁</li>
+</ol>
+</li>
+</ol>
+<blockquote>
+<p>不使用setnx因为setnx无法做到可重入,所以使用hset</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#f92672">package</span> <span style="color:#a6e22e">lua</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> (
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;context&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;github.com/go-redis/redis/v8&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;github.com/google/uuid&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;runtime&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;sync&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;time&#34;</span>
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">RedisLock</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">redisClient</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">redis</span>.<span style="color:#a6e22e">Client</span>   <span style="color:#75715e">//redis客户端</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">context</span>     <span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">Context</span> <span style="color:#75715e">//上下文</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">lockKey</span>     <span style="color:#66d9ef">string</span>          <span style="color:#75715e">//锁名称</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">lockValue</span>   <span style="color:#66d9ef">string</span>          <span style="color:#75715e">//锁的值,防止乱入</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">expire</span>      <span style="color:#66d9ef">int</span>             <span style="color:#75715e">//重入了多少次</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> (
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">REDIS</span> = <span style="color:#e6db74">&#34;redis&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">MYSQL</span> = <span style="color:#e6db74">&#34;mysql&#34;</span>
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// NewDistributedLocks 使用工厂设计模式易扩展</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">NewDistributedLocks</span>(<span style="color:#a6e22e">lockType</span>, <span style="color:#a6e22e">lockName</span> <span style="color:#66d9ef">string</span>, <span style="color:#a6e22e">context</span> <span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">Context</span>, <span style="color:#a6e22e">redisClient</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">redis</span>.<span style="color:#a6e22e">Client</span>) <span style="color:#a6e22e">sync</span>.<span style="color:#a6e22e">Locker</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">lockType</span> <span style="color:#f92672">==</span> <span style="color:#a6e22e">REDIS</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">RedisLock</span>{
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">redisClient</span>: <span style="color:#a6e22e">redisClient</span>,
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">context</span>:     <span style="color:#a6e22e">context</span>,
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">lockKey</span>:     <span style="color:#a6e22e">lockName</span>,
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">lockValue</span>:   <span style="color:#a6e22e">uuid</span>.<span style="color:#a6e22e">New</span>().<span style="color:#a6e22e">String</span>(),
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">expire</span>:      <span style="color:#ae81ff">10</span>,
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>	} <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">lockType</span> <span style="color:#f92672">==</span> <span style="color:#a6e22e">MYSQL</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#75715e">//	TODO</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Lock 加锁</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">r</span> <span style="color:#a6e22e">RedisLock</span>) <span style="color:#a6e22e">Lock</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">lock</span> <span style="color:#f92672">:=</span> <span style="color:#e6db74">&#34;if redis.call(&#39;EXISTS&#39;, KEYS[1]) == 0 or redis.call(&#39;HEXISTS&#39;, KEYS[1], ARGV[1]) == 1 then   redis.call(&#39;HINCRBY&#39;, KEYS[1], ARGV[1], 1)    redis.call(&#39;EXPIRE&#39;, KEYS[1], ARGV[2])    return 1    else    return 0    end&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span> <span style="color:#66d9ef">true</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">re</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">redis</span>.<span style="color:#a6e22e">NewScript</span>(<span style="color:#a6e22e">lock</span>).<span style="color:#a6e22e">Run</span>(<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">context</span>, <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">redisClient</span>, []<span style="color:#66d9ef">string</span>{<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">lockKey</span>}, <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">lockValue</span>, <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">expire</span>).<span style="color:#a6e22e">Int</span>()
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">re</span> <span style="color:#f92672">!=</span> <span style="color:#ae81ff">1</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#75715e">// 自旋</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">runtime</span>.<span style="color:#a6e22e">Gosched</span>()
+</span></span><span style="display:flex;"><span>		} <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#75715e">// 开启一个goroutine用来检测是否需要续期</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">go</span> <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Renewal</span>()
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">break</span>
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Unlock 释放锁</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">r</span> <span style="color:#a6e22e">RedisLock</span>) <span style="color:#a6e22e">Unlock</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">unlock</span> <span style="color:#f92672">:=</span> <span style="color:#e6db74">&#34;if redis.call(&#39;HEXISTS&#39;, KEYS[1], ARGV[1]) == 0 then    return -1    elseif redis.call(&#39;HINCRBY&#39;, KEYS[1], ARGV[1], -1) == 0 then    return redis.call(&#39;DEL&#39;, KEYS[1])    else    return 0    end&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">redis</span>.<span style="color:#a6e22e">NewScript</span>(<span style="color:#a6e22e">unlock</span>).<span style="color:#a6e22e">Run</span>(<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">context</span>, <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">redisClient</span>, []<span style="color:#66d9ef">string</span>{<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">lockKey</span>}, <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">lockValue</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Renewal 续期</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">r</span> <span style="color:#a6e22e">RedisLock</span>) <span style="color:#a6e22e">Renewal</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">renewalLock</span> <span style="color:#f92672">:=</span> <span style="color:#e6db74">&#34;if redis.call(&#39;HEXISTS&#39;, KEYS[1], ARGV[1]) == 1 then    return redis.call(&#39;EXPIRE&#39;, KEYS[1], ARGV[2])    else    return 0    end&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span> <span style="color:#66d9ef">true</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">select</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">case</span> <span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Tick</span>(<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Duration</span>(<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">expire</span><span style="color:#f92672">/</span><span style="color:#ae81ff">3</span>) <span style="color:#f92672">*</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Second</span>):
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">res</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">redis</span>.<span style="color:#a6e22e">NewScript</span>(<span style="color:#a6e22e">renewalLock</span>).<span style="color:#a6e22e">Run</span>(<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">context</span>, <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">redisClient</span>, []<span style="color:#66d9ef">string</span>{<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">lockKey</span>}, <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">lockValue</span>, <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">expire</span>).<span style="color:#a6e22e">Int</span>(); <span style="color:#a6e22e">res</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span> {
+</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">break</span>
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul class="pa0">
+  
+   <li class="list di">
+     <a href="/tags/redis/" class="link f5 grow br-pill ba ph3 pv2 mb2 dib black sans-serif no-underline">Redis</a>
+   </li>
+  
+   <li class="list di">
+     <a href="/tags/nosql/" class="link f5 grow br-pill ba ph3 pv2 mb2 dib black sans-serif no-underline">Nosql</a>
+   </li>
+  
+</ul>
+<div class="mt6 instapaper_ignoref">
+      
+      
+      </div>
+    </div>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+  <div class="bg-light-gray pa3 nested-list-reset nested-copy-line-height nested-links">
+    <p class="f5 b mb3">Related</p>
+    <ul class="pa0 list">
+	   
+	     <li  class="mb2">
+          <a href="/posts/go/go-redis%E4%BD%BF%E7%94%A8lua%E8%84%9A%E6%9C%AC/">Go Redis使用lua脚本</a>
+        </li>
+	    
+    </ul>
+</div>
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white white-70 dn dib-ns pv2 ph3 no-underline" href="http://localhost:1313/" >
+    &copy;  loveyu233 2025 
+  </a>
+    <div><div class="ananke-socials"></div>
+</div>
+  </div>
+</footer>
+
+  </body>
+</html>

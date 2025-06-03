@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>loveyu233</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="">
+    <meta name="generator" content="Hugo 0.147.7">
+    
+    
+    
+      <meta name="robots" content="noindex, nofollow">
+    
+    
+
+    
+<link rel="stylesheet" href="/ananke/css/main.min.css" >
+
+
+
+
+    
+
+
+    
+      
+
+    
+
+    
+    
+      <link href="/tags/springmvc/index.xml" rel="alternate" type="application/rss+xml" title="loveyu233" />
+      <link href="/tags/springmvc/index.xml" rel="feed" type="application/rss+xml" title="loveyu233" />
+      
+    
+
+    
+      <link rel="canonical" href="http://localhost:1313/tags/springmvc/">
+    
+
+    <meta property="og:url" content="http://localhost:1313/tags/springmvc/">
+  <meta property="og:site_name" content="loveyu233">
+  <meta property="og:title" content="SpringMVC">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="website">
+
+  <meta itemprop="name" content="SpringMVC">
+  <meta itemprop="datePublished" content="2019-05-14T19:38:37+08:00">
+  <meta itemprop="dateModified" content="2019-05-14T19:38:37+08:00">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="SpringMVC">
+
+	
+  </head><body class="ma0 avenir bg-near-white development">
+
+    
+
+  <header>
+    <div class="pb3-m pb6-l bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l center items-center justify-between">
+    <a href="/" class="f3 fw2 hover-white white-90 dib no-underline">
+      
+        loveyu233
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      <div class="ananke-socials"></div>
+
+    </div>
+  </div>
+</nav>
+
+      <div class="tc-l pv3 ph3 ph4-ns">
+        <h1 class="f2 f-subheadline-l fw2 light-silver mb0 lh-title">
+          SpringMVC
+        </h1>
+        
+      </div>
+    </div>
+  </header>
+
+
+    <main class="pb7" role="main">
+      
+  <article class="cf pa3 pa4-m pa4-l">
+    <div class="measure-wide-l center f4 lh-copy nested-copy-line-height nested-links mid-gray">
+      <p>Below you will find pages that utilize the taxonomy term “SpringMVC”</p>
+    </div>
+  </article>
+  <div class="mw8 center">
+    <section class="flex-ns mt5 flex-wrap justify-around">
+      
+        <div class="w-100 mb4 relative bg-white">
+          <div class="w-100 mb4 nested-copy-line-height relative bg-white">
+  <div class="mb3 pa4 gray overflow-hidden bg-white">
+    <span class="f6 db">java</span>
+    <h1 class="f3 near-black">
+      <a href="/posts/java/springmvc/" class="link black dim">
+        SpringMVC
+      </a>
+    </h1>
+    <div class="nested-links f5 lh-copy nested-copy-line-height">
+      <h1 id="概念">概念：</h1>
+<ul>
+<li>
+<p>前端控制器:DispatcherServlet：调用其他功能组件。</p>
+</li>
+<li>
+<p>处理器映射器:HandlerMapping：地址解析返回对应的执行链。</p>
+</li>
+<li>
+<p>处理器适配器:HandlerAdapter：被前端该控制器调用，执行调用处理器。</p>
+</li>
+<li>
+<p>处理器:Handler：特有行为进行封装的组件。</p>
+</li>
+<li>
+<p>视图解析器:ViewResolver：解析视图。</p>
+</li>
+<li>
+<p>视图:View：视图信息。</p>
+</li>
+</ul>
+<p>处理器映射器:HandlerMapping：地址解析返回对应的执行链</p>
+<p>处理器适配器:HandlerAdapter：被前端该控制器调用，执行调用处理器</p>
+<p>视图解析器:ViewResolver：解析视图</p>
+<p>称为mvc的三大组件</p>
+<h1 id="页面跳转">页面跳转</h1>
+<blockquote>
+<h3 id="返回字符串">返回字符串</h3></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>    <span style="color:#a6e22e">@RequestMapping</span>(<span style="color:#e6db74">&#34;/quick&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">save</span>(){
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;redirect:/jsp/success.jsp&#34;</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span></code></pre></div><blockquote>
+<h3 id="返回模型视图">返回模型视图</h3></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">//可以返回可以是整个ModelAndView</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@RequestMapping</span>(<span style="color:#e6db74">&#34;/quick&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> ModelAndView <span style="color:#a6e22e">save2</span>(){
+</span></span><span style="display:flex;"><span>        ModelAndView modelAndView <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ModelAndView();
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        设置视图</span>
+</span></span><span style="display:flex;"><span>        modelAndView.<span style="color:#a6e22e">setViewName</span>(<span style="color:#e6db74">&#34;success&#34;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        设置模型（相当于向域对象添加数据jsp页面可以获取的），object类型不局限于string</span>
+</span></span><span style="display:flex;"><span>        modelAndView.<span style="color:#a6e22e">addObject</span>(<span style="color:#e6db74">&#34;username&#34;</span>,<span style="color:#e6db74">&#34;zhangsan&#34;</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> modelAndView;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//可以直接在方法参数与中获取</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@RequestMapping</span>(<span style="color:#e6db74">&#34;/quick&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> ModelAndView <span style="color:#a6e22e">save2</span>(ModelAndView modelAndView){
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        设置视图</span>
+</span></span><span style="display:flex;"><span>        modelAndView.<span style="color:#a6e22e">setViewName</span>(<span style="color:#e6db74">&#34;success&#34;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        设置模型（相当于向域对象添加数据jsp页面可以获取的），object类型不局限于string</span>
+</span></span><span style="display:flex;"><span>        modelAndView.<span style="color:#a6e22e">addObject</span>(<span style="color:#e6db74">&#34;username&#34;</span>,<span style="color:#e6db74">&#34;zhangsan&#34;</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> modelAndView;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//可以只获取model，但是返回值必须是字符串</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@RequestMapping</span>(<span style="color:#e6db74">&#34;/quick&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">save2</span>(Model model){
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        设置模型（相当于向域对象添加数据jsp页面可以获取的），object类型不局限于string</span>
+</span></span><span style="display:flex;"><span>        model.<span style="color:#a6e22e">addAttribute</span>(<span style="color:#e6db74">&#34;username&#34;</span>,<span style="color:#e6db74">&#34;zhangsan&#34;</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;success&#34;</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">解释：
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    参数中的ModelAndView或者Model在被springMVC执行时都会进行属性注入，所以可以直接使用。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    参数也可以是一些常用的对象例如
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    request。response。。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">*/</span>
+</span></span></code></pre></div><h1 id="内部视图解析器">内部视图解析器</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span>    <span style="color:#f92672">&lt;bean</span> <span style="color:#a6e22e">id=</span><span style="color:#e6db74">&#34;viewResolver&#34;</span> <span style="color:#a6e22e">class=</span><span style="color:#e6db74">&#34;org.springframework.web.servlet.view.InternalResourceViewResolver&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;property</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;prefix&#34;</span> <span style="color:#a6e22e">value=</span><span style="color:#e6db74">&#34;/jsp/&#34;</span><span style="color:#f92672">&gt;&lt;/property&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;property</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;suffix&#34;</span> <span style="color:#a6e22e">value=</span><span style="color:#e6db74">&#34;.jsp&#34;</span><span style="color:#f92672">&gt;&lt;/property&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/bean&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">&lt;!--prefix:前缀--&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">&lt;!--suffix:后缀--&gt;</span>
+</span></span></code></pre></div><blockquote>
+<h4 id="解析器使用注意">解析器使用注意：</h4>
+<p>public static final java.lang.String REDIRECT_URL_PREFIX = &ldquo;redirect:&rdquo;;
+public static final java.lang.String FORWARD_URL_PREFIX = &ldquo;forward:&rdquo;;</p>
+    </div>
+    <a href="/posts/java/springmvc/" class="ba b--moon-gray bg-light-gray br2 color-inherit dib f7 hover-bg-moon-gray link mt2 ph2 pv1">read more</a>
+  </div>
+</div>
+
+        </div>
+      
+    </section>
+  </div>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white white-70 dn dib-ns pv2 ph3 no-underline" href="http://localhost:1313/" >
+    &copy;  loveyu233 2025 
+  </a>
+    <div><div class="ananke-socials"></div>
+</div>
+  </div>
+</footer>
+
+  </body>
+</html>

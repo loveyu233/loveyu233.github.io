@@ -1,0 +1,1527 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>Vue2 | loveyu233</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="指令
+
+  
+      
+          语法
+          描述
+      
+  
+  
+      
+          {{ key }}
+          插值句法
+      
+      
+          v-bind:value=&ldquo;key&rdquo; / :value=&ldquo;key&rdquo;
+          单向绑定
+      
+      
+          v-model:value=&ldquo;key&rdquo; / v-model=&ldquo;key&rdquo;
+          双向绑定,只能用于有value值的
+      
+      
+          @keydown / @keyup / @keydown/keyup.键位名称.键位名称
+          键盘事件
+      
+      
+          @click.prevent / @click.stop / @click.once / @click.capture / @click.self / @click.passive
+          默认事件 / 冒泡 / 只执行一次 / 捕获模式 / event.target是当前元素在执行 / 不等待事件处理完
+      
+      
+          v-if / v-else-if / v-else / v-show
+          v-if 条件不成立则没有这个元素, v-show则是使用display隐藏这个元素
+      
+      
+          v-for=&quot;(key, value/index) in data&quot; :key=&ldquo;唯一值&rdquo;
+          key里面的值必须是唯一的
+      
+      
+          v-text / v-html / v-once / v-cloak
+          文本 / 解析html / 只执行一次 / 渲染完毕后删除
+      
+      
+          ref=&ldquo;key&rdquo;
+          获取 this.#refs.key
+      
+      
+          this.$nextTick(function () { &hellip; }
+          下一次dom更新时执行的回调方法
+      
+  
+
+计算属性
+computed: {
+  // 计算的值
+  info: {
+    	// 获取这个值时调用
+      get() {
+          return ...
+      },
+      // 设置值时调用,value为设置的值
+      set(value) {
+          ...
+      }
+  }
+}
+
+// 如果只读不修改的话可以简写为:
+computed: {
+  info() {
+      return ...
+  }
+}
+监视属性
+watch: {
+  name: {
+      // immediate页面打开直接调用一次,用来初始化
+      immediate: true,
+      handler(newdata, olddata) {
+          console.log(&#34;newData: &#34;, newdata, &#34;  oldData: &#34;, olddata)
+      }
+  },
+  // 监视里面某一个属性可以写: &#34;number.a&#34; 必须加上引号不然格式不对,默认不写引号是因为简写
+  number: {
+      // 开启深度监视,否则无法直接监视number里面的属性变化
+      deep: true,
+      handler(newDta, oldData) {
+          console.log(newDta, &#34; &#34;, oldData)
+      }
+  },
+  // 当只有handler时简写:
+  demo(newData, oldData) {
+      console.log(newData, oldData)
+      // 这里必须是箭头方式的,因为只有箭头的没有this向外招,招到demo,demo的this是vue
+      // 不使用箭头的this就是wind
+      setTimeout(() =&gt; {
+          console.log(&#34;&#34;)
+      }, 1000)
+  }
+}
+表单绑定
+&lt;body&gt;
+&lt;div id=&#34;root&#34;&gt;
+    &lt;form @submit.prevent=&#34;submit&#34;&gt;
+        &lt;!--     v-model.number 把输入转为数字   --&gt;
+        账号:&lt;input type=&#34;number&#34; v-model.number=&#34;userinfo.phone&#34;&gt;&lt;br&gt;&lt;br&gt;
+        &lt;!--     v-model.trim 去掉前后空格   --&gt;
+        密码:&lt;input type=&#34;password&#34; v-model.trim=&#34;userinfo.password&#34;&gt;&lt;br&gt;&lt;br&gt;
+        性别:&lt;input type=&#34;radio&#34; name=&#34;sex&#34; value=&#34;1&#34; v-model=&#34;userinfo.sex&#34;&gt;男
+        &lt;input type=&#34;radio&#34; name=&#34;sex&#34; value=&#34;0&#34; v-model=&#34;userinfo.sex&#34;&gt;女&lt;br&gt;&lt;br&gt;
+        爱好:&lt;input type=&#34;checkbox&#34; value=&#34;a&#34; v-model=&#34;userinfo.hobby&#34;&gt;A
+        &lt;input type=&#34;checkbox&#34; value=&#34;b&#34; v-model=&#34;userinfo.hobby&#34;&gt;B
+        &lt;input type=&#34;checkbox&#34; value=&#34;c&#34; v-model=&#34;userinfo.hobby&#34;&gt;C&lt;br&gt;&lt;br&gt;
+        所属:&lt;select v-model=&#34;userinfo.city&#34;&gt;
+        &lt;option value=&#34;&#34;&gt;选择&lt;/option&gt;
+        &lt;option value=&#34;北京&#34;&gt;北京&lt;/option&gt;
+        &lt;option value=&#34;上海&#34;&gt;上海&lt;/option&gt;
+    &lt;/select&gt;&lt;br&gt;&lt;br&gt;
+        &lt;!--    v-model.lazy 当失去焦点的时候再收集    --&gt;
+        其他信息:&lt;textarea v-model.lazy=&#34;userinfo.other&#34;&gt;&lt;/textarea&gt;&lt;br&gt;&lt;br&gt;
+        &lt;input type=&#34;checkbox&#34; v-model=&#34;userinfo.agree&#34;&gt;接受阅读协议&lt;a&gt;用户协议
+    &lt;/a&gt;&lt;br&gt;&lt;br&gt;
+        &lt;button&gt;提交&lt;/button&gt;
+    &lt;/form&gt;
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;script&gt;
+    new Vue({
+        el: &#34;#root&#34;,
+        data: {
+            userinfo: {
+                phone: &#34;&#34;,
+                password: &#34;&#34;,
+                sex: &#34;&#34;,
+                hobby: [],
+                city: &#34;&#34;,
+                other: &#34;&#34;,
+                agree: false
+            }
+        },
+        methods: {
+            submit() {
+                console.log(JSON.stringify(this.userinfo))
+            }
+        }
+    })
+&lt;/script&gt;
+过滤器
+&lt;body&gt;
+&lt;div id=&#34;root&#34;&gt;
+    &lt;!--    过滤器只能用在插值语法或者v-bind--&gt;
+    &lt;h1&gt;当前时间戳: {{ time }}&lt;/h1&gt;
+
+    &lt;h1&gt;计算属性 {{ filterTime }}&lt;/h1&gt;
+    &lt;h1&gt;过滤器无参 {{ time | timePar }}&lt;/h1&gt;
+    &lt;h1&gt;过滤器带参 {{ time | timePar(&#34;YYYY-MM&#34;) }}&lt;/h1&gt;
+    &lt;h1&gt;多个过滤器结合使用 {{ time | timePar | jiequ }}&lt;/h1&gt;
+    &lt;h1&gt;全局过滤器: {{ time | timePar | quanju }}&lt;/h1&gt;
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;script&gt;
+    //    全局过滤器
+    Vue.filter(&#34;quanju&#34;, function (value) {
+        return value.slice(0, 1)
+    })
+    new Vue({
+        el: &#34;#root&#34;,
+        data: {
+            time: 1681548595292
+        },
+        computed: {
+            filterTime() {
+                return dayjs(this.time).format(&#34;YYYY-MM-DD HH:mm:ss&#34;)
+            }
+        },
+        filters: {
+            timePar(value, fomt = &#34;YYYY-MM-DD HH:mm:ss&#34;) {
+                return dayjs(this.time).format(fomt)
+            },
+            jiequ(value) {
+                return value.slice(0, 4)
+            }
+        }
+    })
+&lt;/script&gt;
+自定义指令
+&lt;body&gt;
+&lt;div id=&#34;root&#34;&gt;
+    &lt;h1&gt;n: {{ n }}&lt;/h1&gt;
+    &lt;!--    使用自定义指令,作用就是把n*10后展示--&gt;
+    &lt;h1&gt;n*10: &lt;span v-big=&#34;n&#34;&gt;&lt;/span&gt;&lt;/h1&gt;
+    &lt;!--   页面打开就获取焦点 --&gt;
+    &lt;input v-fbind:value=&#34;n&#34;&gt;
+    &lt;button @click=&#34;n&#43;&#43;&#34;&gt;n&#43;1&lt;/button&gt;
+    &lt;h1&gt;如果指定名称是多个单词则需要用 &#39; - &#39; 分割,例如: big-number, 创建时: &#39;big-number&#39;(){...}&lt;/h1&gt;
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;script&gt;
+    //    全局指令
+    Vue.directive(&#39;big1&#39;, function (element, bindalue) {
+        //     内容
+    })
+    Vue.directive(&#39;big2&#39;, {
+        bind(element, bindalue) {
+            //     内容
+        },
+        inserted(element, bindalue) {
+            //     内容
+        },
+        update(element, bindalue) {
+            //     内容
+        }
+    })
+    new Vue({
+        el: &#34;#root&#34;,
+        data: {
+            n: 1,
+        },
+        directives: {
+            // 精简写法,相当于bind &#43; update
+            big(element, bindalue) {
+                // this 为 wind 不是vm
+                element.innerText = bindalue.value * 10
+            },
+            fbind: {
+                // 指令与元素绑定后
+                bind(element, bindalue) {
+                    element.value = bindalue.value
+                },
+                // 指令所在元素被插入页面后
+                inserted(element, bindalue) {
+                    element.focus()
+                },
+                // 模版重新解析时调用
+                update(element, bindalue) {
+                    element.value = bindalue.value
+                }
+            }
+        }
+    })
+&lt;/script&gt;
+props 父组件给子组件传值
+// 父组件传值:
+&lt;!--        直接使用 name=&#34;&#34;传递的是字符串 使用 :age=&#34;&#34; 绑定形式传递的是语法格式--&gt;
+&lt;HelloWorld name=&#34;张三&#34; :age=&#34;11&#34;&gt;&lt;/HelloWorld&gt;
+
+
+// 子组件接收:
+
+// 简写
+// props: [&#34;name&#34;, &#34;age&#34;]
+
+// 限制传递数据的类型
+// props: {
+//     name: String,
+//     age: Number
+// }
+
+// 详细写法
+props: {
+    name: {
+        type: String,   // 限制类型
+        required: true, // 是否为必须的值
+    },
+    age: {
+        type: Number,
+        default: 100,   // 没有这个值的话默认值是多少
+    }
+}
+mixin混入
+
+抽取实例之间相同的数据或方法然后共用">
+    <meta name="generator" content="Hugo 0.147.7">
+    
+    
+    
+      <meta name="robots" content="noindex, nofollow">
+    
+    <meta name="author" content="loveyu">
+    
+
+    
+<link rel="stylesheet" href="/ananke/css/main.min.css" >
+
+
+
+
+    
+
+
+    
+      
+
+    
+
+    
+
+    
+      <link rel="canonical" href="http://localhost:1313/posts/frontend/vue/">
+    
+
+    <meta property="og:url" content="http://localhost:1313/posts/frontend/vue/">
+  <meta property="og:site_name" content="loveyu233">
+  <meta property="og:title" content="Vue2">
+  <meta property="og:description" content="指令 语法 描述 {{ key }} 插值句法 v-bind:value=“key” / :value=“key” 单向绑定 v-model:value=“key” / v-model=“key” 双向绑定,只能用于有value值的 @keydown / @keyup / @keydown/keyup.键位名称.键位名称 键盘事件 @click.prevent / @click.stop / @click.once / @click.capture / @click.self / @click.passive 默认事件 / 冒泡 / 只执行一次 / 捕获模式 / event.target是当前元素在执行 / 不等待事件处理完 v-if / v-else-if / v-else / v-show v-if 条件不成立则没有这个元素, v-show则是使用display隐藏这个元素 v-for=&#34;(key, value/index) in data&#34; :key=“唯一值” key里面的值必须是唯一的 v-text / v-html / v-once / v-cloak 文本 / 解析html / 只执行一次 / 渲染完毕后删除 ref=“key” 获取 this.#refs.key this.$nextTick(function () { … } 下一次dom更新时执行的回调方法 计算属性 computed: { // 计算的值 info: { // 获取这个值时调用 get() { return ... }, // 设置值时调用,value为设置的值 set(value) { ... } } } // 如果只读不修改的话可以简写为: computed: { info() { return ... } } 监视属性 watch: { name: { // immediate页面打开直接调用一次,用来初始化 immediate: true, handler(newdata, olddata) { console.log(&#34;newData: &#34;, newdata, &#34; oldData: &#34;, olddata) } }, // 监视里面某一个属性可以写: &#34;number.a&#34; 必须加上引号不然格式不对,默认不写引号是因为简写 number: { // 开启深度监视,否则无法直接监视number里面的属性变化 deep: true, handler(newDta, oldData) { console.log(newDta, &#34; &#34;, oldData) } }, // 当只有handler时简写: demo(newData, oldData) { console.log(newData, oldData) // 这里必须是箭头方式的,因为只有箭头的没有this向外招,招到demo,demo的this是vue // 不使用箭头的this就是wind setTimeout(() =&gt; { console.log(&#34;&#34;) }, 1000) } } 表单绑定 &lt;body&gt; &lt;div id=&#34;root&#34;&gt; &lt;form @submit.prevent=&#34;submit&#34;&gt; &lt;!-- v-model.number 把输入转为数字 --&gt; 账号:&lt;input type=&#34;number&#34; v-model.number=&#34;userinfo.phone&#34;&gt;&lt;br&gt;&lt;br&gt; &lt;!-- v-model.trim 去掉前后空格 --&gt; 密码:&lt;input type=&#34;password&#34; v-model.trim=&#34;userinfo.password&#34;&gt;&lt;br&gt;&lt;br&gt; 性别:&lt;input type=&#34;radio&#34; name=&#34;sex&#34; value=&#34;1&#34; v-model=&#34;userinfo.sex&#34;&gt;男 &lt;input type=&#34;radio&#34; name=&#34;sex&#34; value=&#34;0&#34; v-model=&#34;userinfo.sex&#34;&gt;女&lt;br&gt;&lt;br&gt; 爱好:&lt;input type=&#34;checkbox&#34; value=&#34;a&#34; v-model=&#34;userinfo.hobby&#34;&gt;A &lt;input type=&#34;checkbox&#34; value=&#34;b&#34; v-model=&#34;userinfo.hobby&#34;&gt;B &lt;input type=&#34;checkbox&#34; value=&#34;c&#34; v-model=&#34;userinfo.hobby&#34;&gt;C&lt;br&gt;&lt;br&gt; 所属:&lt;select v-model=&#34;userinfo.city&#34;&gt; &lt;option value=&#34;&#34;&gt;选择&lt;/option&gt; &lt;option value=&#34;北京&#34;&gt;北京&lt;/option&gt; &lt;option value=&#34;上海&#34;&gt;上海&lt;/option&gt; &lt;/select&gt;&lt;br&gt;&lt;br&gt; &lt;!-- v-model.lazy 当失去焦点的时候再收集 --&gt; 其他信息:&lt;textarea v-model.lazy=&#34;userinfo.other&#34;&gt;&lt;/textarea&gt;&lt;br&gt;&lt;br&gt; &lt;input type=&#34;checkbox&#34; v-model=&#34;userinfo.agree&#34;&gt;接受阅读协议&lt;a&gt;用户协议 &lt;/a&gt;&lt;br&gt;&lt;br&gt; &lt;button&gt;提交&lt;/button&gt; &lt;/form&gt; &lt;/div&gt; &lt;/body&gt; &lt;script&gt; new Vue({ el: &#34;#root&#34;, data: { userinfo: { phone: &#34;&#34;, password: &#34;&#34;, sex: &#34;&#34;, hobby: [], city: &#34;&#34;, other: &#34;&#34;, agree: false } }, methods: { submit() { console.log(JSON.stringify(this.userinfo)) } } }) &lt;/script&gt; 过滤器 &lt;body&gt; &lt;div id=&#34;root&#34;&gt; &lt;!-- 过滤器只能用在插值语法或者v-bind--&gt; &lt;h1&gt;当前时间戳: {{ time }}&lt;/h1&gt; &lt;h1&gt;计算属性 {{ filterTime }}&lt;/h1&gt; &lt;h1&gt;过滤器无参 {{ time | timePar }}&lt;/h1&gt; &lt;h1&gt;过滤器带参 {{ time | timePar(&#34;YYYY-MM&#34;) }}&lt;/h1&gt; &lt;h1&gt;多个过滤器结合使用 {{ time | timePar | jiequ }}&lt;/h1&gt; &lt;h1&gt;全局过滤器: {{ time | timePar | quanju }}&lt;/h1&gt; &lt;/div&gt; &lt;/body&gt; &lt;script&gt; // 全局过滤器 Vue.filter(&#34;quanju&#34;, function (value) { return value.slice(0, 1) }) new Vue({ el: &#34;#root&#34;, data: { time: 1681548595292 }, computed: { filterTime() { return dayjs(this.time).format(&#34;YYYY-MM-DD HH:mm:ss&#34;) } }, filters: { timePar(value, fomt = &#34;YYYY-MM-DD HH:mm:ss&#34;) { return dayjs(this.time).format(fomt) }, jiequ(value) { return value.slice(0, 4) } } }) &lt;/script&gt; 自定义指令 &lt;body&gt; &lt;div id=&#34;root&#34;&gt; &lt;h1&gt;n: {{ n }}&lt;/h1&gt; &lt;!-- 使用自定义指令,作用就是把n*10后展示--&gt; &lt;h1&gt;n*10: &lt;span v-big=&#34;n&#34;&gt;&lt;/span&gt;&lt;/h1&gt; &lt;!-- 页面打开就获取焦点 --&gt; &lt;input v-fbind:value=&#34;n&#34;&gt; &lt;button @click=&#34;n&#43;&#43;&#34;&gt;n&#43;1&lt;/button&gt; &lt;h1&gt;如果指定名称是多个单词则需要用 &#39; - &#39; 分割,例如: big-number, 创建时: &#39;big-number&#39;(){...}&lt;/h1&gt; &lt;/div&gt; &lt;/body&gt; &lt;script&gt; // 全局指令 Vue.directive(&#39;big1&#39;, function (element, bindalue) { // 内容 }) Vue.directive(&#39;big2&#39;, { bind(element, bindalue) { // 内容 }, inserted(element, bindalue) { // 内容 }, update(element, bindalue) { // 内容 } }) new Vue({ el: &#34;#root&#34;, data: { n: 1, }, directives: { // 精简写法,相当于bind &#43; update big(element, bindalue) { // this 为 wind 不是vm element.innerText = bindalue.value * 10 }, fbind: { // 指令与元素绑定后 bind(element, bindalue) { element.value = bindalue.value }, // 指令所在元素被插入页面后 inserted(element, bindalue) { element.focus() }, // 模版重新解析时调用 update(element, bindalue) { element.value = bindalue.value } } } }) &lt;/script&gt; props 父组件给子组件传值 // 父组件传值: &lt;!-- 直接使用 name=&#34;&#34;传递的是字符串 使用 :age=&#34;&#34; 绑定形式传递的是语法格式--&gt; &lt;HelloWorld name=&#34;张三&#34; :age=&#34;11&#34;&gt;&lt;/HelloWorld&gt; // 子组件接收: // 简写 // props: [&#34;name&#34;, &#34;age&#34;] // 限制传递数据的类型 // props: { // name: String, // age: Number // } // 详细写法 props: { name: { type: String, // 限制类型 required: true, // 是否为必须的值 }, age: { type: Number, default: 100, // 没有这个值的话默认值是多少 } } mixin混入 抽取实例之间相同的数据或方法然后共用">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2022-12-04T19:38:37+08:00">
+    <meta property="article:modified_time" content="2022-12-04T19:38:37+08:00">
+    <meta property="article:tag" content="Vue2">
+    <meta property="article:tag" content="前端">
+
+  <meta itemprop="name" content="Vue2">
+  <meta itemprop="description" content="指令 语法 描述 {{ key }} 插值句法 v-bind:value=“key” / :value=“key” 单向绑定 v-model:value=“key” / v-model=“key” 双向绑定,只能用于有value值的 @keydown / @keyup / @keydown/keyup.键位名称.键位名称 键盘事件 @click.prevent / @click.stop / @click.once / @click.capture / @click.self / @click.passive 默认事件 / 冒泡 / 只执行一次 / 捕获模式 / event.target是当前元素在执行 / 不等待事件处理完 v-if / v-else-if / v-else / v-show v-if 条件不成立则没有这个元素, v-show则是使用display隐藏这个元素 v-for=&#34;(key, value/index) in data&#34; :key=“唯一值” key里面的值必须是唯一的 v-text / v-html / v-once / v-cloak 文本 / 解析html / 只执行一次 / 渲染完毕后删除 ref=“key” 获取 this.#refs.key this.$nextTick(function () { … } 下一次dom更新时执行的回调方法 计算属性 computed: { // 计算的值 info: { // 获取这个值时调用 get() { return ... }, // 设置值时调用,value为设置的值 set(value) { ... } } } // 如果只读不修改的话可以简写为: computed: { info() { return ... } } 监视属性 watch: { name: { // immediate页面打开直接调用一次,用来初始化 immediate: true, handler(newdata, olddata) { console.log(&#34;newData: &#34;, newdata, &#34; oldData: &#34;, olddata) } }, // 监视里面某一个属性可以写: &#34;number.a&#34; 必须加上引号不然格式不对,默认不写引号是因为简写 number: { // 开启深度监视,否则无法直接监视number里面的属性变化 deep: true, handler(newDta, oldData) { console.log(newDta, &#34; &#34;, oldData) } }, // 当只有handler时简写: demo(newData, oldData) { console.log(newData, oldData) // 这里必须是箭头方式的,因为只有箭头的没有this向外招,招到demo,demo的this是vue // 不使用箭头的this就是wind setTimeout(() =&gt; { console.log(&#34;&#34;) }, 1000) } } 表单绑定 &lt;body&gt; &lt;div id=&#34;root&#34;&gt; &lt;form @submit.prevent=&#34;submit&#34;&gt; &lt;!-- v-model.number 把输入转为数字 --&gt; 账号:&lt;input type=&#34;number&#34; v-model.number=&#34;userinfo.phone&#34;&gt;&lt;br&gt;&lt;br&gt; &lt;!-- v-model.trim 去掉前后空格 --&gt; 密码:&lt;input type=&#34;password&#34; v-model.trim=&#34;userinfo.password&#34;&gt;&lt;br&gt;&lt;br&gt; 性别:&lt;input type=&#34;radio&#34; name=&#34;sex&#34; value=&#34;1&#34; v-model=&#34;userinfo.sex&#34;&gt;男 &lt;input type=&#34;radio&#34; name=&#34;sex&#34; value=&#34;0&#34; v-model=&#34;userinfo.sex&#34;&gt;女&lt;br&gt;&lt;br&gt; 爱好:&lt;input type=&#34;checkbox&#34; value=&#34;a&#34; v-model=&#34;userinfo.hobby&#34;&gt;A &lt;input type=&#34;checkbox&#34; value=&#34;b&#34; v-model=&#34;userinfo.hobby&#34;&gt;B &lt;input type=&#34;checkbox&#34; value=&#34;c&#34; v-model=&#34;userinfo.hobby&#34;&gt;C&lt;br&gt;&lt;br&gt; 所属:&lt;select v-model=&#34;userinfo.city&#34;&gt; &lt;option value=&#34;&#34;&gt;选择&lt;/option&gt; &lt;option value=&#34;北京&#34;&gt;北京&lt;/option&gt; &lt;option value=&#34;上海&#34;&gt;上海&lt;/option&gt; &lt;/select&gt;&lt;br&gt;&lt;br&gt; &lt;!-- v-model.lazy 当失去焦点的时候再收集 --&gt; 其他信息:&lt;textarea v-model.lazy=&#34;userinfo.other&#34;&gt;&lt;/textarea&gt;&lt;br&gt;&lt;br&gt; &lt;input type=&#34;checkbox&#34; v-model=&#34;userinfo.agree&#34;&gt;接受阅读协议&lt;a&gt;用户协议 &lt;/a&gt;&lt;br&gt;&lt;br&gt; &lt;button&gt;提交&lt;/button&gt; &lt;/form&gt; &lt;/div&gt; &lt;/body&gt; &lt;script&gt; new Vue({ el: &#34;#root&#34;, data: { userinfo: { phone: &#34;&#34;, password: &#34;&#34;, sex: &#34;&#34;, hobby: [], city: &#34;&#34;, other: &#34;&#34;, agree: false } }, methods: { submit() { console.log(JSON.stringify(this.userinfo)) } } }) &lt;/script&gt; 过滤器 &lt;body&gt; &lt;div id=&#34;root&#34;&gt; &lt;!-- 过滤器只能用在插值语法或者v-bind--&gt; &lt;h1&gt;当前时间戳: {{ time }}&lt;/h1&gt; &lt;h1&gt;计算属性 {{ filterTime }}&lt;/h1&gt; &lt;h1&gt;过滤器无参 {{ time | timePar }}&lt;/h1&gt; &lt;h1&gt;过滤器带参 {{ time | timePar(&#34;YYYY-MM&#34;) }}&lt;/h1&gt; &lt;h1&gt;多个过滤器结合使用 {{ time | timePar | jiequ }}&lt;/h1&gt; &lt;h1&gt;全局过滤器: {{ time | timePar | quanju }}&lt;/h1&gt; &lt;/div&gt; &lt;/body&gt; &lt;script&gt; // 全局过滤器 Vue.filter(&#34;quanju&#34;, function (value) { return value.slice(0, 1) }) new Vue({ el: &#34;#root&#34;, data: { time: 1681548595292 }, computed: { filterTime() { return dayjs(this.time).format(&#34;YYYY-MM-DD HH:mm:ss&#34;) } }, filters: { timePar(value, fomt = &#34;YYYY-MM-DD HH:mm:ss&#34;) { return dayjs(this.time).format(fomt) }, jiequ(value) { return value.slice(0, 4) } } }) &lt;/script&gt; 自定义指令 &lt;body&gt; &lt;div id=&#34;root&#34;&gt; &lt;h1&gt;n: {{ n }}&lt;/h1&gt; &lt;!-- 使用自定义指令,作用就是把n*10后展示--&gt; &lt;h1&gt;n*10: &lt;span v-big=&#34;n&#34;&gt;&lt;/span&gt;&lt;/h1&gt; &lt;!-- 页面打开就获取焦点 --&gt; &lt;input v-fbind:value=&#34;n&#34;&gt; &lt;button @click=&#34;n&#43;&#43;&#34;&gt;n&#43;1&lt;/button&gt; &lt;h1&gt;如果指定名称是多个单词则需要用 &#39; - &#39; 分割,例如: big-number, 创建时: &#39;big-number&#39;(){...}&lt;/h1&gt; &lt;/div&gt; &lt;/body&gt; &lt;script&gt; // 全局指令 Vue.directive(&#39;big1&#39;, function (element, bindalue) { // 内容 }) Vue.directive(&#39;big2&#39;, { bind(element, bindalue) { // 内容 }, inserted(element, bindalue) { // 内容 }, update(element, bindalue) { // 内容 } }) new Vue({ el: &#34;#root&#34;, data: { n: 1, }, directives: { // 精简写法,相当于bind &#43; update big(element, bindalue) { // this 为 wind 不是vm element.innerText = bindalue.value * 10 }, fbind: { // 指令与元素绑定后 bind(element, bindalue) { element.value = bindalue.value }, // 指令所在元素被插入页面后 inserted(element, bindalue) { element.focus() }, // 模版重新解析时调用 update(element, bindalue) { element.value = bindalue.value } } } }) &lt;/script&gt; props 父组件给子组件传值 // 父组件传值: &lt;!-- 直接使用 name=&#34;&#34;传递的是字符串 使用 :age=&#34;&#34; 绑定形式传递的是语法格式--&gt; &lt;HelloWorld name=&#34;张三&#34; :age=&#34;11&#34;&gt;&lt;/HelloWorld&gt; // 子组件接收: // 简写 // props: [&#34;name&#34;, &#34;age&#34;] // 限制传递数据的类型 // props: { // name: String, // age: Number // } // 详细写法 props: { name: { type: String, // 限制类型 required: true, // 是否为必须的值 }, age: { type: Number, default: 100, // 没有这个值的话默认值是多少 } } mixin混入 抽取实例之间相同的数据或方法然后共用">
+  <meta itemprop="datePublished" content="2022-12-04T19:38:37+08:00">
+  <meta itemprop="dateModified" content="2022-12-04T19:38:37+08:00">
+  <meta itemprop="wordCount" content="1936">
+  <meta itemprop="keywords" content="Vue2,前端">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Vue2">
+  <meta name="twitter:description" content="指令 语法 描述 {{ key }} 插值句法 v-bind:value=“key” / :value=“key” 单向绑定 v-model:value=“key” / v-model=“key” 双向绑定,只能用于有value值的 @keydown / @keyup / @keydown/keyup.键位名称.键位名称 键盘事件 @click.prevent / @click.stop / @click.once / @click.capture / @click.self / @click.passive 默认事件 / 冒泡 / 只执行一次 / 捕获模式 / event.target是当前元素在执行 / 不等待事件处理完 v-if / v-else-if / v-else / v-show v-if 条件不成立则没有这个元素, v-show则是使用display隐藏这个元素 v-for=&#34;(key, value/index) in data&#34; :key=“唯一值” key里面的值必须是唯一的 v-text / v-html / v-once / v-cloak 文本 / 解析html / 只执行一次 / 渲染完毕后删除 ref=“key” 获取 this.#refs.key this.$nextTick(function () { … } 下一次dom更新时执行的回调方法 计算属性 computed: { // 计算的值 info: { // 获取这个值时调用 get() { return ... }, // 设置值时调用,value为设置的值 set(value) { ... } } } // 如果只读不修改的话可以简写为: computed: { info() { return ... } } 监视属性 watch: { name: { // immediate页面打开直接调用一次,用来初始化 immediate: true, handler(newdata, olddata) { console.log(&#34;newData: &#34;, newdata, &#34; oldData: &#34;, olddata) } }, // 监视里面某一个属性可以写: &#34;number.a&#34; 必须加上引号不然格式不对,默认不写引号是因为简写 number: { // 开启深度监视,否则无法直接监视number里面的属性变化 deep: true, handler(newDta, oldData) { console.log(newDta, &#34; &#34;, oldData) } }, // 当只有handler时简写: demo(newData, oldData) { console.log(newData, oldData) // 这里必须是箭头方式的,因为只有箭头的没有this向外招,招到demo,demo的this是vue // 不使用箭头的this就是wind setTimeout(() =&gt; { console.log(&#34;&#34;) }, 1000) } } 表单绑定 &lt;body&gt; &lt;div id=&#34;root&#34;&gt; &lt;form @submit.prevent=&#34;submit&#34;&gt; &lt;!-- v-model.number 把输入转为数字 --&gt; 账号:&lt;input type=&#34;number&#34; v-model.number=&#34;userinfo.phone&#34;&gt;&lt;br&gt;&lt;br&gt; &lt;!-- v-model.trim 去掉前后空格 --&gt; 密码:&lt;input type=&#34;password&#34; v-model.trim=&#34;userinfo.password&#34;&gt;&lt;br&gt;&lt;br&gt; 性别:&lt;input type=&#34;radio&#34; name=&#34;sex&#34; value=&#34;1&#34; v-model=&#34;userinfo.sex&#34;&gt;男 &lt;input type=&#34;radio&#34; name=&#34;sex&#34; value=&#34;0&#34; v-model=&#34;userinfo.sex&#34;&gt;女&lt;br&gt;&lt;br&gt; 爱好:&lt;input type=&#34;checkbox&#34; value=&#34;a&#34; v-model=&#34;userinfo.hobby&#34;&gt;A &lt;input type=&#34;checkbox&#34; value=&#34;b&#34; v-model=&#34;userinfo.hobby&#34;&gt;B &lt;input type=&#34;checkbox&#34; value=&#34;c&#34; v-model=&#34;userinfo.hobby&#34;&gt;C&lt;br&gt;&lt;br&gt; 所属:&lt;select v-model=&#34;userinfo.city&#34;&gt; &lt;option value=&#34;&#34;&gt;选择&lt;/option&gt; &lt;option value=&#34;北京&#34;&gt;北京&lt;/option&gt; &lt;option value=&#34;上海&#34;&gt;上海&lt;/option&gt; &lt;/select&gt;&lt;br&gt;&lt;br&gt; &lt;!-- v-model.lazy 当失去焦点的时候再收集 --&gt; 其他信息:&lt;textarea v-model.lazy=&#34;userinfo.other&#34;&gt;&lt;/textarea&gt;&lt;br&gt;&lt;br&gt; &lt;input type=&#34;checkbox&#34; v-model=&#34;userinfo.agree&#34;&gt;接受阅读协议&lt;a&gt;用户协议 &lt;/a&gt;&lt;br&gt;&lt;br&gt; &lt;button&gt;提交&lt;/button&gt; &lt;/form&gt; &lt;/div&gt; &lt;/body&gt; &lt;script&gt; new Vue({ el: &#34;#root&#34;, data: { userinfo: { phone: &#34;&#34;, password: &#34;&#34;, sex: &#34;&#34;, hobby: [], city: &#34;&#34;, other: &#34;&#34;, agree: false } }, methods: { submit() { console.log(JSON.stringify(this.userinfo)) } } }) &lt;/script&gt; 过滤器 &lt;body&gt; &lt;div id=&#34;root&#34;&gt; &lt;!-- 过滤器只能用在插值语法或者v-bind--&gt; &lt;h1&gt;当前时间戳: {{ time }}&lt;/h1&gt; &lt;h1&gt;计算属性 {{ filterTime }}&lt;/h1&gt; &lt;h1&gt;过滤器无参 {{ time | timePar }}&lt;/h1&gt; &lt;h1&gt;过滤器带参 {{ time | timePar(&#34;YYYY-MM&#34;) }}&lt;/h1&gt; &lt;h1&gt;多个过滤器结合使用 {{ time | timePar | jiequ }}&lt;/h1&gt; &lt;h1&gt;全局过滤器: {{ time | timePar | quanju }}&lt;/h1&gt; &lt;/div&gt; &lt;/body&gt; &lt;script&gt; // 全局过滤器 Vue.filter(&#34;quanju&#34;, function (value) { return value.slice(0, 1) }) new Vue({ el: &#34;#root&#34;, data: { time: 1681548595292 }, computed: { filterTime() { return dayjs(this.time).format(&#34;YYYY-MM-DD HH:mm:ss&#34;) } }, filters: { timePar(value, fomt = &#34;YYYY-MM-DD HH:mm:ss&#34;) { return dayjs(this.time).format(fomt) }, jiequ(value) { return value.slice(0, 4) } } }) &lt;/script&gt; 自定义指令 &lt;body&gt; &lt;div id=&#34;root&#34;&gt; &lt;h1&gt;n: {{ n }}&lt;/h1&gt; &lt;!-- 使用自定义指令,作用就是把n*10后展示--&gt; &lt;h1&gt;n*10: &lt;span v-big=&#34;n&#34;&gt;&lt;/span&gt;&lt;/h1&gt; &lt;!-- 页面打开就获取焦点 --&gt; &lt;input v-fbind:value=&#34;n&#34;&gt; &lt;button @click=&#34;n&#43;&#43;&#34;&gt;n&#43;1&lt;/button&gt; &lt;h1&gt;如果指定名称是多个单词则需要用 &#39; - &#39; 分割,例如: big-number, 创建时: &#39;big-number&#39;(){...}&lt;/h1&gt; &lt;/div&gt; &lt;/body&gt; &lt;script&gt; // 全局指令 Vue.directive(&#39;big1&#39;, function (element, bindalue) { // 内容 }) Vue.directive(&#39;big2&#39;, { bind(element, bindalue) { // 内容 }, inserted(element, bindalue) { // 内容 }, update(element, bindalue) { // 内容 } }) new Vue({ el: &#34;#root&#34;, data: { n: 1, }, directives: { // 精简写法,相当于bind &#43; update big(element, bindalue) { // this 为 wind 不是vm element.innerText = bindalue.value * 10 }, fbind: { // 指令与元素绑定后 bind(element, bindalue) { element.value = bindalue.value }, // 指令所在元素被插入页面后 inserted(element, bindalue) { element.focus() }, // 模版重新解析时调用 update(element, bindalue) { element.value = bindalue.value } } } }) &lt;/script&gt; props 父组件给子组件传值 // 父组件传值: &lt;!-- 直接使用 name=&#34;&#34;传递的是字符串 使用 :age=&#34;&#34; 绑定形式传递的是语法格式--&gt; &lt;HelloWorld name=&#34;张三&#34; :age=&#34;11&#34;&gt;&lt;/HelloWorld&gt; // 子组件接收: // 简写 // props: [&#34;name&#34;, &#34;age&#34;] // 限制传递数据的类型 // props: { // name: String, // age: Number // } // 详细写法 props: { name: { type: String, // 限制类型 required: true, // 是否为必须的值 }, age: { type: Number, default: 100, // 没有这个值的话默认值是多少 } } mixin混入 抽取实例之间相同的数据或方法然后共用">
+
+	
+  </head><body class="ma0 avenir bg-near-white development">
+
+    
+   
+  
+
+  <header>
+    <div class="bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l center items-center justify-between">
+    <a href="/" class="f3 fw2 hover-white white-90 dib no-underline">
+      
+        loveyu233
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      <div class="ananke-socials"></div>
+
+    </div>
+  </div>
+</nav>
+
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  
+  <article class="flex-l mw8 center ph3 flex-wrap justify-between">
+    <header class="mt4 w-100">
+      <aside class="instapaper_ignoref b helvetica tracked ttu">
+          
+        frontEnd
+      </aside><div id="sharing" class="mt3 ananke-socials"></div>
+<h1 class="f1 athelas mt3 mb1">Vue2</h1>
+      
+      <p class="tracked"><strong>loveyu</strong>
+      </p>
+      
+      
+      
+      <time class="f6 mv4 dib tracked" datetime="2022-12-04T19:38:37+08:00">December 4, 2022</time>
+      
+
+      
+      
+    </header>
+    <div class="nested-copy-line-height lh-copy serif f4 nested-links mid-gray pr4-l w-two-thirds-l"><h1 id="指令">指令</h1>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: center">语法</th>
+          <th style="text-align: center">描述</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: center">{{ key }}</td>
+          <td style="text-align: center">插值句法</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">v-bind:value=&ldquo;key&rdquo; / :value=&ldquo;key&rdquo;</td>
+          <td style="text-align: center">单向绑定</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">v-model:value=&ldquo;key&rdquo; / v-model=&ldquo;key&rdquo;</td>
+          <td style="text-align: center">双向绑定,只能用于有value值的</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">@keydown / @keyup / @keydown/keyup.键位名称.键位名称</td>
+          <td style="text-align: center">键盘事件</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">@click.prevent / @click.stop / @click.once / @click.capture / @click.self / @click.passive</td>
+          <td style="text-align: center">默认事件 / 冒泡 / 只执行一次 / 捕获模式 / event.target是当前元素在执行 / 不等待事件处理完</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">v-if / v-else-if / v-else / v-show</td>
+          <td style="text-align: center">v-if 条件不成立则没有这个元素, v-show则是使用display隐藏这个元素</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">v-for=&quot;(key, value/index) in data&quot; :key=&ldquo;唯一值&rdquo;</td>
+          <td style="text-align: center">key里面的值必须是唯一的</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">v-text / v-html / v-once / v-cloak</td>
+          <td style="text-align: center">文本 / 解析html / 只执行一次 / 渲染完毕后删除</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">ref=&ldquo;key&rdquo;</td>
+          <td style="text-align: center">获取 this.#refs.key</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">this.$nextTick(function () { &hellip; }</td>
+          <td style="text-align: center">下一次dom更新时执行的回调方法</td>
+      </tr>
+  </tbody>
+</table>
+<h1 id="计算属性">计算属性</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#a6e22e">computed</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 计算的值
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">info</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>    	<span style="color:#75715e">// 获取这个值时调用
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      <span style="color:#a6e22e">get</span>() {
+</span></span><span style="display:flex;"><span>          <span style="color:#66d9ef">return</span> ...
+</span></span><span style="display:flex;"><span>      },
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">// 设置值时调用,value为设置的值
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      <span style="color:#a6e22e">set</span>(<span style="color:#a6e22e">value</span>) {
+</span></span><span style="display:flex;"><span>          ...
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 如果只读不修改的话可以简写为:
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">computed</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">info</span>() {
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">return</span> ...
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="监视属性">监视属性</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#a6e22e">watch</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">// immediate页面打开直接调用一次,用来初始化
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      <span style="color:#a6e22e">immediate</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">true</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">handler</span>(<span style="color:#a6e22e">newdata</span>, <span style="color:#a6e22e">olddata</span>) {
+</span></span><span style="display:flex;"><span>          <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#34;newData: &#34;</span>, <span style="color:#a6e22e">newdata</span>, <span style="color:#e6db74">&#34;  oldData: &#34;</span>, <span style="color:#a6e22e">olddata</span>)
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 监视里面某一个属性可以写: &#34;number.a&#34; 必须加上引号不然格式不对,默认不写引号是因为简写
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">number</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">// 开启深度监视,否则无法直接监视number里面的属性变化
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      <span style="color:#a6e22e">deep</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">true</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">handler</span>(<span style="color:#a6e22e">newDta</span>, <span style="color:#a6e22e">oldData</span>) {
+</span></span><span style="display:flex;"><span>          <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">newDta</span>, <span style="color:#e6db74">&#34; &#34;</span>, <span style="color:#a6e22e">oldData</span>)
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 当只有handler时简写:
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">demo</span>(<span style="color:#a6e22e">newData</span>, <span style="color:#a6e22e">oldData</span>) {
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">newData</span>, <span style="color:#a6e22e">oldData</span>)
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">// 这里必须是箭头方式的,因为只有箭头的没有this向外招,招到demo,demo的this是vue
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      <span style="color:#75715e">// 不使用箭头的this就是wind
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      <span style="color:#a6e22e">setTimeout</span>(() =&gt; {
+</span></span><span style="display:flex;"><span>          <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#34;&#34;</span>)
+</span></span><span style="display:flex;"><span>      }, <span style="color:#ae81ff">1000</span>)
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="表单绑定">表单绑定</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-html" data-lang="html"><span style="display:flex;"><span>&lt;<span style="color:#f92672">body</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#f92672">div</span> <span style="color:#a6e22e">id</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;root&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#f92672">form</span> <span style="color:#960050;background-color:#1e0010">@</span><span style="color:#a6e22e">submit</span><span style="color:#960050;background-color:#1e0010">.</span><span style="color:#a6e22e">prevent</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;submit&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">&lt;!--     v-model.number 把输入转为数字   --&gt;</span>
+</span></span><span style="display:flex;"><span>        账号:&lt;<span style="color:#f92672">input</span> <span style="color:#a6e22e">type</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;number&#34;</span> <span style="color:#a6e22e">v-model</span><span style="color:#960050;background-color:#1e0010">.</span><span style="color:#a6e22e">number</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;userinfo.phone&#34;</span>&gt;&lt;<span style="color:#f92672">br</span>&gt;&lt;<span style="color:#f92672">br</span>&gt;
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">&lt;!--     v-model.trim 去掉前后空格   --&gt;</span>
+</span></span><span style="display:flex;"><span>        密码:&lt;<span style="color:#f92672">input</span> <span style="color:#a6e22e">type</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;password&#34;</span> <span style="color:#a6e22e">v-model</span><span style="color:#960050;background-color:#1e0010">.</span><span style="color:#a6e22e">trim</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;userinfo.password&#34;</span>&gt;&lt;<span style="color:#f92672">br</span>&gt;&lt;<span style="color:#f92672">br</span>&gt;
+</span></span><span style="display:flex;"><span>        性别:&lt;<span style="color:#f92672">input</span> <span style="color:#a6e22e">type</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;radio&#34;</span> <span style="color:#a6e22e">name</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;sex&#34;</span> <span style="color:#a6e22e">value</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;1&#34;</span> <span style="color:#a6e22e">v-model</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;userinfo.sex&#34;</span>&gt;男
+</span></span><span style="display:flex;"><span>        &lt;<span style="color:#f92672">input</span> <span style="color:#a6e22e">type</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;radio&#34;</span> <span style="color:#a6e22e">name</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;sex&#34;</span> <span style="color:#a6e22e">value</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;0&#34;</span> <span style="color:#a6e22e">v-model</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;userinfo.sex&#34;</span>&gt;女&lt;<span style="color:#f92672">br</span>&gt;&lt;<span style="color:#f92672">br</span>&gt;
+</span></span><span style="display:flex;"><span>        爱好:&lt;<span style="color:#f92672">input</span> <span style="color:#a6e22e">type</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;checkbox&#34;</span> <span style="color:#a6e22e">value</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;a&#34;</span> <span style="color:#a6e22e">v-model</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;userinfo.hobby&#34;</span>&gt;A
+</span></span><span style="display:flex;"><span>        &lt;<span style="color:#f92672">input</span> <span style="color:#a6e22e">type</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;checkbox&#34;</span> <span style="color:#a6e22e">value</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;b&#34;</span> <span style="color:#a6e22e">v-model</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;userinfo.hobby&#34;</span>&gt;B
+</span></span><span style="display:flex;"><span>        &lt;<span style="color:#f92672">input</span> <span style="color:#a6e22e">type</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;checkbox&#34;</span> <span style="color:#a6e22e">value</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;c&#34;</span> <span style="color:#a6e22e">v-model</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;userinfo.hobby&#34;</span>&gt;C&lt;<span style="color:#f92672">br</span>&gt;&lt;<span style="color:#f92672">br</span>&gt;
+</span></span><span style="display:flex;"><span>        所属:&lt;<span style="color:#f92672">select</span> <span style="color:#a6e22e">v-model</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;userinfo.city&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>        &lt;<span style="color:#f92672">option</span> <span style="color:#a6e22e">value</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;&#34;</span>&gt;选择&lt;/<span style="color:#f92672">option</span>&gt;
+</span></span><span style="display:flex;"><span>        &lt;<span style="color:#f92672">option</span> <span style="color:#a6e22e">value</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;北京&#34;</span>&gt;北京&lt;/<span style="color:#f92672">option</span>&gt;
+</span></span><span style="display:flex;"><span>        &lt;<span style="color:#f92672">option</span> <span style="color:#a6e22e">value</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;上海&#34;</span>&gt;上海&lt;/<span style="color:#f92672">option</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;/<span style="color:#f92672">select</span>&gt;&lt;<span style="color:#f92672">br</span>&gt;&lt;<span style="color:#f92672">br</span>&gt;
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">&lt;!--    v-model.lazy 当失去焦点的时候再收集    --&gt;</span>
+</span></span><span style="display:flex;"><span>        其他信息:&lt;<span style="color:#f92672">textarea</span> <span style="color:#a6e22e">v-model</span><span style="color:#960050;background-color:#1e0010">.</span><span style="color:#a6e22e">lazy</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;userinfo.other&#34;</span>&gt;&lt;/<span style="color:#f92672">textarea</span>&gt;&lt;<span style="color:#f92672">br</span>&gt;&lt;<span style="color:#f92672">br</span>&gt;
+</span></span><span style="display:flex;"><span>        &lt;<span style="color:#f92672">input</span> <span style="color:#a6e22e">type</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;checkbox&#34;</span> <span style="color:#a6e22e">v-model</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;userinfo.agree&#34;</span>&gt;接受阅读协议&lt;<span style="color:#f92672">a</span>&gt;用户协议
+</span></span><span style="display:flex;"><span>    &lt;/<span style="color:#f92672">a</span>&gt;&lt;<span style="color:#f92672">br</span>&gt;&lt;<span style="color:#f92672">br</span>&gt;
+</span></span><span style="display:flex;"><span>        &lt;<span style="color:#f92672">button</span>&gt;提交&lt;/<span style="color:#f92672">button</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;/<span style="color:#f92672">form</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">div</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">body</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#f92672">script</span>&gt;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">Vue</span>({
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">el</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;#root&#34;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">data</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">userinfo</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>                <span style="color:#a6e22e">phone</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#a6e22e">password</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#a6e22e">sex</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#a6e22e">hobby</span><span style="color:#f92672">:</span> [],
+</span></span><span style="display:flex;"><span>                <span style="color:#a6e22e">city</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#a6e22e">other</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#a6e22e">agree</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        },
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">methods</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">submit</span>() {
+</span></span><span style="display:flex;"><span>                <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">JSON</span>.<span style="color:#a6e22e">stringify</span>(<span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">userinfo</span>))
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    })
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">script</span>&gt;
+</span></span></code></pre></div><h1 id="过滤器">过滤器</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-html" data-lang="html"><span style="display:flex;"><span>&lt;<span style="color:#f92672">body</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#f92672">div</span> <span style="color:#a6e22e">id</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;root&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">&lt;!--    过滤器只能用在插值语法或者v-bind--&gt;</span>
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#f92672">h1</span>&gt;当前时间戳: {{ time }}&lt;/<span style="color:#f92672">h1</span>&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#f92672">h1</span>&gt;计算属性 {{ filterTime }}&lt;/<span style="color:#f92672">h1</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#f92672">h1</span>&gt;过滤器无参 {{ time | timePar }}&lt;/<span style="color:#f92672">h1</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#f92672">h1</span>&gt;过滤器带参 {{ time | timePar(&#34;YYYY-MM&#34;) }}&lt;/<span style="color:#f92672">h1</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#f92672">h1</span>&gt;多个过滤器结合使用 {{ time | timePar | jiequ }}&lt;/<span style="color:#f92672">h1</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#f92672">h1</span>&gt;全局过滤器: {{ time | timePar | quanju }}&lt;/<span style="color:#f92672">h1</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">div</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">body</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#f92672">script</span>&gt;
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//    全局过滤器
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">Vue</span>.<span style="color:#a6e22e">filter</span>(<span style="color:#e6db74">&#34;quanju&#34;</span>, <span style="color:#66d9ef">function</span> (<span style="color:#a6e22e">value</span>) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">value</span>.<span style="color:#a6e22e">slice</span>(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>    })
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">Vue</span>({
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">el</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;#root&#34;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">data</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">time</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">1681548595292</span>
+</span></span><span style="display:flex;"><span>        },
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">computed</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">filterTime</span>() {
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">dayjs</span>(<span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">time</span>).<span style="color:#a6e22e">format</span>(<span style="color:#e6db74">&#34;YYYY-MM-DD HH:mm:ss&#34;</span>)
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        },
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">filters</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">timePar</span>(<span style="color:#a6e22e">value</span>, <span style="color:#a6e22e">fomt</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;YYYY-MM-DD HH:mm:ss&#34;</span>) {
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">dayjs</span>(<span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">time</span>).<span style="color:#a6e22e">format</span>(<span style="color:#a6e22e">fomt</span>)
+</span></span><span style="display:flex;"><span>            },
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">jiequ</span>(<span style="color:#a6e22e">value</span>) {
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">value</span>.<span style="color:#a6e22e">slice</span>(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">4</span>)
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    })
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">script</span>&gt;
+</span></span></code></pre></div><h1 id="自定义指令">自定义指令</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-html" data-lang="html"><span style="display:flex;"><span>&lt;<span style="color:#f92672">body</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#f92672">div</span> <span style="color:#a6e22e">id</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;root&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#f92672">h1</span>&gt;n: {{ n }}&lt;/<span style="color:#f92672">h1</span>&gt;
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">&lt;!--    使用自定义指令,作用就是把n*10后展示--&gt;</span>
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#f92672">h1</span>&gt;n*10: &lt;<span style="color:#f92672">span</span> <span style="color:#a6e22e">v-big</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;n&#34;</span>&gt;&lt;/<span style="color:#f92672">span</span>&gt;&lt;/<span style="color:#f92672">h1</span>&gt;
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">&lt;!--   页面打开就获取焦点 --&gt;</span>
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#f92672">input</span> <span style="color:#a6e22e">v-fbind:value</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;n&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#f92672">button</span> <span style="color:#960050;background-color:#1e0010">@</span><span style="color:#a6e22e">click</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;n++&#34;</span>&gt;n+1&lt;/<span style="color:#f92672">button</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#f92672">h1</span>&gt;如果指定名称是多个单词则需要用 &#39; - &#39; 分割,例如: big-number, 创建时: &#39;big-number&#39;(){...}&lt;/<span style="color:#f92672">h1</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">div</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">body</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#f92672">script</span>&gt;
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//    全局指令
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">Vue</span>.<span style="color:#a6e22e">directive</span>(<span style="color:#e6db74">&#39;big1&#39;</span>, <span style="color:#66d9ef">function</span> (<span style="color:#a6e22e">element</span>, <span style="color:#a6e22e">bindalue</span>) {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//     内容
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    })
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">Vue</span>.<span style="color:#a6e22e">directive</span>(<span style="color:#e6db74">&#39;big2&#39;</span>, {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">bind</span>(<span style="color:#a6e22e">element</span>, <span style="color:#a6e22e">bindalue</span>) {
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">//     内容
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        },
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">inserted</span>(<span style="color:#a6e22e">element</span>, <span style="color:#a6e22e">bindalue</span>) {
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">//     内容
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        },
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">update</span>(<span style="color:#a6e22e">element</span>, <span style="color:#a6e22e">bindalue</span>) {
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">//     内容
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        }
+</span></span><span style="display:flex;"><span>    })
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">Vue</span>({
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">el</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;#root&#34;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">data</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">n</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">1</span>,
+</span></span><span style="display:flex;"><span>        },
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">directives</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 精简写法,相当于bind + update
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#a6e22e">big</span>(<span style="color:#a6e22e">element</span>, <span style="color:#a6e22e">bindalue</span>) {
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// this 为 wind 不是vm
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                <span style="color:#a6e22e">element</span>.<span style="color:#a6e22e">innerText</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">bindalue</span>.<span style="color:#a6e22e">value</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">10</span>
+</span></span><span style="display:flex;"><span>            },
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">fbind</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// 指令与元素绑定后
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                <span style="color:#a6e22e">bind</span>(<span style="color:#a6e22e">element</span>, <span style="color:#a6e22e">bindalue</span>) {
+</span></span><span style="display:flex;"><span>                    <span style="color:#a6e22e">element</span>.<span style="color:#a6e22e">value</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">bindalue</span>.<span style="color:#a6e22e">value</span>
+</span></span><span style="display:flex;"><span>                },
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// 指令所在元素被插入页面后
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                <span style="color:#a6e22e">inserted</span>(<span style="color:#a6e22e">element</span>, <span style="color:#a6e22e">bindalue</span>) {
+</span></span><span style="display:flex;"><span>                    <span style="color:#a6e22e">element</span>.<span style="color:#a6e22e">focus</span>()
+</span></span><span style="display:flex;"><span>                },
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// 模版重新解析时调用
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                <span style="color:#a6e22e">update</span>(<span style="color:#a6e22e">element</span>, <span style="color:#a6e22e">bindalue</span>) {
+</span></span><span style="display:flex;"><span>                    <span style="color:#a6e22e">element</span>.<span style="color:#a6e22e">value</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">bindalue</span>.<span style="color:#a6e22e">value</span>
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    })
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">script</span>&gt;
+</span></span></code></pre></div><h1 id="props-父组件给子组件传值">props 父组件给子组件传值</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#75715e">// 父组件传值:
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">&lt;!--</span>        <span style="color:#a6e22e">直接使用</span> <span style="color:#a6e22e">name</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;&#34;</span><span style="color:#a6e22e">传递的是字符串</span> <span style="color:#a6e22e">使用</span> <span style="color:#f92672">:</span><span style="color:#a6e22e">age</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;&#34;</span> <span style="color:#a6e22e">绑定形式传递的是语法格式</span><span style="color:#f92672">--&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;</span><span style="color:#a6e22e">HelloWorld</span> <span style="color:#a6e22e">name</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;张三&#34;</span> <span style="color:#f92672">:</span><span style="color:#a6e22e">age</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;11&#34;</span><span style="color:#f92672">&gt;&lt;</span><span style="color:#960050;background-color:#1e0010">/HelloWorld&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 子组件接收:
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 简写
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">// props: [&#34;name&#34;, &#34;age&#34;]
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 限制传递数据的类型
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">// props: {
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//     name: String,
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//     age: Number
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">// }
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 详细写法
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">props</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">type</span><span style="color:#f92672">:</span> String,   <span style="color:#75715e">// 限制类型
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#a6e22e">required</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">true</span>, <span style="color:#75715e">// 是否为必须的值
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    },
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">age</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">type</span><span style="color:#f92672">:</span> Number,
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">default</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">100</span>,   <span style="color:#75715e">// 没有这个值的话默认值是多少
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="mixin混入">mixin混入</h1>
+<blockquote>
+<p>抽取实例之间相同的数据或方法然后共用</p></blockquote>
+<p><code>minxin.js</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">export</span> <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">mixin1</span> <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 里面可以写所有的,例如:data,methods等等,如果数据和实例数据重复以实例的为准,如果是挂载方法则全都用,mixin的先执行
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">methods</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">showName</span>() {
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">alert</span>(<span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">name</span>)
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">export</span> <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">mixin2</span> <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">data</span>() {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">x</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">100</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">y</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">100</span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><code>xxx.vue 局部引用</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-vue" data-lang="vue"><span style="display:flex;"><span>&lt;<span style="color:#f92672">template</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#f92672">div</span>&gt;
+</span></span><span style="display:flex;"><span>        &lt;<span style="color:#f92672">h1</span> <span style="color:#f92672">@click</span><span style="color:#e6db74">=&#34;showName&#34;</span>&gt;{{ <span style="color:#a6e22e">name</span> }}&lt;/<span style="color:#f92672">h1</span>&gt;
+</span></span><span style="display:flex;"><span>        &lt;<span style="color:#f92672">h1</span>&gt;{{ <span style="color:#a6e22e">x</span> }}&lt;/<span style="color:#f92672">h1</span>&gt;
+</span></span><span style="display:flex;"><span>        &lt;<span style="color:#f92672">h1</span>&gt;{{ <span style="color:#a6e22e">y</span> }}&lt;/<span style="color:#f92672">h1</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;/<span style="color:#f92672">div</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">template</span>&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#f92672">script</span>&gt;
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 局部引用
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">import</span> {<span style="color:#a6e22e">mixin1</span>, <span style="color:#a6e22e">mixin2</span>} <span style="color:#a6e22e">from</span> <span style="color:#e6db74">&#34;../mixin&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">export</span> <span style="color:#66d9ef">default</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;HelloWorld&#39;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">data</span>() {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;张三&#34;</span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 使用
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">mixins</span><span style="color:#f92672">:</span> [<span style="color:#a6e22e">mixin1</span>, <span style="color:#a6e22e">mixin2</span>]
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><code>main.js 全局引用</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#75715e">// 全局引用
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">import</span> {<span style="color:#a6e22e">mixin1</span>, <span style="color:#a6e22e">mixin2</span>} <span style="color:#a6e22e">from</span> <span style="color:#e6db74">&#34;./mixin&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 全局使用
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">Vue</span>.<span style="color:#a6e22e">mixin</span>(<span style="color:#a6e22e">mixin1</span>)
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">Vue</span>.<span style="color:#a6e22e">mixin</span>(<span style="color:#a6e22e">mixin2</span>)
+</span></span></code></pre></div><h1 id="插件">插件</h1>
+<p><code>plugins.js</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">export</span> <span style="color:#66d9ef">default</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 参数就是vue,方法名必须是install,可以在这个方法里面注册过滤器,自定义指令,混入等等
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">install</span>(<span style="color:#a6e22e">vue</span>) {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 过滤器
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#a6e22e">vue</span>.<span style="color:#a6e22e">filter</span>(<span style="color:#e6db74">&#34;slice&#34;</span>, <span style="color:#66d9ef">function</span> (<span style="color:#a6e22e">value</span>) {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">value</span>.<span style="color:#a6e22e">slice</span>(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">4</span>)
+</span></span><span style="display:flex;"><span>        })
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 自定义指令
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#a6e22e">vue</span>.<span style="color:#a6e22e">directive</span>(<span style="color:#e6db74">&#34;get&#34;</span>, {
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 指令与元素绑定后
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#a6e22e">bind</span>(<span style="color:#a6e22e">element</span>, <span style="color:#a6e22e">bindalue</span>) {
+</span></span><span style="display:flex;"><span>                <span style="color:#a6e22e">element</span>.<span style="color:#a6e22e">value</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">bindalue</span>.<span style="color:#a6e22e">value</span>
+</span></span><span style="display:flex;"><span>            },
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 指令所在元素被插入页面后
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#a6e22e">inserted</span>(<span style="color:#a6e22e">element</span>) {
+</span></span><span style="display:flex;"><span>                <span style="color:#a6e22e">element</span>.<span style="color:#a6e22e">focus</span>()
+</span></span><span style="display:flex;"><span>            },
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 模版重新解析时调用
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#a6e22e">update</span>(<span style="color:#a6e22e">element</span>, <span style="color:#a6e22e">bindalue</span>) {
+</span></span><span style="display:flex;"><span>                <span style="color:#a6e22e">element</span>.<span style="color:#a6e22e">value</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">bindalue</span>.<span style="color:#a6e22e">value</span>
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        })
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 混入
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#a6e22e">vue</span>.<span style="color:#a6e22e">mixin</span>({
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">data</span>() {
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">return</span> {
+</span></span><span style="display:flex;"><span>                    <span style="color:#a6e22e">x</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">100</span>,
+</span></span><span style="display:flex;"><span>                    <span style="color:#a6e22e">y</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">100</span>
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        })
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><code>main.js</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">import</span> <span style="color:#a6e22e">plugins</span> <span style="color:#a6e22e">from</span> <span style="color:#e6db74">&#34;./plugins&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 使用插件
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">Vue</span>.<span style="color:#a6e22e">use</span>(<span style="color:#a6e22e">plugins</span>)
+</span></span></code></pre></div><blockquote>
+<p>可以在使用插件时传递自己想要的参数,例如:</p>
+<p>Vue.user(plugins,1,2,3)</p>
+<p>在plugins.js的install(vue,a,b,c)接受传递的参数,其中a就是1,b是2,c是3</p></blockquote>
+<h1 id="自定义事件">自定义事件</h1>
+<blockquote>
+<p><code>子组件给父组件传递数据</code></p>
+<p>第一种方法是立即绑定事件,第二种方法可以做到延时绑定事件,也就是在做完某些事后再绑定事件</p>
+<p>组件上绑定的事件都会默认为是自定义事件包括@click,变为原生dom事件就需要使用<code>@click.native=&quot;&quot;</code> ,使用native修饰</p>
+<p>所有的自定义事件都可以绑定修饰符,例如<code>.once</code>只触发一次等等修饰符</p></blockquote>
+<h2 id="第一种方法">第一种方法</h2>
+<blockquote>
+<p>在要传递消息的组件上绑定一个自定义事件,自定义事件的回调方法声明在接受数据的组件上</p>
+<p>绑定使用 <code>v-on:自定义时间名称=&quot;回调方法&quot; 或 @自定义事件名称=&quot;回调方法&quot;</code></p>
+<p>传递消息触发时间使用 <code>this.$emit(事件名称,传递的数据)</code></p></blockquote>
+<p><code>App.vue</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-vue" data-lang="vue"><span style="display:flex;"><span>&lt;<span style="color:#f92672">template</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#f92672">div</span> <span style="color:#a6e22e">id</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;app&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>        &lt;<span style="color:#f92672">HelloWorld</span> <span style="color:#f92672">@getNameData</span><span style="color:#e6db74">=&#34;getName&#34;</span>&gt;&lt;/<span style="color:#f92672">HelloWorld</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;/<span style="color:#f92672">div</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">template</span>&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#f92672">script</span>&gt;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">import</span> <span style="color:#a6e22e">HelloWorld</span> <span style="color:#a6e22e">from</span> <span style="color:#e6db74">&#39;./components/HelloWorld.vue&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">export</span> <span style="color:#66d9ef">default</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;App&#39;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">components</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">HelloWorld</span>
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">methods</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">getName</span>(<span style="color:#a6e22e">name</span>) {
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#34;App收到data: &#34;</span>, <span style="color:#a6e22e">name</span>)
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">script</span>&gt;
+</span></span></code></pre></div><p><code>HelloWorld.vue</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-vue" data-lang="vue"><span style="display:flex;"><span>&lt;<span style="color:#f92672">template</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#f92672">div</span>&gt;
+</span></span><span style="display:flex;"><span>        &lt;<span style="color:#f92672">button</span> <span style="color:#f92672">@click</span><span style="color:#e6db74">=&#34;sendName&#34;</span>&gt;<span style="color:#a6e22e">点击向父组件传递name</span>&lt;/<span style="color:#f92672">button</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;/<span style="color:#f92672">div</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">template</span>&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#f92672">script</span>&gt;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">export</span> <span style="color:#66d9ef">default</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;HelloWorld&#39;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">data</span>() {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;张三&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">age</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;18&#34;</span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">methods</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">sendName</span>() {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">$emit</span>(<span style="color:#e6db74">&#34;getNameData&#34;</span>, <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">name</span>)
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">script</span>&gt;
+</span></span></code></pre></div><h2 id="第二种方法">第二种方法</h2>
+<blockquote>
+<p>使用<code>ref=&quot;xxx&quot;</code> 然后在挂载钩子上给需要传递数据的组件绑定事件<code>this.$refs.hello.$on(&quot;getAgeData&quot;, this.getAge)</code></p>
+<p>传递数据组件依旧使用<code>this.$emit(事件名称,传递的数据)</code> 触发事件</p></blockquote>
+<p><code>App.vue</code></p>
+<blockquote>
+<ol>
+<li>
+<p>this.$refs.hello.$on(&ldquo;getAgeData&rdquo;, this.getAge)</p>
+</li>
+<li>
+<p>使用箭头函数</p>
+</li>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-vue" data-lang="vue"><span style="display:flex;"><span><span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">$refs</span>.<span style="color:#a6e22e">hello</span>.<span style="color:#a6e22e">$on</span>(<span style="color:#e6db74">&#34;getAgeData&#34;</span>, (<span style="color:#a6e22e">age</span>)=&gt;{ <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">age</span>) })
+</span></span></code></pre></div></li>
+<li>
+<p>一定不能使用function(){}这种形式,箭头函数的this是当前组件,function的this是调用组件</p>
+</li>
+</ol></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-vue" data-lang="vue"><span style="display:flex;"><span>&lt;<span style="color:#f92672">template</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#f92672">div</span> <span style="color:#a6e22e">id</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;app&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>        &lt;<span style="color:#f92672">HelloWorld</span> <span style="color:#a6e22e">ref</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;hello&#34;</span>&gt;&lt;/<span style="color:#f92672">HelloWorld</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;/<span style="color:#f92672">div</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">template</span>&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#f92672">script</span>&gt;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">import</span> <span style="color:#a6e22e">HelloWorld</span> <span style="color:#a6e22e">from</span> <span style="color:#e6db74">&#39;./components/HelloWorld.vue&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">export</span> <span style="color:#66d9ef">default</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;App&#39;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">components</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">HelloWorld</span>
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">methods</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">getAge</span>(<span style="color:#a6e22e">age</span>) {
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#34;App收到data: &#34;</span>, <span style="color:#a6e22e">age</span>)
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">mounted</span>() {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">$refs</span>.<span style="color:#a6e22e">hello</span>.<span style="color:#a6e22e">$on</span>(<span style="color:#e6db74">&#34;getAgeData&#34;</span>, <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">getAge</span>)
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">script</span>&gt;
+</span></span></code></pre></div><p><code>HelloWorld.vue</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-vue" data-lang="vue"><span style="display:flex;"><span>&lt;<span style="color:#f92672">template</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#f92672">div</span>&gt;
+</span></span><span style="display:flex;"><span>        &lt;<span style="color:#f92672">button</span> <span style="color:#f92672">@click</span><span style="color:#e6db74">=&#34;sendAge&#34;</span>&gt;<span style="color:#a6e22e">点击向父组件传递age</span>&lt;/<span style="color:#f92672">button</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;/<span style="color:#f92672">div</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">template</span>&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#f92672">script</span>&gt;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">export</span> <span style="color:#66d9ef">default</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;HelloWorld&#39;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">data</span>() {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;张三&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">age</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;18&#34;</span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">methods</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">sendAge</span>() {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">$emit</span>(<span style="color:#e6db74">&#34;getAgeData&#34;</span>, <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">age</span>)
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">script</span>&gt;
+</span></span></code></pre></div><h2 id="解除绑定事件">解除绑定事件</h2>
+<blockquote>
+<p>在那个实例上绑定的就在那个实例上解除绑定</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#75715e">// 解绑一个
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">$off</span>(<span style="color:#e6db74">&#34;getAgeData&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 解绑多个用数组
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">$off</span>([<span style="color:#e6db74">&#34;getAgeData&#34;</span>,<span style="color:#e6db74">&#34;getNameData&#34;</span>])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 不传参数解绑全部
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">$off</span>()
+</span></span></code></pre></div><h1 id="全局事件总线">全局事件总线</h1>
+<p><code>main.js</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">new</span> <span style="color:#a6e22e">Vue</span>({
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">render</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">h</span> =&gt; <span style="color:#a6e22e">h</span>(<span style="color:#a6e22e">App</span>),
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">beforeCreate</span>() {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 安装全局事件总线
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#a6e22e">Vue</span>.<span style="color:#a6e22e">prototype</span>.<span style="color:#a6e22e">$bus</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}).<span style="color:#a6e22e">$mount</span>(<span style="color:#e6db74">&#39;#app&#39;</span>)
+</span></span></code></pre></div><blockquote>
+<p>使用: <code>this.$bus.on(&quot;事件名称&quot;,&quot;回调方法&quot;)</code></p>
+<p>触发: <code>this.$emit(&quot;事件名称&quot;,&quot;参数&quot;)</code></p>
+<p>谁绑定的就一定要在绑定实例销毁时<code>beforeDestroy</code>解绑事件: <code>this.$off(&quot;事件名称&quot;)</code> 一定不能解绑全部事件因为这个<code>bus</code> 还有别的实例在用</p></blockquote>
+<h1 id="消息订阅与发布">消息订阅与发布</h1>
+<blockquote>
+<p>安装</p>
+<p><code>npm i pubsub-js</code></p>
+<p>订阅: <code>this.pubId = pubsub.subscribe(&quot;订阅的名字&quot;, (定于的名字,接收的数据) =&gt; {...})</code>返回订阅id, <code>第一个参数不是传递的数据而是订阅名称</code></p>
+<p>发布: <code> pubsub.publish(&quot;订阅的名字&quot;, 传递的数据)</code></p>
+<p>取消订阅: <code> pubsub.unsubscribe(订阅id)</code></p></blockquote>
+<h2 id="订阅消息">订阅消息</h2>
+<blockquote>
+<p>用来接受消息</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-vue" data-lang="vue"><span style="display:flex;"><span>&lt;<span style="color:#f92672">script</span>&gt;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">import</span> <span style="color:#a6e22e">pubsub</span> <span style="color:#a6e22e">from</span> <span style="color:#e6db74">&#34;pubsub-js&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">export</span> <span style="color:#66d9ef">default</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;HelloWorld&#39;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">data</span>() {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> {}
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">mounted</span>() {
+</span></span><span style="display:flex;"><span>      	<span style="color:#75715e">// 返回一个订阅id, 取消订阅需要使用这个id所以把这个id方法this身上
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">pubId</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">pubsub</span>.<span style="color:#a6e22e">subscribe</span>(<span style="color:#e6db74">&#34;test&#34;</span>, (<span style="color:#a6e22e">data</span>) =&gt; {
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#34;HelloWorld: &#34;</span>, <span style="color:#a6e22e">data</span>)
+</span></span><span style="display:flex;"><span>        })
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">beforeDestroy</span>() {
+</span></span><span style="display:flex;"><span>      	<span style="color:#75715e">// 取消订阅消息用id来取消订阅
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#a6e22e">pubsub</span>.<span style="color:#a6e22e">unsubscribe</span>(<span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">pubId</span>)
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="发布消息">发布消息</h2>
+<blockquote>
+<p>用来发送数据</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-vue" data-lang="vue"><span style="display:flex;"><span>&lt;<span style="color:#f92672">script</span>&gt;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">import</span> <span style="color:#a6e22e">pubsub</span> <span style="color:#a6e22e">from</span> <span style="color:#e6db74">&#34;pubsub-js&#34;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">export</span> <span style="color:#66d9ef">default</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Stu&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">data</span>() {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;张三&#34;</span>,
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">methods</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">sendName</span>() {
+</span></span><span style="display:flex;"><span>          	<span style="color:#75715e">// 发布数据
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#a6e22e">pubsub</span>.<span style="color:#a6e22e">publish</span>(<span style="color:#e6db74">&#34;test&#34;</span>, <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">name</span>)
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">script</span>&gt;
+</span></span></code></pre></div><h1 id="动画">动画</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-vue" data-lang="vue"><span style="display:flex;"><span><span style="color:#75715e">&lt;!--</span> <span style="color:#a6e22e">transition</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">只能用于一个元素的</span>   <span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">这个动画的名称</span>,  <span style="color:#a6e22e">appear</span> <span style="color:#a6e22e">页面加载就执行一次进入动画</span>   <span style="color:#f92672">--&gt;</span>
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#f92672">transition</span> <span style="color:#a6e22e">name</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;hello&#34;</span> <span style="color:#a6e22e">appear</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#f92672">h1</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;tar&#34;</span> <span style="color:#f92672">v-show</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;show&#34;</span>&gt;<span style="color:#a6e22e">transition</span>&lt;/<span style="color:#f92672">h1</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">transition</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#f92672">hr</span>/&gt;
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#f92672">transition-group</span> <span style="color:#a6e22e">name</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;hello&#34;</span> <span style="color:#a6e22e">appear</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#f92672">h1</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;tar&#34;</span> <span style="color:#f92672">v-show</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;!show&#34; key=&#34;1&#34;</span>&gt;<span style="color:#a6e22e">transition</span><span style="color:#f92672">-group</span>&lt;/<span style="color:#f92672">h1</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#f92672">h1</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;tar&#34;</span> <span style="color:#f92672">v-show</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;show&#34; key=&#34;2&#34;</span>&gt;<span style="color:#a6e22e">transition</span><span style="color:#f92672">-group</span>&lt;/<span style="color:#f92672">h1</span>&gt;
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">&lt;/</span><span style="color:#a6e22e">transition</span><span style="color:#f92672">-group</span>&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#f92672">style</span>&gt;
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">h1</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">background</span><span style="color:#f92672">-</span><span style="color:#a6e22e">color</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">aqua</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/*进入的起点, 离开的终点*/</span>
+</span></span><span style="display:flex;"><span>.<span style="color:#a6e22e">hello</span><span style="color:#f92672">-</span><span style="color:#a6e22e">enter</span>, .<span style="color:#a6e22e">hello</span><span style="color:#f92672">-</span><span style="color:#a6e22e">leave</span><span style="color:#f92672">-</span><span style="color:#a6e22e">to</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">transform</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">translateX</span>(<span style="color:#f92672">-</span><span style="color:#ae81ff">100</span><span style="color:#f92672">%</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/*进入的活动, 离开的活动*/</span>
+</span></span><span style="display:flex;"><span>.<span style="color:#a6e22e">hello</span><span style="color:#f92672">-</span><span style="color:#a6e22e">enter</span><span style="color:#f92672">-</span><span style="color:#a6e22e">active</span>, .<span style="color:#a6e22e">hello</span><span style="color:#f92672">-</span><span style="color:#a6e22e">leave</span><span style="color:#f92672">-</span><span style="color:#a6e22e">active</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">transition</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">0.5</span><span style="color:#a6e22e">s</span> <span style="color:#a6e22e">linear</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/*进入的终点, 离开的起点*/</span>
+</span></span><span style="display:flex;"><span>.<span style="color:#a6e22e">hello</span><span style="color:#f92672">-</span><span style="color:#a6e22e">enter</span><span style="color:#f92672">-</span><span style="color:#a6e22e">to</span>, .<span style="color:#a6e22e">hello</span><span style="color:#f92672">-</span><span style="color:#a6e22e">leave</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">transform</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">translateX</span>(<span style="color:#ae81ff">0</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">style</span>&gt;
+</span></span></code></pre></div><h2 id="第三方库">第三方库</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>npm install animate.css
+</span></span></code></pre></div><p>引用</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-vue" data-lang="vue"><span style="display:flex;"><span><span style="color:#66d9ef">import</span> <span style="color:#e6db74">&#39;animate.css&#39;</span>;
+</span></span></code></pre></div><p>使用</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-vue" data-lang="vue"><span style="display:flex;"><span>&lt;<span style="color:#f92672">transition-group</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">appear</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">name</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;animate__animated animate__bounce&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">enter</span><span style="color:#f92672">-active-class</span><span style="color:#960050;background-color:#1e0010">=&#34;</span><span style="color:#a6e22e">animate__heartBeat</span><span style="color:#960050;background-color:#1e0010">&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">leave</span><span style="color:#f92672">-active-class</span><span style="color:#960050;background-color:#1e0010">=&#34;</span><span style="color:#a6e22e">animate__backOutUp</span><span style="color:#960050;background-color:#1e0010">&#34;</span>
+</span></span><span style="display:flex;"><span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#f92672">h1</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;tar&#34;</span> <span style="color:#f92672">v-show</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;show&#34; key=&#34;2&#34;</span>&gt;<span style="color:#a6e22e">transition</span><span style="color:#f92672">-group</span>&lt;/<span style="color:#f92672">h1</span>&gt;
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">&lt;/</span><span style="color:#a6e22e">transition</span><span style="color:#f92672">-group</span>&gt;
+</span></span></code></pre></div><h1 id="请求">请求</h1>
+<h2 id="解决跨域">解决跨域</h2>
+<p><code>vue.config.js</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#a6e22e">module</span>.<span style="color:#a6e22e">exports</span> <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 方法一
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">// devServer: {
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">//     proxy: &#39;http://localhost:9888&#39;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">// }
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">// 方法二
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">devServer</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">proxy</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>          	<span style="color:#75715e">// 前缀,所有是这个前缀的请求才会走代理,例如: http://127.0.0.1/demo/stu
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#e6db74">&#34;/demo&#34;</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>              	<span style="color:#75715e">// 要请求的后端服务器地址
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                <span style="color:#a6e22e">target</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;http://127.0.0.1:9888&#34;</span>,
+</span></span><span style="display:flex;"><span>              	<span style="color:#75715e">// 因为后端的请求中没有 /demo 这个前缀所以需要去掉这个前缀把 /demo/stu 变为 /stu
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                <span style="color:#a6e22e">pathRewrite</span><span style="color:#f92672">:</span> {<span style="color:#e6db74">&#34;^/demo&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;&#34;</span>},
+</span></span><span style="display:flex;"><span>              	<span style="color:#75715e">// websocket
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>              	<span style="color:#a6e22e">ws</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">true</span>,
+</span></span><span style="display:flex;"><span>              	<span style="color:#75715e">// 是否请求的端口和服务器端口一样,true就是一样,false就是代理服务器的端口号
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                <span style="color:#a6e22e">changeOrigin</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>            },
+</span></span><span style="display:flex;"><span>          	<span style="color:#75715e">// 可以配置多个服务
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>          	<span style="color:#e6db74">&#34;&#34;</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>            },...
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="get">Get</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#75715e">// 这里的/demo/stu 会被过滤为 /stu
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">axios</span>.<span style="color:#a6e22e">get</span>(<span style="color:#e6db74">&#34;http://localhost:8081/demo/stu&#34;</span>).<span style="color:#a6e22e">then</span>(
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">Response</span> =&gt; {
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">Response</span>.<span style="color:#a6e22e">data</span>)
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>  Error =&gt; {
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(Error.<span style="color:#a6e22e">message</span>)
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>)
+</span></span></code></pre></div><h2 id="post">Post</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#a6e22e">axios</span>.<span style="color:#a6e22e">post</span>(<span style="color:#e6db74">&#34;http://localhost:8081/demo/car&#34;</span>).<span style="color:#a6e22e">then</span>(
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">Response</span> =&gt; {
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">Response</span>.<span style="color:#a6e22e">data</span>)
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>  Error =&gt; {
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(Error.<span style="color:#a6e22e">message</span>)
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>)
+</span></span></code></pre></div><h1 id="插槽">插槽</h1>
+<h2 id="默认插槽">默认插槽</h2>
+<p><code>app.vue</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-vue" data-lang="vue"><span style="display:flex;"><span>&lt;<span style="color:#f92672">HelloWorld</span>&gt;
+</span></span><span style="display:flex;"><span>  &lt;<span style="color:#f92672">h1</span>&gt;<span style="color:#a6e22e">这是默认插槽</span>&lt;/<span style="color:#f92672">h1</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">HelloWorld</span>&gt;
+</span></span></code></pre></div><p><code>HelloWorld.vue</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-vue" data-lang="vue"><span style="display:flex;"><span>&lt;<span style="color:#f92672">div</span>&gt;
+</span></span><span style="display:flex;"><span>  &lt;<span style="color:#f92672">slot</span>&gt;<span style="color:#a6e22e">没有内容时显示</span>&lt;/<span style="color:#f92672">slot</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">div</span>&gt;
+</span></span></code></pre></div><h2 id="具名插槽">具名插槽</h2>
+<p><code>app.vue</code></p>
+<blockquote>
+<p><code>v-slot:demo1</code> 这个标签必须放到<code>template</code> 标签中才可以使用</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-vue" data-lang="vue"><span style="display:flex;"><span>&lt;<span style="color:#f92672">HelloWorld2</span>&gt;
+</span></span><span style="display:flex;"><span>  &lt;<span style="color:#f92672">template</span> <span style="color:#a6e22e">v</span><span style="color:#f92672">-slot</span><span style="color:#f92672">:</span><span style="color:#a6e22e">demo1</span>&gt;
+</span></span><span style="display:flex;"><span>      &lt;<span style="color:#f92672">h1</span>&gt;<span style="color:#a6e22e">这个内容放到名字叫demo1的插槽中</span>&lt;/<span style="color:#f92672">h1</span>&gt;
+</span></span><span style="display:flex;"><span>      &lt;<span style="color:#f92672">h1</span>&gt;<span style="color:#a6e22e">这个内容放到名字叫demo1的插槽中</span>&lt;/<span style="color:#f92672">h1</span>&gt;
+</span></span><span style="display:flex;"><span>  &lt;/<span style="color:#f92672">template</span>&gt;
+</span></span><span style="display:flex;"><span>  &lt;<span style="color:#f92672">h1</span> <span style="color:#a6e22e">slot</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;demo2&#34;</span>&gt;<span style="color:#a6e22e">这个内容放到名字叫demo2的插槽中</span>&lt;/<span style="color:#f92672">h1</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">HelloWorld2</span>&gt;
+</span></span></code></pre></div><p><code>HelloWorld2.vue</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-vue" data-lang="vue"><span style="display:flex;"><span>&lt;<span style="color:#f92672">div</span>&gt;
+</span></span><span style="display:flex;"><span>  &lt;<span style="color:#f92672">slot</span> <span style="color:#a6e22e">name</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;demo1&#34;</span>&gt;<span style="color:#a6e22e">demo1</span>&lt;/<span style="color:#f92672">slot</span>&gt;
+</span></span><span style="display:flex;"><span>  &lt;<span style="color:#f92672">slot</span> <span style="color:#a6e22e">name</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;demo2&#34;</span>&gt;<span style="color:#a6e22e">demo2</span>&lt;/<span style="color:#f92672">slot</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">div</span>&gt;
+</span></span></code></pre></div><h2 id="作用域插槽">作用域插槽</h2>
+<blockquote>
+<p>必须使用<code>template</code> 标签包裹</p>
+<p><code>v-slot:demo=&quot;demoData&quot;</code>  <code>v-slot</code> 关键字 <code>:demo</code> 作用到<code>名字叫demo的插槽中</code> <code> =&quot;demoData&quot;</code> 接受插槽的数据到<code> demoData</code> 的对象上</p>
+<p><code>v-slot:demo=&quot;{testData}&quot;</code> 解析<code>demoData.testData</code>的数据到<code>testData</code></p></blockquote>
+<p><code>app.vue</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-vue" data-lang="vue"><span style="display:flex;"><span>&lt;<span style="color:#f92672">HelloWorld3</span>&gt;
+</span></span><span style="display:flex;"><span>  &lt;<span style="color:#f92672">template</span> <span style="color:#a6e22e">v</span><span style="color:#f92672">-slot:demo</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;demoData&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>      &lt;<span style="color:#f92672">h1</span>&gt;{{ <span style="color:#a6e22e">demoData</span>.<span style="color:#a6e22e">testData</span> }}&lt;/<span style="color:#f92672">h1</span>&gt;
+</span></span><span style="display:flex;"><span>  &lt;/<span style="color:#f92672">template</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">HelloWorld3</span>&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 或使用:
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>&lt;<span style="color:#f92672">template</span> <span style="color:#a6e22e">v</span><span style="color:#f92672">-slot:demo</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;{testData}&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>  &lt;<span style="color:#f92672">h1</span>&gt;{{ <span style="color:#a6e22e">testData</span> }}&lt;/<span style="color:#f92672">h1</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">template</span>&gt;
+</span></span></code></pre></div><p><code>HelloWorld3.vue</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-vue" data-lang="vue"><span style="display:flex;"><span>&lt;<span style="color:#f92672">div</span>&gt;
+</span></span><span style="display:flex;"><span>  &lt;<span style="color:#f92672">slot</span> <span style="color:#a6e22e">name</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;demo&#34;</span> <span style="color:#f92672">:testData</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;slotData&#34;</span>&gt;&lt;/<span style="color:#f92672">slot</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">div</span>&gt;
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">data</span>() {
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> {
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">slotData</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;内容来自使用 &lt;slot&gt;&lt;/slot&gt; 的组件中&#34;</span>
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>},
+</span></span></code></pre></div><h1 id="vuex">Vuex</h1>
+<blockquote>
+<p>数据共享</p></blockquote>
+<h2 id="环境搭建">环境搭建</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>npm i vuex@3
+</span></span></code></pre></div><p><code>store/index.js</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">import</span> <span style="color:#a6e22e">Vue</span> <span style="color:#a6e22e">from</span> <span style="color:#e6db74">&#34;vue&#34;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">import</span> <span style="color:#a6e22e">Vuex</span> <span style="color:#a6e22e">from</span> <span style="color:#e6db74">&#34;vuex&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">Vue</span>.<span style="color:#a6e22e">use</span>(<span style="color:#a6e22e">Vuex</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">actions</span> <span style="color:#f92672">=</span> {}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">mutations</span> <span style="color:#f92672">=</span> {}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">state</span> <span style="color:#f92672">=</span> {}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">getters</span> <span style="color:#f92672">=</span> {}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">export</span> <span style="color:#66d9ef">default</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">Vuex</span>.<span style="color:#a6e22e">Store</span>({
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">actions</span>, <span style="color:#a6e22e">mutations</span>, <span style="color:#a6e22e">state</span>, <span style="color:#a6e22e">getters</span>
+</span></span><span style="display:flex;"><span>})
+</span></span></code></pre></div><p><code>main.js</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">import</span> <span style="color:#a6e22e">Vue</span> <span style="color:#a6e22e">from</span> <span style="color:#e6db74">&#39;vue&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">import</span> <span style="color:#a6e22e">App</span> <span style="color:#a6e22e">from</span> <span style="color:#e6db74">&#39;./App.vue&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 引入创建的js文件
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">import</span> <span style="color:#a6e22e">Store</span> <span style="color:#a6e22e">from</span> <span style="color:#e6db74">&#34;@/store&#34;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">Vue</span>.<span style="color:#a6e22e">config</span>.<span style="color:#a6e22e">productionTip</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">new</span> <span style="color:#a6e22e">Vue</span>({
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">render</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">h</span> =&gt; <span style="color:#a6e22e">h</span>(<span style="color:#a6e22e">App</span>),
+</span></span><span style="display:flex;"><span>  	<span style="color:#75715e">// 使用
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">store</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">Store</span>,
+</span></span><span style="display:flex;"><span>}).<span style="color:#a6e22e">$mount</span>(<span style="color:#e6db74">&#39;#app&#39;</span>)
+</span></span></code></pre></div><h2 id="单文件使用">单文件使用</h2>
+<blockquote>
+<p>组件调用<code>this.$store.dispatch(&quot;actions里函数名字&quot;, 传递的参数)</code> store/index.js里的action接收到然后调用<code>context.commuit(&quot;mutations里函数名字&quot;,参数)</code> mutations调用state里面的数据<code>state.data</code> 做出具体的修改</p>
+<p><code>state相当于组件里面的data, getters相当于计算属性</code></p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#75715e">// 基础访问:
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>{{ <span style="color:#a6e22e">$store</span>.<span style="color:#a6e22e">state</span>.<span style="color:#a6e22e">data</span> }}		{{ <span style="color:#a6e22e">$store</span>.<span style="color:#a6e22e">getters</span>.<span style="color:#a6e22e">data</span> }}
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 简单写法
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">import</span> {<span style="color:#a6e22e">mapState</span>, <span style="color:#a6e22e">mapGetters</span>, <span style="color:#a6e22e">mapActions</span>, <span style="color:#a6e22e">mapMutations</span>} <span style="color:#a6e22e">from</span> <span style="color:#e6db74">&#34;vuex&#34;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">computed</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 直接使用数组形式相当于这个方法名就是数据名
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  ...<span style="color:#a6e22e">mapState</span>([<span style="color:#e6db74">&#34;num&#34;</span>]),
+</span></span><span style="display:flex;"><span>  ...<span style="color:#a6e22e">mapGetters</span>([<span style="color:#e6db74">&#34;bigNum&#34;</span>])
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 对象写法
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  ...<span style="color:#a6e22e">mapState</span>({<span style="color:#a6e22e">方法名</span><span style="color:#f92672">:</span><span style="color:#e6db74">&#34;数据名&#34;</span>}),
+</span></span><span style="display:flex;"><span>},
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">methods</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 使用这种办法的话参数需要再使用的时候传递,也可以使用对象方式
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  ...<span style="color:#a6e22e">mapActions</span>([<span style="color:#e6db74">&#34;actions里面的方法名字&#34;</span>]),
+</span></span><span style="display:flex;"><span>  ...<span style="color:#a6e22e">mapMutations</span>([<span style="color:#e6db74">&#34;mutations里面的方法名字&#34;</span>])
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>{{ <span style="color:#a6e22e">方法名字也就是数据名字</span> }}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 使用简写的方法
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#960050;background-color:#1e0010">@</span><span style="color:#a6e22e">click</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;方法名(参数)&#34;</span>
+</span></span></code></pre></div><h2 id="多文件使用">多文件使用</h2>
+<p><code>Options1.js</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">export</span> <span style="color:#66d9ef">default</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">namespace</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">true</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">actions</span><span style="color:#f92672">:</span> {},
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">mutations</span><span style="color:#f92672">:</span> {},
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">state</span><span style="color:#f92672">:</span> {}
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><code>Options2.js</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">export</span> <span style="color:#66d9ef">default</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">namespace</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">true</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">actions</span><span style="color:#f92672">:</span> {},
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">mutations</span><span style="color:#f92672">:</span> {},
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">state</span><span style="color:#f92672">:</span> {}
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><code>store/index.js</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">import</span> <span style="color:#a6e22e">Optuions1</span> <span style="color:#a6e22e">from</span> <span style="color:#e6db74">&#34;./Options1&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">import</span> <span style="color:#a6e22e">Optuions2</span> <span style="color:#a6e22e">from</span> <span style="color:#e6db74">&#34;./Options2&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">export</span> <span style="color:#66d9ef">default</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">Vuex</span>.<span style="color:#a6e22e">Store</span>({
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">modules</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">Optuions1</span>, <span style="color:#a6e22e">Optuions2</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>})
+</span></span></code></pre></div><p>使用</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#75715e">// 在原有的基础上指定namespace
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>...<span style="color:#a6e22e">mapState</span>(<span style="color:#a6e22e">Options1</span>,[<span style="color:#e6db74">&#34;num&#34;</span>]),
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 非简写形式
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">$store</span>.<span style="color:#a6e22e">Options1</span>.<span style="color:#a6e22e">state</span>.<span style="color:#a6e22e">data</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 必须用 / 隔开namespace和方法名
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">$store</span>.<span style="color:#a6e22e">dispatch</span>(<span style="color:#e6db74">&#34;namespace/方法名&#34;</span>, <span style="color:#a6e22e">参数</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">$store</span>.<span style="color:#a6e22e">commit</span>(<span style="color:#e6db74">&#34;namespace/方法名&#34;</span>, <span style="color:#a6e22e">参数</span>)
+</span></span></code></pre></div><h1 id="路由">路由</h1>
+<p>下载</p>
+<pre tabindex="0"><code class="language-npm" data-lang="npm">npm i vue-router@3
+</code></pre><h2 id="注意点">注意点</h2>
+<blockquote>
+<ol>
+<li>
+<p>普通页面放到components文件夹下,路由的页面放到pages文件夹下</p>
+</li>
+<li>
+<p>每个路由页面都有自己专属的<code>$route</code> 但是所有的路由页面共享一个<code>$router</code></p>
+</li>
+<li>
+<p>&ldquo;隐藏&quot;的路由组件是被<code>销毁</code> 了,需要的时候会再被<code>挂载</code></p>
+</li>
+</ol></blockquote>
+<h2 id="使用">使用</h2>
+<p><code>router/index.js</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">import</span> <span style="color:#a6e22e">VueRouter</span> <span style="color:#a6e22e">from</span> <span style="color:#e6db74">&#34;vue-router&#34;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">import</span> <span style="color:#a6e22e">About</span> <span style="color:#a6e22e">from</span> <span style="color:#e6db74">&#34;@/pages/About.vue&#34;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">import</span> <span style="color:#a6e22e">Home</span> <span style="color:#a6e22e">from</span> <span style="color:#e6db74">&#34;@/pages/Home.vue&#34;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">import</span> <span style="color:#a6e22e">News</span> <span style="color:#a6e22e">from</span> <span style="color:#e6db74">&#34;@/pages/News.vue&#34;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">import</span> <span style="color:#a6e22e">Message</span> <span style="color:#a6e22e">from</span> <span style="color:#e6db74">&#34;@/pages/Message.vue&#34;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">import</span> <span style="color:#a6e22e">Detatil</span> <span style="color:#a6e22e">from</span> <span style="color:#e6db74">&#34;@/pages/Detatil.vue&#34;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">export</span> <span style="color:#66d9ef">default</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">VueRouter</span>({
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">routes</span><span style="color:#f92672">:</span> [
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">path</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;/about&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">component</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">About</span>
+</span></span><span style="display:flex;"><span>        }, {
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">path</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;/home&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">component</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">Home</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">children</span><span style="color:#f92672">:</span> [
+</span></span><span style="display:flex;"><span>                {
+</span></span><span style="display:flex;"><span>                    <span style="color:#a6e22e">path</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;news&#34;</span>,
+</span></span><span style="display:flex;"><span>                    <span style="color:#a6e22e">component</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">News</span>
+</span></span><span style="display:flex;"><span>                }, {
+</span></span><span style="display:flex;"><span>                    <span style="color:#a6e22e">path</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;message&#34;</span>,
+</span></span><span style="display:flex;"><span>                    <span style="color:#a6e22e">component</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">Message</span>,
+</span></span><span style="display:flex;"><span>                    <span style="color:#a6e22e">children</span><span style="color:#f92672">:</span> [
+</span></span><span style="display:flex;"><span>                        {
+</span></span><span style="display:flex;"><span>                          	<span style="color:#75715e">// 多级路由可以配置name属性方便后续跳转写法
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                            <span style="color:#a6e22e">name</span><span style="color:#f92672">:</span><span style="color:#e6db74">&#34;xiangqing&#34;</span>,
+</span></span><span style="display:flex;"><span>                            <span style="color:#a6e22e">path</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;detatil&#34;</span>,
+</span></span><span style="display:flex;"><span>                            <span style="color:#a6e22e">component</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">Detatil</span>
+</span></span><span style="display:flex;"><span>                        }
+</span></span><span style="display:flex;"><span>                    ]
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>            ]
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    ]
+</span></span><span style="display:flex;"><span>})
+</span></span></code></pre></div><p><code>main.js</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">import</span> <span style="color:#a6e22e">Vue</span> <span style="color:#a6e22e">from</span> <span style="color:#e6db74">&#39;vue&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">import</span> <span style="color:#a6e22e">App</span> <span style="color:#a6e22e">from</span> <span style="color:#e6db74">&#39;./App.vue&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 引入路由
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">import</span> <span style="color:#a6e22e">VueRouter</span> <span style="color:#a6e22e">from</span> <span style="color:#e6db74">&#34;vue-router&#34;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 引入自己写的路由配置
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">import</span> <span style="color:#a6e22e">router</span> <span style="color:#a6e22e">from</span> <span style="color:#e6db74">&#34;./router&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">Vue</span>.<span style="color:#a6e22e">config</span>.<span style="color:#a6e22e">productionTip</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 使用路由
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">Vue</span>.<span style="color:#a6e22e">use</span>(<span style="color:#a6e22e">VueRouter</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">new</span> <span style="color:#a6e22e">Vue</span>({
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">render</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">h</span> =&gt; <span style="color:#a6e22e">h</span>(<span style="color:#a6e22e">App</span>),
+</span></span><span style="display:flex;"><span>  	<span style="color:#75715e">// 配置自己写的路由配置
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">router</span>
+</span></span><span style="display:flex;"><span>}).<span style="color:#a6e22e">$mount</span>(<span style="color:#e6db74">&#39;#app&#39;</span>)
+</span></span></code></pre></div><p><code>xxx.vue</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-vue" data-lang="vue"><span style="display:flex;"><span><span style="color:#75715e">// 相当于a标签, to就是要跳转的页面,active-class跳转到的页面会有active这个属性,用于高亮显示
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>&lt;<span style="color:#f92672">router-link</span> <span style="color:#a6e22e">active</span><span style="color:#f92672">-class</span><span style="color:#960050;background-color:#1e0010">=&#34;</span><span style="color:#a6e22e">active</span><span style="color:#960050;background-color:#1e0010">&#34;</span> <span style="color:#a6e22e">to</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/home&#34;</span>&gt;<span style="color:#a6e22e">Home</span>&lt;/<span style="color:#f92672">router-link</span>&gt;
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 在需要显示的位置写上,跳转的页面就是显示到该位置
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>&lt;<span style="color:#f92672">router-view</span>&gt;&lt;/<span style="color:#f92672">router-view</span>&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 需要传递参数的写法,建议这样写不要写成?拼接参数, 一级路由直接写 to=&#34;&#34;更简单
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>&lt;<span style="color:#f92672">router-link</span> <span style="color:#f92672">:</span><span style="color:#a6e22e">to</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;{
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  // path:&#39;/home/message/detatil&#39;,
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  // 使用name更简单
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  name:&#39;xiangqing&#39;,
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  query:{
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      id:m.id,
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      title:m.msgData
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  }
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">}&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>  {{ <span style="color:#a6e22e">m</span>.<span style="color:#a6e22e">msgData</span> }}
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">router-link</span>&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 在路由跳转的页面使用``this.$route.query`` 获取参数
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>{{ <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">$route</span>.<span style="color:#a6e22e">query</span>.<span style="color:#a6e22e">id</span> }} <span style="color:#f92672">--</span> {{ <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">$route</span>.<span style="color:#a6e22e">query</span>.<span style="color:#a6e22e">title</span> }}
+</span></span></code></pre></div><h2 id="传递query参数">传递query参数</h2>
+<blockquote>
+<p>传递: <code>query:{ id:m.id,  title:m.msgData}</code></p>
+<p>接收: <code>{{this.#route.query.data}}</code></p></blockquote>
+<h2 id="传递params参数">传递params参数</h2>
+<p>一. 在router/index.js里面声明</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;xiangqing&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 声明
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">path</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;detatil/:x/:y&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">component</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">Detatil</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>二. 传递参数</p>
+<blockquote>
+<p>使用params传递参数必须使用<code>name</code>,不能使用<code>path</code></p>
+<p>注意在路由配置里面的占位符名字要和传递的参数key相同</p>
+<p><code>path: &quot;detatil/:x/:y&quot;   x:'qwe'+m.id, y:'asd'+m.msgData</code></p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#f92672">&lt;</span><span style="color:#a6e22e">router</span><span style="color:#f92672">-</span><span style="color:#a6e22e">link</span> <span style="color:#f92672">:</span><span style="color:#a6e22e">to</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;{
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  name:&#39;xiangqing&#39;,
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  params:{
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      x:&#39;qwe&#39;+m.id,
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      y:&#39;asd&#39;+m.msgData
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  }
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">}&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>  {{ <span style="color:#a6e22e">m</span>.<span style="color:#a6e22e">msgData</span> }}
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;</span><span style="color:#960050;background-color:#1e0010">/router-link&gt;</span>
+</span></span></code></pre></div><p>三. 接收参数</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{{ <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">$route</span>.<span style="color:#a6e22e">params</span>.<span style="color:#a6e22e">x</span> }} <span style="color:#f92672">--</span> {{ <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">$route</span>.<span style="color:#a6e22e">params</span>.<span style="color:#a6e22e">y</span> }}
+</span></span></code></pre></div><h2 id="接收参数简写">接收参数简写</h2>
+<p><code>router/index.js</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#75715e">// params的简写形式
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;xiangqing&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">path</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;detatil/:x/:y&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">component</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">Detatil</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 把传递的params的数据以props的方式传递
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">props</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 接收
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">props</span><span style="color:#f92672">:</span> [<span style="color:#e6db74">&#34;x&#34;</span>, <span style="color:#e6db74">&#34;y&#34;</span>]
+</span></span><span style="display:flex;"><span>{{ <span style="color:#a6e22e">x</span> }}<span style="color:#f92672">--</span>{{ <span style="color:#a6e22e">y</span> }}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// query的简写形式
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;xiangqing&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">path</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;detatil/:x/:y&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">component</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">Detatil</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 参数就是 this.$route, 使用结构赋值的方式写为{query}更简单
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">props</span>({<span style="color:#a6e22e">query</span>}) {
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">return</span> {
+</span></span><span style="display:flex;"><span>          <span style="color:#a6e22e">x</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">query</span>.<span style="color:#a6e22e">x</span>,
+</span></span><span style="display:flex;"><span>          <span style="color:#a6e22e">y</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">query</span>.<span style="color:#a6e22e">y</span>
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 接收不变
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">props</span><span style="color:#f92672">:</span> [<span style="color:#e6db74">&#34;x&#34;</span>, <span style="color:#e6db74">&#34;y&#34;</span>]
+</span></span><span style="display:flex;"><span>{{ <span style="color:#a6e22e">x</span> }}<span style="color:#f92672">--</span>{{ <span style="color:#a6e22e">y</span> }}
+</span></span></code></pre></div><h2 id="replace模式">replace模式</h2>
+<blockquote>
+<p>不写默认为push,push的可以被浏览器记录给记录下来,可以适用浏览器的左右小箭头</p>
+<p>replace是替换模式,点击后会替换掉上一个记录,也就是无法使用左右的小箭头了</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#f92672">&lt;</span><span style="color:#a6e22e">router</span><span style="color:#f92672">-</span><span style="color:#a6e22e">link</span> <span style="color:#a6e22e">replace</span> <span style="color:#66d9ef">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;list-group-item&#34;</span> <span style="color:#a6e22e">active</span><span style="color:#f92672">-</span><span style="color:#66d9ef">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;active&#34;</span> <span style="color:#a6e22e">to</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/about&#34;</span><span style="color:#f92672">&gt;&lt;</span><span style="color:#960050;background-color:#1e0010">/router-link&gt;</span>
+</span></span></code></pre></div><h2 id="编程式路由导航">编程式路由导航</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#a6e22e">pushShow</span>(<span style="color:#a6e22e">m</span>) {
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 对象里面的写法和 to 一样
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">$router</span>.<span style="color:#a6e22e">push</span>({
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;xiangqing&#39;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">query</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>          <span style="color:#a6e22e">x</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">m</span>.<span style="color:#a6e22e">id</span>,
+</span></span><span style="display:flex;"><span>          <span style="color:#a6e22e">y</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">m</span>.<span style="color:#a6e22e">msgData</span>
+</span></span><span style="display:flex;"><span>      },
+</span></span><span style="display:flex;"><span>  })
+</span></span><span style="display:flex;"><span>},
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">replaceShow</span>(<span style="color:#a6e22e">m</span>) {
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">$router</span>.<span style="color:#a6e22e">push</span>({
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;xiangqing&#39;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">query</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>          <span style="color:#a6e22e">x</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">m</span>.<span style="color:#a6e22e">id</span>,
+</span></span><span style="display:flex;"><span>          <span style="color:#a6e22e">y</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">m</span>.<span style="color:#a6e22e">msgData</span>
+</span></span><span style="display:flex;"><span>      },
+</span></span><span style="display:flex;"><span>  })
+</span></span><span style="display:flex;"><span>},
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 后退
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">back</span>() {
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">$router</span>.<span style="color:#a6e22e">back</span>()
+</span></span><span style="display:flex;"><span>},
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 前进
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">forward</span>() {
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">$router</span>.<span style="color:#a6e22e">forward</span>()
+</span></span><span style="display:flex;"><span>},
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">go</span>() {
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 正数前进n步,负数后退n步
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">$router</span>.<span style="color:#a6e22e">go</span>(<span style="color:#ae81ff">3</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="缓存路由组件">缓存路由组件</h2>
+<blockquote>
+<p>使用<code>keep-alive</code> 标签包裹即可,<code>include</code> :设置只有哪些组件缓存,value为组件名称.不设置include则在这个位置显示的组件都将被缓存,如果缓存多个:<code>:include=&quot;[&quot;A&quot;,&quot;B&quot;]&quot;</code></p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-vue" data-lang="vue"><span style="display:flex;"><span>&lt;<span style="color:#f92672">keep-alive</span> <span style="color:#a6e22e">include</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;News&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>  &lt;<span style="color:#f92672">router-view</span>/&gt;
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">keep-alive</span>&gt;
+</span></span></code></pre></div><h2 id="路由周期钩子">路由周期钩子</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#a6e22e">activated</span>() {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#34;这个路由组件展示的时候调用&#34;</span>)
+</span></span><span style="display:flex;"><span>},
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">deactivated</span>() {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#34;这个路由组件被切换走的时候调用&#34;</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="全局前置后置路由守卫">全局前置/后置路由守卫</h2>
+<blockquote>
+<p><code>beforeEach</code>:路由组件跳转前调用</p>
+<p><code>afterEach</code>:路由组件跳转后调用</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">path</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;news&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">component</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">News</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 添加meta数据方便前置和后置函数使用
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">meta</span><span style="color:#f92672">:</span> {<span style="color:#a6e22e">title</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;新闻&#34;</span>, <span style="color:#a6e22e">isAu</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">true</span>},
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// to: 去哪 form: 哪来 next是否跳转, 前置用来校验权限,后置用来修改title
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">router</span>.<span style="color:#a6e22e">beforeEach</span>((<span style="color:#a6e22e">to</span>, <span style="color:#a6e22e">from</span>, <span style="color:#a6e22e">next</span>) =&gt; {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#34;前置:&#34;</span>, <span style="color:#a6e22e">to</span>, <span style="color:#a6e22e">from</span>, <span style="color:#a6e22e">next</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">to</span>.<span style="color:#a6e22e">meta</span>.<span style="color:#a6e22e">isAu</span>) {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">alert</span>(<span style="color:#e6db74">&#34;需要校验权限&#34;</span>)
+</span></span><span style="display:flex;"><span>    } <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">next</span>()
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>})
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">router</span>.<span style="color:#a6e22e">afterEach</span>((<span style="color:#a6e22e">to</span>, <span style="color:#a6e22e">from</span>) =&gt; {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#34;前置:&#34;</span>, <span style="color:#a6e22e">to</span>, <span style="color:#a6e22e">from</span>)
+</span></span><span style="display:flex;"><span>    document.<span style="color:#a6e22e">title</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">to</span>.<span style="color:#a6e22e">meta</span>.<span style="color:#a6e22e">title</span> <span style="color:#f92672">||</span> <span style="color:#e6db74">&#34;loveyu&#34;</span>
+</span></span><span style="display:flex;"><span>})
+</span></span></code></pre></div><h2 id="独享路由守卫">独享路由守卫</h2>
+<blockquote>
+<p>只有前置没有后置</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">path</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;/about&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">component</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">About</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">meta</span><span style="color:#f92672">:</span> {<span style="color:#a6e22e">title</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;关于&#34;</span>},
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">beforeEnter</span><span style="color:#f92672">:</span> (<span style="color:#a6e22e">to</span>, <span style="color:#a6e22e">from</span>, <span style="color:#a6e22e">next</span>) =&gt; {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 写法和之前的一样
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#34;独享守卫&#34;</span>, <span style="color:#a6e22e">to</span>, <span style="color:#a6e22e">from</span>, <span style="color:#a6e22e">next</span>)
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">next</span>()
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="组件内路由守卫">组件内路由守卫</h2>
+<blockquote>
+<p><code>beforeRouteEnter</code>:根据路由规则进入组件前调用</p>
+<p><code>beforeRouteLeave</code>:根据路由规则离开组件前调用</p>
+<p>直接引用这个组件是不会调用这两个函数的</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">export</span> <span style="color:#66d9ef">default</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Detatil&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">props</span><span style="color:#f92672">:</span> [<span style="color:#e6db74">&#34;x&#34;</span>, <span style="color:#e6db74">&#34;y&#34;</span>],
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">beforeRouteEnter</span>(<span style="color:#a6e22e">to</span>, <span style="color:#a6e22e">from</span>, <span style="color:#a6e22e">next</span>) {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#34;beforeRouteEnter&#34;</span>, <span style="color:#a6e22e">to</span>, <span style="color:#a6e22e">from</span>, <span style="color:#a6e22e">next</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">next</span>()
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">beforeRouteLeave</span>(<span style="color:#a6e22e">to</span>, <span style="color:#a6e22e">from</span>, <span style="color:#a6e22e">next</span>) {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#34;beforeRouteLeave&#34;</span>, <span style="color:#a6e22e">to</span>, <span style="color:#a6e22e">from</span>, <span style="color:#a6e22e">next</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">next</span>()
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="路由模式">路由模式</h2>
+<blockquote>
+<p>默认为<code>hash</code>模式也就是路径上带<code>#</code>号的,<code>history</code>不带<code>#</code>号,但是<code>#</code>需要服务器配置使用</p>
+<p>hash比history兼容性好</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">router</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">VueRouter</span>({
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">mode</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;history&#34;</span>,
+</span></span></code></pre></div><h1 id="elementui">elementUI</h1>
+<blockquote>
+<p>按需引入的配置文件,官网的是老版本不对</p></blockquote>
+<p><code>babel.config.js</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#a6e22e">module</span>.<span style="color:#a6e22e">exports</span> <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">presets</span><span style="color:#f92672">:</span> [
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#39;@vue/cli-plugin-babel/preset&#39;</span>,
+</span></span><span style="display:flex;"><span>        [<span style="color:#e6db74">&#34;@babel/preset-env&#34;</span>, {<span style="color:#e6db74">&#34;modules&#34;</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">false</span>}],
+</span></span><span style="display:flex;"><span>    ],
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">plugins</span><span style="color:#f92672">:</span> [
+</span></span><span style="display:flex;"><span>        [
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;component&#34;</span>,
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#34;libraryName&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;element-ui&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#34;styleLibraryName&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;theme-chalk&#34;</span>
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        ]
+</span></span><span style="display:flex;"><span>    ]
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="其他">其他</h1>
+<blockquote>
+<p>查看版本</p></blockquote>
+<pre tabindex="0"><code class="language-nom" data-lang="nom">npm view less-load versions
+</code></pre><blockquote>
+<p>覆盖原对象内容</p>
+<p>info有的dataObj也有呢就以dataObj的为主覆盖掉info的,dataObj没有info还是原值</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">info</span> <span style="color:#f92672">=</span> {...<span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">info</span>, ...<span style="color:#a6e22e">dataObj</span>}
+</span></span></code></pre></div><blockquote>
+<p>vue-router必须是npm下载才会有代码提示</p></blockquote>
+<ul class="pa0">
+  
+   <li class="list di">
+     <a href="/tags/vue2/" class="link f5 grow br-pill ba ph3 pv2 mb2 dib black sans-serif no-underline">Vue2</a>
+   </li>
+  
+   <li class="list di">
+     <a href="/tags/%E5%89%8D%E7%AB%AF/" class="link f5 grow br-pill ba ph3 pv2 mb2 dib black sans-serif no-underline">前端</a>
+   </li>
+  
+</ul>
+<div class="mt6 instapaper_ignoref">
+      
+      
+      </div>
+    </div>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+  <div class="bg-light-gray pa3 nested-list-reset nested-copy-line-height nested-links">
+    <p class="f5 b mb3">Related</p>
+    <ul class="pa0 list">
+	   
+	     <li  class="mb2">
+          <a href="/posts/frontend/%E4%B8%AD%E5%9B%BD%E5%9C%B0%E5%9B%BE%E5%92%8C%E6%95%B0%E6%8D%AE%E8%B5%84%E6%BA%90/">中国地图js和经纬度json文件</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/frontend/css/">css常用样式</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/frontend/html/">html常用标签</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/frontend/js/">js常用操作</a>
+        </li>
+	    
+    </ul>
+</div>
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white white-70 dn dib-ns pv2 ph3 no-underline" href="http://localhost:1313/" >
+    &copy;  loveyu233 2025 
+  </a>
+    <div><div class="ananke-socials"></div>
+</div>
+  </div>
+</footer>
+
+  </body>
+</html>

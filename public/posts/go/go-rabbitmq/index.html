@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>Go Rabbitmq | loveyu233</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="RabbitMQ模式
+
+简单模式（Simple Mode）： 简单模式是最基本的模式，也是最简单的消息传递模式。它包括一个生产者将消息发送到一个队列中，然后一个消费者从同一个队列接收消息并进行处理。
+工作队列模式（Work Queue Mode）： 工作队列模式也被称为任务队列模式或消息队列模式。它包括一个生产者将任务发送到一个队列中，多个消费者从同一个队列接收任务并进行处理。每个任务只能由一个消费者处理，确保任务的负载均衡。
+发布/订阅模式（Publish/Subscribe Mode）： 发布/订阅模式用于将消息广播给多个消费者。生产者将消息发布到交换机（Exchange），然后交换机将消息传递到所有绑定的队列中，每个队列都有自己的消费者来接收和处理消息。
+路由模式（Direct Exchange Mode）： 路由模式是基于消息的路由键（Routing Key）进行消息传递的一种模式。生产者将消息发送到交换机，并指定一个特定的路由键，交换机将消息传递给所有与该路由键匹配的队列，每个队列都有自己的消费者来接收和处理消息。
+主题模式（Topic Exchange Mode）： 主题模式是路由模式的扩展，它支持使用通配符的路由键进行消息传递。生产者将消息发送到交换机，并指定一个匹配规则的路由键模式，交换机根据匹配规则将消息传递给符合条件的队列，每个队列都有自己的消费者来接收和处理消息。
+领域特定语言模式（Distributed Domain-Specific Language Mode）： 领域特定语言模式（也称为流派特定语言模式）是一种用于实现复杂分布式系统的高级模式。它基于领域特定语言（DSL）来定义和描述消息的流动和处理过程，以实现更精确的消息传递和处理策略。
+
+直连模式（Direct）
+
+
+创建连接和信道。
+声明交换机和队列。
+将队列绑定到交换机，并指定路由键。
+发布消息到交换机，附带指定的路由键。
+
+// 创建连接和信道
+conn, err := amqp.Dial(&#34;amqp://guest:guest@localhost:5672/&#34;)
+ch, err := conn.Channel()
+
+// 声明交换机和队列
+q, err := ch.QueueDeclare(&#34;my_queue&#34;, false, false, false, false, nil)
+
+// 将队列绑定到交换机，并指定路由键
+err = ch.QueueBind(q.Name, &#34;my_routing_key&#34;, &#34;my_exchange&#34;, false, nil)
+
+// 发布消息到交换机，附带指定的路由键
+msg := amqp.Publishing{
+    Body: []byte(&#34;Hello, RabbitMQ!&#34;),
+}
+err = ch.Publish(&#34;my_exchange&#34;, &#34;my_routing_key&#34;, false, false, msg)
+主题模式（Topic）
+
+
+创建连接和信道。
+声明交换机和队列。
+将队列绑定到交换机，并使用通配符形式的路由键进行匹配。
+发布消息到交换机，附带指定的路由键。
+
+// 创建连接和信道
+conn, err := amqp.Dial(&#34;amqp://guest:guest@localhost:5672/&#34;)
+ch, err := conn.Channel()
+
+// 声明交换机和队列
+q, err := ch.QueueDeclare(&#34;my_queue&#34;, false, false, false, false, nil)
+
+// 将队列绑定到交换机，并使用通配符形式的路由键进行匹配
+err = ch.QueueBind(q.Name, &#34;my_topic.#&#34;, &#34;my_exchange&#34;, false, nil)
+
+// 发布消息到交换机，附带指定的路由键
+msg := amqp.Publishing{
+    Body: []byte(&#34;Hello, RabbitMQ!&#34;),
+}
+err = ch.Publish(&#34;my_exchange&#34;, &#34;my_topic.key&#34;, false, false, msg)
+发布/订阅模式（Publish/Subscribe）
+
+
+创建连接和信道。
+声明交换机。
+声明多个队列。
+将队列绑定到交换机。
+发布消息到交换机。
+
+// 创建连接和信道
+conn, err := amqp.Dial(&#34;amqp://guest:guest@localhost:5672/&#34;)
+ch, err := conn.Channel()
+
+// 声明交换机
+err = ch.ExchangeDeclare(&#34;my_exchange&#34;, &#34;fanout&#34;, false, false, false, false, nil)
+
+// 声明多个队列
+q1, err := ch.QueueDeclare(&#34;queue1&#34;, false, false, false, false, nil)
+q2, err := ch.QueueDeclare(&#34;queue2&#34;, false, false, false, false, nil)
+
+// 将队列绑定到交换机
+err = ch.QueueBind(q1.Name, &#34;&#34;, &#34;my_exchange&#34;, false, nil)
+err = ch.QueueBind(q2.Name, &#34;&#34;, &#34;my_exchange&#34;, false, nil)
+
+// 发布消息到交换机
+msg := amqp.Publishing{
+    Body: []byte(&#34;Hello, RabbitMQ!&#34;),
+}
+err = ch.Publish(&#34;my_exchange&#34;, &#34;&#34;, false, false, msg)
+工作队列模式（Work Queue）
+
+
+创建连接和信道。
+声明队列。
+发布消息到队列。
+
+// 创建连接和信道
+conn, err := amqp.Dial(&#34;amqp://guest:guest@localhost:5672/&#34;)
+ch, err := conn.Channel()
+
+// 声明队列
+q, err := ch.QueueDeclare(&#34;my_queue&#34;, false, false, false, false, nil)
+
+// 发布消息到队列
+msg := amqp.Publishing{
+    Body: []byte(&#34;Hello, RabbitMQ!&#34;),
+}
+err = ch.Publish(&#34;&#34;, q.Name, false, false, msg)
+可选参数
+	/*
+  x-message-ttl：设置消息的过期时间（Time to Live），单位为毫秒。超过该时间的消息将被自动删除。
+  x-expires：设置队列的过期时间，单位为毫秒。如果在指定的时间内没有连接使用该队列，队列将被自动删除。
+  x-max-length：设置队列的最大长度限制。一旦达到该限制，后续的消息将会被拒绝或被丢弃。
+  x-max-length-bytes：设置队列的最大占用空间限制。一旦达到该限制，后续的消息将会被拒绝或被丢弃。
+  x-dead-letter-exchange：设置队列的死信交换机，用于处理被拒绝、过期或达到最大重试次数的消息。
+  x-dead-letter-routing-key：设置队列的死信路由键，用于指定被发送到死信交换机的消息的路由键。
+  x-overflow：设置队列溢出行为。可以是 drop-head（删除最早的消息）或 reject-publish（拒绝发布新消息）。
+	*/
+	amqp.Table{}
+死信队列代码
+
+设置&quot;x-message-ttl&quot;:             &quot;2000&quot;,无效,会导致数据无法发送成功">
+    <meta name="generator" content="Hugo 0.147.7">
+    
+    
+    
+      <meta name="robots" content="noindex, nofollow">
+    
+    <meta name="author" content="loveyu">
+    
+
+    
+<link rel="stylesheet" href="/ananke/css/main.min.css" >
+
+
+
+
+    
+
+
+    
+      
+
+    
+
+    
+
+    
+      <link rel="canonical" href="http://localhost:1313/posts/go/go-rabbitmq/">
+    
+
+    <meta property="og:url" content="http://localhost:1313/posts/go/go-rabbitmq/">
+  <meta property="og:site_name" content="loveyu233">
+  <meta property="og:title" content="Go Rabbitmq">
+  <meta property="og:description" content="RabbitMQ模式 简单模式（Simple Mode）： 简单模式是最基本的模式，也是最简单的消息传递模式。它包括一个生产者将消息发送到一个队列中，然后一个消费者从同一个队列接收消息并进行处理。 工作队列模式（Work Queue Mode）： 工作队列模式也被称为任务队列模式或消息队列模式。它包括一个生产者将任务发送到一个队列中，多个消费者从同一个队列接收任务并进行处理。每个任务只能由一个消费者处理，确保任务的负载均衡。 发布/订阅模式（Publish/Subscribe Mode）： 发布/订阅模式用于将消息广播给多个消费者。生产者将消息发布到交换机（Exchange），然后交换机将消息传递到所有绑定的队列中，每个队列都有自己的消费者来接收和处理消息。 路由模式（Direct Exchange Mode）： 路由模式是基于消息的路由键（Routing Key）进行消息传递的一种模式。生产者将消息发送到交换机，并指定一个特定的路由键，交换机将消息传递给所有与该路由键匹配的队列，每个队列都有自己的消费者来接收和处理消息。 主题模式（Topic Exchange Mode）： 主题模式是路由模式的扩展，它支持使用通配符的路由键进行消息传递。生产者将消息发送到交换机，并指定一个匹配规则的路由键模式，交换机根据匹配规则将消息传递给符合条件的队列，每个队列都有自己的消费者来接收和处理消息。 领域特定语言模式（Distributed Domain-Specific Language Mode）： 领域特定语言模式（也称为流派特定语言模式）是一种用于实现复杂分布式系统的高级模式。它基于领域特定语言（DSL）来定义和描述消息的流动和处理过程，以实现更精确的消息传递和处理策略。 直连模式（Direct） 创建连接和信道。 声明交换机和队列。 将队列绑定到交换机，并指定路由键。 发布消息到交换机，附带指定的路由键。 // 创建连接和信道 conn, err := amqp.Dial(&#34;amqp://guest:guest@localhost:5672/&#34;) ch, err := conn.Channel() // 声明交换机和队列 q, err := ch.QueueDeclare(&#34;my_queue&#34;, false, false, false, false, nil) // 将队列绑定到交换机，并指定路由键 err = ch.QueueBind(q.Name, &#34;my_routing_key&#34;, &#34;my_exchange&#34;, false, nil) // 发布消息到交换机，附带指定的路由键 msg := amqp.Publishing{ Body: []byte(&#34;Hello, RabbitMQ!&#34;), } err = ch.Publish(&#34;my_exchange&#34;, &#34;my_routing_key&#34;, false, false, msg) 主题模式（Topic） 创建连接和信道。 声明交换机和队列。 将队列绑定到交换机，并使用通配符形式的路由键进行匹配。 发布消息到交换机，附带指定的路由键。 // 创建连接和信道 conn, err := amqp.Dial(&#34;amqp://guest:guest@localhost:5672/&#34;) ch, err := conn.Channel() // 声明交换机和队列 q, err := ch.QueueDeclare(&#34;my_queue&#34;, false, false, false, false, nil) // 将队列绑定到交换机，并使用通配符形式的路由键进行匹配 err = ch.QueueBind(q.Name, &#34;my_topic.#&#34;, &#34;my_exchange&#34;, false, nil) // 发布消息到交换机，附带指定的路由键 msg := amqp.Publishing{ Body: []byte(&#34;Hello, RabbitMQ!&#34;), } err = ch.Publish(&#34;my_exchange&#34;, &#34;my_topic.key&#34;, false, false, msg) 发布/订阅模式（Publish/Subscribe） 创建连接和信道。 声明交换机。 声明多个队列。 将队列绑定到交换机。 发布消息到交换机。 // 创建连接和信道 conn, err := amqp.Dial(&#34;amqp://guest:guest@localhost:5672/&#34;) ch, err := conn.Channel() // 声明交换机 err = ch.ExchangeDeclare(&#34;my_exchange&#34;, &#34;fanout&#34;, false, false, false, false, nil) // 声明多个队列 q1, err := ch.QueueDeclare(&#34;queue1&#34;, false, false, false, false, nil) q2, err := ch.QueueDeclare(&#34;queue2&#34;, false, false, false, false, nil) // 将队列绑定到交换机 err = ch.QueueBind(q1.Name, &#34;&#34;, &#34;my_exchange&#34;, false, nil) err = ch.QueueBind(q2.Name, &#34;&#34;, &#34;my_exchange&#34;, false, nil) // 发布消息到交换机 msg := amqp.Publishing{ Body: []byte(&#34;Hello, RabbitMQ!&#34;), } err = ch.Publish(&#34;my_exchange&#34;, &#34;&#34;, false, false, msg) 工作队列模式（Work Queue） 创建连接和信道。 声明队列。 发布消息到队列。 // 创建连接和信道 conn, err := amqp.Dial(&#34;amqp://guest:guest@localhost:5672/&#34;) ch, err := conn.Channel() // 声明队列 q, err := ch.QueueDeclare(&#34;my_queue&#34;, false, false, false, false, nil) // 发布消息到队列 msg := amqp.Publishing{ Body: []byte(&#34;Hello, RabbitMQ!&#34;), } err = ch.Publish(&#34;&#34;, q.Name, false, false, msg) 可选参数 /* x-message-ttl：设置消息的过期时间（Time to Live），单位为毫秒。超过该时间的消息将被自动删除。 x-expires：设置队列的过期时间，单位为毫秒。如果在指定的时间内没有连接使用该队列，队列将被自动删除。 x-max-length：设置队列的最大长度限制。一旦达到该限制，后续的消息将会被拒绝或被丢弃。 x-max-length-bytes：设置队列的最大占用空间限制。一旦达到该限制，后续的消息将会被拒绝或被丢弃。 x-dead-letter-exchange：设置队列的死信交换机，用于处理被拒绝、过期或达到最大重试次数的消息。 x-dead-letter-routing-key：设置队列的死信路由键，用于指定被发送到死信交换机的消息的路由键。 x-overflow：设置队列溢出行为。可以是 drop-head（删除最早的消息）或 reject-publish（拒绝发布新消息）。 */ amqp.Table{} 死信队列代码 设置&#34;x-message-ttl&#34;: &#34;2000&#34;,无效,会导致数据无法发送成功">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2023-06-23T10:01:17+08:00">
+    <meta property="article:modified_time" content="2023-06-23T10:01:17+08:00">
+    <meta property="article:tag" content="RabbitMQ">
+
+  <meta itemprop="name" content="Go Rabbitmq">
+  <meta itemprop="description" content="RabbitMQ模式 简单模式（Simple Mode）： 简单模式是最基本的模式，也是最简单的消息传递模式。它包括一个生产者将消息发送到一个队列中，然后一个消费者从同一个队列接收消息并进行处理。 工作队列模式（Work Queue Mode）： 工作队列模式也被称为任务队列模式或消息队列模式。它包括一个生产者将任务发送到一个队列中，多个消费者从同一个队列接收任务并进行处理。每个任务只能由一个消费者处理，确保任务的负载均衡。 发布/订阅模式（Publish/Subscribe Mode）： 发布/订阅模式用于将消息广播给多个消费者。生产者将消息发布到交换机（Exchange），然后交换机将消息传递到所有绑定的队列中，每个队列都有自己的消费者来接收和处理消息。 路由模式（Direct Exchange Mode）： 路由模式是基于消息的路由键（Routing Key）进行消息传递的一种模式。生产者将消息发送到交换机，并指定一个特定的路由键，交换机将消息传递给所有与该路由键匹配的队列，每个队列都有自己的消费者来接收和处理消息。 主题模式（Topic Exchange Mode）： 主题模式是路由模式的扩展，它支持使用通配符的路由键进行消息传递。生产者将消息发送到交换机，并指定一个匹配规则的路由键模式，交换机根据匹配规则将消息传递给符合条件的队列，每个队列都有自己的消费者来接收和处理消息。 领域特定语言模式（Distributed Domain-Specific Language Mode）： 领域特定语言模式（也称为流派特定语言模式）是一种用于实现复杂分布式系统的高级模式。它基于领域特定语言（DSL）来定义和描述消息的流动和处理过程，以实现更精确的消息传递和处理策略。 直连模式（Direct） 创建连接和信道。 声明交换机和队列。 将队列绑定到交换机，并指定路由键。 发布消息到交换机，附带指定的路由键。 // 创建连接和信道 conn, err := amqp.Dial(&#34;amqp://guest:guest@localhost:5672/&#34;) ch, err := conn.Channel() // 声明交换机和队列 q, err := ch.QueueDeclare(&#34;my_queue&#34;, false, false, false, false, nil) // 将队列绑定到交换机，并指定路由键 err = ch.QueueBind(q.Name, &#34;my_routing_key&#34;, &#34;my_exchange&#34;, false, nil) // 发布消息到交换机，附带指定的路由键 msg := amqp.Publishing{ Body: []byte(&#34;Hello, RabbitMQ!&#34;), } err = ch.Publish(&#34;my_exchange&#34;, &#34;my_routing_key&#34;, false, false, msg) 主题模式（Topic） 创建连接和信道。 声明交换机和队列。 将队列绑定到交换机，并使用通配符形式的路由键进行匹配。 发布消息到交换机，附带指定的路由键。 // 创建连接和信道 conn, err := amqp.Dial(&#34;amqp://guest:guest@localhost:5672/&#34;) ch, err := conn.Channel() // 声明交换机和队列 q, err := ch.QueueDeclare(&#34;my_queue&#34;, false, false, false, false, nil) // 将队列绑定到交换机，并使用通配符形式的路由键进行匹配 err = ch.QueueBind(q.Name, &#34;my_topic.#&#34;, &#34;my_exchange&#34;, false, nil) // 发布消息到交换机，附带指定的路由键 msg := amqp.Publishing{ Body: []byte(&#34;Hello, RabbitMQ!&#34;), } err = ch.Publish(&#34;my_exchange&#34;, &#34;my_topic.key&#34;, false, false, msg) 发布/订阅模式（Publish/Subscribe） 创建连接和信道。 声明交换机。 声明多个队列。 将队列绑定到交换机。 发布消息到交换机。 // 创建连接和信道 conn, err := amqp.Dial(&#34;amqp://guest:guest@localhost:5672/&#34;) ch, err := conn.Channel() // 声明交换机 err = ch.ExchangeDeclare(&#34;my_exchange&#34;, &#34;fanout&#34;, false, false, false, false, nil) // 声明多个队列 q1, err := ch.QueueDeclare(&#34;queue1&#34;, false, false, false, false, nil) q2, err := ch.QueueDeclare(&#34;queue2&#34;, false, false, false, false, nil) // 将队列绑定到交换机 err = ch.QueueBind(q1.Name, &#34;&#34;, &#34;my_exchange&#34;, false, nil) err = ch.QueueBind(q2.Name, &#34;&#34;, &#34;my_exchange&#34;, false, nil) // 发布消息到交换机 msg := amqp.Publishing{ Body: []byte(&#34;Hello, RabbitMQ!&#34;), } err = ch.Publish(&#34;my_exchange&#34;, &#34;&#34;, false, false, msg) 工作队列模式（Work Queue） 创建连接和信道。 声明队列。 发布消息到队列。 // 创建连接和信道 conn, err := amqp.Dial(&#34;amqp://guest:guest@localhost:5672/&#34;) ch, err := conn.Channel() // 声明队列 q, err := ch.QueueDeclare(&#34;my_queue&#34;, false, false, false, false, nil) // 发布消息到队列 msg := amqp.Publishing{ Body: []byte(&#34;Hello, RabbitMQ!&#34;), } err = ch.Publish(&#34;&#34;, q.Name, false, false, msg) 可选参数 /* x-message-ttl：设置消息的过期时间（Time to Live），单位为毫秒。超过该时间的消息将被自动删除。 x-expires：设置队列的过期时间，单位为毫秒。如果在指定的时间内没有连接使用该队列，队列将被自动删除。 x-max-length：设置队列的最大长度限制。一旦达到该限制，后续的消息将会被拒绝或被丢弃。 x-max-length-bytes：设置队列的最大占用空间限制。一旦达到该限制，后续的消息将会被拒绝或被丢弃。 x-dead-letter-exchange：设置队列的死信交换机，用于处理被拒绝、过期或达到最大重试次数的消息。 x-dead-letter-routing-key：设置队列的死信路由键，用于指定被发送到死信交换机的消息的路由键。 x-overflow：设置队列溢出行为。可以是 drop-head（删除最早的消息）或 reject-publish（拒绝发布新消息）。 */ amqp.Table{} 死信队列代码 设置&#34;x-message-ttl&#34;: &#34;2000&#34;,无效,会导致数据无法发送成功">
+  <meta itemprop="datePublished" content="2023-06-23T10:01:17+08:00">
+  <meta itemprop="dateModified" content="2023-06-23T10:01:17+08:00">
+  <meta itemprop="wordCount" content="795">
+  <meta itemprop="keywords" content="RabbitMQ">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Go Rabbitmq">
+  <meta name="twitter:description" content="RabbitMQ模式 简单模式（Simple Mode）： 简单模式是最基本的模式，也是最简单的消息传递模式。它包括一个生产者将消息发送到一个队列中，然后一个消费者从同一个队列接收消息并进行处理。 工作队列模式（Work Queue Mode）： 工作队列模式也被称为任务队列模式或消息队列模式。它包括一个生产者将任务发送到一个队列中，多个消费者从同一个队列接收任务并进行处理。每个任务只能由一个消费者处理，确保任务的负载均衡。 发布/订阅模式（Publish/Subscribe Mode）： 发布/订阅模式用于将消息广播给多个消费者。生产者将消息发布到交换机（Exchange），然后交换机将消息传递到所有绑定的队列中，每个队列都有自己的消费者来接收和处理消息。 路由模式（Direct Exchange Mode）： 路由模式是基于消息的路由键（Routing Key）进行消息传递的一种模式。生产者将消息发送到交换机，并指定一个特定的路由键，交换机将消息传递给所有与该路由键匹配的队列，每个队列都有自己的消费者来接收和处理消息。 主题模式（Topic Exchange Mode）： 主题模式是路由模式的扩展，它支持使用通配符的路由键进行消息传递。生产者将消息发送到交换机，并指定一个匹配规则的路由键模式，交换机根据匹配规则将消息传递给符合条件的队列，每个队列都有自己的消费者来接收和处理消息。 领域特定语言模式（Distributed Domain-Specific Language Mode）： 领域特定语言模式（也称为流派特定语言模式）是一种用于实现复杂分布式系统的高级模式。它基于领域特定语言（DSL）来定义和描述消息的流动和处理过程，以实现更精确的消息传递和处理策略。 直连模式（Direct） 创建连接和信道。 声明交换机和队列。 将队列绑定到交换机，并指定路由键。 发布消息到交换机，附带指定的路由键。 // 创建连接和信道 conn, err := amqp.Dial(&#34;amqp://guest:guest@localhost:5672/&#34;) ch, err := conn.Channel() // 声明交换机和队列 q, err := ch.QueueDeclare(&#34;my_queue&#34;, false, false, false, false, nil) // 将队列绑定到交换机，并指定路由键 err = ch.QueueBind(q.Name, &#34;my_routing_key&#34;, &#34;my_exchange&#34;, false, nil) // 发布消息到交换机，附带指定的路由键 msg := amqp.Publishing{ Body: []byte(&#34;Hello, RabbitMQ!&#34;), } err = ch.Publish(&#34;my_exchange&#34;, &#34;my_routing_key&#34;, false, false, msg) 主题模式（Topic） 创建连接和信道。 声明交换机和队列。 将队列绑定到交换机，并使用通配符形式的路由键进行匹配。 发布消息到交换机，附带指定的路由键。 // 创建连接和信道 conn, err := amqp.Dial(&#34;amqp://guest:guest@localhost:5672/&#34;) ch, err := conn.Channel() // 声明交换机和队列 q, err := ch.QueueDeclare(&#34;my_queue&#34;, false, false, false, false, nil) // 将队列绑定到交换机，并使用通配符形式的路由键进行匹配 err = ch.QueueBind(q.Name, &#34;my_topic.#&#34;, &#34;my_exchange&#34;, false, nil) // 发布消息到交换机，附带指定的路由键 msg := amqp.Publishing{ Body: []byte(&#34;Hello, RabbitMQ!&#34;), } err = ch.Publish(&#34;my_exchange&#34;, &#34;my_topic.key&#34;, false, false, msg) 发布/订阅模式（Publish/Subscribe） 创建连接和信道。 声明交换机。 声明多个队列。 将队列绑定到交换机。 发布消息到交换机。 // 创建连接和信道 conn, err := amqp.Dial(&#34;amqp://guest:guest@localhost:5672/&#34;) ch, err := conn.Channel() // 声明交换机 err = ch.ExchangeDeclare(&#34;my_exchange&#34;, &#34;fanout&#34;, false, false, false, false, nil) // 声明多个队列 q1, err := ch.QueueDeclare(&#34;queue1&#34;, false, false, false, false, nil) q2, err := ch.QueueDeclare(&#34;queue2&#34;, false, false, false, false, nil) // 将队列绑定到交换机 err = ch.QueueBind(q1.Name, &#34;&#34;, &#34;my_exchange&#34;, false, nil) err = ch.QueueBind(q2.Name, &#34;&#34;, &#34;my_exchange&#34;, false, nil) // 发布消息到交换机 msg := amqp.Publishing{ Body: []byte(&#34;Hello, RabbitMQ!&#34;), } err = ch.Publish(&#34;my_exchange&#34;, &#34;&#34;, false, false, msg) 工作队列模式（Work Queue） 创建连接和信道。 声明队列。 发布消息到队列。 // 创建连接和信道 conn, err := amqp.Dial(&#34;amqp://guest:guest@localhost:5672/&#34;) ch, err := conn.Channel() // 声明队列 q, err := ch.QueueDeclare(&#34;my_queue&#34;, false, false, false, false, nil) // 发布消息到队列 msg := amqp.Publishing{ Body: []byte(&#34;Hello, RabbitMQ!&#34;), } err = ch.Publish(&#34;&#34;, q.Name, false, false, msg) 可选参数 /* x-message-ttl：设置消息的过期时间（Time to Live），单位为毫秒。超过该时间的消息将被自动删除。 x-expires：设置队列的过期时间，单位为毫秒。如果在指定的时间内没有连接使用该队列，队列将被自动删除。 x-max-length：设置队列的最大长度限制。一旦达到该限制，后续的消息将会被拒绝或被丢弃。 x-max-length-bytes：设置队列的最大占用空间限制。一旦达到该限制，后续的消息将会被拒绝或被丢弃。 x-dead-letter-exchange：设置队列的死信交换机，用于处理被拒绝、过期或达到最大重试次数的消息。 x-dead-letter-routing-key：设置队列的死信路由键，用于指定被发送到死信交换机的消息的路由键。 x-overflow：设置队列溢出行为。可以是 drop-head（删除最早的消息）或 reject-publish（拒绝发布新消息）。 */ amqp.Table{} 死信队列代码 设置&#34;x-message-ttl&#34;: &#34;2000&#34;,无效,会导致数据无法发送成功">
+
+	
+  </head><body class="ma0 avenir bg-near-white development">
+
+    
+   
+  
+
+  <header>
+    <div class="bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l center items-center justify-between">
+    <a href="/" class="f3 fw2 hover-white white-90 dib no-underline">
+      
+        loveyu233
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      <div class="ananke-socials"></div>
+
+    </div>
+  </div>
+</nav>
+
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  
+  <article class="flex-l mw8 center ph3 flex-wrap justify-between">
+    <header class="mt4 w-100">
+      <aside class="instapaper_ignoref b helvetica tracked ttu">
+          
+        go
+      </aside><div id="sharing" class="mt3 ananke-socials"></div>
+<h1 class="f1 athelas mt3 mb1">Go Rabbitmq</h1>
+      
+      <p class="tracked"><strong>loveyu</strong>
+      </p>
+      
+      
+      
+      <time class="f6 mv4 dib tracked" datetime="2023-06-23T10:01:17+08:00">June 23, 2023</time>
+      
+
+      
+      
+    </header>
+    <div class="nested-copy-line-height lh-copy serif f4 nested-links mid-gray pr4-l w-two-thirds-l"><h1 id="rabbitmq模式">RabbitMQ模式</h1>
+<ol>
+<li>简单模式（Simple Mode）： 简单模式是最基本的模式，也是最简单的消息传递模式。它包括一个生产者将消息发送到一个队列中，然后一个消费者从同一个队列接收消息并进行处理。</li>
+<li>工作队列模式（Work Queue Mode）： 工作队列模式也被称为任务队列模式或消息队列模式。它包括一个生产者将任务发送到一个队列中，多个消费者从同一个队列接收任务并进行处理。每个任务只能由一个消费者处理，确保任务的负载均衡。</li>
+<li>发布/订阅模式（Publish/Subscribe Mode）： 发布/订阅模式用于将消息广播给多个消费者。生产者将消息发布到交换机（Exchange），然后交换机将消息传递到所有绑定的队列中，每个队列都有自己的消费者来接收和处理消息。</li>
+<li>路由模式（Direct Exchange Mode）： 路由模式是基于消息的路由键（Routing Key）进行消息传递的一种模式。生产者将消息发送到交换机，并指定一个特定的路由键，交换机将消息传递给所有与该路由键匹配的队列，每个队列都有自己的消费者来接收和处理消息。</li>
+<li>主题模式（Topic Exchange Mode）： 主题模式是路由模式的扩展，它支持使用通配符的路由键进行消息传递。生产者将消息发送到交换机，并指定一个匹配规则的路由键模式，交换机根据匹配规则将消息传递给符合条件的队列，每个队列都有自己的消费者来接收和处理消息。</li>
+<li>领域特定语言模式（Distributed Domain-Specific Language Mode）： 领域特定语言模式（也称为流派特定语言模式）是一种用于实现复杂分布式系统的高级模式。它基于领域特定语言（DSL）来定义和描述消息的流动和处理过程，以实现更精确的消息传递和处理策略。</li>
+</ol>
+<h1 id="直连模式direct">直连模式（Direct）</h1>
+<blockquote>
+<ul>
+<li>创建连接和信道。</li>
+<li>声明交换机和队列。</li>
+<li>将队列绑定到交换机，并指定路由键。</li>
+<li>发布消息到交换机，附带指定的路由键。</li>
+</ul></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">// 创建连接和信道</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">conn</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">amqp</span>.<span style="color:#a6e22e">Dial</span>(<span style="color:#e6db74">&#34;amqp://guest:guest@localhost:5672/&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">ch</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">conn</span>.<span style="color:#a6e22e">Channel</span>()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 声明交换机和队列</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">q</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">ch</span>.<span style="color:#a6e22e">QueueDeclare</span>(<span style="color:#e6db74">&#34;my_queue&#34;</span>, <span style="color:#66d9ef">false</span>, <span style="color:#66d9ef">false</span>, <span style="color:#66d9ef">false</span>, <span style="color:#66d9ef">false</span>, <span style="color:#66d9ef">nil</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 将队列绑定到交换机，并指定路由键</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">ch</span>.<span style="color:#a6e22e">QueueBind</span>(<span style="color:#a6e22e">q</span>.<span style="color:#a6e22e">Name</span>, <span style="color:#e6db74">&#34;my_routing_key&#34;</span>, <span style="color:#e6db74">&#34;my_exchange&#34;</span>, <span style="color:#66d9ef">false</span>, <span style="color:#66d9ef">nil</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 发布消息到交换机，附带指定的路由键</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">msg</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">amqp</span>.<span style="color:#a6e22e">Publishing</span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">Body</span>: []byte(<span style="color:#e6db74">&#34;Hello, RabbitMQ!&#34;</span>),
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">ch</span>.<span style="color:#a6e22e">Publish</span>(<span style="color:#e6db74">&#34;my_exchange&#34;</span>, <span style="color:#e6db74">&#34;my_routing_key&#34;</span>, <span style="color:#66d9ef">false</span>, <span style="color:#66d9ef">false</span>, <span style="color:#a6e22e">msg</span>)
+</span></span></code></pre></div><h1 id="主题模式topic">主题模式（Topic）</h1>
+<blockquote>
+<ul>
+<li>创建连接和信道。</li>
+<li>声明交换机和队列。</li>
+<li>将队列绑定到交换机，并使用通配符形式的路由键进行匹配。</li>
+<li>发布消息到交换机，附带指定的路由键。</li>
+</ul></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">// 创建连接和信道</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">conn</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">amqp</span>.<span style="color:#a6e22e">Dial</span>(<span style="color:#e6db74">&#34;amqp://guest:guest@localhost:5672/&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">ch</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">conn</span>.<span style="color:#a6e22e">Channel</span>()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 声明交换机和队列</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">q</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">ch</span>.<span style="color:#a6e22e">QueueDeclare</span>(<span style="color:#e6db74">&#34;my_queue&#34;</span>, <span style="color:#66d9ef">false</span>, <span style="color:#66d9ef">false</span>, <span style="color:#66d9ef">false</span>, <span style="color:#66d9ef">false</span>, <span style="color:#66d9ef">nil</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 将队列绑定到交换机，并使用通配符形式的路由键进行匹配</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">ch</span>.<span style="color:#a6e22e">QueueBind</span>(<span style="color:#a6e22e">q</span>.<span style="color:#a6e22e">Name</span>, <span style="color:#e6db74">&#34;my_topic.#&#34;</span>, <span style="color:#e6db74">&#34;my_exchange&#34;</span>, <span style="color:#66d9ef">false</span>, <span style="color:#66d9ef">nil</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 发布消息到交换机，附带指定的路由键</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">msg</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">amqp</span>.<span style="color:#a6e22e">Publishing</span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">Body</span>: []byte(<span style="color:#e6db74">&#34;Hello, RabbitMQ!&#34;</span>),
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">ch</span>.<span style="color:#a6e22e">Publish</span>(<span style="color:#e6db74">&#34;my_exchange&#34;</span>, <span style="color:#e6db74">&#34;my_topic.key&#34;</span>, <span style="color:#66d9ef">false</span>, <span style="color:#66d9ef">false</span>, <span style="color:#a6e22e">msg</span>)
+</span></span></code></pre></div><h1 id="发布订阅模式publishsubscribe">发布/订阅模式（Publish/Subscribe）</h1>
+<blockquote>
+<ul>
+<li>创建连接和信道。</li>
+<li>声明交换机。</li>
+<li>声明多个队列。</li>
+<li>将队列绑定到交换机。</li>
+<li>发布消息到交换机。</li>
+</ul></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">// 创建连接和信道</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">conn</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">amqp</span>.<span style="color:#a6e22e">Dial</span>(<span style="color:#e6db74">&#34;amqp://guest:guest@localhost:5672/&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">ch</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">conn</span>.<span style="color:#a6e22e">Channel</span>()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 声明交换机</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">ch</span>.<span style="color:#a6e22e">ExchangeDeclare</span>(<span style="color:#e6db74">&#34;my_exchange&#34;</span>, <span style="color:#e6db74">&#34;fanout&#34;</span>, <span style="color:#66d9ef">false</span>, <span style="color:#66d9ef">false</span>, <span style="color:#66d9ef">false</span>, <span style="color:#66d9ef">false</span>, <span style="color:#66d9ef">nil</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 声明多个队列</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">q1</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">ch</span>.<span style="color:#a6e22e">QueueDeclare</span>(<span style="color:#e6db74">&#34;queue1&#34;</span>, <span style="color:#66d9ef">false</span>, <span style="color:#66d9ef">false</span>, <span style="color:#66d9ef">false</span>, <span style="color:#66d9ef">false</span>, <span style="color:#66d9ef">nil</span>)
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">q2</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">ch</span>.<span style="color:#a6e22e">QueueDeclare</span>(<span style="color:#e6db74">&#34;queue2&#34;</span>, <span style="color:#66d9ef">false</span>, <span style="color:#66d9ef">false</span>, <span style="color:#66d9ef">false</span>, <span style="color:#66d9ef">false</span>, <span style="color:#66d9ef">nil</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 将队列绑定到交换机</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">ch</span>.<span style="color:#a6e22e">QueueBind</span>(<span style="color:#a6e22e">q1</span>.<span style="color:#a6e22e">Name</span>, <span style="color:#e6db74">&#34;&#34;</span>, <span style="color:#e6db74">&#34;my_exchange&#34;</span>, <span style="color:#66d9ef">false</span>, <span style="color:#66d9ef">nil</span>)
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">ch</span>.<span style="color:#a6e22e">QueueBind</span>(<span style="color:#a6e22e">q2</span>.<span style="color:#a6e22e">Name</span>, <span style="color:#e6db74">&#34;&#34;</span>, <span style="color:#e6db74">&#34;my_exchange&#34;</span>, <span style="color:#66d9ef">false</span>, <span style="color:#66d9ef">nil</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 发布消息到交换机</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">msg</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">amqp</span>.<span style="color:#a6e22e">Publishing</span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">Body</span>: []byte(<span style="color:#e6db74">&#34;Hello, RabbitMQ!&#34;</span>),
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">ch</span>.<span style="color:#a6e22e">Publish</span>(<span style="color:#e6db74">&#34;my_exchange&#34;</span>, <span style="color:#e6db74">&#34;&#34;</span>, <span style="color:#66d9ef">false</span>, <span style="color:#66d9ef">false</span>, <span style="color:#a6e22e">msg</span>)
+</span></span></code></pre></div><h1 id="工作队列模式work-queue">工作队列模式（Work Queue）</h1>
+<blockquote>
+<ul>
+<li>创建连接和信道。</li>
+<li>声明队列。</li>
+<li>发布消息到队列。</li>
+</ul></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">// 创建连接和信道</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">conn</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">amqp</span>.<span style="color:#a6e22e">Dial</span>(<span style="color:#e6db74">&#34;amqp://guest:guest@localhost:5672/&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">ch</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">conn</span>.<span style="color:#a6e22e">Channel</span>()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 声明队列</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">q</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">ch</span>.<span style="color:#a6e22e">QueueDeclare</span>(<span style="color:#e6db74">&#34;my_queue&#34;</span>, <span style="color:#66d9ef">false</span>, <span style="color:#66d9ef">false</span>, <span style="color:#66d9ef">false</span>, <span style="color:#66d9ef">false</span>, <span style="color:#66d9ef">nil</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 发布消息到队列</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">msg</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">amqp</span>.<span style="color:#a6e22e">Publishing</span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">Body</span>: []byte(<span style="color:#e6db74">&#34;Hello, RabbitMQ!&#34;</span>),
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">ch</span>.<span style="color:#a6e22e">Publish</span>(<span style="color:#e6db74">&#34;&#34;</span>, <span style="color:#a6e22e">q</span>.<span style="color:#a6e22e">Name</span>, <span style="color:#66d9ef">false</span>, <span style="color:#66d9ef">false</span>, <span style="color:#a6e22e">msg</span>)
+</span></span></code></pre></div><h1 id="可选参数">可选参数</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>	<span style="color:#75715e">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">  x-message-ttl：设置消息的过期时间（Time to Live），单位为毫秒。超过该时间的消息将被自动删除。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">  x-expires：设置队列的过期时间，单位为毫秒。如果在指定的时间内没有连接使用该队列，队列将被自动删除。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">  x-max-length：设置队列的最大长度限制。一旦达到该限制，后续的消息将会被拒绝或被丢弃。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">  x-max-length-bytes：设置队列的最大占用空间限制。一旦达到该限制，后续的消息将会被拒绝或被丢弃。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">  x-dead-letter-exchange：设置队列的死信交换机，用于处理被拒绝、过期或达到最大重试次数的消息。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">  x-dead-letter-routing-key：设置队列的死信路由键，用于指定被发送到死信交换机的消息的路由键。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">  x-overflow：设置队列溢出行为。可以是 drop-head（删除最早的消息）或 reject-publish（拒绝发布新消息）。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">	*/</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">amqp</span>.<span style="color:#a6e22e">Table</span>{}
+</span></span></code></pre></div><h1 id="死信队列代码">死信队列代码</h1>
+<blockquote>
+<p>设置<code>&quot;x-message-ttl&quot;:             &quot;2000&quot;,</code>无效,会导致数据无法发送成功</p>
+<p>在发送数据时设置<code>Expiration:  &quot;1000&quot;,</code>有效,会在过期后把消息路由到私信队列中</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> (
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;fmt&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;github.com/streadway/amqp&#34;</span>
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">dial</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">amqp</span>.<span style="color:#a6e22e">Dial</span>(<span style="color:#e6db74">&#34;amqp://guest:guest@localhost:5672&#34;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">ch</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">dial</span>.<span style="color:#a6e22e">Channel</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 设置死信交换机和死信路由键</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">args</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">amqp</span>.<span style="color:#a6e22e">Table</span>{
+</span></span><span style="display:flex;"><span>		<span style="color:#e6db74">&#34;x-dead-letter-exchange&#34;</span>:    <span style="color:#e6db74">&#34;dead_letter_exchange&#34;</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#e6db74">&#34;x-dead-letter-routing-key&#34;</span>: <span style="color:#e6db74">&#34;dead_letter_key&#34;</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#75715e">//&#34;x-message-ttl&#34;:             &#34;2000&#34;,</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 声明普通队列，并将死信属性添加到其参数中</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">normalQueue</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">ch</span>.<span style="color:#a6e22e">QueueDeclare</span>(
+</span></span><span style="display:flex;"><span>		<span style="color:#e6db74">&#34;normal_queue&#34;</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">true</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">false</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">false</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">false</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">args</span>,
+</span></span><span style="display:flex;"><span>	)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 声明死信队列</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">deadLetterQueue</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">ch</span>.<span style="color:#a6e22e">QueueDeclare</span>(
+</span></span><span style="display:flex;"><span>		<span style="color:#e6db74">&#34;dead_letter_queue&#34;</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">true</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">false</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">false</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">false</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">nil</span>,
+</span></span><span style="display:flex;"><span>	)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 定义死信交换机</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">ch</span>.<span style="color:#a6e22e">ExchangeDeclare</span>(
+</span></span><span style="display:flex;"><span>		<span style="color:#e6db74">&#34;dead_letter_exchange&#34;</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#e6db74">&#34;direct&#34;</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">true</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">false</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">false</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">false</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">nil</span>,
+</span></span><span style="display:flex;"><span>	)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 将死信队列绑定到死信交换机上</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">ch</span>.<span style="color:#a6e22e">QueueBind</span>(
+</span></span><span style="display:flex;"><span>		<span style="color:#e6db74">&#34;dead_letter_queue&#34;</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#e6db74">&#34;dead_letter_key&#34;</span>, <span style="color:#75715e">// 死信路由键</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#e6db74">&#34;dead_letter_exchange&#34;</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">false</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">nil</span>,
+</span></span><span style="display:flex;"><span>	)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">publishMessage</span>(<span style="color:#a6e22e">ch</span>, <span style="color:#a6e22e">normalQueue</span>.<span style="color:#a6e22e">Name</span>, <span style="color:#e6db74">&#34;测试数据&#34;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">deadMessageCount</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">ch</span>.<span style="color:#a6e22e">QueueInspect</span>(<span style="color:#a6e22e">deadLetterQueue</span>.<span style="color:#a6e22e">Name</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">normalMessageCount</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">ch</span>.<span style="color:#a6e22e">QueueInspect</span>(<span style="color:#a6e22e">normalQueue</span>.<span style="color:#a6e22e">Name</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;dead: &#34;</span>, <span style="color:#a6e22e">deadMessageCount</span>.<span style="color:#a6e22e">Messages</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;normal: &#34;</span>, <span style="color:#a6e22e">normalMessageCount</span>.<span style="color:#a6e22e">Messages</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//consume, _ := ch.Consume(&#34;normal_queue&#34;, &#34;&#34;, false, false, false, false, nil)</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//for d := range consume {</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//	fmt.Println(string(d.Body))</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//	d.Reject(false)</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//}</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//fmt.Println(&#34;dead: &#34;, deadLetterQueue.Messages)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">publishMessage</span>(<span style="color:#a6e22e">ch</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">amqp</span>.<span style="color:#a6e22e">Channel</span>, <span style="color:#a6e22e">queueName</span>, <span style="color:#a6e22e">message</span> <span style="color:#66d9ef">string</span>) <span style="color:#66d9ef">error</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 将消息发送到普通队列</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">ch</span>.<span style="color:#a6e22e">Publish</span>(
+</span></span><span style="display:flex;"><span>		<span style="color:#e6db74">&#34;&#34;</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">queueName</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">false</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">false</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">amqp</span>.<span style="color:#a6e22e">Publishing</span>{
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">Expiration</span>:  <span style="color:#e6db74">&#34;1000&#34;</span>,
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">ContentType</span>: <span style="color:#e6db74">&#34;text/plain&#34;</span>,
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">Body</span>:        []byte(<span style="color:#a6e22e">message</span>),
+</span></span><span style="display:flex;"><span>		},
+</span></span><span style="display:flex;"><span>	)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Errorf</span>(<span style="color:#e6db74">&#34;无法发送消息到队列: %v&#34;</span>, <span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;已发布测试消息到队列:&#34;</span>, <span style="color:#a6e22e">queueName</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="交换机和路由键区别">交换机和路由键区别</h1>
+<ol>
+<li>
+<p>交换机（Exchange）： 交换机是消息的分发中心，它接收来自生产者的消息并根据路由键的匹配规则将消息发送给与之绑定的队列。交换机有不同的类型，常见的类型包括 direct、topic、fanout 和 headers。</p>
+<ul>
+<li>direct：直连交换机，根据消息的路由键与绑定的队列的绑定键进行精确匹配。</li>
+<li>topic：主题交换机，使用通配符形式的路由键与绑定键进行模糊匹配。</li>
+<li>fanout：发布/订阅交换机，无需匹配，将消息广播给所有与之绑定的队列。</li>
+<li>headers：头交换机，根据消息的头部属性与绑定的队列的头部属性进行匹配。</li>
+</ul>
+<p>交换机通过声明创建，并通过名称指定。生产者发布消息时，可以指定发送到哪个交换机。</p>
+</li>
+<li>
+<p>路由键（Routing Key）： 路由键是消息的标识符，用于将消息从交换机路由到相应的队列。具体的路由规则取决于交换机的类型。</p>
+<ul>
+<li>在 direct 类型的交换机中，路由键必须与队列的绑定键完全匹配。</li>
+<li>在 topic 类型的交换机中，路由键可以使用通配符形式进行匹配，例如使用 <code>*</code> 表示单个词，使用 <code>#</code> 表示零个或多个词。</li>
+<li>在 fanout 和 headers 类型的交换机中，路由键无需匹配，因为消息会被广播给所有绑定的队列。</li>
+</ul>
+<p>生产者发布消息时，需要指定消息的路由键，以便交换机将其发送到相应的队列。</p>
+</li>
+</ol>
+<h1 id="交换机的类型">交换机的类型</h1>
+<ol>
+<li>直连交换机（Direct Exchange）： 直连交换机根据消息的路由键（Routing Key）将消息发送到相匹配的队列上。路由键与队列的绑定规则一一对应，只有当消息的路由键与队列的绑定规则完全匹配时，消息才会被路由到该队列。这是一种一对一的路由方式。</li>
+<li>主题交换机（Topic Exchange）： 主题交换机使用通配符匹配消息的路由键和队列的绑定规则，从而将消息发送到一个或多个匹配的队列上。在主题交换机中，路由键可以使用通配符 <code>*</code> 和 <code>#</code>，其中 <code>*</code> 匹配一个单词，<code>#</code> 匹配零个或多个单词。这是一种灵活且强大的路由方式。</li>
+<li>扇形交换机（Fanout Exchange）： 扇形交换机将消息广播到所有与之绑定的队列上，忽略消息的路由键。当消息发送到扇形交换机时，它会被复制并发送到所有绑定的队列，实现一对多的消息广播。</li>
+<li>头部交换机（Headers Exchange）： 头部交换机根据消息的头部属性（Headers）进行匹配和路由。在绑定队列时，可以指定一组键值对，并通过匹配消息的头部属性与之进行匹配，从而将消息发送到相应的队列中。</li>
+</ol>
+<h1 id="queueinspect和queuedeclarepassive区别">QueueInspect和queueDeclarePassive区别</h1>
+<ol>
+<li>功能：
+<ul>
+<li><code>QueueInspect</code> 方法用于获取队列的详细信息，包括队列的名称、持久化标志、是否排他、是否自动删除、绑定的交换机等。</li>
+<li><code>QueueDeclarePassive</code> 方法用于检查队列是否已存在，如果队列存在则返回成功，否则返回失败。</li>
+</ul>
+</li>
+<li>调用方式：
+<ul>
+<li><code>QueueInspect</code> 方法是通过管理插件的 HTTP API 进行调用的，需要发送 HTTP 请求到 RabbitMQ 的管理接口上，并提供正确的权限和参数。</li>
+<li><code>QueueDeclarePassive</code> 方法是通过 AMQP 协议直接与 RabbitMQ 服务器通信进行调用的，可以在代码中使用 RabbitMQ 客户端库直接调用该方法。</li>
+</ul>
+</li>
+<li>返回结果：
+<ul>
+<li><code>QueueInspect</code> 方法返回包含队列详细信息的结构体或 JSON 格式数据，可以获取队列的各种属性。</li>
+<li><code>QueueDeclarePassive</code> 方法返回一个成功/失败的响应，用于判断队列是否存在。</li>
+</ul>
+</li>
+<li>应用场景：
+<ul>
+<li><code>QueueInspect</code> 方法适用于需要获取队列详细信息的场景，如监控、管理工具等。</li>
+<li><code>QueueDeclarePassive</code> 方法适用于在代码中检查队列是否已存在的场景，可以避免重复声明队列。</li>
+</ul>
+</li>
+</ol>
+<p><code>QueueInspect</code> 方法用于获取队列的详细信息，而 <code>QueueDeclarePassive</code> 方法用于检查队列是否已存在。根据具体的需求和使用场景选择合适的方法。</p>
+<h1 id="头部交换机">头部交换机</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> (
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;fmt&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;log&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;github.com/streadway/amqp&#34;</span>
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 建立 RabbitMQ 连接</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">conn</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">amqp</span>.<span style="color:#a6e22e">Dial</span>(<span style="color:#e6db74">&#34;amqp://guest:guest@localhost:5672/&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Fatal</span>(<span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">conn</span>.<span style="color:#a6e22e">Close</span>()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 创建一个信道</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">channel</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">conn</span>.<span style="color:#a6e22e">Channel</span>()
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Fatal</span>(<span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">channel</span>.<span style="color:#a6e22e">Close</span>()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 声明头部交换机</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">channel</span>.<span style="color:#a6e22e">ExchangeDeclare</span>(
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;my_headers_exchange&#34;</span>, <span style="color:#75715e">// 交换机名称</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;headers&#34;</span>,             <span style="color:#75715e">// 交换机类型</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">true</span>,                  <span style="color:#75715e">// 是否持久化</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">false</span>,                 <span style="color:#75715e">// 是否自动删除</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">false</span>,                 <span style="color:#75715e">// 是否是内部交换机</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">false</span>,                 <span style="color:#75715e">// 是否等待服务器确认</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">amqp</span>.<span style="color:#a6e22e">Table</span>{},          <span style="color:#75715e">// 额外参数</span>
+</span></span><span style="display:flex;"><span>    )
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Fatal</span>(<span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 创建一个队列</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">queue</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">channel</span>.<span style="color:#a6e22e">QueueDeclare</span>(
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;my_headers_queue&#34;</span>, <span style="color:#75715e">// 队列名称</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">true</span>,               <span style="color:#75715e">// 是否持久化</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">false</span>,              <span style="color:#75715e">// 是否自动删除</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">false</span>,              <span style="color:#75715e">// 是否排他队列</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">false</span>,              <span style="color:#75715e">// 是否等待服务器确认</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">nil</span>,                <span style="color:#75715e">// 额外参数</span>
+</span></span><span style="display:flex;"><span>    )
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Fatal</span>(<span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 绑定队列到头部交换机，并指定匹配的头部属性</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">channel</span>.<span style="color:#a6e22e">QueueBind</span>(
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">queue</span>.<span style="color:#a6e22e">Name</span>,                       <span style="color:#75715e">// 队列名称</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;&#34;</span>,                               <span style="color:#75715e">// 路由键，对于头部交换机不需要指定</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;my_headers_exchange&#34;</span>,            <span style="color:#75715e">// 交换机名称</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">false</span>,                            <span style="color:#75715e">// 是否不等待服务器确认</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">amqp</span>.<span style="color:#a6e22e">Table</span>{<span style="color:#e6db74">&#34;x-match&#34;</span>: <span style="color:#e6db74">&#34;all&#34;</span>,      <span style="color:#75715e">// 头部属性的匹配规则，这里表示所有的头部属性都要匹配上,any:只要至少有一个指定的键值对匹配，就会路由到队列。</span>
+</span></span><span style="display:flex;"><span>                   <span style="color:#e6db74">&#34;key1&#34;</span>: <span style="color:#e6db74">&#34;value1&#34;</span>,      <span style="color:#75715e">// 设置头部属性</span>
+</span></span><span style="display:flex;"><span>                   <span style="color:#e6db74">&#34;key2&#34;</span>: <span style="color:#e6db74">&#34;value2&#34;</span>},
+</span></span><span style="display:flex;"><span>    )
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Fatal</span>(<span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 发布一条包含头部属性的消息</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">headers</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">amqp</span>.<span style="color:#a6e22e">Table</span>{<span style="color:#e6db74">&#34;key1&#34;</span>: <span style="color:#e6db74">&#34;value1&#34;</span>, <span style="color:#e6db74">&#34;key2&#34;</span>: <span style="color:#e6db74">&#34;value2&#34;</span>}
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">channel</span>.<span style="color:#a6e22e">Publish</span>(
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;my_headers_exchange&#34;</span>, <span style="color:#75715e">// 交换机名称</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;&#34;</span>,                    <span style="color:#75715e">// 路由键，对于头部交换机不需要指定</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">false</span>,                 <span style="color:#75715e">// 是否不等待服务器确认</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">false</span>,                 <span style="color:#75715e">// 是否立即发送</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">amqp</span>.<span style="color:#a6e22e">Publishing</span>{
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">Headers</span>: <span style="color:#a6e22e">headers</span>,              <span style="color:#75715e">// 设置头部属性</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">ContentType</span>: <span style="color:#e6db74">&#34;text/plain&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">Body</span>:        []byte(<span style="color:#e6db74">&#34;Hello, RabbitMQ!&#34;</span>),
+</span></span><span style="display:flex;"><span>        },
+</span></span><span style="display:flex;"><span>    )
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Fatal</span>(<span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;消息已发送到头部交换机&#34;</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="ttl">TTL</h1>
+<blockquote>
+<p>TTL（Time-to-Live）是一种用于设置消息的生存时间的功能。在 RabbitMQ 中，通过设置消息的 TTL，可以指定消息在被消费或者被丢弃之前允许存在的时间长度。</p></blockquote>
+<p>在 RabbitMQ 中，可以通过以下几种方式来实现消息的 TTL：</p>
+<ol>
+<li>消息级别的 TTL：在发布消息时，可以通过设置消息的 <code>expiration</code> 属性来指定消息的 TTL。该属性的值是一个表示毫秒数的字符串，指定了消息从发送后经过多长时间后过期。一旦消息的 TTL 时间到期，消息将会被立即丢弃或者死信处理。</li>
+<li>队列级别的 TTL：在声明队列时，可以使用 <code>x-message-ttl</code> 参数来设置队列中所有消息的默认 TTL。该参数的值是一个表示毫秒数的整数，用于指定消息在队列中的存活时间。</li>
+<li>无限期的消息：如果不想为消息设置 TTL 或者希望让消息永久存在直到被消费或者手动删除，可以将 TTL 设置为 0。这样的消息不会因为时间而过期。</li>
+</ol>
+<blockquote>
+<p>需要注意的是，TTL 只能保证消息的最长存在时间，但并不能保证消息一定会在 TTL 时间内被消费。如果消息在 TTL 时间内没有被消费，那么它将会被丢弃或者进入死信队列，具体取决于您的设置和配置。</p></blockquote>
+<h1 id="死信队列">死信队列</h1>
+<blockquote>
+<p>死信队列（Dead Letter Queue）是一种用于处理无法被消费或处理的消息的特殊队列。当消息满足一定的条件时，例如消息过期、被拒绝、达到最大重试次数等，它将被路由到死信队列中，而不是直接丢弃或者无限地重新投递。</p></blockquote>
+<p>死信队列的使用可以提供以下几个优势：</p>
+<ol>
+<li>错误处理：当消息处理失败或出现错误时，将消息发送到死信队列，方便后续进行错误处理和调查。</li>
+<li>重试机制：通过配置死信队列以及相关参数（例如消息的 TTL 和重试次数限制），可以实现自动的消息重试机制，减少手动处理的工作量。</li>
+<li>延迟处理：通过设置死信队列中消息的 TTL，可以实现延迟处理机制。消息在一定时间后进入死信队列，随后再从死信队列中取出进行处理。</li>
+</ol>
+<p>使用死信队列的步骤如下：</p>
+<ol>
+<li>创建死信队列：首先要创建一个专门用于接收死信的队列，通常是一个普通的队列。</li>
+<li>设置死信属性：在声明普通队列时，可以设置 <code>x-dead-letter-exchange</code> 和 <code>x-dead-letter-routing-key</code> 属性。这些属性指示当消息成为死信时应该发送到的交换机和路由键。</li>
+<li>定义死信规则：通过设置消息的 TTL、最大重试次数等属性，来定义什么样的消息会成为死信。</li>
+<li>绑定死信队列：将普通队列与死信队列进行绑定，以便将死信路由到死信队列中。</li>
+</ol>
+<h1 id="nackack-和-reject">Nack、Ack 和 Reject</h1>
+<blockquote>
+<p>主要区别在于 <code>Nack</code> 可以选择拒绝多个消息并重新投递，而 <code>Ack</code> 仅确认消息已处理并删除，<code>Reject</code> 则是简化的拒绝并删除当前消息。</p></blockquote>
+<ol>
+<li><code>Nack</code>（Negative Acknowledgment）：通过调用 <code>Nack</code> 方法可以将消息拒绝并重新投递到队列中。它有两个参数：<code>multiple</code> 和 <code>requeue</code>。<code>multiple</code> 表示是否拒绝多个消息，如果设置为 <code>true</code>，那么当前消息及其之前的所有未确认消息都会被拒绝。<code>requeue</code> 表示被拒绝的消息是否重新进入队列，如果设置为 <code>true</code>，那么被拒绝的消息将重新投递给其他消费者。</li>
+<li><code>Ack</code>（Acknowledgment）：通过调用 <code>Ack</code> 方法可以明确地确认消息已经成功处理，并将其从队列中删除。这意味着 RabbitMQ 可以安全地假设该消息已被完全处理，从而不再重新发送给其他消费者。</li>
+<li><code>Reject</code>：通过调用 <code>Reject</code> 方法可以拒绝消息，并将其从队列中删除或转发到死信队列。与 <code>Nack</code> 方法不同，<code>Reject</code> 方法没有参数来指定是否拒绝多个消息，它总是只拒绝当前消息。</li>
+</ol>
+<ul class="pa0">
+  
+   <li class="list di">
+     <a href="/tags/rabbitmq/" class="link f5 grow br-pill ba ph3 pv2 mb2 dib black sans-serif no-underline">RabbitMQ</a>
+   </li>
+  
+</ul>
+<div class="mt6 instapaper_ignoref">
+      
+      
+      </div>
+    </div>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white white-70 dn dib-ns pv2 ph3 no-underline" href="http://localhost:1313/" >
+    &copy;  loveyu233 2025 
+  </a>
+    <div><div class="ananke-socials"></div>
+</div>
+  </div>
+</footer>
+
+  </body>
+</html>

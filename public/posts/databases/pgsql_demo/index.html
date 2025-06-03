@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>pg常用操作 | loveyu233</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="删除pgsql的缓存计划
+
+discard all;
+
+text[]模糊查询
+
+select * from aaa where exists(select 1 from unnest(alias) as elem where elem like %a%)
+
+最近时间
+
+select max(time) from abc;
+
+不为空
+
+pgsql中&lt;&gt; 表示 != 不等于
+-- 这样子是不对的, 不能把select的字段用到where上, 只能是from中的表字段或者显示声明的字段才可以在where中使用
+select 
+  distinct unnest(product_type) as type 
+from 
+  products 
+where 
+  type IS NOT NULL AND type &lt;&gt; &#39;&#39;;
+
+-- 正确的用法
+SELECT 
+  DISTINCT pt 
+FROM 
+  ( SELECT unnest(product_type) AS pt FROM &#34;products&#34; ) AS subquery
+WHERE 
+  pt IS NOT NULL AND pt &lt;&gt; &#39;&#39;;
+
+计算比例
+
+语法:  sum() over() 必须带over()
+SELECT
+   trade,
+   trade_count,
+   trade_count::float / SUM(trade_count) OVER () AS weight_ratio
+FROM (
+   SELECT
+       unnest(industry_chain_position) AS trade,
+       COUNT(id) AS trade_count
+   FROM
+       products
+   WHERE
+       enterprise_id = 229501
+   GROUP BY
+       trade
+) AS subquery
+ORDER BY
+   trade_count DESC;
+WITH 
+   trade_counts AS (
+   SELECT
+       unnest(belong_trade) AS trade,
+       COUNT(code) AS product_total
+   FROM
+       products
+   WHERE
+       enterprise_id = 229501
+     AND
+       1 = ANY(industry_chain_position)
+   GROUP BY
+       trade
+),
+total_count AS (
+   SELECT
+       SUM(product_total) AS total_product_count
+   FROM
+       trade_counts
+)
+
+SELECT
+   trade,
+   product_total,
+   (product_total::float / total_product_count) AS proportion
+FROM
+   trade_counts,
+   total_count;
+
+case
+
+语法:">
+    <meta name="generator" content="Hugo 0.147.7">
+    
+    
+    
+      <meta name="robots" content="noindex, nofollow">
+    
+    <meta name="author" content="loveyu">
+    
+
+    
+<link rel="stylesheet" href="/ananke/css/main.min.css" >
+
+
+
+
+    
+
+
+    
+      
+
+    
+
+    
+
+    
+      <link rel="canonical" href="http://localhost:1313/posts/databases/pgsql_demo/">
+    
+
+    <meta property="og:url" content="http://localhost:1313/posts/databases/pgsql_demo/">
+  <meta property="og:site_name" content="loveyu233">
+  <meta property="og:title" content="pg常用操作">
+  <meta property="og:description" content="删除pgsql的缓存计划 discard all; text[]模糊查询 select * from aaa where exists(select 1 from unnest(alias) as elem where elem like %a%) 最近时间 select max(time) from abc; 不为空 pgsql中&lt;&gt; 表示 != 不等于
+-- 这样子是不对的, 不能把select的字段用到where上, 只能是from中的表字段或者显示声明的字段才可以在where中使用 select distinct unnest(product_type) as type from products where type IS NOT NULL AND type &lt;&gt; &#39;&#39;; -- 正确的用法 SELECT DISTINCT pt FROM ( SELECT unnest(product_type) AS pt FROM &#34;products&#34; ) AS subquery WHERE pt IS NOT NULL AND pt &lt;&gt; &#39;&#39;; 计算比例 语法: sum() over() 必须带over()
+SELECT trade, trade_count, trade_count::float / SUM(trade_count) OVER () AS weight_ratio FROM ( SELECT unnest(industry_chain_position) AS trade, COUNT(id) AS trade_count FROM products WHERE enterprise_id = 229501 GROUP BY trade ) AS subquery ORDER BY trade_count DESC; WITH trade_counts AS ( SELECT unnest(belong_trade) AS trade, COUNT(code) AS product_total FROM products WHERE enterprise_id = 229501 AND 1 = ANY(industry_chain_position) GROUP BY trade ), total_count AS ( SELECT SUM(product_total) AS total_product_count FROM trade_counts ) SELECT trade, product_total, (product_total::float / total_product_count) AS proportion FROM trade_counts, total_count; case 语法:">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2024-11-21T11:23:35+08:00">
+    <meta property="article:modified_time" content="2024-11-21T11:23:35+08:00">
+    <meta property="article:tag" content="Go">
+    <meta property="article:tag" content="Pgsql">
+    <meta property="article:tag" content="Docker">
+
+  <meta itemprop="name" content="pg常用操作">
+  <meta itemprop="description" content="删除pgsql的缓存计划 discard all; text[]模糊查询 select * from aaa where exists(select 1 from unnest(alias) as elem where elem like %a%) 最近时间 select max(time) from abc; 不为空 pgsql中&lt;&gt; 表示 != 不等于
+-- 这样子是不对的, 不能把select的字段用到where上, 只能是from中的表字段或者显示声明的字段才可以在where中使用 select distinct unnest(product_type) as type from products where type IS NOT NULL AND type &lt;&gt; &#39;&#39;; -- 正确的用法 SELECT DISTINCT pt FROM ( SELECT unnest(product_type) AS pt FROM &#34;products&#34; ) AS subquery WHERE pt IS NOT NULL AND pt &lt;&gt; &#39;&#39;; 计算比例 语法: sum() over() 必须带over()
+SELECT trade, trade_count, trade_count::float / SUM(trade_count) OVER () AS weight_ratio FROM ( SELECT unnest(industry_chain_position) AS trade, COUNT(id) AS trade_count FROM products WHERE enterprise_id = 229501 GROUP BY trade ) AS subquery ORDER BY trade_count DESC; WITH trade_counts AS ( SELECT unnest(belong_trade) AS trade, COUNT(code) AS product_total FROM products WHERE enterprise_id = 229501 AND 1 = ANY(industry_chain_position) GROUP BY trade ), total_count AS ( SELECT SUM(product_total) AS total_product_count FROM trade_counts ) SELECT trade, product_total, (product_total::float / total_product_count) AS proportion FROM trade_counts, total_count; case 语法:">
+  <meta itemprop="datePublished" content="2024-11-21T11:23:35+08:00">
+  <meta itemprop="dateModified" content="2024-11-21T11:23:35+08:00">
+  <meta itemprop="wordCount" content="337">
+  <meta itemprop="keywords" content="Go,Pgsql,Docker">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="pg常用操作">
+  <meta name="twitter:description" content="删除pgsql的缓存计划 discard all; text[]模糊查询 select * from aaa where exists(select 1 from unnest(alias) as elem where elem like %a%) 最近时间 select max(time) from abc; 不为空 pgsql中&lt;&gt; 表示 != 不等于
+-- 这样子是不对的, 不能把select的字段用到where上, 只能是from中的表字段或者显示声明的字段才可以在where中使用 select distinct unnest(product_type) as type from products where type IS NOT NULL AND type &lt;&gt; &#39;&#39;; -- 正确的用法 SELECT DISTINCT pt FROM ( SELECT unnest(product_type) AS pt FROM &#34;products&#34; ) AS subquery WHERE pt IS NOT NULL AND pt &lt;&gt; &#39;&#39;; 计算比例 语法: sum() over() 必须带over()
+SELECT trade, trade_count, trade_count::float / SUM(trade_count) OVER () AS weight_ratio FROM ( SELECT unnest(industry_chain_position) AS trade, COUNT(id) AS trade_count FROM products WHERE enterprise_id = 229501 GROUP BY trade ) AS subquery ORDER BY trade_count DESC; WITH trade_counts AS ( SELECT unnest(belong_trade) AS trade, COUNT(code) AS product_total FROM products WHERE enterprise_id = 229501 AND 1 = ANY(industry_chain_position) GROUP BY trade ), total_count AS ( SELECT SUM(product_total) AS total_product_count FROM trade_counts ) SELECT trade, product_total, (product_total::float / total_product_count) AS proportion FROM trade_counts, total_count; case 语法:">
+
+	
+  </head><body class="ma0 avenir bg-near-white development">
+
+    
+   
+  
+
+  <header>
+    <div class="bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l center items-center justify-between">
+    <a href="/" class="f3 fw2 hover-white white-90 dib no-underline">
+      
+        loveyu233
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      <div class="ananke-socials"></div>
+
+    </div>
+  </div>
+</nav>
+
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  
+  <article class="flex-l mw8 center ph3 flex-wrap justify-between">
+    <header class="mt4 w-100">
+      <aside class="instapaper_ignoref b helvetica tracked ttu">
+          
+        databases
+      </aside><div id="sharing" class="mt3 ananke-socials"></div>
+<h1 class="f1 athelas mt3 mb1">pg常用操作</h1>
+      
+      <p class="tracked"><strong>loveyu</strong>
+      </p>
+      
+      
+      
+      <time class="f6 mv4 dib tracked" datetime="2024-11-21T11:23:35+08:00">November 21, 2024</time>
+      
+
+      
+      
+    </header>
+    <div class="nested-copy-line-height lh-copy serif f4 nested-links mid-gray pr4-l w-two-thirds-l"><h1 id="删除pgsql的缓存计划">删除pgsql的缓存计划</h1>
+<blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span>discard <span style="color:#66d9ef">all</span>;
+</span></span></code></pre></div></blockquote>
+<h1 id="text模糊查询">text[]模糊查询</h1>
+<blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">select</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">from</span> aaa <span style="color:#66d9ef">where</span> <span style="color:#66d9ef">exists</span>(<span style="color:#66d9ef">select</span> <span style="color:#ae81ff">1</span> <span style="color:#66d9ef">from</span> <span style="color:#66d9ef">unnest</span>(<span style="color:#66d9ef">alias</span>) <span style="color:#66d9ef">as</span> elem <span style="color:#66d9ef">where</span> elem <span style="color:#66d9ef">like</span> <span style="color:#f92672">%</span>a<span style="color:#f92672">%</span>)
+</span></span></code></pre></div></blockquote>
+<h1 id="最近时间">最近时间</h1>
+<blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">select</span> <span style="color:#66d9ef">max</span>(time) <span style="color:#66d9ef">from</span> abc;
+</span></span></code></pre></div></blockquote>
+<h1 id="不为空">不为空</h1>
+<blockquote>
+<p>pgsql中<code>&lt;&gt; 表示 != 不等于</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#75715e">-- 这样子是不对的, 不能把select的字段用到where上, 只能是from中的表字段或者显示声明的字段才可以在where中使用
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">select</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">distinct</span> <span style="color:#66d9ef">unnest</span>(product_type) <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">type</span> 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">from</span> 
+</span></span><span style="display:flex;"><span>  products 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">where</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">type</span> <span style="color:#66d9ef">IS</span> <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">NULL</span> <span style="color:#66d9ef">AND</span> <span style="color:#66d9ef">type</span> <span style="color:#f92672">&lt;&gt;</span> <span style="color:#e6db74">&#39;&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 正确的用法
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">DISTINCT</span> pt 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span> 
+</span></span><span style="display:flex;"><span>  ( <span style="color:#66d9ef">SELECT</span> <span style="color:#66d9ef">unnest</span>(product_type) <span style="color:#66d9ef">AS</span> pt <span style="color:#66d9ef">FROM</span> <span style="color:#e6db74">&#34;products&#34;</span> ) <span style="color:#66d9ef">AS</span> subquery
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">WHERE</span> 
+</span></span><span style="display:flex;"><span>  pt <span style="color:#66d9ef">IS</span> <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">NULL</span> <span style="color:#66d9ef">AND</span> pt <span style="color:#f92672">&lt;&gt;</span> <span style="color:#e6db74">&#39;&#39;</span>;
+</span></span></code></pre></div></blockquote>
+<h1 id="计算比例">计算比例</h1>
+<blockquote>
+<p>语法: <code> sum() over()</code> 必须带over()</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span>
+</span></span><span style="display:flex;"><span>   trade,
+</span></span><span style="display:flex;"><span>   trade_count,
+</span></span><span style="display:flex;"><span>   trade_count::float <span style="color:#f92672">/</span> <span style="color:#66d9ef">SUM</span>(trade_count) OVER () <span style="color:#66d9ef">AS</span> weight_ratio
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span> (
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">SELECT</span>
+</span></span><span style="display:flex;"><span>       <span style="color:#66d9ef">unnest</span>(industry_chain_position) <span style="color:#66d9ef">AS</span> trade,
+</span></span><span style="display:flex;"><span>       <span style="color:#66d9ef">COUNT</span>(id) <span style="color:#66d9ef">AS</span> trade_count
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">FROM</span>
+</span></span><span style="display:flex;"><span>       products
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">WHERE</span>
+</span></span><span style="display:flex;"><span>       enterprise_id <span style="color:#f92672">=</span> <span style="color:#ae81ff">229501</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">GROUP</span> <span style="color:#66d9ef">BY</span>
+</span></span><span style="display:flex;"><span>       trade
+</span></span><span style="display:flex;"><span>) <span style="color:#66d9ef">AS</span> subquery
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">ORDER</span> <span style="color:#66d9ef">BY</span>
+</span></span><span style="display:flex;"><span>   trade_count <span style="color:#66d9ef">DESC</span>;
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">WITH</span> 
+</span></span><span style="display:flex;"><span>   trade_counts <span style="color:#66d9ef">AS</span> (
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">SELECT</span>
+</span></span><span style="display:flex;"><span>       <span style="color:#66d9ef">unnest</span>(belong_trade) <span style="color:#66d9ef">AS</span> trade,
+</span></span><span style="display:flex;"><span>       <span style="color:#66d9ef">COUNT</span>(code) <span style="color:#66d9ef">AS</span> product_total
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">FROM</span>
+</span></span><span style="display:flex;"><span>       products
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">WHERE</span>
+</span></span><span style="display:flex;"><span>       enterprise_id <span style="color:#f92672">=</span> <span style="color:#ae81ff">229501</span>
+</span></span><span style="display:flex;"><span>     <span style="color:#66d9ef">AND</span>
+</span></span><span style="display:flex;"><span>       <span style="color:#ae81ff">1</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">ANY</span>(industry_chain_position)
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">GROUP</span> <span style="color:#66d9ef">BY</span>
+</span></span><span style="display:flex;"><span>       trade
+</span></span><span style="display:flex;"><span>),
+</span></span><span style="display:flex;"><span>total_count <span style="color:#66d9ef">AS</span> (
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">SELECT</span>
+</span></span><span style="display:flex;"><span>       <span style="color:#66d9ef">SUM</span>(product_total) <span style="color:#66d9ef">AS</span> total_product_count
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">FROM</span>
+</span></span><span style="display:flex;"><span>       trade_counts
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span>
+</span></span><span style="display:flex;"><span>   trade,
+</span></span><span style="display:flex;"><span>   product_total,
+</span></span><span style="display:flex;"><span>   (product_total::float <span style="color:#f92672">/</span> total_product_count) <span style="color:#66d9ef">AS</span> proportion
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span>
+</span></span><span style="display:flex;"><span>   trade_counts,
+</span></span><span style="display:flex;"><span>   total_count;
+</span></span></code></pre></div></blockquote>
+<h1 id="case">case</h1>
+<blockquote>
+<p>语法:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">CASE</span> input_expression
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">WHEN</span> when_expression_1 <span style="color:#66d9ef">THEN</span> result_1
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">WHEN</span> when_expression_2 <span style="color:#66d9ef">THEN</span> result_2
+</span></span><span style="display:flex;"><span>   ...
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">ELSE</span> result_n
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">END</span>
+</span></span></code></pre></div></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">select</span>
+</span></span><span style="display:flex;"><span>    transaction_time,
+</span></span><span style="display:flex;"><span>    (<span style="color:#66d9ef">case</span> <span style="color:#66d9ef">when</span> supplier_id <span style="color:#f92672">=</span> <span style="color:#ae81ff">228949</span> <span style="color:#66d9ef">then</span> customer_id <span style="color:#66d9ef">when</span> customer_id <span style="color:#f92672">=</span> <span style="color:#ae81ff">228949</span> <span style="color:#66d9ef">then</span> supplier_id <span style="color:#66d9ef">end</span> ) <span style="color:#66d9ef">as</span> enterprise_id,
+</span></span><span style="display:flex;"><span>    (<span style="color:#66d9ef">case</span> <span style="color:#66d9ef">when</span> supplier_id <span style="color:#f92672">=</span> <span style="color:#ae81ff">228949</span> <span style="color:#66d9ef">then</span> customer <span style="color:#66d9ef">when</span> customer_id <span style="color:#f92672">=</span> <span style="color:#ae81ff">228949</span> <span style="color:#66d9ef">then</span> supplier <span style="color:#66d9ef">end</span> ) <span style="color:#66d9ef">as</span> enterprise_name,
+</span></span><span style="display:flex;"><span>    (<span style="color:#66d9ef">case</span> <span style="color:#66d9ef">when</span> supplier_id <span style="color:#f92672">=</span> <span style="color:#ae81ff">228949</span> <span style="color:#66d9ef">then</span> <span style="color:#e6db74">&#39;供货商&#39;</span> <span style="color:#66d9ef">when</span> customer_id <span style="color:#f92672">=</span> <span style="color:#ae81ff">228949</span> <span style="color:#66d9ef">then</span> <span style="color:#e6db74">&#39;客户&#39;</span> <span style="color:#66d9ef">end</span> ) <span style="color:#66d9ef">as</span> category
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">from</span>
+</span></span><span style="display:flex;"><span>    sales
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">where</span>
+</span></span><span style="display:flex;"><span>    supplier_id <span style="color:#f92672">=</span> <span style="color:#ae81ff">228949</span> <span style="color:#66d9ef">or</span> customer_id <span style="color:#f92672">=</span> <span style="color:#ae81ff">228949</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">order</span> <span style="color:#66d9ef">by</span>
+</span></span><span style="display:flex;"><span>    transaction_time <span style="color:#66d9ef">desc</span> <span style="color:#66d9ef">limit</span> <span style="color:#ae81ff">10</span>;
+</span></span></code></pre></div><h1 id="分组排序">分组排序</h1>
+<blockquote>
+<ul>
+<li><code>PARTITION BY supplier_country</code>: 将结果集按照 <code>supplier_country</code> 划分为不同的组。</li>
+<li><code>ORDER BY weight DESC</code>: 在每个组内，按照 <code>weight</code> 的降序排列。</li>
+<li><code>ROW_NUMBER()</code>: 为每个组内的行分配一个唯一的行号，从1开始。这意味着每个国家的重量最大的产品会被标记为 <code>rn = 1</code>。</li>
+</ul></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span>
+</span></span><span style="display:flex;"><span>    supplier_country <span style="color:#66d9ef">as</span> country,
+</span></span><span style="display:flex;"><span>    weight <span style="color:#66d9ef">as</span> value,
+</span></span><span style="display:flex;"><span>    product_name
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span>
+</span></span><span style="display:flex;"><span>    (
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">SELECT</span> supplier_country, weight, product_name,
+</span></span><span style="display:flex;"><span>           ROW_NUMBER() OVER (PARTITION <span style="color:#66d9ef">BY</span> supplier_country <span style="color:#66d9ef">ORDER</span> <span style="color:#66d9ef">BY</span> weight <span style="color:#66d9ef">DESC</span> ) <span style="color:#66d9ef">AS</span> rn
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">FROM</span>
+</span></span><span style="display:flex;"><span>        sales
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">WHERE</span> customer_id <span style="color:#f92672">=</span> <span style="color:#ae81ff">228949</span>) <span style="color:#66d9ef">AS</span> ranked
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">WHERE</span> rn <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">limit</span> <span style="color:#ae81ff">10</span>;
+</span></span></code></pre></div><h1 id="数组jsonb搜索">数组jsonb搜索</h1>
+<blockquote>
+<p><code>jsonb_array_elements</code> 把数组转为 <code>element</code> 然后指定<code>key</code>模糊搜索<code>value</code></p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">select</span> id,customs_code <span style="color:#66d9ef">from</span> products <span style="color:#66d9ef">where</span> <span style="color:#66d9ef">exists</span>(<span style="color:#66d9ef">select</span> <span style="color:#ae81ff">1</span> <span style="color:#66d9ef">from</span> jsonb_array_elements(products.customs_code) <span style="color:#66d9ef">as</span> ele <span style="color:#66d9ef">where</span> ele <span style="color:#f92672">-&gt;&gt;</span> <span style="color:#e6db74">&#39;code&#39;</span> <span style="color:#66d9ef">like</span> <span style="color:#e6db74">&#39;%xx%&#39;</span>);
+</span></span></code></pre></div><h1 id="linux命令">Linux命令</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># root身份保存文件</span>
+</span></span><span style="display:flex;"><span>:w !sudo tee %
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 运行docker root权限</span>
+</span></span><span style="display:flex;"><span>--privileged
+</span></span></code></pre></div><ul class="pa0">
+  
+   <li class="list di">
+     <a href="/tags/go/" class="link f5 grow br-pill ba ph3 pv2 mb2 dib black sans-serif no-underline">Go</a>
+   </li>
+  
+   <li class="list di">
+     <a href="/tags/pgsql/" class="link f5 grow br-pill ba ph3 pv2 mb2 dib black sans-serif no-underline">Pgsql</a>
+   </li>
+  
+   <li class="list di">
+     <a href="/tags/docker/" class="link f5 grow br-pill ba ph3 pv2 mb2 dib black sans-serif no-underline">Docker</a>
+   </li>
+  
+</ul>
+<div class="mt6 instapaper_ignoref">
+      
+      
+      </div>
+    </div>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+  <div class="bg-light-gray pa3 nested-list-reset nested-copy-line-height nested-links">
+    <p class="f5 b mb3">Related</p>
+    <ul class="pa0 list">
+	   
+	     <li  class="mb2">
+          <a href="/posts/go/go%E9%A1%B9%E7%9B%AE%E4%B8%8A%E4%BC%A0%E8%B0%83%E7%94%A8/">go项目上传调用</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/%E5%AE%9E%E7%8E%B0%E6%94%AF%E6%8C%81%E9%AB%98%E5%B9%B6%E5%8F%91%E4%B8%94%E6%94%AF%E6%8C%81%E5%A0%B5%E5%A1%9E%E5%92%8C%E8%B6%85%E6%97%B6%E6%8E%A7%E5%88%B6%E7%9A%84map/">实现支持高并发且支持堵塞和超时控制的map</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/ants%E7%9A%84cas%E7%AE%80%E6%98%93%E5%AE%9E%E7%8E%B0/">ants的CAS简易实现</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/go%E9%A1%B9%E7%9B%AE%E5%88%9D%E5%A7%8B%E5%8C%96/">go项目初始化</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/golang%E5%AD%A6%E4%B9%A0%E8%B7%AF%E7%BA%BF/">Go学习路线</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/databases/es%E5%8F%8A%E6%8E%A5%E5%8F%A3/">ES接口</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/databases/gorm/">Gorm</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/gotoolpprof%E4%BD%BF%E7%94%A8/">pprof</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/other/git%E9%A1%B9%E7%9B%AE%E4%BD%BF%E7%94%A8/">git项目使用</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/fiber%E7%AC%94%E8%AE%B0/">fiber基础</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/other/%E9%93%BE%E8%B7%AF%E8%BF%BD%E8%B8%AA%E7%9B%91%E6%8E%A7/">链路追踪</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/go%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86%E4%BD%BF%E7%94%A8/">Go非对称加密使用</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/interview/">面试指南</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/%E5%AE%9E%E6%88%98%E6%8A%80%E5%B7%A7/">实战技巧</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/%E6%BB%91%E5%9D%97%E9%AA%8C%E8%AF%81%E7%A0%81%E5%AE%9E%E7%8E%B0/">滑块验证码实现</a>
+        </li>
+	    
+    </ul>
+</div>
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white white-70 dn dib-ns pv2 ph3 no-underline" href="http://localhost:1313/" >
+    &copy;  loveyu233 2025 
+  </a>
+    <div><div class="ananke-socials"></div>
+</div>
+  </div>
+</footer>
+
+  </body>
+</html>

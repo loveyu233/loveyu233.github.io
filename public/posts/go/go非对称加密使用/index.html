@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>Go非对称加密使用 | loveyu233</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="对称加密
+
+加密和解密使用相同的密钥进行加密
+优点
+
+计算量小,加密速度快,加密效率高
+缺点
+
+密钥一旦泄露那么加密的信息也就不安全了
+非对称加密
+
+需要两个密钥: 公开密钥publicKey,和私有密钥privateKey, 公钥和私钥是一对的,使用公钥加密后的信息之后对应的私钥才可以进行解密
+优点
+
+安全性高
+缺点
+
+加密速度慢,效率不高
+RSA加密过程
+
+随机选择两个不相等的质数p和q。p=61，q=53
+计算p和q的乘积n。n=3222
+计算n的欧拉函数φ(n) = (p-1)(q-1)。 φ(n) =3120
+随机选择一个整数e，使得1&lt; e &lt; φ(n)，且e与φ(n) 互质。e=17
+计算e对于φ(n)的模反元素d，即求解e*d&#43; φ(n)*y=1。d=2753, y=-15
+将n和e封装成公钥，n和d封装成私钥。公钥=(3233，17)，公钥=(3233，2753)
+
+go代码实现加解密
+一: 使用ssl生成对应的公钥和私钥pem文件
+
+pem是一种标准格式，它通常包含页眉和页脚
+openssl genrsa -out data/rsa_private_key.pem 1024
+openssl rsa -in data/rsa_private_key.pem -pubout -out data/rsa_public_key.pem
+rsa_private_key.pem
+-----BEGIN RSA PRIVATE KEY-----
+MIICXgIBAAKBgQC5vgoY3FkQmR&#43;BM76mFHx4odRPu5Qlz4cYXP1jxY0s27kb9WMW
+eokv3&#43;9cHysh&#43;M3U98NlE1Zr&#43;XUBALAWC1V0uIF6KJJuQ/s4PV1mminoVX5rihlc
+1G0aG23o43tWmfpXVkjvs/CmhSFoiIRvoHCKSCyTkaifilmz&#43;3bqQJTQiQIDAQAB
+AoGBAK06wiwBhcdnJ&#43;zWF57JSHUxaNOb/EVvUW21fFVK76nAmtmqeGmEiuHtlk1y
+fEXIyB8xnDhuWpGFLExtGczVcTI7PnM5RBcZZetQ7aAK8ABfVP2upOXXw/wNZfll
+&#43;Dki&#43;bt4/ftDptZHahKbg3QaqRCshNn0J6enEUqZCgQ5WisJAkEA9S/ch1pFQrPO
+NTMkPlwowDZCJzrSebjGb677r1wlHBbb/hBzIt89Csa6szfV4/dDAa7abYQI1YLI
+QxbWHE74EwJBAMHvDbx2lxGGhWuM8OBOVVxy3sKDDFdLulaSTxoqAMSVj1p&#43;Nowm
+hYWk/zbndkTTGJgD2UllTKdIN4cicjKjIHMCQQC6mYtXg68Ufa1hNaPOxerJpkGg
+g5btxl9XXi/0HMetYgRZjoFht85IJkiu3r6s&#43;WCIpl9cW9ExVZA95uJatwr7AkEA
+tH8Nxc6KI&#43;GT49m1hs7hW7393gOiRM1SjKh3vt5BALZCSfMWSbLAqvY6Ipui08O1
+LCbI4SrLARaRt9AzgTWaSQJABpKExipUBUFNJFB3/KzNJtY6HYLO8S&#43;a&#43;BMiR75p
+e2aLqEytZuPEF&#43;RhXhxNv0y3YaX1kCqjF4ftmWnUZO2XzA==
+-----END RSA PRIVATE KEY-----
+rsa_public_key.pem">
+    <meta name="generator" content="Hugo 0.147.7">
+    
+    
+    
+      <meta name="robots" content="noindex, nofollow">
+    
+    <meta name="author" content="loveyu">
+    
+
+    
+<link rel="stylesheet" href="/ananke/css/main.min.css" >
+
+
+
+
+    
+
+
+    
+      
+
+    
+
+    
+
+    
+      <link rel="canonical" href="http://localhost:1313/posts/go/go%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86%E4%BD%BF%E7%94%A8/">
+    
+
+    <meta property="og:url" content="http://localhost:1313/posts/go/go%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86%E4%BD%BF%E7%94%A8/">
+  <meta property="og:site_name" content="loveyu233">
+  <meta property="og:title" content="Go非对称加密使用">
+  <meta property="og:description" content="对称加密 加密和解密使用相同的密钥进行加密
+优点 计算量小,加密速度快,加密效率高
+缺点 密钥一旦泄露那么加密的信息也就不安全了
+非对称加密 需要两个密钥: 公开密钥publicKey,和私有密钥privateKey, 公钥和私钥是一对的,使用公钥加密后的信息之后对应的私钥才可以进行解密
+优点 安全性高
+缺点 加密速度慢,效率不高
+RSA加密过程 随机选择两个不相等的质数p和q。p=61，q=53 计算p和q的乘积n。n=3222 计算n的欧拉函数φ(n) = (p-1)(q-1)。 φ(n) =3120 随机选择一个整数e，使得1&lt; e &lt; φ(n)，且e与φ(n) 互质。e=17 计算e对于φ(n)的模反元素d，即求解e*d&#43; φ(n)*y=1。d=2753, y=-15 将n和e封装成公钥，n和d封装成私钥。公钥=(3233，17)，公钥=(3233，2753) go代码实现加解密 一: 使用ssl生成对应的公钥和私钥pem文件 pem是一种标准格式，它通常包含页眉和页脚
+openssl genrsa -out data/rsa_private_key.pem 1024 openssl rsa -in data/rsa_private_key.pem -pubout -out data/rsa_public_key.pem rsa_private_key.pem
+-----BEGIN RSA PRIVATE KEY----- MIICXgIBAAKBgQC5vgoY3FkQmR&#43;BM76mFHx4odRPu5Qlz4cYXP1jxY0s27kb9WMW eokv3&#43;9cHysh&#43;M3U98NlE1Zr&#43;XUBALAWC1V0uIF6KJJuQ/s4PV1mminoVX5rihlc 1G0aG23o43tWmfpXVkjvs/CmhSFoiIRvoHCKSCyTkaifilmz&#43;3bqQJTQiQIDAQAB AoGBAK06wiwBhcdnJ&#43;zWF57JSHUxaNOb/EVvUW21fFVK76nAmtmqeGmEiuHtlk1y fEXIyB8xnDhuWpGFLExtGczVcTI7PnM5RBcZZetQ7aAK8ABfVP2upOXXw/wNZfll &#43;Dki&#43;bt4/ftDptZHahKbg3QaqRCshNn0J6enEUqZCgQ5WisJAkEA9S/ch1pFQrPO NTMkPlwowDZCJzrSebjGb677r1wlHBbb/hBzIt89Csa6szfV4/dDAa7abYQI1YLI QxbWHE74EwJBAMHvDbx2lxGGhWuM8OBOVVxy3sKDDFdLulaSTxoqAMSVj1p&#43;Nowm hYWk/zbndkTTGJgD2UllTKdIN4cicjKjIHMCQQC6mYtXg68Ufa1hNaPOxerJpkGg g5btxl9XXi/0HMetYgRZjoFht85IJkiu3r6s&#43;WCIpl9cW9ExVZA95uJatwr7AkEA tH8Nxc6KI&#43;GT49m1hs7hW7393gOiRM1SjKh3vt5BALZCSfMWSbLAqvY6Ipui08O1 LCbI4SrLARaRt9AzgTWaSQJABpKExipUBUFNJFB3/KzNJtY6HYLO8S&#43;a&#43;BMiR75p e2aLqEytZuPEF&#43;RhXhxNv0y3YaX1kCqjF4ftmWnUZO2XzA== -----END RSA PRIVATE KEY----- rsa_public_key.pem">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2023-05-21T16:20:18+08:00">
+    <meta property="article:modified_time" content="2023-05-21T16:20:18+08:00">
+    <meta property="article:tag" content="Go">
+    <meta property="article:tag" content="Ras">
+    <meta property="article:tag" content="加密">
+
+  <meta itemprop="name" content="Go非对称加密使用">
+  <meta itemprop="description" content="对称加密 加密和解密使用相同的密钥进行加密
+优点 计算量小,加密速度快,加密效率高
+缺点 密钥一旦泄露那么加密的信息也就不安全了
+非对称加密 需要两个密钥: 公开密钥publicKey,和私有密钥privateKey, 公钥和私钥是一对的,使用公钥加密后的信息之后对应的私钥才可以进行解密
+优点 安全性高
+缺点 加密速度慢,效率不高
+RSA加密过程 随机选择两个不相等的质数p和q。p=61，q=53 计算p和q的乘积n。n=3222 计算n的欧拉函数φ(n) = (p-1)(q-1)。 φ(n) =3120 随机选择一个整数e，使得1&lt; e &lt; φ(n)，且e与φ(n) 互质。e=17 计算e对于φ(n)的模反元素d，即求解e*d&#43; φ(n)*y=1。d=2753, y=-15 将n和e封装成公钥，n和d封装成私钥。公钥=(3233，17)，公钥=(3233，2753) go代码实现加解密 一: 使用ssl生成对应的公钥和私钥pem文件 pem是一种标准格式，它通常包含页眉和页脚
+openssl genrsa -out data/rsa_private_key.pem 1024 openssl rsa -in data/rsa_private_key.pem -pubout -out data/rsa_public_key.pem rsa_private_key.pem
+-----BEGIN RSA PRIVATE KEY----- MIICXgIBAAKBgQC5vgoY3FkQmR&#43;BM76mFHx4odRPu5Qlz4cYXP1jxY0s27kb9WMW eokv3&#43;9cHysh&#43;M3U98NlE1Zr&#43;XUBALAWC1V0uIF6KJJuQ/s4PV1mminoVX5rihlc 1G0aG23o43tWmfpXVkjvs/CmhSFoiIRvoHCKSCyTkaifilmz&#43;3bqQJTQiQIDAQAB AoGBAK06wiwBhcdnJ&#43;zWF57JSHUxaNOb/EVvUW21fFVK76nAmtmqeGmEiuHtlk1y fEXIyB8xnDhuWpGFLExtGczVcTI7PnM5RBcZZetQ7aAK8ABfVP2upOXXw/wNZfll &#43;Dki&#43;bt4/ftDptZHahKbg3QaqRCshNn0J6enEUqZCgQ5WisJAkEA9S/ch1pFQrPO NTMkPlwowDZCJzrSebjGb677r1wlHBbb/hBzIt89Csa6szfV4/dDAa7abYQI1YLI QxbWHE74EwJBAMHvDbx2lxGGhWuM8OBOVVxy3sKDDFdLulaSTxoqAMSVj1p&#43;Nowm hYWk/zbndkTTGJgD2UllTKdIN4cicjKjIHMCQQC6mYtXg68Ufa1hNaPOxerJpkGg g5btxl9XXi/0HMetYgRZjoFht85IJkiu3r6s&#43;WCIpl9cW9ExVZA95uJatwr7AkEA tH8Nxc6KI&#43;GT49m1hs7hW7393gOiRM1SjKh3vt5BALZCSfMWSbLAqvY6Ipui08O1 LCbI4SrLARaRt9AzgTWaSQJABpKExipUBUFNJFB3/KzNJtY6HYLO8S&#43;a&#43;BMiR75p e2aLqEytZuPEF&#43;RhXhxNv0y3YaX1kCqjF4ftmWnUZO2XzA== -----END RSA PRIVATE KEY----- rsa_public_key.pem">
+  <meta itemprop="datePublished" content="2023-05-21T16:20:18+08:00">
+  <meta itemprop="dateModified" content="2023-05-21T16:20:18+08:00">
+  <meta itemprop="wordCount" content="513">
+  <meta itemprop="keywords" content="Go,Ras,加密">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Go非对称加密使用">
+  <meta name="twitter:description" content="对称加密 加密和解密使用相同的密钥进行加密
+优点 计算量小,加密速度快,加密效率高
+缺点 密钥一旦泄露那么加密的信息也就不安全了
+非对称加密 需要两个密钥: 公开密钥publicKey,和私有密钥privateKey, 公钥和私钥是一对的,使用公钥加密后的信息之后对应的私钥才可以进行解密
+优点 安全性高
+缺点 加密速度慢,效率不高
+RSA加密过程 随机选择两个不相等的质数p和q。p=61，q=53 计算p和q的乘积n。n=3222 计算n的欧拉函数φ(n) = (p-1)(q-1)。 φ(n) =3120 随机选择一个整数e，使得1&lt; e &lt; φ(n)，且e与φ(n) 互质。e=17 计算e对于φ(n)的模反元素d，即求解e*d&#43; φ(n)*y=1。d=2753, y=-15 将n和e封装成公钥，n和d封装成私钥。公钥=(3233，17)，公钥=(3233，2753) go代码实现加解密 一: 使用ssl生成对应的公钥和私钥pem文件 pem是一种标准格式，它通常包含页眉和页脚
+openssl genrsa -out data/rsa_private_key.pem 1024 openssl rsa -in data/rsa_private_key.pem -pubout -out data/rsa_public_key.pem rsa_private_key.pem
+-----BEGIN RSA PRIVATE KEY----- MIICXgIBAAKBgQC5vgoY3FkQmR&#43;BM76mFHx4odRPu5Qlz4cYXP1jxY0s27kb9WMW eokv3&#43;9cHysh&#43;M3U98NlE1Zr&#43;XUBALAWC1V0uIF6KJJuQ/s4PV1mminoVX5rihlc 1G0aG23o43tWmfpXVkjvs/CmhSFoiIRvoHCKSCyTkaifilmz&#43;3bqQJTQiQIDAQAB AoGBAK06wiwBhcdnJ&#43;zWF57JSHUxaNOb/EVvUW21fFVK76nAmtmqeGmEiuHtlk1y fEXIyB8xnDhuWpGFLExtGczVcTI7PnM5RBcZZetQ7aAK8ABfVP2upOXXw/wNZfll &#43;Dki&#43;bt4/ftDptZHahKbg3QaqRCshNn0J6enEUqZCgQ5WisJAkEA9S/ch1pFQrPO NTMkPlwowDZCJzrSebjGb677r1wlHBbb/hBzIt89Csa6szfV4/dDAa7abYQI1YLI QxbWHE74EwJBAMHvDbx2lxGGhWuM8OBOVVxy3sKDDFdLulaSTxoqAMSVj1p&#43;Nowm hYWk/zbndkTTGJgD2UllTKdIN4cicjKjIHMCQQC6mYtXg68Ufa1hNaPOxerJpkGg g5btxl9XXi/0HMetYgRZjoFht85IJkiu3r6s&#43;WCIpl9cW9ExVZA95uJatwr7AkEA tH8Nxc6KI&#43;GT49m1hs7hW7393gOiRM1SjKh3vt5BALZCSfMWSbLAqvY6Ipui08O1 LCbI4SrLARaRt9AzgTWaSQJABpKExipUBUFNJFB3/KzNJtY6HYLO8S&#43;a&#43;BMiR75p e2aLqEytZuPEF&#43;RhXhxNv0y3YaX1kCqjF4ftmWnUZO2XzA== -----END RSA PRIVATE KEY----- rsa_public_key.pem">
+
+	
+  </head><body class="ma0 avenir bg-near-white development">
+
+    
+   
+  
+
+  <header>
+    <div class="bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l center items-center justify-between">
+    <a href="/" class="f3 fw2 hover-white white-90 dib no-underline">
+      
+        loveyu233
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      <div class="ananke-socials"></div>
+
+    </div>
+  </div>
+</nav>
+
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  
+  <article class="flex-l mw8 center ph3 flex-wrap justify-between">
+    <header class="mt4 w-100">
+      <aside class="instapaper_ignoref b helvetica tracked ttu">
+          
+        go
+      </aside><div id="sharing" class="mt3 ananke-socials"></div>
+<h1 class="f1 athelas mt3 mb1">Go非对称加密使用</h1>
+      
+      <p class="tracked"><strong>loveyu</strong>
+      </p>
+      
+      
+      
+      <time class="f6 mv4 dib tracked" datetime="2023-05-21T16:20:18+08:00">May 21, 2023</time>
+      
+
+      
+      
+    </header>
+    <div class="nested-copy-line-height lh-copy serif f4 nested-links mid-gray pr4-l w-two-thirds-l"><h1 id="对称加密">对称加密</h1>
+<blockquote>
+<p>加密和解密使用相同的密钥进行加密</p></blockquote>
+<h2 id="优点">优点</h2>
+<blockquote>
+<p>计算量小,加密速度快,加密效率高</p></blockquote>
+<h2 id="缺点">缺点</h2>
+<blockquote>
+<p>密钥一旦泄露那么加密的信息也就不安全了</p></blockquote>
+<h1 id="非对称加密">非对称加密</h1>
+<blockquote>
+<p>需要两个密钥: 公开密钥publicKey,和私有密钥privateKey, 公钥和私钥是一对的,使用公钥加密后的信息之后对应的私钥才可以进行解密</p></blockquote>
+<h2 id="优点-1">优点</h2>
+<blockquote>
+<p>安全性高</p></blockquote>
+<h2 id="缺点-1">缺点</h2>
+<blockquote>
+<p>加密速度慢,效率不高</p></blockquote>
+<h2 id="rsa加密过程">RSA加密过程</h2>
+<ul>
+<li>随机选择两个不相等的质数p和q。p=61，q=53</li>
+<li>计算p和q的乘积n。n=3222</li>
+<li>计算n的欧拉函数φ(n) = (p-1)(q-1)。 φ(n) =3120</li>
+<li>随机选择一个整数e，使得1&lt; e &lt; φ(n)，且e与φ(n) 互质。e=17</li>
+<li>计算e对于φ(n)的模反元素d，即求解e*d+ φ(n)*y=1。d=2753, y=-15</li>
+<li>将n和e封装成公钥，n和d封装成私钥。公钥=(3233，17)，公钥=(3233，2753)</li>
+</ul>
+<h2 id="go代码实现加解密">go代码实现加解密</h2>
+<h3 id="一-使用ssl生成对应的公钥和私钥pem文件">一: 使用ssl生成对应的公钥和私钥pem文件</h3>
+<blockquote>
+<p>pem是一种标准格式，它通常包含页眉和页脚</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>openssl genrsa -out data/rsa_private_key.pem <span style="color:#ae81ff">1024</span>
+</span></span><span style="display:flex;"><span>openssl rsa -in data/rsa_private_key.pem -pubout -out data/rsa_public_key.pem
+</span></span></code></pre></div><p><code>rsa_private_key.pem</code></p>
+<pre tabindex="0"><code class="language-pem" data-lang="pem">-----BEGIN RSA PRIVATE KEY-----
+MIICXgIBAAKBgQC5vgoY3FkQmR+BM76mFHx4odRPu5Qlz4cYXP1jxY0s27kb9WMW
+eokv3+9cHysh+M3U98NlE1Zr+XUBALAWC1V0uIF6KJJuQ/s4PV1mminoVX5rihlc
+1G0aG23o43tWmfpXVkjvs/CmhSFoiIRvoHCKSCyTkaifilmz+3bqQJTQiQIDAQAB
+AoGBAK06wiwBhcdnJ+zWF57JSHUxaNOb/EVvUW21fFVK76nAmtmqeGmEiuHtlk1y
+fEXIyB8xnDhuWpGFLExtGczVcTI7PnM5RBcZZetQ7aAK8ABfVP2upOXXw/wNZfll
++Dki+bt4/ftDptZHahKbg3QaqRCshNn0J6enEUqZCgQ5WisJAkEA9S/ch1pFQrPO
+NTMkPlwowDZCJzrSebjGb677r1wlHBbb/hBzIt89Csa6szfV4/dDAa7abYQI1YLI
+QxbWHE74EwJBAMHvDbx2lxGGhWuM8OBOVVxy3sKDDFdLulaSTxoqAMSVj1p+Nowm
+hYWk/zbndkTTGJgD2UllTKdIN4cicjKjIHMCQQC6mYtXg68Ufa1hNaPOxerJpkGg
+g5btxl9XXi/0HMetYgRZjoFht85IJkiu3r6s+WCIpl9cW9ExVZA95uJatwr7AkEA
+tH8Nxc6KI+GT49m1hs7hW7393gOiRM1SjKh3vt5BALZCSfMWSbLAqvY6Ipui08O1
+LCbI4SrLARaRt9AzgTWaSQJABpKExipUBUFNJFB3/KzNJtY6HYLO8S+a+BMiR75p
+e2aLqEytZuPEF+RhXhxNv0y3YaX1kCqjF4ftmWnUZO2XzA==
+-----END RSA PRIVATE KEY-----
+</code></pre><p><code>rsa_public_key.pem</code></p>
+<pre tabindex="0"><code class="language-pem" data-lang="pem">-----BEGIN PUBLIC KEY-----
+MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC5vgoY3FkQmR+BM76mFHx4odRP
+u5Qlz4cYXP1jxY0s27kb9WMWeokv3+9cHysh+M3U98NlE1Zr+XUBALAWC1V0uIF6
+KJJuQ/s4PV1mminoVX5rihlc1G0aG23o43tWmfpXVkjvs/CmhSFoiIRvoHCKSCyT
+kaifilmz+3bqQJTQiQIDAQAB
+-----END PUBLIC KEY-----
+</code></pre><h3 id="二具体代码">二:具体代码</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#f92672">package</span> <span style="color:#a6e22e">rsaDemo</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> (
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;crypto/rand&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;crypto/rsa&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;crypto/x509&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;encoding/pem&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;fmt&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;log&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;os&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;testing&#34;</span>
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 用来保存公钥和私钥</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> (
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">publicKey</span>  []<span style="color:#66d9ef">byte</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">privateKey</span> []<span style="color:#66d9ef">byte</span>
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 读取密钥文件,返回密钥</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">ReadFile</span>(<span style="color:#a6e22e">src</span> <span style="color:#66d9ef">string</span>) []<span style="color:#66d9ef">byte</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">open</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Open</span>(<span style="color:#a6e22e">src</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">bytes</span> <span style="color:#f92672">:=</span> make([]<span style="color:#66d9ef">byte</span>, <span style="color:#ae81ff">4096</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">n</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">open</span>.<span style="color:#a6e22e">Read</span>(<span style="color:#a6e22e">bytes</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">bytes</span>[:<span style="color:#a6e22e">n</span>]
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 读取公钥和私钥</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">ReadRSAKey</span>(<span style="color:#a6e22e">publicKeySrc</span>, <span style="color:#a6e22e">privateKeySrc</span> <span style="color:#66d9ef">string</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">publicKey</span> = <span style="color:#a6e22e">ReadFile</span>(<span style="color:#a6e22e">publicKeySrc</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">privateKey</span> = <span style="color:#a6e22e">ReadFile</span>(<span style="color:#a6e22e">privateKeySrc</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 加密</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">RSAEncrypt</span>(<span style="color:#a6e22e">origData</span> []<span style="color:#66d9ef">byte</span>) []<span style="color:#66d9ef">byte</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 解密pem格式的公钥</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">block</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">pem</span>.<span style="color:#a6e22e">Decode</span>(<span style="color:#a6e22e">publicKey</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">block</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 解析公钥，目前数字证书一般都是基于ITU（国际电信联盟）指定的x.509标准</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">pkixPublicKey</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">x509</span>.<span style="color:#a6e22e">ParsePKIXPublicKey</span>(<span style="color:#a6e22e">block</span>.<span style="color:#a6e22e">Bytes</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 类型断言</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">pub</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">pkixPublicKey</span>.(<span style="color:#f92672">*</span><span style="color:#a6e22e">rsa</span>.<span style="color:#a6e22e">PublicKey</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 加密明文</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">encryptPKCS1v15</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">rsa</span>.<span style="color:#a6e22e">EncryptPKCS1v15</span>(<span style="color:#a6e22e">rand</span>.<span style="color:#a6e22e">Reader</span>, <span style="color:#a6e22e">pub</span>, <span style="color:#a6e22e">origData</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">encryptPKCS1v15</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 解密</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">RSADecrypt</span>(<span style="color:#a6e22e">cipherText</span> []<span style="color:#66d9ef">byte</span>) []<span style="color:#66d9ef">byte</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 解密</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">block</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">pem</span>.<span style="color:#a6e22e">Decode</span>(<span style="color:#a6e22e">privateKey</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">block</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 解析PKCS1格式的私钥</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">pkcs1PrivateKey</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">x509</span>.<span style="color:#a6e22e">ParsePKCS1PrivateKey</span>(<span style="color:#a6e22e">block</span>.<span style="color:#a6e22e">Bytes</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 解密密文</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">pkcs1v15</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">rsa</span>.<span style="color:#a6e22e">DecryptPKCS1v15</span>(<span style="color:#a6e22e">rand</span>.<span style="color:#a6e22e">Reader</span>, <span style="color:#a6e22e">pkcs1PrivateKey</span>, <span style="color:#a6e22e">cipherText</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">pkcs1v15</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 测试加密和解密</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">TestRSA</span>(<span style="color:#a6e22e">t</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">testing</span>.<span style="color:#a6e22e">T</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">ReadRSAKey</span>(<span style="color:#e6db74">&#34;./rsa_public_key.pem&#34;</span>, <span style="color:#e6db74">&#34;./rsa_private_key.pem&#34;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">plain</span> <span style="color:#f92672">:=</span> <span style="color:#e6db74">&#34;hello world&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">encrypt</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">RSAEncrypt</span>([]byte(<span style="color:#a6e22e">plain</span>))
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;密文: &#34;</span>, <span style="color:#a6e22e">encrypt</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">decrypt</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">RSADecrypt</span>(<span style="color:#a6e22e">encrypt</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;明文: &#34;</span>, string(<span style="color:#a6e22e">decrypt</span>))
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#f92672">==================================</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">==</span>= <span style="color:#a6e22e">RUN</span>   <span style="color:#a6e22e">TestRSA</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">密文</span>:  [<span style="color:#ae81ff">34</span> <span style="color:#ae81ff">64</span> <span style="color:#ae81ff">55</span> <span style="color:#ae81ff">21</span> <span style="color:#ae81ff">154</span> <span style="color:#ae81ff">211</span> <span style="color:#ae81ff">137</span> <span style="color:#ae81ff">229</span> <span style="color:#ae81ff">67</span> <span style="color:#ae81ff">104</span> <span style="color:#ae81ff">102</span> <span style="color:#ae81ff">50</span> <span style="color:#ae81ff">120</span> <span style="color:#ae81ff">155</span> <span style="color:#ae81ff">96</span> <span style="color:#ae81ff">8</span> <span style="color:#ae81ff">155</span> <span style="color:#ae81ff">113</span> <span style="color:#ae81ff">119</span> <span style="color:#ae81ff">184</span> <span style="color:#ae81ff">197</span> <span style="color:#ae81ff">242</span> <span style="color:#ae81ff">49</span> <span style="color:#ae81ff">246</span> <span style="color:#ae81ff">15</span> <span style="color:#ae81ff">55</span> <span style="color:#ae81ff">123</span> <span style="color:#ae81ff">155</span> <span style="color:#ae81ff">50</span> <span style="color:#ae81ff">183</span> <span style="color:#ae81ff">242</span> <span style="color:#ae81ff">212</span> <span style="color:#ae81ff">214</span> <span style="color:#ae81ff">111</span> <span style="color:#ae81ff">74</span> <span style="color:#ae81ff">84</span> <span style="color:#ae81ff">51</span> <span style="color:#ae81ff">53</span> <span style="color:#ae81ff">35</span> <span style="color:#ae81ff">127</span> <span style="color:#ae81ff">135</span> <span style="color:#ae81ff">39</span> <span style="color:#ae81ff">173</span> <span style="color:#ae81ff">208</span> <span style="color:#ae81ff">68</span> <span style="color:#ae81ff">21</span> <span style="color:#ae81ff">117</span> <span style="color:#ae81ff">242</span> <span style="color:#ae81ff">86</span> <span style="color:#ae81ff">142</span> <span style="color:#ae81ff">186</span> <span style="color:#ae81ff">57</span> <span style="color:#ae81ff">197</span> <span style="color:#ae81ff">74</span> <span style="color:#ae81ff">166</span> <span style="color:#ae81ff">69</span> <span style="color:#ae81ff">20</span> <span style="color:#ae81ff">23</span> <span style="color:#ae81ff">212</span> <span style="color:#ae81ff">87</span> <span style="color:#ae81ff">85</span> <span style="color:#ae81ff">203</span> <span style="color:#ae81ff">245</span> <span style="color:#ae81ff">80</span> <span style="color:#ae81ff">237</span> <span style="color:#ae81ff">182</span> <span style="color:#ae81ff">50</span> <span style="color:#ae81ff">168</span> <span style="color:#ae81ff">21</span> <span style="color:#ae81ff">63</span> <span style="color:#ae81ff">251</span> <span style="color:#ae81ff">76</span> <span style="color:#ae81ff">65</span> <span style="color:#ae81ff">238</span> <span style="color:#ae81ff">43</span> <span style="color:#ae81ff">252</span> <span style="color:#ae81ff">203</span> <span style="color:#ae81ff">59</span> <span style="color:#ae81ff">163</span> <span style="color:#ae81ff">197</span> <span style="color:#ae81ff">183</span> <span style="color:#ae81ff">70</span> <span style="color:#ae81ff">59</span> <span style="color:#ae81ff">235</span> <span style="color:#ae81ff">141</span> <span style="color:#ae81ff">241</span> <span style="color:#ae81ff">148</span> <span style="color:#ae81ff">153</span> <span style="color:#ae81ff">101</span> <span style="color:#ae81ff">125</span> <span style="color:#ae81ff">123</span> <span style="color:#ae81ff">190</span> <span style="color:#ae81ff">128</span> <span style="color:#ae81ff">103</span> <span style="color:#ae81ff">69</span> <span style="color:#ae81ff">109</span> <span style="color:#ae81ff">153</span> <span style="color:#ae81ff">49</span> <span style="color:#ae81ff">171</span> <span style="color:#ae81ff">61</span> <span style="color:#ae81ff">128</span> <span style="color:#ae81ff">141</span> <span style="color:#ae81ff">98</span> <span style="color:#ae81ff">188</span> <span style="color:#ae81ff">69</span> <span style="color:#ae81ff">120</span> <span style="color:#ae81ff">93</span> <span style="color:#ae81ff">64</span> <span style="color:#ae81ff">192</span> <span style="color:#ae81ff">3</span> <span style="color:#ae81ff">81</span> <span style="color:#ae81ff">236</span> <span style="color:#ae81ff">148</span> <span style="color:#ae81ff">159</span> <span style="color:#ae81ff">24</span> <span style="color:#ae81ff">121</span> <span style="color:#ae81ff">208</span> <span style="color:#ae81ff">24</span> <span style="color:#ae81ff">49</span> <span style="color:#ae81ff">163</span> <span style="color:#ae81ff">246</span> <span style="color:#ae81ff">142</span> <span style="color:#ae81ff">188</span> <span style="color:#ae81ff">224</span> <span style="color:#ae81ff">83</span> <span style="color:#ae81ff">103</span> <span style="color:#ae81ff">187</span> <span style="color:#ae81ff">200</span>]
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">明文</span>:  <span style="color:#a6e22e">hello</span> <span style="color:#a6e22e">world</span>
+</span></span></code></pre></div><h2 id="实现js前端加密和go后端解密">实现js前端加密和go后端解密</h2>
+<p><code>使用jsencrypt进行加密</code></p>
+<blockquote>
+<p>jsencrypt默认会把加密后的数据进行base64编码,所以go后端需要先进行base64的解码后才能解密</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-html" data-lang="html"><span style="display:flex;"><span><span style="color:#75715e">&lt;!DOCTYPE html&gt;</span>
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#f92672">html</span> <span style="color:#a6e22e">lang</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;en&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#f92672">head</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#f92672">meta</span> <span style="color:#a6e22e">charset</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;UTF-8&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#f92672">meta</span> <span style="color:#a6e22e">http-equiv</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;X-UA-Compatible&#34;</span> <span style="color:#a6e22e">content</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;IE=edge&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#f92672">meta</span> <span style="color:#a6e22e">name</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;viewport&#34;</span> <span style="color:#a6e22e">content</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;width=device-width, initial-scale=1.0&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#f92672">title</span>&gt;Document&lt;/<span style="color:#f92672">title</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#f92672">script</span> <span style="color:#a6e22e">src</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;https://cdn.bootcdn.net/ajax/libs/jsencrypt/3.3.2/jsencrypt.min.js&#34;</span>&gt;&lt;/<span style="color:#f92672">script</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">head</span>&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#f92672">body</span>&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">body</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#f92672">script</span>&gt;
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 这里必须是pem文件的全部,包括头和尾数据
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">pk</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;-----BEGIN PUBLIC KEY-----MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC5vgoY3FkQmR+BM76mFHx4odRPu5Qlz4cYXP1jxY0s27kb9WMWeokv3+9cHysh+M3U98NlE1Zr+XUBALAWC1V0uIF6KJJuQ/s4PV1mminoVX5rihlc1G0aG23o43tWmfpXVkjvs/CmhSFoiIRvoHCKSCyTkaifilmz+3bqQJTQiQIDAQAB-----END PUBLIC KEY-----&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">encrypt</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">JSEncrypt</span>();
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">encrypt</span>.<span style="color:#a6e22e">setPublicKey</span>(<span style="color:#a6e22e">pk</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">encodeData</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">encrypt</span>.<span style="color:#a6e22e">encrypt</span>(<span style="color:#e6db74">&#34;hello world&#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">encodeData</span>);
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">script</span>&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">html</span>&gt;
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">TestRSA</span>(<span style="color:#a6e22e">t</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">testing</span>.<span style="color:#a6e22e">T</span>) {
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// base64解码	</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">decodeString</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">base64</span>.<span style="color:#a6e22e">StdEncoding</span>.<span style="color:#a6e22e">DecodeString</span>(<span style="color:#e6db74">&#34;js里面的encodeData数据&#34;</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span>
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 配合上边go代码的解密即可实现</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">decrypt</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">RSADecrypt</span>(<span style="color:#a6e22e">decodeString</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;明文: &#34;</span>, string(<span style="color:#a6e22e">decrypt</span>))
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#f92672">============</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">明文</span>:  <span style="color:#a6e22e">hello</span> <span style="color:#a6e22e">world</span>
+</span></span></code></pre></div><ul class="pa0">
+  
+   <li class="list di">
+     <a href="/tags/go/" class="link f5 grow br-pill ba ph3 pv2 mb2 dib black sans-serif no-underline">Go</a>
+   </li>
+  
+   <li class="list di">
+     <a href="/tags/ras/" class="link f5 grow br-pill ba ph3 pv2 mb2 dib black sans-serif no-underline">Ras</a>
+   </li>
+  
+   <li class="list di">
+     <a href="/tags/%E5%8A%A0%E5%AF%86/" class="link f5 grow br-pill ba ph3 pv2 mb2 dib black sans-serif no-underline">加密</a>
+   </li>
+  
+</ul>
+<div class="mt6 instapaper_ignoref">
+      
+      
+      </div>
+    </div>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+  <div class="bg-light-gray pa3 nested-list-reset nested-copy-line-height nested-links">
+    <p class="f5 b mb3">Related</p>
+    <ul class="pa0 list">
+	   
+	     <li  class="mb2">
+          <a href="/posts/go/interview/">面试指南</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/%E5%AE%9E%E6%88%98%E6%8A%80%E5%B7%A7/">实战技巧</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/%E6%BB%91%E5%9D%97%E9%AA%8C%E8%AF%81%E7%A0%81%E5%AE%9E%E7%8E%B0/">滑块验证码实现</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/go-redis%E9%A1%B9%E7%9B%AE%E4%BD%BF%E7%94%A8/">Go Redis项目使用</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/grpc/">go GRPC使用</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/go-swagger/">Go Swagger</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/go%E5%8D%95%E7%82%B9%E7%99%BB%E5%BD%95/">Go单点登录</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/go-redis%E4%BD%BF%E7%94%A8lua%E8%84%9A%E6%9C%AC/">Go Redis使用lua脚本</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/gorm/">Gorm</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/gin%E6%96%87%E4%BB%B6%E4%B8%8B%E8%BD%BD%E4%B9%B1%E7%A0%81/">Gin文件下载乱码</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/casbin/">go使用casbin</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/jwt/">go使用Jwt</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/%E9%BC%A0%E6%A0%87%E8%87%AA%E5%8A%A8%E5%8C%96/">鼠标自动化</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/gowebsocket/">GoWebsocket</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/go-email/">Go Email</a>
+        </li>
+	    
+    </ul>
+</div>
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white white-70 dn dib-ns pv2 ph3 no-underline" href="http://localhost:1313/" >
+    &copy;  loveyu233 2025 
+  </a>
+    <div><div class="ananke-socials"></div>
+</div>
+  </div>
+</footer>
+
+  </body>
+</html>

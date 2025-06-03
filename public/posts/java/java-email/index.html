@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>Java Email | loveyu233</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="一：使用
+1.引入依赖
+&lt;!-- https://mvnrepository.com/artifact/javax.mail/mail --&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;javax.mail&lt;/groupId&gt;
+    &lt;artifactId&gt;mail&lt;/artifactId&gt;
+    &lt;version&gt;1.4.7&lt;/version&gt;
+&lt;/dependency&gt;
+
+&lt;!-- https://mvnrepository.com/artifact/javax.activation/activation --&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;javax.activation&lt;/groupId&gt;
+    &lt;artifactId&gt;activation&lt;/artifactId&gt;
+    &lt;version&gt;1.1.1&lt;/version&gt;
+&lt;/dependency&gt;
+2.简单邮件
+package com.xiaoyu;
+
+import com.sun.mail.util.MailSSLSocketFactory;
+
+import javax.mail.*;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+import java.security.GeneralSecurityException;
+import java.util.Properties;
+
+public class ProSimpl {
+    public static void main(String[] args) throws GeneralSecurityException, MessagingException {
+        final Properties properties = new Properties();
+        properties.setProperty(&#34;mail.host&#34;,&#34;smtp.qq.com&#34;);
+        properties.setProperty(&#34;mail.transport.protocol&#34;,&#34;smtp&#34;);
+        properties.setProperty(&#34;mail.smtp.auth&#34;,&#34;true&#34;);
+//        qq邮箱还需要设置ssl加密，qq独有的其他邮箱没有
+        final MailSSLSocketFactory mailSSLSocketFactory = new MailSSLSocketFactory();
+        mailSSLSocketFactory.setTrustAllHosts(true);
+        properties.put(&#34;mail.smtp.ssl.enable&#34;,&#34;true&#34;);
+        properties.put(&#34;mail.smtp.ssl.socketFactory&#34;,mailSSLSocketFactory);
+
+//        1.创建定义整个应用程序所需的环境信息的session对象
+//        qq独有的其他邮箱没有
+        final Session session = Session.getDefaultInstance(properties, new Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+//                发件人邮箱用户名，授权码/
+                return new PasswordAuthentication(&#34;xxxx@qq.com&#34;, &#34;xxxxx&#34;);
+            }
+        });
+//        1.开启debug模式
+        session.setDebug(true);
+//        2.通过session得到transport对象
+        final Transport transport = session.getTransport();
+//        3.使用邮箱的用户名和授权码连接邮箱服务器
+        transport.connect(&#34;smtp.qq.com&#34;,&#34;xxxx@qq.com&#34;,&#34;xxxx&#34;);
+//        4.创建邮件
+        final MimeMessage message = new MimeMessage(session);
+//        指明发件人
+        message.setFrom(new InternetAddress(&#34;xxxx@qq.com&#34;));
+//        指明收件人
+        message.setRecipients(Message.RecipientType.TO, String.valueOf(new InternetAddress(&#34;xxxx@qq.com&#34;)));
+//        邮件标题
+        message.setSubject(&#34;hello&#34;);
+//        邮件内容
+        message.setContent(&#34;&lt;h1 style=&#39;color:red&#39;&gt;hello world&lt;/h1&gt;&#34;,&#34;text/html;charset=utf-8&#34;);
+//        5.发送邮件
+        transport.sendMessage(message,message.getAllRecipients());
+
+//        6.关闭
+        transport.close();
+    }
+}
+3.图片邮件
+package com.xiaoyu;
+
+import com.sun.mail.util.MailSSLSocketFactory;
+
+import javax.activation.DataHandler;
+import javax.activation.FileDataSource;
+import javax.mail.*;
+import javax.mail.internet.InternetAddress;
+
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
+import java.security.GeneralSecurityException;
+import java.util.Properties;
+
+public class ProImage {
+    public static void main(String[] args) throws GeneralSecurityException, MessagingException {
+        final Properties properties = new Properties();
+        properties.setProperty(&#34;mail.host&#34;,&#34;smtp.qq.com&#34;);
+        properties.setProperty(&#34;mail.transport.protocol&#34;,&#34;smtp&#34;);
+        properties.setProperty(&#34;mail.smtp.auth&#34;,&#34;true&#34;);
+//        qq邮箱还需要设置ssl加密，qq独有的其他邮箱没有
+        final MailSSLSocketFactory mailSSLSocketFactory = new MailSSLSocketFactory();
+        mailSSLSocketFactory.setTrustAllHosts(true);
+        properties.put(&#34;mail.smtp.ssl.enable&#34;,&#34;true&#34;);
+        properties.put(&#34;mail.smtp.ssl.socketFactory&#34;,mailSSLSocketFactory);
+
+//        1.创建定义整个应用程序所需的环境信息的session对象
+//        qq独有的其他邮箱没有
+        final Session session = Session.getDefaultInstance(properties, new Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+//                发件人邮箱用户名，授权码/
+                return new PasswordAuthentication(&#34;xxx@qq.com&#34;, &#34;xxxx&#34;);
+            }
+        });
+//        1.开启debug模式
+        session.setDebug(true);
+//        2.通过session得到transport对象
+        final Transport transport = session.getTransport();
+//        3.使用邮箱的用户名和授权码连接邮箱服务器
+        transport.connect(&#34;smtp.qq.com&#34;,&#34;xxxx@qq.com&#34;,&#34;xxxx&#34;);
+//        4.创建邮件
+        final MimeMessage message = new MimeMessage(session);
+//        指明发件人
+        message.setFrom(new InternetAddress(&#34;xxxx@qq.com&#34;));
+//        指明收件人
+        message.setRecipients(Message.RecipientType.TO, String.valueOf(new InternetAddress(&#34;xxxx@qq.com&#34;)));
+//        邮件标题
+        message.setSubject(&#34;hello&#34;);
+//        邮件内容
+//        图片
+        MimeBodyPart image = new MimeBodyPart();
+        DataHandler dataHandler = new DataHandler(new FileDataSource(&#34;src/main/resources/zhizhuxia.jpg&#34;));
+        image.setDataHandler(dataHandler);
+        image.setContentID(&#34;zhizhuxia.jpg&#34;);
+//        文字
+        MimeBodyPart text = new MimeBodyPart();
+        text.setContent(&#34;图片&lt;img src=&#39;cid:zhizhuxia.jpg&#39;&gt;&#34;,&#34;text/html;charset=utf-8&#34;);
+//        描述数据关系
+        MimeMultipart mimeMultipart = new MimeMultipart();
+        mimeMultipart.addBodyPart(image);
+        mimeMultipart.addBodyPart(text);
+        mimeMultipart.setSubType(&#34;related&#34;);
+//        设置到消息中，保存修改
+        message.setContent(mimeMultipart);
+        message.saveChanges();
+//        5.发送邮件
+        transport.sendMessage(message,message.getAllRecipients());
+
+//        6.关闭
+        transport.close();
+    }
+}
+4.附件邮件
+package com.xiaoyu;
+
+import com.sun.mail.util.MailSSLSocketFactory;
+
+import javax.activation.DataHandler;
+import javax.activation.FileDataSource;
+import javax.mail.*;
+import javax.mail.internet.*;
+import java.security.GeneralSecurityException;
+import java.util.Properties;
+
+public class ProImageAndFile {
+    public static void main(String[] args) throws GeneralSecurityException, MessagingException {
+        final Properties properties = new Properties();
+        properties.setProperty(&#34;mail.host&#34;,&#34;smtp.qq.com&#34;);
+        properties.setProperty(&#34;mail.transport.protocol&#34;,&#34;smtp&#34;);
+        properties.setProperty(&#34;mail.smtp.auth&#34;,&#34;true&#34;);
+//        qq邮箱还需要设置ssl加密，qq独有的其他邮箱没有
+        final MailSSLSocketFactory mailSSLSocketFactory = new MailSSLSocketFactory();
+        mailSSLSocketFactory.setTrustAllHosts(true);
+        properties.put(&#34;mail.smtp.ssl.enable&#34;,&#34;true&#34;);
+        properties.put(&#34;mail.smtp.ssl.socketFactory&#34;,mailSSLSocketFactory);
+
+//        1.创建定义整个应用程序所需的环境信息的session对象
+//        qq独有的其他邮箱没有
+        final Session session = Session.getDefaultInstance(properties, new Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+//                发件人邮箱用户名，授权码/
+                return new PasswordAuthentication(&#34;xxxxx@qq.com&#34;, &#34;xxxx&#34;);
+            }
+        });
+//        1.开启debug模式
+        session.setDebug(true);
+//        2.通过session得到transport对象
+        final Transport transport = session.getTransport();
+//        3.使用邮箱的用户名和授权码连接邮箱服务器
+        transport.connect(&#34;smtp.qq.com&#34;,&#34;xxxx@qq.com&#34;,&#34;xxxxx&#34;);
+//        4.邮件内容
+        final MimeMessage message = message(session);
+//        5.发送邮件
+        transport.sendMessage(message,message.getAllRecipients());
+
+//        6.关闭
+        transport.close();
+    }
+    public static MimeMessage message(Session session) throws MessagingException {
+        final MimeMessage message = new MimeMessage(session);
+        message.setFrom(new InternetAddress(&#34;xxxx@qq.com&#34;));
+        message.setRecipients(Message.RecipientType.TO,&#34;xxxx@qq.com&#34;);
+        message.setSubject(&#34;主题&#34;);
+        //        图片
+        MimeBodyPart image = new MimeBodyPart();
+        DataHandler dataHandler = new DataHandler(new FileDataSource(&#34;src/main/resources/zhizhuxia.jpg&#34;));
+        image.setDataHandler(dataHandler);
+        image.setContentID(&#34;zhizhuxia.jpg&#34;);
+//        文字
+        MimeBodyPart text = new MimeBodyPart();
+        text.setContent(&#34;图片&lt;img src=&#39;cid:zhizhuxia.jpg&#39;&gt;&#34;,&#34;text/html;charset=utf-8&#34;);
+//        附件
+        MimeBodyPart file1 = new MimeBodyPart();
+        file1.setDataHandler(new DataHandler(new FileDataSource(&#34;src/main/resources/a.text&#34;)));
+        file1.setFileName(&#34;a.text&#34;);
+        MimeBodyPart file2 = new MimeBodyPart();
+        file2.setDataHandler(new DataHandler(new FileDataSource(&#34;src/main/resources/b.text&#34;)));
+        file2.setFileName(&#34;b.text&#34;);
+//        描述数据关系
+        MimeMultipart mimeMultipart = new MimeMultipart();
+        mimeMultipart.addBodyPart(image);
+        mimeMultipart.addBodyPart(text);
+        mimeMultipart.setSubType(&#34;related&#34;);
+//        拼装正文为主体
+        final MimeBodyPart mimeBodyPart = new MimeBodyPart();
+        mimeBodyPart.setContent(mimeMultipart);
+//        拼接附件
+        final MimeMultipart allfile = new MimeMultipart();
+        allfile.addBodyPart(file1);
+        allfile.addBodyPart(file2);
+        allfile.addBodyPart(mimeBodyPart);
+        allfile.setSubType(&#34;mixed&#34;);
+//        放到消息中
+        message.setContent(allfile);
+        message.saveChanges();
+        return message;
+    }
+}
+二：boot整合
+1.引入依赖">
+    <meta name="generator" content="Hugo 0.147.7">
+    
+    
+    
+      <meta name="robots" content="noindex, nofollow">
+    
+    <meta name="author" content="loveyu">
+    
+
+    
+<link rel="stylesheet" href="/ananke/css/main.min.css" >
+
+
+
+
+    
+
+
+    
+      
+
+    
+
+    
+
+    
+      <link rel="canonical" href="http://localhost:1313/posts/java/java-email/">
+    
+
+    <meta property="og:url" content="http://localhost:1313/posts/java/java-email/">
+  <meta property="og:site_name" content="loveyu233">
+  <meta property="og:title" content="Java Email">
+  <meta property="og:description" content="一：使用 1.引入依赖 &lt;!-- https://mvnrepository.com/artifact/javax.mail/mail --&gt; &lt;dependency&gt; &lt;groupId&gt;javax.mail&lt;/groupId&gt; &lt;artifactId&gt;mail&lt;/artifactId&gt; &lt;version&gt;1.4.7&lt;/version&gt; &lt;/dependency&gt; &lt;!-- https://mvnrepository.com/artifact/javax.activation/activation --&gt; &lt;dependency&gt; &lt;groupId&gt;javax.activation&lt;/groupId&gt; &lt;artifactId&gt;activation&lt;/artifactId&gt; &lt;version&gt;1.1.1&lt;/version&gt; &lt;/dependency&gt; 2.简单邮件 package com.xiaoyu; import com.sun.mail.util.MailSSLSocketFactory; import javax.mail.*; import javax.mail.internet.InternetAddress; import javax.mail.internet.MimeMessage; import java.security.GeneralSecurityException; import java.util.Properties; public class ProSimpl { public static void main(String[] args) throws GeneralSecurityException, MessagingException { final Properties properties = new Properties(); properties.setProperty(&#34;mail.host&#34;,&#34;smtp.qq.com&#34;); properties.setProperty(&#34;mail.transport.protocol&#34;,&#34;smtp&#34;); properties.setProperty(&#34;mail.smtp.auth&#34;,&#34;true&#34;); // qq邮箱还需要设置ssl加密，qq独有的其他邮箱没有 final MailSSLSocketFactory mailSSLSocketFactory = new MailSSLSocketFactory(); mailSSLSocketFactory.setTrustAllHosts(true); properties.put(&#34;mail.smtp.ssl.enable&#34;,&#34;true&#34;); properties.put(&#34;mail.smtp.ssl.socketFactory&#34;,mailSSLSocketFactory); // 1.创建定义整个应用程序所需的环境信息的session对象 // qq独有的其他邮箱没有 final Session session = Session.getDefaultInstance(properties, new Authenticator() { @Override protected PasswordAuthentication getPasswordAuthentication() { // 发件人邮箱用户名，授权码/ return new PasswordAuthentication(&#34;xxxx@qq.com&#34;, &#34;xxxxx&#34;); } }); // 1.开启debug模式 session.setDebug(true); // 2.通过session得到transport对象 final Transport transport = session.getTransport(); // 3.使用邮箱的用户名和授权码连接邮箱服务器 transport.connect(&#34;smtp.qq.com&#34;,&#34;xxxx@qq.com&#34;,&#34;xxxx&#34;); // 4.创建邮件 final MimeMessage message = new MimeMessage(session); // 指明发件人 message.setFrom(new InternetAddress(&#34;xxxx@qq.com&#34;)); // 指明收件人 message.setRecipients(Message.RecipientType.TO, String.valueOf(new InternetAddress(&#34;xxxx@qq.com&#34;))); // 邮件标题 message.setSubject(&#34;hello&#34;); // 邮件内容 message.setContent(&#34;&lt;h1 style=&#39;color:red&#39;&gt;hello world&lt;/h1&gt;&#34;,&#34;text/html;charset=utf-8&#34;); // 5.发送邮件 transport.sendMessage(message,message.getAllRecipients()); // 6.关闭 transport.close(); } } 3.图片邮件 package com.xiaoyu; import com.sun.mail.util.MailSSLSocketFactory; import javax.activation.DataHandler; import javax.activation.FileDataSource; import javax.mail.*; import javax.mail.internet.InternetAddress; import javax.mail.internet.MimeBodyPart; import javax.mail.internet.MimeMessage; import javax.mail.internet.MimeMultipart; import java.security.GeneralSecurityException; import java.util.Properties; public class ProImage { public static void main(String[] args) throws GeneralSecurityException, MessagingException { final Properties properties = new Properties(); properties.setProperty(&#34;mail.host&#34;,&#34;smtp.qq.com&#34;); properties.setProperty(&#34;mail.transport.protocol&#34;,&#34;smtp&#34;); properties.setProperty(&#34;mail.smtp.auth&#34;,&#34;true&#34;); // qq邮箱还需要设置ssl加密，qq独有的其他邮箱没有 final MailSSLSocketFactory mailSSLSocketFactory = new MailSSLSocketFactory(); mailSSLSocketFactory.setTrustAllHosts(true); properties.put(&#34;mail.smtp.ssl.enable&#34;,&#34;true&#34;); properties.put(&#34;mail.smtp.ssl.socketFactory&#34;,mailSSLSocketFactory); // 1.创建定义整个应用程序所需的环境信息的session对象 // qq独有的其他邮箱没有 final Session session = Session.getDefaultInstance(properties, new Authenticator() { @Override protected PasswordAuthentication getPasswordAuthentication() { // 发件人邮箱用户名，授权码/ return new PasswordAuthentication(&#34;xxx@qq.com&#34;, &#34;xxxx&#34;); } }); // 1.开启debug模式 session.setDebug(true); // 2.通过session得到transport对象 final Transport transport = session.getTransport(); // 3.使用邮箱的用户名和授权码连接邮箱服务器 transport.connect(&#34;smtp.qq.com&#34;,&#34;xxxx@qq.com&#34;,&#34;xxxx&#34;); // 4.创建邮件 final MimeMessage message = new MimeMessage(session); // 指明发件人 message.setFrom(new InternetAddress(&#34;xxxx@qq.com&#34;)); // 指明收件人 message.setRecipients(Message.RecipientType.TO, String.valueOf(new InternetAddress(&#34;xxxx@qq.com&#34;))); // 邮件标题 message.setSubject(&#34;hello&#34;); // 邮件内容 // 图片 MimeBodyPart image = new MimeBodyPart(); DataHandler dataHandler = new DataHandler(new FileDataSource(&#34;src/main/resources/zhizhuxia.jpg&#34;)); image.setDataHandler(dataHandler); image.setContentID(&#34;zhizhuxia.jpg&#34;); // 文字 MimeBodyPart text = new MimeBodyPart(); text.setContent(&#34;图片&lt;img src=&#39;cid:zhizhuxia.jpg&#39;&gt;&#34;,&#34;text/html;charset=utf-8&#34;); // 描述数据关系 MimeMultipart mimeMultipart = new MimeMultipart(); mimeMultipart.addBodyPart(image); mimeMultipart.addBodyPart(text); mimeMultipart.setSubType(&#34;related&#34;); // 设置到消息中，保存修改 message.setContent(mimeMultipart); message.saveChanges(); // 5.发送邮件 transport.sendMessage(message,message.getAllRecipients()); // 6.关闭 transport.close(); } } 4.附件邮件 package com.xiaoyu; import com.sun.mail.util.MailSSLSocketFactory; import javax.activation.DataHandler; import javax.activation.FileDataSource; import javax.mail.*; import javax.mail.internet.*; import java.security.GeneralSecurityException; import java.util.Properties; public class ProImageAndFile { public static void main(String[] args) throws GeneralSecurityException, MessagingException { final Properties properties = new Properties(); properties.setProperty(&#34;mail.host&#34;,&#34;smtp.qq.com&#34;); properties.setProperty(&#34;mail.transport.protocol&#34;,&#34;smtp&#34;); properties.setProperty(&#34;mail.smtp.auth&#34;,&#34;true&#34;); // qq邮箱还需要设置ssl加密，qq独有的其他邮箱没有 final MailSSLSocketFactory mailSSLSocketFactory = new MailSSLSocketFactory(); mailSSLSocketFactory.setTrustAllHosts(true); properties.put(&#34;mail.smtp.ssl.enable&#34;,&#34;true&#34;); properties.put(&#34;mail.smtp.ssl.socketFactory&#34;,mailSSLSocketFactory); // 1.创建定义整个应用程序所需的环境信息的session对象 // qq独有的其他邮箱没有 final Session session = Session.getDefaultInstance(properties, new Authenticator() { @Override protected PasswordAuthentication getPasswordAuthentication() { // 发件人邮箱用户名，授权码/ return new PasswordAuthentication(&#34;xxxxx@qq.com&#34;, &#34;xxxx&#34;); } }); // 1.开启debug模式 session.setDebug(true); // 2.通过session得到transport对象 final Transport transport = session.getTransport(); // 3.使用邮箱的用户名和授权码连接邮箱服务器 transport.connect(&#34;smtp.qq.com&#34;,&#34;xxxx@qq.com&#34;,&#34;xxxxx&#34;); // 4.邮件内容 final MimeMessage message = message(session); // 5.发送邮件 transport.sendMessage(message,message.getAllRecipients()); // 6.关闭 transport.close(); } public static MimeMessage message(Session session) throws MessagingException { final MimeMessage message = new MimeMessage(session); message.setFrom(new InternetAddress(&#34;xxxx@qq.com&#34;)); message.setRecipients(Message.RecipientType.TO,&#34;xxxx@qq.com&#34;); message.setSubject(&#34;主题&#34;); // 图片 MimeBodyPart image = new MimeBodyPart(); DataHandler dataHandler = new DataHandler(new FileDataSource(&#34;src/main/resources/zhizhuxia.jpg&#34;)); image.setDataHandler(dataHandler); image.setContentID(&#34;zhizhuxia.jpg&#34;); // 文字 MimeBodyPart text = new MimeBodyPart(); text.setContent(&#34;图片&lt;img src=&#39;cid:zhizhuxia.jpg&#39;&gt;&#34;,&#34;text/html;charset=utf-8&#34;); // 附件 MimeBodyPart file1 = new MimeBodyPart(); file1.setDataHandler(new DataHandler(new FileDataSource(&#34;src/main/resources/a.text&#34;))); file1.setFileName(&#34;a.text&#34;); MimeBodyPart file2 = new MimeBodyPart(); file2.setDataHandler(new DataHandler(new FileDataSource(&#34;src/main/resources/b.text&#34;))); file2.setFileName(&#34;b.text&#34;); // 描述数据关系 MimeMultipart mimeMultipart = new MimeMultipart(); mimeMultipart.addBodyPart(image); mimeMultipart.addBodyPart(text); mimeMultipart.setSubType(&#34;related&#34;); // 拼装正文为主体 final MimeBodyPart mimeBodyPart = new MimeBodyPart(); mimeBodyPart.setContent(mimeMultipart); // 拼接附件 final MimeMultipart allfile = new MimeMultipart(); allfile.addBodyPart(file1); allfile.addBodyPart(file2); allfile.addBodyPart(mimeBodyPart); allfile.setSubType(&#34;mixed&#34;); // 放到消息中 message.setContent(allfile); message.saveChanges(); return message; } } 二：boot整合 1.引入依赖">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2019-04-24T11:38:37+08:00">
+    <meta property="article:modified_time" content="2019-04-24T11:38:37+08:00">
+    <meta property="article:tag" content="Java">
+    <meta property="article:tag" content="Email">
+
+  <meta itemprop="name" content="Java Email">
+  <meta itemprop="description" content="一：使用 1.引入依赖 &lt;!-- https://mvnrepository.com/artifact/javax.mail/mail --&gt; &lt;dependency&gt; &lt;groupId&gt;javax.mail&lt;/groupId&gt; &lt;artifactId&gt;mail&lt;/artifactId&gt; &lt;version&gt;1.4.7&lt;/version&gt; &lt;/dependency&gt; &lt;!-- https://mvnrepository.com/artifact/javax.activation/activation --&gt; &lt;dependency&gt; &lt;groupId&gt;javax.activation&lt;/groupId&gt; &lt;artifactId&gt;activation&lt;/artifactId&gt; &lt;version&gt;1.1.1&lt;/version&gt; &lt;/dependency&gt; 2.简单邮件 package com.xiaoyu; import com.sun.mail.util.MailSSLSocketFactory; import javax.mail.*; import javax.mail.internet.InternetAddress; import javax.mail.internet.MimeMessage; import java.security.GeneralSecurityException; import java.util.Properties; public class ProSimpl { public static void main(String[] args) throws GeneralSecurityException, MessagingException { final Properties properties = new Properties(); properties.setProperty(&#34;mail.host&#34;,&#34;smtp.qq.com&#34;); properties.setProperty(&#34;mail.transport.protocol&#34;,&#34;smtp&#34;); properties.setProperty(&#34;mail.smtp.auth&#34;,&#34;true&#34;); // qq邮箱还需要设置ssl加密，qq独有的其他邮箱没有 final MailSSLSocketFactory mailSSLSocketFactory = new MailSSLSocketFactory(); mailSSLSocketFactory.setTrustAllHosts(true); properties.put(&#34;mail.smtp.ssl.enable&#34;,&#34;true&#34;); properties.put(&#34;mail.smtp.ssl.socketFactory&#34;,mailSSLSocketFactory); // 1.创建定义整个应用程序所需的环境信息的session对象 // qq独有的其他邮箱没有 final Session session = Session.getDefaultInstance(properties, new Authenticator() { @Override protected PasswordAuthentication getPasswordAuthentication() { // 发件人邮箱用户名，授权码/ return new PasswordAuthentication(&#34;xxxx@qq.com&#34;, &#34;xxxxx&#34;); } }); // 1.开启debug模式 session.setDebug(true); // 2.通过session得到transport对象 final Transport transport = session.getTransport(); // 3.使用邮箱的用户名和授权码连接邮箱服务器 transport.connect(&#34;smtp.qq.com&#34;,&#34;xxxx@qq.com&#34;,&#34;xxxx&#34;); // 4.创建邮件 final MimeMessage message = new MimeMessage(session); // 指明发件人 message.setFrom(new InternetAddress(&#34;xxxx@qq.com&#34;)); // 指明收件人 message.setRecipients(Message.RecipientType.TO, String.valueOf(new InternetAddress(&#34;xxxx@qq.com&#34;))); // 邮件标题 message.setSubject(&#34;hello&#34;); // 邮件内容 message.setContent(&#34;&lt;h1 style=&#39;color:red&#39;&gt;hello world&lt;/h1&gt;&#34;,&#34;text/html;charset=utf-8&#34;); // 5.发送邮件 transport.sendMessage(message,message.getAllRecipients()); // 6.关闭 transport.close(); } } 3.图片邮件 package com.xiaoyu; import com.sun.mail.util.MailSSLSocketFactory; import javax.activation.DataHandler; import javax.activation.FileDataSource; import javax.mail.*; import javax.mail.internet.InternetAddress; import javax.mail.internet.MimeBodyPart; import javax.mail.internet.MimeMessage; import javax.mail.internet.MimeMultipart; import java.security.GeneralSecurityException; import java.util.Properties; public class ProImage { public static void main(String[] args) throws GeneralSecurityException, MessagingException { final Properties properties = new Properties(); properties.setProperty(&#34;mail.host&#34;,&#34;smtp.qq.com&#34;); properties.setProperty(&#34;mail.transport.protocol&#34;,&#34;smtp&#34;); properties.setProperty(&#34;mail.smtp.auth&#34;,&#34;true&#34;); // qq邮箱还需要设置ssl加密，qq独有的其他邮箱没有 final MailSSLSocketFactory mailSSLSocketFactory = new MailSSLSocketFactory(); mailSSLSocketFactory.setTrustAllHosts(true); properties.put(&#34;mail.smtp.ssl.enable&#34;,&#34;true&#34;); properties.put(&#34;mail.smtp.ssl.socketFactory&#34;,mailSSLSocketFactory); // 1.创建定义整个应用程序所需的环境信息的session对象 // qq独有的其他邮箱没有 final Session session = Session.getDefaultInstance(properties, new Authenticator() { @Override protected PasswordAuthentication getPasswordAuthentication() { // 发件人邮箱用户名，授权码/ return new PasswordAuthentication(&#34;xxx@qq.com&#34;, &#34;xxxx&#34;); } }); // 1.开启debug模式 session.setDebug(true); // 2.通过session得到transport对象 final Transport transport = session.getTransport(); // 3.使用邮箱的用户名和授权码连接邮箱服务器 transport.connect(&#34;smtp.qq.com&#34;,&#34;xxxx@qq.com&#34;,&#34;xxxx&#34;); // 4.创建邮件 final MimeMessage message = new MimeMessage(session); // 指明发件人 message.setFrom(new InternetAddress(&#34;xxxx@qq.com&#34;)); // 指明收件人 message.setRecipients(Message.RecipientType.TO, String.valueOf(new InternetAddress(&#34;xxxx@qq.com&#34;))); // 邮件标题 message.setSubject(&#34;hello&#34;); // 邮件内容 // 图片 MimeBodyPart image = new MimeBodyPart(); DataHandler dataHandler = new DataHandler(new FileDataSource(&#34;src/main/resources/zhizhuxia.jpg&#34;)); image.setDataHandler(dataHandler); image.setContentID(&#34;zhizhuxia.jpg&#34;); // 文字 MimeBodyPart text = new MimeBodyPart(); text.setContent(&#34;图片&lt;img src=&#39;cid:zhizhuxia.jpg&#39;&gt;&#34;,&#34;text/html;charset=utf-8&#34;); // 描述数据关系 MimeMultipart mimeMultipart = new MimeMultipart(); mimeMultipart.addBodyPart(image); mimeMultipart.addBodyPart(text); mimeMultipart.setSubType(&#34;related&#34;); // 设置到消息中，保存修改 message.setContent(mimeMultipart); message.saveChanges(); // 5.发送邮件 transport.sendMessage(message,message.getAllRecipients()); // 6.关闭 transport.close(); } } 4.附件邮件 package com.xiaoyu; import com.sun.mail.util.MailSSLSocketFactory; import javax.activation.DataHandler; import javax.activation.FileDataSource; import javax.mail.*; import javax.mail.internet.*; import java.security.GeneralSecurityException; import java.util.Properties; public class ProImageAndFile { public static void main(String[] args) throws GeneralSecurityException, MessagingException { final Properties properties = new Properties(); properties.setProperty(&#34;mail.host&#34;,&#34;smtp.qq.com&#34;); properties.setProperty(&#34;mail.transport.protocol&#34;,&#34;smtp&#34;); properties.setProperty(&#34;mail.smtp.auth&#34;,&#34;true&#34;); // qq邮箱还需要设置ssl加密，qq独有的其他邮箱没有 final MailSSLSocketFactory mailSSLSocketFactory = new MailSSLSocketFactory(); mailSSLSocketFactory.setTrustAllHosts(true); properties.put(&#34;mail.smtp.ssl.enable&#34;,&#34;true&#34;); properties.put(&#34;mail.smtp.ssl.socketFactory&#34;,mailSSLSocketFactory); // 1.创建定义整个应用程序所需的环境信息的session对象 // qq独有的其他邮箱没有 final Session session = Session.getDefaultInstance(properties, new Authenticator() { @Override protected PasswordAuthentication getPasswordAuthentication() { // 发件人邮箱用户名，授权码/ return new PasswordAuthentication(&#34;xxxxx@qq.com&#34;, &#34;xxxx&#34;); } }); // 1.开启debug模式 session.setDebug(true); // 2.通过session得到transport对象 final Transport transport = session.getTransport(); // 3.使用邮箱的用户名和授权码连接邮箱服务器 transport.connect(&#34;smtp.qq.com&#34;,&#34;xxxx@qq.com&#34;,&#34;xxxxx&#34;); // 4.邮件内容 final MimeMessage message = message(session); // 5.发送邮件 transport.sendMessage(message,message.getAllRecipients()); // 6.关闭 transport.close(); } public static MimeMessage message(Session session) throws MessagingException { final MimeMessage message = new MimeMessage(session); message.setFrom(new InternetAddress(&#34;xxxx@qq.com&#34;)); message.setRecipients(Message.RecipientType.TO,&#34;xxxx@qq.com&#34;); message.setSubject(&#34;主题&#34;); // 图片 MimeBodyPart image = new MimeBodyPart(); DataHandler dataHandler = new DataHandler(new FileDataSource(&#34;src/main/resources/zhizhuxia.jpg&#34;)); image.setDataHandler(dataHandler); image.setContentID(&#34;zhizhuxia.jpg&#34;); // 文字 MimeBodyPart text = new MimeBodyPart(); text.setContent(&#34;图片&lt;img src=&#39;cid:zhizhuxia.jpg&#39;&gt;&#34;,&#34;text/html;charset=utf-8&#34;); // 附件 MimeBodyPart file1 = new MimeBodyPart(); file1.setDataHandler(new DataHandler(new FileDataSource(&#34;src/main/resources/a.text&#34;))); file1.setFileName(&#34;a.text&#34;); MimeBodyPart file2 = new MimeBodyPart(); file2.setDataHandler(new DataHandler(new FileDataSource(&#34;src/main/resources/b.text&#34;))); file2.setFileName(&#34;b.text&#34;); // 描述数据关系 MimeMultipart mimeMultipart = new MimeMultipart(); mimeMultipart.addBodyPart(image); mimeMultipart.addBodyPart(text); mimeMultipart.setSubType(&#34;related&#34;); // 拼装正文为主体 final MimeBodyPart mimeBodyPart = new MimeBodyPart(); mimeBodyPart.setContent(mimeMultipart); // 拼接附件 final MimeMultipart allfile = new MimeMultipart(); allfile.addBodyPart(file1); allfile.addBodyPart(file2); allfile.addBodyPart(mimeBodyPart); allfile.setSubType(&#34;mixed&#34;); // 放到消息中 message.setContent(allfile); message.saveChanges(); return message; } } 二：boot整合 1.引入依赖">
+  <meta itemprop="datePublished" content="2019-04-24T11:38:37+08:00">
+  <meta itemprop="dateModified" content="2019-04-24T11:38:37+08:00">
+  <meta itemprop="wordCount" content="569">
+  <meta itemprop="keywords" content="Java,Email">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Java Email">
+  <meta name="twitter:description" content="一：使用 1.引入依赖 &lt;!-- https://mvnrepository.com/artifact/javax.mail/mail --&gt; &lt;dependency&gt; &lt;groupId&gt;javax.mail&lt;/groupId&gt; &lt;artifactId&gt;mail&lt;/artifactId&gt; &lt;version&gt;1.4.7&lt;/version&gt; &lt;/dependency&gt; &lt;!-- https://mvnrepository.com/artifact/javax.activation/activation --&gt; &lt;dependency&gt; &lt;groupId&gt;javax.activation&lt;/groupId&gt; &lt;artifactId&gt;activation&lt;/artifactId&gt; &lt;version&gt;1.1.1&lt;/version&gt; &lt;/dependency&gt; 2.简单邮件 package com.xiaoyu; import com.sun.mail.util.MailSSLSocketFactory; import javax.mail.*; import javax.mail.internet.InternetAddress; import javax.mail.internet.MimeMessage; import java.security.GeneralSecurityException; import java.util.Properties; public class ProSimpl { public static void main(String[] args) throws GeneralSecurityException, MessagingException { final Properties properties = new Properties(); properties.setProperty(&#34;mail.host&#34;,&#34;smtp.qq.com&#34;); properties.setProperty(&#34;mail.transport.protocol&#34;,&#34;smtp&#34;); properties.setProperty(&#34;mail.smtp.auth&#34;,&#34;true&#34;); // qq邮箱还需要设置ssl加密，qq独有的其他邮箱没有 final MailSSLSocketFactory mailSSLSocketFactory = new MailSSLSocketFactory(); mailSSLSocketFactory.setTrustAllHosts(true); properties.put(&#34;mail.smtp.ssl.enable&#34;,&#34;true&#34;); properties.put(&#34;mail.smtp.ssl.socketFactory&#34;,mailSSLSocketFactory); // 1.创建定义整个应用程序所需的环境信息的session对象 // qq独有的其他邮箱没有 final Session session = Session.getDefaultInstance(properties, new Authenticator() { @Override protected PasswordAuthentication getPasswordAuthentication() { // 发件人邮箱用户名，授权码/ return new PasswordAuthentication(&#34;xxxx@qq.com&#34;, &#34;xxxxx&#34;); } }); // 1.开启debug模式 session.setDebug(true); // 2.通过session得到transport对象 final Transport transport = session.getTransport(); // 3.使用邮箱的用户名和授权码连接邮箱服务器 transport.connect(&#34;smtp.qq.com&#34;,&#34;xxxx@qq.com&#34;,&#34;xxxx&#34;); // 4.创建邮件 final MimeMessage message = new MimeMessage(session); // 指明发件人 message.setFrom(new InternetAddress(&#34;xxxx@qq.com&#34;)); // 指明收件人 message.setRecipients(Message.RecipientType.TO, String.valueOf(new InternetAddress(&#34;xxxx@qq.com&#34;))); // 邮件标题 message.setSubject(&#34;hello&#34;); // 邮件内容 message.setContent(&#34;&lt;h1 style=&#39;color:red&#39;&gt;hello world&lt;/h1&gt;&#34;,&#34;text/html;charset=utf-8&#34;); // 5.发送邮件 transport.sendMessage(message,message.getAllRecipients()); // 6.关闭 transport.close(); } } 3.图片邮件 package com.xiaoyu; import com.sun.mail.util.MailSSLSocketFactory; import javax.activation.DataHandler; import javax.activation.FileDataSource; import javax.mail.*; import javax.mail.internet.InternetAddress; import javax.mail.internet.MimeBodyPart; import javax.mail.internet.MimeMessage; import javax.mail.internet.MimeMultipart; import java.security.GeneralSecurityException; import java.util.Properties; public class ProImage { public static void main(String[] args) throws GeneralSecurityException, MessagingException { final Properties properties = new Properties(); properties.setProperty(&#34;mail.host&#34;,&#34;smtp.qq.com&#34;); properties.setProperty(&#34;mail.transport.protocol&#34;,&#34;smtp&#34;); properties.setProperty(&#34;mail.smtp.auth&#34;,&#34;true&#34;); // qq邮箱还需要设置ssl加密，qq独有的其他邮箱没有 final MailSSLSocketFactory mailSSLSocketFactory = new MailSSLSocketFactory(); mailSSLSocketFactory.setTrustAllHosts(true); properties.put(&#34;mail.smtp.ssl.enable&#34;,&#34;true&#34;); properties.put(&#34;mail.smtp.ssl.socketFactory&#34;,mailSSLSocketFactory); // 1.创建定义整个应用程序所需的环境信息的session对象 // qq独有的其他邮箱没有 final Session session = Session.getDefaultInstance(properties, new Authenticator() { @Override protected PasswordAuthentication getPasswordAuthentication() { // 发件人邮箱用户名，授权码/ return new PasswordAuthentication(&#34;xxx@qq.com&#34;, &#34;xxxx&#34;); } }); // 1.开启debug模式 session.setDebug(true); // 2.通过session得到transport对象 final Transport transport = session.getTransport(); // 3.使用邮箱的用户名和授权码连接邮箱服务器 transport.connect(&#34;smtp.qq.com&#34;,&#34;xxxx@qq.com&#34;,&#34;xxxx&#34;); // 4.创建邮件 final MimeMessage message = new MimeMessage(session); // 指明发件人 message.setFrom(new InternetAddress(&#34;xxxx@qq.com&#34;)); // 指明收件人 message.setRecipients(Message.RecipientType.TO, String.valueOf(new InternetAddress(&#34;xxxx@qq.com&#34;))); // 邮件标题 message.setSubject(&#34;hello&#34;); // 邮件内容 // 图片 MimeBodyPart image = new MimeBodyPart(); DataHandler dataHandler = new DataHandler(new FileDataSource(&#34;src/main/resources/zhizhuxia.jpg&#34;)); image.setDataHandler(dataHandler); image.setContentID(&#34;zhizhuxia.jpg&#34;); // 文字 MimeBodyPart text = new MimeBodyPart(); text.setContent(&#34;图片&lt;img src=&#39;cid:zhizhuxia.jpg&#39;&gt;&#34;,&#34;text/html;charset=utf-8&#34;); // 描述数据关系 MimeMultipart mimeMultipart = new MimeMultipart(); mimeMultipart.addBodyPart(image); mimeMultipart.addBodyPart(text); mimeMultipart.setSubType(&#34;related&#34;); // 设置到消息中，保存修改 message.setContent(mimeMultipart); message.saveChanges(); // 5.发送邮件 transport.sendMessage(message,message.getAllRecipients()); // 6.关闭 transport.close(); } } 4.附件邮件 package com.xiaoyu; import com.sun.mail.util.MailSSLSocketFactory; import javax.activation.DataHandler; import javax.activation.FileDataSource; import javax.mail.*; import javax.mail.internet.*; import java.security.GeneralSecurityException; import java.util.Properties; public class ProImageAndFile { public static void main(String[] args) throws GeneralSecurityException, MessagingException { final Properties properties = new Properties(); properties.setProperty(&#34;mail.host&#34;,&#34;smtp.qq.com&#34;); properties.setProperty(&#34;mail.transport.protocol&#34;,&#34;smtp&#34;); properties.setProperty(&#34;mail.smtp.auth&#34;,&#34;true&#34;); // qq邮箱还需要设置ssl加密，qq独有的其他邮箱没有 final MailSSLSocketFactory mailSSLSocketFactory = new MailSSLSocketFactory(); mailSSLSocketFactory.setTrustAllHosts(true); properties.put(&#34;mail.smtp.ssl.enable&#34;,&#34;true&#34;); properties.put(&#34;mail.smtp.ssl.socketFactory&#34;,mailSSLSocketFactory); // 1.创建定义整个应用程序所需的环境信息的session对象 // qq独有的其他邮箱没有 final Session session = Session.getDefaultInstance(properties, new Authenticator() { @Override protected PasswordAuthentication getPasswordAuthentication() { // 发件人邮箱用户名，授权码/ return new PasswordAuthentication(&#34;xxxxx@qq.com&#34;, &#34;xxxx&#34;); } }); // 1.开启debug模式 session.setDebug(true); // 2.通过session得到transport对象 final Transport transport = session.getTransport(); // 3.使用邮箱的用户名和授权码连接邮箱服务器 transport.connect(&#34;smtp.qq.com&#34;,&#34;xxxx@qq.com&#34;,&#34;xxxxx&#34;); // 4.邮件内容 final MimeMessage message = message(session); // 5.发送邮件 transport.sendMessage(message,message.getAllRecipients()); // 6.关闭 transport.close(); } public static MimeMessage message(Session session) throws MessagingException { final MimeMessage message = new MimeMessage(session); message.setFrom(new InternetAddress(&#34;xxxx@qq.com&#34;)); message.setRecipients(Message.RecipientType.TO,&#34;xxxx@qq.com&#34;); message.setSubject(&#34;主题&#34;); // 图片 MimeBodyPart image = new MimeBodyPart(); DataHandler dataHandler = new DataHandler(new FileDataSource(&#34;src/main/resources/zhizhuxia.jpg&#34;)); image.setDataHandler(dataHandler); image.setContentID(&#34;zhizhuxia.jpg&#34;); // 文字 MimeBodyPart text = new MimeBodyPart(); text.setContent(&#34;图片&lt;img src=&#39;cid:zhizhuxia.jpg&#39;&gt;&#34;,&#34;text/html;charset=utf-8&#34;); // 附件 MimeBodyPart file1 = new MimeBodyPart(); file1.setDataHandler(new DataHandler(new FileDataSource(&#34;src/main/resources/a.text&#34;))); file1.setFileName(&#34;a.text&#34;); MimeBodyPart file2 = new MimeBodyPart(); file2.setDataHandler(new DataHandler(new FileDataSource(&#34;src/main/resources/b.text&#34;))); file2.setFileName(&#34;b.text&#34;); // 描述数据关系 MimeMultipart mimeMultipart = new MimeMultipart(); mimeMultipart.addBodyPart(image); mimeMultipart.addBodyPart(text); mimeMultipart.setSubType(&#34;related&#34;); // 拼装正文为主体 final MimeBodyPart mimeBodyPart = new MimeBodyPart(); mimeBodyPart.setContent(mimeMultipart); // 拼接附件 final MimeMultipart allfile = new MimeMultipart(); allfile.addBodyPart(file1); allfile.addBodyPart(file2); allfile.addBodyPart(mimeBodyPart); allfile.setSubType(&#34;mixed&#34;); // 放到消息中 message.setContent(allfile); message.saveChanges(); return message; } } 二：boot整合 1.引入依赖">
+
+	
+  </head><body class="ma0 avenir bg-near-white development">
+
+    
+   
+  
+
+  <header>
+    <div class="bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l center items-center justify-between">
+    <a href="/" class="f3 fw2 hover-white white-90 dib no-underline">
+      
+        loveyu233
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      <div class="ananke-socials"></div>
+
+    </div>
+  </div>
+</nav>
+
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  
+  <article class="flex-l mw8 center ph3 flex-wrap justify-between">
+    <header class="mt4 w-100">
+      <aside class="instapaper_ignoref b helvetica tracked ttu">
+          
+        java
+      </aside><div id="sharing" class="mt3 ananke-socials"></div>
+<h1 class="f1 athelas mt3 mb1">Java Email</h1>
+      
+      <p class="tracked"><strong>loveyu</strong>
+      </p>
+      
+      
+      
+      <time class="f6 mv4 dib tracked" datetime="2019-04-24T11:38:37+08:00">April 24, 2019</time>
+      
+
+      
+      
+    </header>
+    <div class="nested-copy-line-height lh-copy serif f4 nested-links mid-gray pr4-l w-two-thirds-l"><h1 id="一使用">一：使用</h1>
+<h2 id="1引入依赖">1.引入依赖</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#75715e">&lt;!-- https://mvnrepository.com/artifact/javax.mail/mail --&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;groupId&gt;</span>javax.mail<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;artifactId&gt;</span>mail<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;version&gt;</span>1.4.7<span style="color:#f92672">&lt;/version&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">&lt;!-- https://mvnrepository.com/artifact/javax.activation/activation --&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;groupId&gt;</span>javax.activation<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;artifactId&gt;</span>activation<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;version&gt;</span>1.1.1<span style="color:#f92672">&lt;/version&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/dependency&gt;</span>
+</span></span></code></pre></div><h2 id="2简单邮件">2.简单邮件</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#f92672">package</span> com.xiaoyu;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> com.sun.mail.util.MailSSLSocketFactory;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> javax.mail.*;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> javax.mail.internet.InternetAddress;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> javax.mail.internet.MimeMessage;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> java.security.GeneralSecurityException;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> java.util.Properties;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ProSimpl</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>(String<span style="color:#f92672">[]</span> args) <span style="color:#66d9ef">throws</span> GeneralSecurityException, MessagingException {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">final</span> Properties properties <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Properties();
+</span></span><span style="display:flex;"><span>        properties.<span style="color:#a6e22e">setProperty</span>(<span style="color:#e6db74">&#34;mail.host&#34;</span>,<span style="color:#e6db74">&#34;smtp.qq.com&#34;</span>);
+</span></span><span style="display:flex;"><span>        properties.<span style="color:#a6e22e">setProperty</span>(<span style="color:#e6db74">&#34;mail.transport.protocol&#34;</span>,<span style="color:#e6db74">&#34;smtp&#34;</span>);
+</span></span><span style="display:flex;"><span>        properties.<span style="color:#a6e22e">setProperty</span>(<span style="color:#e6db74">&#34;mail.smtp.auth&#34;</span>,<span style="color:#e6db74">&#34;true&#34;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        qq邮箱还需要设置ssl加密，qq独有的其他邮箱没有</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">final</span> MailSSLSocketFactory mailSSLSocketFactory <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> MailSSLSocketFactory();
+</span></span><span style="display:flex;"><span>        mailSSLSocketFactory.<span style="color:#a6e22e">setTrustAllHosts</span>(<span style="color:#66d9ef">true</span>);
+</span></span><span style="display:flex;"><span>        properties.<span style="color:#a6e22e">put</span>(<span style="color:#e6db74">&#34;mail.smtp.ssl.enable&#34;</span>,<span style="color:#e6db74">&#34;true&#34;</span>);
+</span></span><span style="display:flex;"><span>        properties.<span style="color:#a6e22e">put</span>(<span style="color:#e6db74">&#34;mail.smtp.ssl.socketFactory&#34;</span>,mailSSLSocketFactory);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        1.创建定义整个应用程序所需的环境信息的session对象</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        qq独有的其他邮箱没有</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">final</span> Session session <span style="color:#f92672">=</span> Session.<span style="color:#a6e22e">getDefaultInstance</span>(properties, <span style="color:#66d9ef">new</span> Authenticator() {
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">protected</span> PasswordAuthentication <span style="color:#a6e22e">getPasswordAuthentication</span>() {
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//                发件人邮箱用户名，授权码/</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> PasswordAuthentication(<span style="color:#e6db74">&#34;xxxx@qq.com&#34;</span>, <span style="color:#e6db74">&#34;xxxxx&#34;</span>);
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        });
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        1.开启debug模式</span>
+</span></span><span style="display:flex;"><span>        session.<span style="color:#a6e22e">setDebug</span>(<span style="color:#66d9ef">true</span>);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        2.通过session得到transport对象</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">final</span> Transport transport <span style="color:#f92672">=</span> session.<span style="color:#a6e22e">getTransport</span>();
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        3.使用邮箱的用户名和授权码连接邮箱服务器</span>
+</span></span><span style="display:flex;"><span>        transport.<span style="color:#a6e22e">connect</span>(<span style="color:#e6db74">&#34;smtp.qq.com&#34;</span>,<span style="color:#e6db74">&#34;xxxx@qq.com&#34;</span>,<span style="color:#e6db74">&#34;xxxx&#34;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        4.创建邮件</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">final</span> MimeMessage message <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> MimeMessage(session);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        指明发件人</span>
+</span></span><span style="display:flex;"><span>        message.<span style="color:#a6e22e">setFrom</span>(<span style="color:#66d9ef">new</span> InternetAddress(<span style="color:#e6db74">&#34;xxxx@qq.com&#34;</span>));
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        指明收件人</span>
+</span></span><span style="display:flex;"><span>        message.<span style="color:#a6e22e">setRecipients</span>(Message.<span style="color:#a6e22e">RecipientType</span>.<span style="color:#a6e22e">TO</span>, String.<span style="color:#a6e22e">valueOf</span>(<span style="color:#66d9ef">new</span> InternetAddress(<span style="color:#e6db74">&#34;xxxx@qq.com&#34;</span>)));
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        邮件标题</span>
+</span></span><span style="display:flex;"><span>        message.<span style="color:#a6e22e">setSubject</span>(<span style="color:#e6db74">&#34;hello&#34;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        邮件内容</span>
+</span></span><span style="display:flex;"><span>        message.<span style="color:#a6e22e">setContent</span>(<span style="color:#e6db74">&#34;&lt;h1 style=&#39;color:red&#39;&gt;hello world&lt;/h1&gt;&#34;</span>,<span style="color:#e6db74">&#34;text/html;charset=utf-8&#34;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        5.发送邮件</span>
+</span></span><span style="display:flex;"><span>        transport.<span style="color:#a6e22e">sendMessage</span>(message,message.<span style="color:#a6e22e">getAllRecipients</span>());
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        6.关闭</span>
+</span></span><span style="display:flex;"><span>        transport.<span style="color:#a6e22e">close</span>();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="3图片邮件">3.图片邮件</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#f92672">package</span> com.xiaoyu;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> com.sun.mail.util.MailSSLSocketFactory;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> javax.activation.DataHandler;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> javax.activation.FileDataSource;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> javax.mail.*;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> javax.mail.internet.InternetAddress;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> javax.mail.internet.MimeBodyPart;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> javax.mail.internet.MimeMessage;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> javax.mail.internet.MimeMultipart;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> java.security.GeneralSecurityException;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> java.util.Properties;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ProImage</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>(String<span style="color:#f92672">[]</span> args) <span style="color:#66d9ef">throws</span> GeneralSecurityException, MessagingException {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">final</span> Properties properties <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Properties();
+</span></span><span style="display:flex;"><span>        properties.<span style="color:#a6e22e">setProperty</span>(<span style="color:#e6db74">&#34;mail.host&#34;</span>,<span style="color:#e6db74">&#34;smtp.qq.com&#34;</span>);
+</span></span><span style="display:flex;"><span>        properties.<span style="color:#a6e22e">setProperty</span>(<span style="color:#e6db74">&#34;mail.transport.protocol&#34;</span>,<span style="color:#e6db74">&#34;smtp&#34;</span>);
+</span></span><span style="display:flex;"><span>        properties.<span style="color:#a6e22e">setProperty</span>(<span style="color:#e6db74">&#34;mail.smtp.auth&#34;</span>,<span style="color:#e6db74">&#34;true&#34;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        qq邮箱还需要设置ssl加密，qq独有的其他邮箱没有</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">final</span> MailSSLSocketFactory mailSSLSocketFactory <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> MailSSLSocketFactory();
+</span></span><span style="display:flex;"><span>        mailSSLSocketFactory.<span style="color:#a6e22e">setTrustAllHosts</span>(<span style="color:#66d9ef">true</span>);
+</span></span><span style="display:flex;"><span>        properties.<span style="color:#a6e22e">put</span>(<span style="color:#e6db74">&#34;mail.smtp.ssl.enable&#34;</span>,<span style="color:#e6db74">&#34;true&#34;</span>);
+</span></span><span style="display:flex;"><span>        properties.<span style="color:#a6e22e">put</span>(<span style="color:#e6db74">&#34;mail.smtp.ssl.socketFactory&#34;</span>,mailSSLSocketFactory);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        1.创建定义整个应用程序所需的环境信息的session对象</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        qq独有的其他邮箱没有</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">final</span> Session session <span style="color:#f92672">=</span> Session.<span style="color:#a6e22e">getDefaultInstance</span>(properties, <span style="color:#66d9ef">new</span> Authenticator() {
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">protected</span> PasswordAuthentication <span style="color:#a6e22e">getPasswordAuthentication</span>() {
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//                发件人邮箱用户名，授权码/</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> PasswordAuthentication(<span style="color:#e6db74">&#34;xxx@qq.com&#34;</span>, <span style="color:#e6db74">&#34;xxxx&#34;</span>);
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        });
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        1.开启debug模式</span>
+</span></span><span style="display:flex;"><span>        session.<span style="color:#a6e22e">setDebug</span>(<span style="color:#66d9ef">true</span>);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        2.通过session得到transport对象</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">final</span> Transport transport <span style="color:#f92672">=</span> session.<span style="color:#a6e22e">getTransport</span>();
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        3.使用邮箱的用户名和授权码连接邮箱服务器</span>
+</span></span><span style="display:flex;"><span>        transport.<span style="color:#a6e22e">connect</span>(<span style="color:#e6db74">&#34;smtp.qq.com&#34;</span>,<span style="color:#e6db74">&#34;xxxx@qq.com&#34;</span>,<span style="color:#e6db74">&#34;xxxx&#34;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        4.创建邮件</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">final</span> MimeMessage message <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> MimeMessage(session);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        指明发件人</span>
+</span></span><span style="display:flex;"><span>        message.<span style="color:#a6e22e">setFrom</span>(<span style="color:#66d9ef">new</span> InternetAddress(<span style="color:#e6db74">&#34;xxxx@qq.com&#34;</span>));
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        指明收件人</span>
+</span></span><span style="display:flex;"><span>        message.<span style="color:#a6e22e">setRecipients</span>(Message.<span style="color:#a6e22e">RecipientType</span>.<span style="color:#a6e22e">TO</span>, String.<span style="color:#a6e22e">valueOf</span>(<span style="color:#66d9ef">new</span> InternetAddress(<span style="color:#e6db74">&#34;xxxx@qq.com&#34;</span>)));
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        邮件标题</span>
+</span></span><span style="display:flex;"><span>        message.<span style="color:#a6e22e">setSubject</span>(<span style="color:#e6db74">&#34;hello&#34;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        邮件内容</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        图片</span>
+</span></span><span style="display:flex;"><span>        MimeBodyPart image <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> MimeBodyPart();
+</span></span><span style="display:flex;"><span>        DataHandler dataHandler <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> DataHandler(<span style="color:#66d9ef">new</span> FileDataSource(<span style="color:#e6db74">&#34;src/main/resources/zhizhuxia.jpg&#34;</span>));
+</span></span><span style="display:flex;"><span>        image.<span style="color:#a6e22e">setDataHandler</span>(dataHandler);
+</span></span><span style="display:flex;"><span>        image.<span style="color:#a6e22e">setContentID</span>(<span style="color:#e6db74">&#34;zhizhuxia.jpg&#34;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        文字</span>
+</span></span><span style="display:flex;"><span>        MimeBodyPart text <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> MimeBodyPart();
+</span></span><span style="display:flex;"><span>        text.<span style="color:#a6e22e">setContent</span>(<span style="color:#e6db74">&#34;图片&lt;img src=&#39;cid:zhizhuxia.jpg&#39;&gt;&#34;</span>,<span style="color:#e6db74">&#34;text/html;charset=utf-8&#34;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        描述数据关系</span>
+</span></span><span style="display:flex;"><span>        MimeMultipart mimeMultipart <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> MimeMultipart();
+</span></span><span style="display:flex;"><span>        mimeMultipart.<span style="color:#a6e22e">addBodyPart</span>(image);
+</span></span><span style="display:flex;"><span>        mimeMultipart.<span style="color:#a6e22e">addBodyPart</span>(text);
+</span></span><span style="display:flex;"><span>        mimeMultipart.<span style="color:#a6e22e">setSubType</span>(<span style="color:#e6db74">&#34;related&#34;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        设置到消息中，保存修改</span>
+</span></span><span style="display:flex;"><span>        message.<span style="color:#a6e22e">setContent</span>(mimeMultipart);
+</span></span><span style="display:flex;"><span>        message.<span style="color:#a6e22e">saveChanges</span>();
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        5.发送邮件</span>
+</span></span><span style="display:flex;"><span>        transport.<span style="color:#a6e22e">sendMessage</span>(message,message.<span style="color:#a6e22e">getAllRecipients</span>());
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        6.关闭</span>
+</span></span><span style="display:flex;"><span>        transport.<span style="color:#a6e22e">close</span>();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="4附件邮件">4.附件邮件</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#f92672">package</span> com.xiaoyu;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> com.sun.mail.util.MailSSLSocketFactory;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> javax.activation.DataHandler;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> javax.activation.FileDataSource;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> javax.mail.*;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> javax.mail.internet.*;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> java.security.GeneralSecurityException;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> java.util.Properties;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ProImageAndFile</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>(String<span style="color:#f92672">[]</span> args) <span style="color:#66d9ef">throws</span> GeneralSecurityException, MessagingException {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">final</span> Properties properties <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Properties();
+</span></span><span style="display:flex;"><span>        properties.<span style="color:#a6e22e">setProperty</span>(<span style="color:#e6db74">&#34;mail.host&#34;</span>,<span style="color:#e6db74">&#34;smtp.qq.com&#34;</span>);
+</span></span><span style="display:flex;"><span>        properties.<span style="color:#a6e22e">setProperty</span>(<span style="color:#e6db74">&#34;mail.transport.protocol&#34;</span>,<span style="color:#e6db74">&#34;smtp&#34;</span>);
+</span></span><span style="display:flex;"><span>        properties.<span style="color:#a6e22e">setProperty</span>(<span style="color:#e6db74">&#34;mail.smtp.auth&#34;</span>,<span style="color:#e6db74">&#34;true&#34;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        qq邮箱还需要设置ssl加密，qq独有的其他邮箱没有</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">final</span> MailSSLSocketFactory mailSSLSocketFactory <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> MailSSLSocketFactory();
+</span></span><span style="display:flex;"><span>        mailSSLSocketFactory.<span style="color:#a6e22e">setTrustAllHosts</span>(<span style="color:#66d9ef">true</span>);
+</span></span><span style="display:flex;"><span>        properties.<span style="color:#a6e22e">put</span>(<span style="color:#e6db74">&#34;mail.smtp.ssl.enable&#34;</span>,<span style="color:#e6db74">&#34;true&#34;</span>);
+</span></span><span style="display:flex;"><span>        properties.<span style="color:#a6e22e">put</span>(<span style="color:#e6db74">&#34;mail.smtp.ssl.socketFactory&#34;</span>,mailSSLSocketFactory);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        1.创建定义整个应用程序所需的环境信息的session对象</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        qq独有的其他邮箱没有</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">final</span> Session session <span style="color:#f92672">=</span> Session.<span style="color:#a6e22e">getDefaultInstance</span>(properties, <span style="color:#66d9ef">new</span> Authenticator() {
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">protected</span> PasswordAuthentication <span style="color:#a6e22e">getPasswordAuthentication</span>() {
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//                发件人邮箱用户名，授权码/</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> PasswordAuthentication(<span style="color:#e6db74">&#34;xxxxx@qq.com&#34;</span>, <span style="color:#e6db74">&#34;xxxx&#34;</span>);
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        });
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        1.开启debug模式</span>
+</span></span><span style="display:flex;"><span>        session.<span style="color:#a6e22e">setDebug</span>(<span style="color:#66d9ef">true</span>);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        2.通过session得到transport对象</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">final</span> Transport transport <span style="color:#f92672">=</span> session.<span style="color:#a6e22e">getTransport</span>();
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        3.使用邮箱的用户名和授权码连接邮箱服务器</span>
+</span></span><span style="display:flex;"><span>        transport.<span style="color:#a6e22e">connect</span>(<span style="color:#e6db74">&#34;smtp.qq.com&#34;</span>,<span style="color:#e6db74">&#34;xxxx@qq.com&#34;</span>,<span style="color:#e6db74">&#34;xxxxx&#34;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        4.邮件内容</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">final</span> MimeMessage message <span style="color:#f92672">=</span> message(session);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        5.发送邮件</span>
+</span></span><span style="display:flex;"><span>        transport.<span style="color:#a6e22e">sendMessage</span>(message,message.<span style="color:#a6e22e">getAllRecipients</span>());
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        6.关闭</span>
+</span></span><span style="display:flex;"><span>        transport.<span style="color:#a6e22e">close</span>();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> MimeMessage <span style="color:#a6e22e">message</span>(Session session) <span style="color:#66d9ef">throws</span> MessagingException {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">final</span> MimeMessage message <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> MimeMessage(session);
+</span></span><span style="display:flex;"><span>        message.<span style="color:#a6e22e">setFrom</span>(<span style="color:#66d9ef">new</span> InternetAddress(<span style="color:#e6db74">&#34;xxxx@qq.com&#34;</span>));
+</span></span><span style="display:flex;"><span>        message.<span style="color:#a6e22e">setRecipients</span>(Message.<span style="color:#a6e22e">RecipientType</span>.<span style="color:#a6e22e">TO</span>,<span style="color:#e6db74">&#34;xxxx@qq.com&#34;</span>);
+</span></span><span style="display:flex;"><span>        message.<span style="color:#a6e22e">setSubject</span>(<span style="color:#e6db74">&#34;主题&#34;</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//        图片</span>
+</span></span><span style="display:flex;"><span>        MimeBodyPart image <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> MimeBodyPart();
+</span></span><span style="display:flex;"><span>        DataHandler dataHandler <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> DataHandler(<span style="color:#66d9ef">new</span> FileDataSource(<span style="color:#e6db74">&#34;src/main/resources/zhizhuxia.jpg&#34;</span>));
+</span></span><span style="display:flex;"><span>        image.<span style="color:#a6e22e">setDataHandler</span>(dataHandler);
+</span></span><span style="display:flex;"><span>        image.<span style="color:#a6e22e">setContentID</span>(<span style="color:#e6db74">&#34;zhizhuxia.jpg&#34;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        文字</span>
+</span></span><span style="display:flex;"><span>        MimeBodyPart text <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> MimeBodyPart();
+</span></span><span style="display:flex;"><span>        text.<span style="color:#a6e22e">setContent</span>(<span style="color:#e6db74">&#34;图片&lt;img src=&#39;cid:zhizhuxia.jpg&#39;&gt;&#34;</span>,<span style="color:#e6db74">&#34;text/html;charset=utf-8&#34;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        附件</span>
+</span></span><span style="display:flex;"><span>        MimeBodyPart file1 <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> MimeBodyPart();
+</span></span><span style="display:flex;"><span>        file1.<span style="color:#a6e22e">setDataHandler</span>(<span style="color:#66d9ef">new</span> DataHandler(<span style="color:#66d9ef">new</span> FileDataSource(<span style="color:#e6db74">&#34;src/main/resources/a.text&#34;</span>)));
+</span></span><span style="display:flex;"><span>        file1.<span style="color:#a6e22e">setFileName</span>(<span style="color:#e6db74">&#34;a.text&#34;</span>);
+</span></span><span style="display:flex;"><span>        MimeBodyPart file2 <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> MimeBodyPart();
+</span></span><span style="display:flex;"><span>        file2.<span style="color:#a6e22e">setDataHandler</span>(<span style="color:#66d9ef">new</span> DataHandler(<span style="color:#66d9ef">new</span> FileDataSource(<span style="color:#e6db74">&#34;src/main/resources/b.text&#34;</span>)));
+</span></span><span style="display:flex;"><span>        file2.<span style="color:#a6e22e">setFileName</span>(<span style="color:#e6db74">&#34;b.text&#34;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        描述数据关系</span>
+</span></span><span style="display:flex;"><span>        MimeMultipart mimeMultipart <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> MimeMultipart();
+</span></span><span style="display:flex;"><span>        mimeMultipart.<span style="color:#a6e22e">addBodyPart</span>(image);
+</span></span><span style="display:flex;"><span>        mimeMultipart.<span style="color:#a6e22e">addBodyPart</span>(text);
+</span></span><span style="display:flex;"><span>        mimeMultipart.<span style="color:#a6e22e">setSubType</span>(<span style="color:#e6db74">&#34;related&#34;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        拼装正文为主体</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">final</span> MimeBodyPart mimeBodyPart <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> MimeBodyPart();
+</span></span><span style="display:flex;"><span>        mimeBodyPart.<span style="color:#a6e22e">setContent</span>(mimeMultipart);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        拼接附件</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">final</span> MimeMultipart allfile <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> MimeMultipart();
+</span></span><span style="display:flex;"><span>        allfile.<span style="color:#a6e22e">addBodyPart</span>(file1);
+</span></span><span style="display:flex;"><span>        allfile.<span style="color:#a6e22e">addBodyPart</span>(file2);
+</span></span><span style="display:flex;"><span>        allfile.<span style="color:#a6e22e">addBodyPart</span>(mimeBodyPart);
+</span></span><span style="display:flex;"><span>        allfile.<span style="color:#a6e22e">setSubType</span>(<span style="color:#e6db74">&#34;mixed&#34;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        放到消息中</span>
+</span></span><span style="display:flex;"><span>        message.<span style="color:#a6e22e">setContent</span>(allfile);
+</span></span><span style="display:flex;"><span>        message.<span style="color:#a6e22e">saveChanges</span>();
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> message;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="二boot整合">二：boot整合</h1>
+<p>1.引入依赖</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;groupId&gt;</span>org.springframework.boot<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;artifactId&gt;</span>spring-boot-starter-mail<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/dependency&gt;</span>
+</span></span></code></pre></div><p>2.yml配置</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yml" data-lang="yml"><span style="display:flex;"><span><span style="color:#f92672">spring</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">mail</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">username</span>: <span style="color:#ae81ff">xxxx@qq.com</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">password</span>: <span style="color:#ae81ff">xxxx</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">host</span>: <span style="color:#ae81ff">smtp.qq.com</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">properties.mail.smtp.ssl.enable</span>: <span style="color:#66d9ef">true</span>
+</span></span></code></pre></div><p>3.使用</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@Autowired</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">private</span> JavaMailSenderImpl mailSender;
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@Test</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">contextLoads</span>() {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">final</span> SimpleMailMessage message <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> SimpleMailMessage();
+</span></span><span style="display:flex;"><span>    message.<span style="color:#a6e22e">setSubject</span>(<span style="color:#e6db74">&#34;hello&#34;</span>);
+</span></span><span style="display:flex;"><span>    message.<span style="color:#a6e22e">setText</span>(<span style="color:#e6db74">&#34;hello world&#34;</span>);
+</span></span><span style="display:flex;"><span>    message.<span style="color:#a6e22e">setFrom</span>(<span style="color:#e6db74">&#34;xxx@qq.com&#34;</span>);<span style="color:#75715e">//从哪来</span>
+</span></span><span style="display:flex;"><span>    message.<span style="color:#a6e22e">setTo</span>(<span style="color:#e6db74">&#34;xxx@qq.com&#34;</span>);<span style="color:#75715e">//去哪</span>
+</span></span><span style="display:flex;"><span>    mailSender.<span style="color:#a6e22e">send</span>(message);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@Test</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">t2</span>() <span style="color:#66d9ef">throws</span> Exception {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">final</span> MimeMessage message <span style="color:#f92672">=</span> mailSender.<span style="color:#a6e22e">createMimeMessage</span>();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">final</span> MimeMessageHelper helper <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> MimeMessageHelper(message,<span style="color:#66d9ef">true</span>);
+</span></span><span style="display:flex;"><span>    helper.<span style="color:#a6e22e">setSubject</span>(<span style="color:#e6db74">&#34;hello&#34;</span>);
+</span></span><span style="display:flex;"><span>    helper.<span style="color:#a6e22e">setText</span>(<span style="color:#e6db74">&#34;hello world&#34;</span>);
+</span></span><span style="display:flex;"><span>    helper.<span style="color:#a6e22e">addAttachment</span>(<span style="color:#e6db74">&#34;1.jpg&#34;</span>,<span style="color:#66d9ef">new</span> File(<span style="color:#e6db74">&#34;classpath:1.jpg&#34;</span>));
+</span></span><span style="display:flex;"><span>    helper.<span style="color:#a6e22e">addAttachment</span>(<span style="color:#e6db74">&#34;a.text&#34;</span>,<span style="color:#66d9ef">new</span> File(<span style="color:#e6db74">&#34;classpath:a.text&#34;</span>));
+</span></span><span style="display:flex;"><span>    helper.<span style="color:#a6e22e">setFrom</span>(<span style="color:#e6db74">&#34;xxx@qq.com&#34;</span>);
+</span></span><span style="display:flex;"><span>    helper.<span style="color:#a6e22e">setTo</span>(<span style="color:#e6db74">&#34;xxxx@qq.com&#34;</span>);
+</span></span><span style="display:flex;"><span>    mailSender.<span style="color:#a6e22e">send</span>(message);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul class="pa0">
+  
+   <li class="list di">
+     <a href="/tags/java/" class="link f5 grow br-pill ba ph3 pv2 mb2 dib black sans-serif no-underline">Java</a>
+   </li>
+  
+   <li class="list di">
+     <a href="/tags/email/" class="link f5 grow br-pill ba ph3 pv2 mb2 dib black sans-serif no-underline">Email</a>
+   </li>
+  
+</ul>
+<div class="mt6 instapaper_ignoref">
+      
+      
+      </div>
+    </div>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white white-70 dn dib-ns pv2 ph3 no-underline" href="http://localhost:1313/" >
+    &copy;  loveyu233 2025 
+  </a>
+    <div><div class="ananke-socials"></div>
+</div>
+  </div>
+</footer>
+
+  </body>
+</html>

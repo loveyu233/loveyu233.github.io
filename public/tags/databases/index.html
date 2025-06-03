@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>loveyu233</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="">
+    <meta name="generator" content="Hugo 0.147.7">
+    
+    
+    
+      <meta name="robots" content="noindex, nofollow">
+    
+    
+
+    
+<link rel="stylesheet" href="/ananke/css/main.min.css" >
+
+
+
+
+    
+
+
+    
+      
+
+    
+
+    
+    
+      <link href="/tags/databases/index.xml" rel="alternate" type="application/rss+xml" title="loveyu233" />
+      <link href="/tags/databases/index.xml" rel="feed" type="application/rss+xml" title="loveyu233" />
+      
+    
+
+    
+      <link rel="canonical" href="http://localhost:1313/tags/databases/">
+    
+
+    <meta property="og:url" content="http://localhost:1313/tags/databases/">
+  <meta property="og:site_name" content="loveyu233">
+  <meta property="og:title" content="Databases">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="website">
+
+  <meta itemprop="name" content="Databases">
+  <meta itemprop="datePublished" content="2024-03-24T19:38:37+08:00">
+  <meta itemprop="dateModified" content="2024-03-24T19:38:37+08:00">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Databases">
+
+	
+  </head><body class="ma0 avenir bg-near-white development">
+
+    
+
+  <header>
+    <div class="pb3-m pb6-l bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l center items-center justify-between">
+    <a href="/" class="f3 fw2 hover-white white-90 dib no-underline">
+      
+        loveyu233
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      <div class="ananke-socials"></div>
+
+    </div>
+  </div>
+</nav>
+
+      <div class="tc-l pv3 ph3 ph4-ns">
+        <h1 class="f2 f-subheadline-l fw2 light-silver mb0 lh-title">
+          Databases
+        </h1>
+        
+      </div>
+    </div>
+  </header>
+
+
+    <main class="pb7" role="main">
+      
+  <article class="cf pa3 pa4-m pa4-l">
+    <div class="measure-wide-l center f4 lh-copy nested-copy-line-height nested-links mid-gray">
+      <p>Below you will find pages that utilize the taxonomy term “Databases”</p>
+    </div>
+  </article>
+  <div class="mw8 center">
+    <section class="flex-ns mt5 flex-wrap justify-around">
+      
+        <div class="w-100 mb4 relative bg-white">
+          <div class="w-100 mb4 nested-copy-line-height relative bg-white">
+  <div class="mb3 pa4 gray overflow-hidden bg-white">
+    <span class="f6 db">databases</span>
+    <h1 class="f3 near-black">
+      <a href="/posts/databases/nebula/" class="link black dim">
+        nebula
+      </a>
+    </h1>
+    <div class="nested-links f5 lh-copy nested-copy-line-height">
+      <blockquote>
+<p><a href="https://docs.nebula-graph.com.cn/3.6.0/2.quick-start/3.quick-start-on-premise/4.nebula-graph-crud/#_10">官网文档</a></p></blockquote>
+<h1 id="初始化">初始化</h1>
+<h2 id="添加storage-主机">添加Storage 主机</h2>
+<blockquote>
+<p>刚部署好不添加主机<code>有可能</code>会报错</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>ADD HOSTS <span style="color:#e6db74">&#34;storaged0&#34;</span>:9779,<span style="color:#e6db74">&#34;storaged1&#34;</span>:9779,<span style="color:#e6db74">&#34;storaged2&#34;</span>:9779
+</span></span></code></pre></div><h1 id="图">图</h1>
+<h2 id="创建">创建</h2>
+<blockquote>
+<p>必须指定vid_type,partition_num:分区数，通常为全集群硬盘数量的 5 倍;replica_factor：指定集群中副本的数量，通常生产环境为 3，测试环境为 1</p>
+<p>如果报错提示<code>[ERROR (-1005)]: Host not enough!</code>，请检查是否已添加 Storage 主机。</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>CREATE SPACE <span style="color:#f92672">[</span>IF NOT EXISTS<span style="color:#f92672">]</span> &lt;graph_space_name&gt; <span style="color:#f92672">(</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>partition_num <span style="color:#f92672">=</span> &lt;partition_number&gt;,<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>replica_factor <span style="color:#f92672">=</span> &lt;replica_number&gt;,<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>vid_type <span style="color:#f92672">=</span> <span style="color:#f92672">{</span>FIXED_STRING<span style="color:#f92672">(</span>&lt;N&gt;<span style="color:#f92672">)</span> | INT64<span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>COMMENT <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;&lt;comment&gt;&#39;</span><span style="color:#f92672">]</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 实例</span>
+</span></span><span style="display:flex;"><span>CREATE SPACE IF NOT EXISTS hzy <span style="color:#f92672">(</span>partition_num <span style="color:#f92672">=</span> 1, replica_factor<span style="color:#f92672">=</span>1, vid_type<span style="color:#f92672">=</span>fixed_string<span style="color:#f92672">(</span>30<span style="color:#f92672">))</span> COMMENT<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;测试图&#39;</span>;
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>nebula&gt; CREATE SPACE basketballplayer<span style="color:#f92672">(</span>partition_num<span style="color:#f92672">=</span>15, replica_factor<span style="color:#f92672">=</span>1, vid_type<span style="color:#f92672">=</span>fixed_string<span style="color:#f92672">(</span>30<span style="color:#f92672">))</span>;
+</span></span></code></pre></div><h2 id="查看">查看</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>SHOW SPACES;
+</span></span></code></pre></div><h2 id="检查分片分布">检查分片分布</h2>
+<blockquote>
+<p>如果 <strong>Leader distribution</strong> 分布不均匀，请执行命令<code>BALANCE LEADER</code>重新分配。</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>SHOW HOSTS
+</span></span></code></pre></div><h2 id="使用">使用</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>USE space_name;
+</span></span></code></pre></div><h1 id="tagedge-type">Tag/Edge type</h1>
+<h2 id="创建-1">创建</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>CREATE <span style="color:#f92672">{</span>TAG | EDGE<span style="color:#f92672">}</span> <span style="color:#f92672">[</span>IF NOT EXISTS<span style="color:#f92672">]</span> <span style="color:#f92672">{</span>&lt;tag_name&gt; | &lt;edge_type_name&gt;<span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">(</span>
+</span></span><span style="display:flex;"><span>      &lt;prop_name&gt; &lt;data_type&gt; <span style="color:#f92672">[</span>NULL | NOT NULL<span style="color:#f92672">]</span> <span style="color:#f92672">[</span>DEFAULT &lt;default_value&gt;<span style="color:#f92672">]</span> <span style="color:#f92672">[</span>COMMENT <span style="color:#e6db74">&#39;&lt;comment&gt;&#39;</span><span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">[{</span>, &lt;prop_name&gt; &lt;data_type&gt; <span style="color:#f92672">[</span>NULL | NOT NULL<span style="color:#f92672">]</span> <span style="color:#f92672">[</span>DEFAULT &lt;default_value&gt;<span style="color:#f92672">]</span> <span style="color:#f92672">[</span>COMMENT <span style="color:#e6db74">&#39;&lt;comment&gt;&#39;</span><span style="color:#f92672">]}</span> ...<span style="color:#f92672">]</span> 
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">[</span>TTL_DURATION <span style="color:#f92672">=</span> &lt;ttl_duration&gt;<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">[</span>TTL_COL <span style="color:#f92672">=</span> &lt;prop_name&gt;<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">[</span>COMMENT <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;&lt;comment&gt;&#39;</span><span style="color:#f92672">]</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 实例</span>
+</span></span><span style="display:flex;"><span>create tag <span style="color:#66d9ef">if</span> not exists tag1 <span style="color:#f92672">(</span>name string not null default <span style="color:#e6db74">&#39;default_value&#39;</span> comment <span style="color:#e6db74">&#39;测试tag1&#39;</span><span style="color:#f92672">)</span>;
+</span></span><span style="display:flex;"><span>create edge <span style="color:#66d9ef">if</span> not exists dege1 <span style="color:#f92672">(</span>start int comment <span style="color:#e6db74">&#39;测试dege1&#39;</span><span style="color:#f92672">)</span>;
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>nebula&gt; CREATE TAG player<span style="color:#f92672">(</span>name string, age int<span style="color:#f92672">)</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>nebula&gt; CREATE TAG team<span style="color:#f92672">(</span>name string<span style="color:#f92672">)</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>nebula&gt; CREATE EDGE follow<span style="color:#f92672">(</span>degree int<span style="color:#f92672">)</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>nebula&gt; CREATE EDGE serve<span style="color:#f92672">(</span>start_year int, end_year int<span style="color:#f92672">)</span>;
+</span></span></code></pre></div><h2 id="插入数据">插入数据</h2>
+<h3 id="点">点</h3>
+<blockquote>
+<p><code>vid</code>是 Vertex ID 的缩写，<code>vid</code>在一个图空间中是唯一的。</p>
+    </div>
+    <a href="/posts/databases/nebula/" class="ba b--moon-gray bg-light-gray br2 color-inherit dib f7 hover-bg-moon-gray link mt2 ph2 pv1">read more</a>
+  </div>
+</div>
+
+        </div>
+      
+        <div class="w-100 mb4 relative bg-white">
+          <div class="w-100 mb4 nested-copy-line-height relative bg-white">
+  <div class="mb3 pa4 gray overflow-hidden bg-white">
+    <span class="f6 db">databases</span>
+    <h1 class="f3 near-black">
+      <a href="/posts/databases/pgsql/" class="link black dim">
+        pgsql
+      </a>
+    </h1>
+    <div class="nested-links f5 lh-copy nested-copy-line-height">
+      <h1 id="命令行">命令行</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#75715e">-- 登录
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>psql <span style="color:#f92672">-</span>U username <span style="color:#f92672">-</span>d dbname <span style="color:#f92672">-</span>h hostname
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 查看用户权限
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#960050;background-color:#1e0010">\</span>du
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 查看有哪些库
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#960050;background-color:#1e0010">\</span>l
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 切换库
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#960050;background-color:#1e0010">\</span><span style="color:#66d9ef">c</span> dbname
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 查看当前库有哪些表
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#960050;background-color:#1e0010">\</span>dt
+</span></span></code></pre></div><h1 id="用户管理">用户管理</h1>
+<blockquote>
+<p>登录权限（LOGIN）：允许角色登录到数据库。
+超级用户权限（SUPERUSER）：赋予角色超级用户权限，使其可以执行任何操作，包括修改系统表。
+创建数据库权限（CREATEDB）：允许角色创建新的数据库。
+创建角色权限（CREATEROLE）：允许角色创建新的数据库角色。
+创建临时表权限（TEMPORARY）：允许角色创建临时表。
+连接限制（CONNECTION LIMIT）：限制角色同时连接到数据库的最大数量。
+继承权限（INHERIT）：允许角色继承其他角色的权限。
+授权权限（GRANT）：允许角色授权给其他角色权限。
+修改其他角色权限（ALTER ANY ROLE）：允许角色修改其他角色的属性。
+删除其他角色权限（DROP ANY ROLE）：允许角色删除其他角色。
+超时限制（PASSWORD EXPIRY）：设置角色密码的过期时间。
+加密方式（ENCRYPTED）：指定角色密码是否加密存储。</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#75715e">-- 创建用户
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">create</span> <span style="color:#66d9ef">role</span> <span style="color:#960050;background-color:#1e0010">用户名</span> <span style="color:#66d9ef">with</span> superuser login password <span style="color:#e6db74">&#39;密码&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 删除用户
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">drop</span> <span style="color:#66d9ef">role</span> <span style="color:#960050;background-color:#1e0010">用户名</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 修改用户密码
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">alter</span> <span style="color:#66d9ef">role</span> <span style="color:#960050;background-color:#1e0010">用户名</span> <span style="color:#66d9ef">with</span> password <span style="color:#e6db74">&#39;新密码&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">REVOKE</span> privilege_name <span style="color:#66d9ef">ON</span> object_name <span style="color:#66d9ef">FROM</span> username;
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">如：</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">#</span> <span style="color:#960050;background-color:#1e0010">撤销数据库权限</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">revoke</span> <span style="color:#66d9ef">all</span> <span style="color:#66d9ef">privileges</span> <span style="color:#66d9ef">on</span> <span style="color:#66d9ef">database</span> mydata <span style="color:#66d9ef">from</span> jinjin;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">#</span> <span style="color:#960050;background-color:#1e0010">撤销表权限</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">revoke</span> <span style="color:#66d9ef">all</span> <span style="color:#66d9ef">privileges</span> <span style="color:#66d9ef">on</span> <span style="color:#66d9ef">all</span> tables <span style="color:#66d9ef">in</span> <span style="color:#66d9ef">schema</span> <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">from</span> jinjin;
+</span></span></code></pre></div><h1 id="时区管理">时区管理</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#75715e">-- 显示当前数据库使用的时区
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">show</span> time <span style="color:#66d9ef">zone</span> ;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 查看当前时间
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">select</span> now();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 查看可以设置的时区有哪些
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">select</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">from</span> pg_timezone_names;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 设置当前时区为PRC
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">set</span> timezone <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;PRC&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 设置全部用户的时区
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">alter</span> <span style="color:#66d9ef">role</span> <span style="color:#66d9ef">all</span> <span style="color:#66d9ef">set</span> timezone <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;PRC&#39;</span>;
+</span></span></code></pre></div><h1 id="序列">序列</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">CREATE</span> SEQUENCE my_sequence
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">START</span> <span style="color:#ae81ff">1</span>  <span style="color:#960050;background-color:#1e0010">序列从</span> <span style="color:#ae81ff">1</span> <span style="color:#960050;background-color:#1e0010">开始</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">INCREMENT</span> <span style="color:#66d9ef">BY</span> <span style="color:#ae81ff">1</span> <span style="color:#960050;background-color:#1e0010">每次递增</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">MINVALUE</span> <span style="color:#ae81ff">1</span>  <span style="color:#960050;background-color:#1e0010">序列的最小值是</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">MAXVALUE</span> <span style="color:#ae81ff">10000</span> <span style="color:#960050;background-color:#1e0010">序列的最大值是</span> <span style="color:#ae81ff">10000</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">CYCLE</span>; <span style="color:#960050;background-color:#1e0010">当序列到达最大值后，循环回到最小值</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 创建了一个名为 user_id_seq 的简单序列，未指定起始值或者增量等属性，默认情况下会从 1 开始，每次增加 1。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">create</span> sequence user_id_seq;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 将 user_id_seq 序列的所有权修改为 pgsql 用户。只有序列的所有者（或超级用户）可以修改序列的属性。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">alter</span> sequence user_id_seq <span style="color:#66d9ef">owner</span> <span style="color:#66d9ef">to</span> pgsql;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 指定了 user_id_seq 序列由 users.id 列拥有。这通常用于确保序列与特定表的列相关联，以便自动管理默认值。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">alter</span> sequence user_id_seq owned <span style="color:#66d9ef">by</span> users.id;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 将 users 表的 id 列设置默认值为 user_id_seq 序列的下一个值。这意味着每次插入新行时，如果不提供 id 列的值，则会自动使用序列生成的下一个值。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">alter</span> <span style="color:#66d9ef">table</span> users <span style="color:#66d9ef">alter</span> <span style="color:#66d9ef">column</span> id <span style="color:#66d9ef">set</span> <span style="color:#66d9ef">default</span> nextval(<span style="color:#e6db74">&#39;user_id_seq&#39;</span>::regclass);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 向 users 表中插入一行数据，设置 username 列的值为 &#39;a&#39;。由于 id 列已经设置为序列 user_id_seq 的默认值，它会自动为 id 列生成一个递增的唯一值。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">select</span> setval(<span style="color:#e6db74">&#39;user_id_seq&#39;</span>,(<span style="color:#66d9ef">select</span> <span style="color:#66d9ef">max</span>(id) <span style="color:#66d9ef">from</span> users));
+</span></span></code></pre></div><h1 id="错误码">错误码</h1>
+<h2 id="sqlstate-23505">SQLSTATE 23505</h2>
+<blockquote>
+<p><code>SQLSTATE 23505</code>: 发生在尝试向数据库中插入一条记录时，违反了表中的唯一约束。例如，如果尝试插入一个已经在表中存在的唯一键值，就会触发 SQLSTATE 23505 错误。</p>
+    </div>
+    <a href="/posts/databases/pgsql/" class="ba b--moon-gray bg-light-gray br2 color-inherit dib f7 hover-bg-moon-gray link mt2 ph2 pv1">read more</a>
+  </div>
+</div>
+
+        </div>
+      
+        <div class="w-100 mb4 relative bg-white">
+          <div class="w-100 mb4 nested-copy-line-height relative bg-white">
+  <div class="mb3 pa4 gray overflow-hidden bg-white">
+    <span class="f6 db">databases</span>
+    <h1 class="f3 near-black">
+      <a href="/posts/databases/mysql%E6%97%A5%E5%BF%97/" class="link black dim">
+        mysql日志
+      </a>
+    </h1>
+    <div class="nested-links f5 lh-copy nested-copy-line-height">
+      <h1 id="undolog">UndoLog</h1>
+<blockquote>
+<p>悔做日志（Undo Log）是数据库事务管理的一个关键组成部分，尤其是在支持事务的存储引擎（如 MySQL 的 InnoDB 存储引擎）中。Undo Log 主要用于记录事务对数据的修改操作的反向操作，以便在事务回滚时撤销这些修改。在 InnoDB 存储引擎中，Undo Log 用于实现事务的原子性（Atomicity）和隔离性（Isolation）。</p></blockquote>
+<h2 id="功能">功能</h2>
+<ol>
+<li>
+<p><strong>事务回滚</strong>：当一个事务需要回滚时（例如，事务执行过程中遇到错误或用户手动执行 ROLLBACK 命令），Undo Log 中存储的反向操作会被用来撤销事务对数据的所有更改，从而实现事务的原子性。</p>
+</li>
+<li>
+<p><strong>多版本并发控制（MVCC）</strong>：InnoDB 存储引擎使用多版本并发控制（MVCC）技术来实现事务的隔离性。在 MVCC 模型中，不同事务对相同数据的修改不会直接覆盖数据，而是在 Undo Log 中生成一个数据的旧版本。这使得在同一时间点，不同事务可以看到数据的不同版本，从而实现事务的隔离性。</p>
+</li>
+</ol>
+<h2 id="工作流程">工作流程</h2>
+<ol>
+<li>
+<p>当一个事务开始执行时，InnoDB 会为该事务分配一个新的 Undo Log。如果该事务修改了数据，InnoDB 会将修改前的数据存储在 Undo Log 中。</p>
+</li>
+<li>
+<p>如果事务正常提交，Undo Log 中的记录会在一段时间后被清理。这个过程通常在下一个检查点（Checkpoint）时发生，因为检查点会确保所有相关的数据更改已经被持久化到磁盘。</p>
+</li>
+<li>
+<p>如果事务需要回滚，InnoDB 会使用 Undo Log 中的记录来撤销事务所做的所有更改。这样，数据可以恢复到事务开始前的状态，从而实现事务的原子性。</p>
+</li>
+<li>
+<p>在并发事务的情况下，Undo Log 中存储的数据旧版本用于实现多版本并发控制。当一个事务需要读取数据时，InnoDB 会根据该事务的隔离级别和 Undo Log 中的记录来确定应该返回哪个版本的数据。</p>
+</li>
+</ol>
+<h1 id="binarylog">BinaryLog</h1>
+<blockquote>
+<p>binlog 用于记录数据库执行的写入性操作(不包括查询)信息，以二进制的形式保存在磁盘中。由MySQL 的 Server 层实现的，所有引擎都可以使用</p>
+<p>BinLog是逻辑日志，记录的是这个语句的原始逻辑，比如“给 ID=2 这一行的 c 字段加 1 ”。</p>
+<p>binlog 是可以追加写入的。“追加写”是指 binlog 文件写到一定大小后会切换到下一个，并不会覆盖以前的日志。</p>
+<p>使用场景：主从复制和数据恢复</p>
+<p>查看BinLog日志模式: <code>select @@binlog_format</code></p>
+    </div>
+    <a href="/posts/databases/mysql%E6%97%A5%E5%BF%97/" class="ba b--moon-gray bg-light-gray br2 color-inherit dib f7 hover-bg-moon-gray link mt2 ph2 pv1">read more</a>
+  </div>
+</div>
+
+        </div>
+      
+    </section>
+  </div>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white white-70 dn dib-ns pv2 ph3 no-underline" href="http://localhost:1313/" >
+    &copy;  loveyu233 2025 
+  </a>
+    <div><div class="ananke-socials"></div>
+</div>
+  </div>
+</footer>
+
+  </body>
+</html>

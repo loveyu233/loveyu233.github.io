@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>loveyu233</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="">
+    <meta name="generator" content="Hugo 0.147.7">
+    
+    
+    
+      <meta name="robots" content="noindex, nofollow">
+    
+    
+
+    
+<link rel="stylesheet" href="/ananke/css/main.min.css" >
+
+
+
+
+    
+
+
+    
+      
+
+    
+
+    
+    
+      <link href="/tags/vue3/index.xml" rel="alternate" type="application/rss+xml" title="loveyu233" />
+      <link href="/tags/vue3/index.xml" rel="feed" type="application/rss+xml" title="loveyu233" />
+      
+    
+
+    
+      <link rel="canonical" href="http://localhost:1313/tags/vue3/">
+    
+
+    <meta property="og:url" content="http://localhost:1313/tags/vue3/">
+  <meta property="og:site_name" content="loveyu233">
+  <meta property="og:title" content="Vue3">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="website">
+
+  <meta itemprop="name" content="Vue3">
+  <meta itemprop="datePublished" content="2023-06-10T15:33:14+08:00">
+  <meta itemprop="dateModified" content="2023-06-10T15:33:14+08:00">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Vue3">
+
+	
+  </head><body class="ma0 avenir bg-near-white development">
+
+    
+
+  <header>
+    <div class="pb3-m pb6-l bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l center items-center justify-between">
+    <a href="/" class="f3 fw2 hover-white white-90 dib no-underline">
+      
+        loveyu233
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      <div class="ananke-socials"></div>
+
+    </div>
+  </div>
+</nav>
+
+      <div class="tc-l pv3 ph3 ph4-ns">
+        <h1 class="f2 f-subheadline-l fw2 light-silver mb0 lh-title">
+          Vue3
+        </h1>
+        
+      </div>
+    </div>
+  </header>
+
+
+    <main class="pb7" role="main">
+      
+  <article class="cf pa3 pa4-m pa4-l">
+    <div class="measure-wide-l center f4 lh-copy nested-copy-line-height nested-links mid-gray">
+      <p>Below you will find pages that utilize the taxonomy term “Vue3”</p>
+    </div>
+  </article>
+  <div class="mw8 center">
+    <section class="flex-ns mt5 flex-wrap justify-around">
+      
+        <div class="w-100 mb4 relative bg-white">
+          <div class="w-100 mb4 nested-copy-line-height relative bg-white">
+  <div class="mb3 pa4 gray overflow-hidden bg-white">
+    <span class="f6 db">frontEnd</span>
+    <h1 class="f3 near-black">
+      <a href="/posts/frontend/%E5%8A%A8%E6%80%81%E8%B7%AF%E7%94%B1/" class="link black dim">
+        动态路由
+      </a>
+    </h1>
+    <div class="nested-links f5 lh-copy nested-copy-line-height">
+      <blockquote>
+<p>从后端返回路由表,然后再由前端进行动态渲染</p></blockquote>
+<h1 id="表结构">表结构</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">TABLE</span> <span style="color:#f92672">`</span>sys_base_menus<span style="color:#f92672">`</span> (
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">`</span>id<span style="color:#f92672">`</span> int <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">NULL</span> AUTO_INCREMENT <span style="color:#66d9ef">comment</span> <span style="color:#e6db74">&#39;唯一id&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">`</span>r_id<span style="color:#f92672">`</span> int <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">NULL</span> <span style="color:#66d9ef">comment</span> <span style="color:#e6db74">&#39;路由id&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">`</span>menu_level<span style="color:#f92672">`</span> int <span style="color:#66d9ef">DEFAULT</span> <span style="color:#66d9ef">NULL</span> <span style="color:#66d9ef">comment</span> <span style="color:#e6db74">&#39;层级,1代表第一层,2就是第二层代表是第一层的子路由&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">`</span>parent_id<span style="color:#f92672">`</span> int <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">NULL</span> <span style="color:#66d9ef">COMMENT</span> <span style="color:#e6db74">&#39;父路由ID&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">`</span>path<span style="color:#f92672">`</span> varchar(<span style="color:#ae81ff">191</span>) CHARACTER <span style="color:#66d9ef">SET</span> utf8mb4 <span style="color:#66d9ef">COLLATE</span> utf8mb4_general_ci <span style="color:#66d9ef">DEFAULT</span> <span style="color:#66d9ef">NULL</span> <span style="color:#66d9ef">COMMENT</span> <span style="color:#e6db74">&#39;路由path&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">`</span>name<span style="color:#f92672">`</span> varchar(<span style="color:#ae81ff">191</span>) CHARACTER <span style="color:#66d9ef">SET</span> utf8mb4 <span style="color:#66d9ef">COLLATE</span> utf8mb4_general_ci <span style="color:#66d9ef">DEFAULT</span> <span style="color:#66d9ef">NULL</span> <span style="color:#66d9ef">COMMENT</span> <span style="color:#e6db74">&#39;路由name&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">`</span>hidden<span style="color:#f92672">`</span> tinyint(<span style="color:#ae81ff">1</span>) <span style="color:#66d9ef">DEFAULT</span> <span style="color:#66d9ef">NULL</span> <span style="color:#66d9ef">COMMENT</span> <span style="color:#e6db74">&#39;是否隐藏&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">`</span>component<span style="color:#f92672">`</span> varchar(<span style="color:#ae81ff">191</span>) CHARACTER <span style="color:#66d9ef">SET</span> utf8mb4 <span style="color:#66d9ef">COLLATE</span> utf8mb4_general_ci <span style="color:#66d9ef">DEFAULT</span> <span style="color:#66d9ef">NULL</span> <span style="color:#66d9ef">COMMENT</span> <span style="color:#e6db74">&#39;对应前端文件路径&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">`</span>sort<span style="color:#f92672">`</span> int <span style="color:#66d9ef">DEFAULT</span> <span style="color:#66d9ef">NULL</span> <span style="color:#66d9ef">COMMENT</span> <span style="color:#e6db74">&#39;排序标记,同一层谁在前谁在后&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">`</span>title<span style="color:#f92672">`</span> varchar(<span style="color:#ae81ff">191</span>) CHARACTER <span style="color:#66d9ef">SET</span> utf8mb4 <span style="color:#66d9ef">COLLATE</span> utf8mb4_general_ci <span style="color:#66d9ef">DEFAULT</span> <span style="color:#66d9ef">NULL</span> <span style="color:#66d9ef">COMMENT</span> <span style="color:#e6db74">&#39;附加属性,页面标题&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">`</span>icon<span style="color:#f92672">`</span> varchar(<span style="color:#ae81ff">191</span>) CHARACTER <span style="color:#66d9ef">SET</span> utf8mb4 <span style="color:#66d9ef">COLLATE</span> utf8mb4_general_ci <span style="color:#66d9ef">DEFAULT</span> <span style="color:#66d9ef">NULL</span> <span style="color:#66d9ef">COMMENT</span> <span style="color:#e6db74">&#39;附加属性,展示该路由是前边的图标&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">PRIMARY</span> <span style="color:#66d9ef">KEY</span> (<span style="color:#f92672">`</span>id<span style="color:#f92672">`</span>)
+</span></span><span style="display:flex;"><span>) ENGINE<span style="color:#f92672">=</span>InnoDB AUTO_INCREMENT<span style="color:#f92672">=</span><span style="color:#ae81ff">14</span> <span style="color:#66d9ef">DEFAULT</span> CHARSET<span style="color:#f92672">=</span>utf8mb4 <span style="color:#66d9ef">COLLATE</span><span style="color:#f92672">=</span>utf8mb4_0900_ai_ci <span style="color:#66d9ef">COMMENT</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;动态路由组件&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">INSERT</span> <span style="color:#66d9ef">INTO</span> sys_base_menus (r_id, menu_level, parent_id, path, name, hidden, component, sort, title, icon)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">VALUES</span>
+</span></span><span style="display:flex;"><span>    (<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">0</span>,<span style="color:#e6db74">&#39;/home&#39;</span>,<span style="color:#e6db74">&#39;home&#39;</span>,<span style="color:#ae81ff">0</span>,<span style="color:#e6db74">&#39;/views/home/index.vue&#39;</span>,<span style="color:#ae81ff">1</span>,<span style="color:#e6db74">&#39;首页&#39;</span>,<span style="color:#e6db74">&#39;home.icon&#39;</span>),
+</span></span><span style="display:flex;"><span>    (<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">0</span>,<span style="color:#e6db74">&#39;/dashboard&#39;</span>,<span style="color:#e6db74">&#39;dashboard&#39;</span>,<span style="color:#ae81ff">0</span>,<span style="color:#e6db74">&#39;/views/dashboard/index.vue&#39;</span>,<span style="color:#ae81ff">2</span>,<span style="color:#e6db74">&#39;数据大屏&#39;</span>,<span style="color:#e6db74">&#39;dashboard.icon&#39;</span>),
+</span></span><span style="display:flex;"><span>    (<span style="color:#ae81ff">3</span>,<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">0</span>,<span style="color:#e6db74">&#39;/auth&#39;</span>,<span style="color:#e6db74">&#39;auth&#39;</span>,<span style="color:#ae81ff">0</span>,<span style="color:#e6db74">&#39;/views/auth/index.vue&#39;</span>,<span style="color:#ae81ff">3</span>,<span style="color:#e6db74">&#39;权限管理&#39;</span>,<span style="color:#e6db74">&#39;auth.icon&#39;</span>),
+</span></span><span style="display:flex;"><span>    (<span style="color:#ae81ff">4</span>,<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">3</span>,<span style="color:#e6db74">&#39;/auth/user&#39;</span>,<span style="color:#e6db74">&#39;authUser&#39;</span>,<span style="color:#ae81ff">0</span>,<span style="color:#e6db74">&#39;/views/auth/user/index.vue&#39;</span>,<span style="color:#ae81ff">1</span>,<span style="color:#e6db74">&#39;用户管理&#39;</span>,<span style="color:#e6db74">&#39;authUser.icon&#39;</span>),
+</span></span><span style="display:flex;"><span>    (<span style="color:#ae81ff">5</span>,<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">3</span>,<span style="color:#e6db74">&#39;/auth/role&#39;</span>,<span style="color:#e6db74">&#39;authRole&#39;</span>,<span style="color:#ae81ff">0</span>,<span style="color:#e6db74">&#39;/views/auth/role/index.vue&#39;</span>,<span style="color:#ae81ff">2</span>,<span style="color:#e6db74">&#39;角色管理&#39;</span>,<span style="color:#e6db74">&#39;authRole.icon&#39;</span>),
+</span></span><span style="display:flex;"><span>    (<span style="color:#ae81ff">6</span>,<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">0</span>,<span style="color:#e6db74">&#39;/shop&#39;</span>,<span style="color:#e6db74">&#39;shop&#39;</span>,<span style="color:#ae81ff">0</span>,<span style="color:#e6db74">&#39;/views/shop/index.vue&#39;</span>,<span style="color:#ae81ff">4</span>,<span style="color:#e6db74">&#39;商品管理&#39;</span>,<span style="color:#e6db74">&#39;shop.icon&#39;</span>),
+</span></span><span style="display:flex;"><span>    (<span style="color:#ae81ff">7</span>,<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">3</span>,<span style="color:#e6db74">&#39;/auth/menu&#39;</span>,<span style="color:#e6db74">&#39;authMenu&#39;</span>,<span style="color:#ae81ff">0</span>,<span style="color:#e6db74">&#39;/views/auth/menu/index.vue&#39;</span>,<span style="color:#ae81ff">3</span>,<span style="color:#e6db74">&#39;菜单管理&#39;</span>,<span style="color:#e6db74">&#39;ElementPlus&#39;</span>),
+</span></span><span style="display:flex;"><span>    (<span style="color:#ae81ff">8</span>,<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">6</span>,<span style="color:#e6db74">&#39;/shop/make&#39;</span>,<span style="color:#e6db74">&#39;shopMake&#39;</span>,<span style="color:#ae81ff">0</span>,<span style="color:#e6db74">&#39;/views/shop/make/index.vue&#39;</span>,<span style="color:#ae81ff">1</span>,<span style="color:#e6db74">&#39;品牌管理&#39;</span>,<span style="color:#e6db74">&#39;TakeawayBox&#39;</span>),
+</span></span><span style="display:flex;"><span>    (<span style="color:#ae81ff">9</span>,<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">6</span>,<span style="color:#e6db74">&#39;/shop/attr&#39;</span>,<span style="color:#e6db74">&#39;shopAttr&#39;</span>,<span style="color:#ae81ff">0</span>,<span style="color:#e6db74">&#39;/views/shop/attr/index.vue&#39;</span>,<span style="color:#ae81ff">2</span>,<span style="color:#e6db74">&#39;属性管理&#39;</span>,<span style="color:#e6db74">&#39;Baseball&#39;</span>),
+</span></span><span style="display:flex;"><span>    (<span style="color:#ae81ff">10</span>,<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">6</span>,<span style="color:#e6db74">&#39;/shop/spu&#39;</span>,<span style="color:#e6db74">&#39;shopSpu&#39;</span>,<span style="color:#ae81ff">0</span>,<span style="color:#e6db74">&#39;/views/shop/spu/index.vue&#39;</span>,<span style="color:#ae81ff">3</span>,<span style="color:#e6db74">&#39;SPU管理&#39;</span>,<span style="color:#e6db74">&#39;Mouse&#39;</span>),
+</span></span><span style="display:flex;"><span>    (<span style="color:#ae81ff">11</span>,<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">6</span>,<span style="color:#e6db74">&#39;/shop/sku&#39;</span>,<span style="color:#e6db74">&#39;shopSku&#39;</span>,<span style="color:#ae81ff">0</span>,<span style="color:#e6db74">&#39;/views/shop/sku/index.vue&#39;</span>,<span style="color:#ae81ff">4</span>,<span style="color:#e6db74">&#39;SKU管理&#39;</span>,<span style="color:#e6db74">&#39;Coin&#39;</span>),
+</span></span><span style="display:flex;"><span>    (<span style="color:#ae81ff">12</span>,<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">3</span>,<span style="color:#e6db74">&#39;/home&#39;</span>,<span style="color:#e6db74">&#39;home&#39;</span>,<span style="color:#ae81ff">0</span>,<span style="color:#e6db74">&#39;/views/home/index.vue&#39;</span>,<span style="color:#ae81ff">0</span>,<span style="color:#e6db74">&#39;主页&#39;</span>,<span style="color:#e6db74">&#39;ElementPlus&#39;</span>),
+</span></span><span style="display:flex;"><span>    (<span style="color:#ae81ff">13</span>,<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">6</span>,<span style="color:#e6db74">&#39;/login&#39;</span>,<span style="color:#e6db74">&#39;shopBrand&#39;</span>,<span style="color:#ae81ff">0</span>,<span style="color:#e6db74">&#39;/views/login/index.vue&#39;</span>,<span style="color:#ae81ff">0</span>,<span style="color:#e6db74">&#39;登录&#39;</span>,<span style="color:#e6db74">&#39;TakeawayBox&#39;</span>);
+</span></span></code></pre></div><h1 id="后端">后端</h1>
+<blockquote>
+<p>golang查询返回数据</p>
+    </div>
+    <a href="/posts/frontend/%E5%8A%A8%E6%80%81%E8%B7%AF%E7%94%B1/" class="ba b--moon-gray bg-light-gray br2 color-inherit dib f7 hover-bg-moon-gray link mt2 ph2 pv1">read more</a>
+  </div>
+</div>
+
+        </div>
+      
+        <div class="w-100 mb4 relative bg-white">
+          <div class="w-100 mb4 nested-copy-line-height relative bg-white">
+  <div class="mb3 pa4 gray overflow-hidden bg-white">
+    <span class="f6 db">frontEnd</span>
+    <h1 class="f3 near-black">
+      <a href="/posts/frontend/vue3%E6%95%99%E7%A8%8B/" class="link black dim">
+        Vue3
+      </a>
+    </h1>
+    <div class="nested-links f5 lh-copy nested-copy-line-height">
+      <h1 id="vite创建vuets">Vite创建vue+ts</h1>
+<p><code>npm create vite@latest </code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>~ &gt; npm create vite@latest                                                  
+</span></span><span style="display:flex;"><span>Need to install the following packages:
+</span></span><span style="display:flex;"><span>  create-vite@4.3.2
+</span></span><span style="display:flex;"><span>Ok to proceed? <span style="color:#f92672">(</span>y<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>✔ Project name: … vite-project
+</span></span><span style="display:flex;"><span>✔ Select a framework: › Vue
+</span></span><span style="display:flex;"><span>✔ Select a variant: › TypeScript
+</span></span><span style="display:flex;"><span>Scaffolding project in /Users/huangzhenyu/logs/vite-project...
+</span></span><span style="display:flex;"><span>Done. Now run:
+</span></span><span style="display:flex;"><span>  cd vite-project
+</span></span><span style="display:flex;"><span>  npm install
+</span></span><span style="display:flex;"><span>  npm run dev
+</span></span></code></pre></div><blockquote>
+<p>解决ts不能识别vue文件</p></blockquote>
+<p><code>vite-env.d.ts</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ts" data-lang="ts"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;reference types=&#34;vite/client&#34; /&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">declare</span> <span style="color:#a6e22e">module</span> <span style="color:#e6db74">&#34;*.vue&#34;</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">import</span> { <span style="color:#a6e22e">DefineComponent</span> } <span style="color:#66d9ef">from</span> <span style="color:#e6db74">&#34;vue&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">component</span>: <span style="color:#66d9ef">DefineComponent</span><span style="color:#f92672">&lt;</span>{}, {}, <span style="color:#66d9ef">any</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">export</span> <span style="color:#66d9ef">default</span> <span style="color:#a6e22e">component</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="组合式api">组合式Api</h1>
+<blockquote>
+<p>使用<code>setup</code> ,按需引入不再和vue2一样全部导入了</p>
+    </div>
+    <a href="/posts/frontend/vue3%E6%95%99%E7%A8%8B/" class="ba b--moon-gray bg-light-gray br2 color-inherit dib f7 hover-bg-moon-gray link mt2 ph2 pv1">read more</a>
+  </div>
+</div>
+
+        </div>
+      
+    </section>
+  </div>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white white-70 dn dib-ns pv2 ph3 no-underline" href="http://localhost:1313/" >
+    &copy;  loveyu233 2025 
+  </a>
+    <div><div class="ananke-socials"></div>
+</div>
+  </div>
+</footer>
+
+  </body>
+</html>

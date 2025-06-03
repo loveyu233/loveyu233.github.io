@@ -1,0 +1,1364 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>SpringCloud | loveyu233</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="Spring Cloud Alibaba
+介绍
+Spring Cloud Alibaba 致力于提供微服务开发的一站式解决方案。此项目包含开发分布式应用微服务的必需组件，方便开发者通过 Spring Cloud 编程模型轻松使用这些组件来开发分布式应用服务。
+依托 Spring Cloud Alibaba，您只需要添加一些注解和少量配置，就可以将 Spring Cloud 应用接入阿里微服务解决方案，通过阿里中间件来迅速搭建分布式应用系统。
+主要功能
+
+服务限流降级：默认支持 WebServlet、WebFlux, OpenFeign、RestTemplate、Spring Cloud Gateway, Zuul, Dubbo 和 RocketMQ 限流降级功能的接入，可以在运行时通过控制台实时修改限流降级规则，还支持查看限流降级 Metrics 监控。
+服务注册与发现：适配 Spring Cloud 服务注册与发现标准，默认集成了 Ribbon 的支持。
+分布式配置管理：支持分布式系统中的外部化配置，配置更改时自动刷新。
+消息驱动能力：基于 Spring Cloud Stream 为微服务应用构建消息驱动能力。
+分布式事务：使用 @GlobalTransactional 注解， 高效并且对业务零侵入地解决分布式事务问题。
+阿里云对象存储：阿里云提供的海量、安全、低成本、高可靠的云存储服务。支持在任何应用、任何时间、任何地点存储和访问任意类型的数据。
+分布式任务调度：提供秒级、精准、高可靠、高可用的定时（基于 Cron 表达式）任务调度服务。同时提供分布式的任务执行模型，如网格任务。网格任务支持海量子任务均匀分配到所有 Worker（schedulerx-client）上执行。
+阿里云短信服务：覆盖全球的短信服务，友好、高效、智能的互联化通讯能力，帮助企业迅速搭建客户触达通道
+
+组件
+
+
+Sentinel：把流量作为切入点，从流量控制、熔断降级、系统负载保护等多个维度保护服务的稳定性。
+
+
+Nacos：一个更易于构建云原生应用的动态服务发现、配置管理和服务管理平台。
+
+
+RocketMQ：一款开源的分布式消息系统，基于高可用分布式集群技术，提供低延时的、高可靠的消息发布与订阅服务。
+
+
+Dubbo：Apache Dubbo™ 是一款高性能 Java RPC 框架。
+
+
+Seata：阿里巴巴开源产品，一个易于使用的高性能微服务分布式事务解决方案。
+
+
+Alibaba Cloud OSS: 阿里云对象存储服务（Object Storage Service，简称 OSS），是阿里云提供的海量、安全、低成本、高可靠的云存储服务。您可以在任何应用、任何时间、任何地点存储和访问任意类型的数据。">
+    <meta name="generator" content="Hugo 0.147.7">
+    
+    
+    
+      <meta name="robots" content="noindex, nofollow">
+    
+    <meta name="author" content="loveyu">
+    
+
+    
+<link rel="stylesheet" href="/ananke/css/main.min.css" >
+
+
+
+
+    
+
+
+    
+      
+
+    
+
+    
+
+    
+      <link rel="canonical" href="http://localhost:1313/posts/java/springcloud/">
+    
+
+    <meta property="og:url" content="http://localhost:1313/posts/java/springcloud/">
+  <meta property="og:site_name" content="loveyu233">
+  <meta property="og:title" content="SpringCloud">
+  <meta property="og:description" content="Spring Cloud Alibaba 介绍 Spring Cloud Alibaba 致力于提供微服务开发的一站式解决方案。此项目包含开发分布式应用微服务的必需组件，方便开发者通过 Spring Cloud 编程模型轻松使用这些组件来开发分布式应用服务。
+依托 Spring Cloud Alibaba，您只需要添加一些注解和少量配置，就可以将 Spring Cloud 应用接入阿里微服务解决方案，通过阿里中间件来迅速搭建分布式应用系统。
+主要功能 服务限流降级：默认支持 WebServlet、WebFlux, OpenFeign、RestTemplate、Spring Cloud Gateway, Zuul, Dubbo 和 RocketMQ 限流降级功能的接入，可以在运行时通过控制台实时修改限流降级规则，还支持查看限流降级 Metrics 监控。 服务注册与发现：适配 Spring Cloud 服务注册与发现标准，默认集成了 Ribbon 的支持。 分布式配置管理：支持分布式系统中的外部化配置，配置更改时自动刷新。 消息驱动能力：基于 Spring Cloud Stream 为微服务应用构建消息驱动能力。 分布式事务：使用 @GlobalTransactional 注解， 高效并且对业务零侵入地解决分布式事务问题。 阿里云对象存储：阿里云提供的海量、安全、低成本、高可靠的云存储服务。支持在任何应用、任何时间、任何地点存储和访问任意类型的数据。 分布式任务调度：提供秒级、精准、高可靠、高可用的定时（基于 Cron 表达式）任务调度服务。同时提供分布式的任务执行模型，如网格任务。网格任务支持海量子任务均匀分配到所有 Worker（schedulerx-client）上执行。 阿里云短信服务：覆盖全球的短信服务，友好、高效、智能的互联化通讯能力，帮助企业迅速搭建客户触达通道 组件 Sentinel：把流量作为切入点，从流量控制、熔断降级、系统负载保护等多个维度保护服务的稳定性。
+Nacos：一个更易于构建云原生应用的动态服务发现、配置管理和服务管理平台。
+RocketMQ：一款开源的分布式消息系统，基于高可用分布式集群技术，提供低延时的、高可靠的消息发布与订阅服务。
+Dubbo：Apache Dubbo™ 是一款高性能 Java RPC 框架。
+Seata：阿里巴巴开源产品，一个易于使用的高性能微服务分布式事务解决方案。
+Alibaba Cloud OSS: 阿里云对象存储服务（Object Storage Service，简称 OSS），是阿里云提供的海量、安全、低成本、高可靠的云存储服务。您可以在任何应用、任何时间、任何地点存储和访问任意类型的数据。">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2019-12-01T11:18:26+08:00">
+    <meta property="article:modified_time" content="2019-12-01T11:18:26+08:00">
+    <meta property="article:tag" content="Java">
+    <meta property="article:tag" content="SpringCloud">
+    <meta property="article:tag" content="SpringCloudAlibaba">
+
+  <meta itemprop="name" content="SpringCloud">
+  <meta itemprop="description" content="Spring Cloud Alibaba 介绍 Spring Cloud Alibaba 致力于提供微服务开发的一站式解决方案。此项目包含开发分布式应用微服务的必需组件，方便开发者通过 Spring Cloud 编程模型轻松使用这些组件来开发分布式应用服务。
+依托 Spring Cloud Alibaba，您只需要添加一些注解和少量配置，就可以将 Spring Cloud 应用接入阿里微服务解决方案，通过阿里中间件来迅速搭建分布式应用系统。
+主要功能 服务限流降级：默认支持 WebServlet、WebFlux, OpenFeign、RestTemplate、Spring Cloud Gateway, Zuul, Dubbo 和 RocketMQ 限流降级功能的接入，可以在运行时通过控制台实时修改限流降级规则，还支持查看限流降级 Metrics 监控。 服务注册与发现：适配 Spring Cloud 服务注册与发现标准，默认集成了 Ribbon 的支持。 分布式配置管理：支持分布式系统中的外部化配置，配置更改时自动刷新。 消息驱动能力：基于 Spring Cloud Stream 为微服务应用构建消息驱动能力。 分布式事务：使用 @GlobalTransactional 注解， 高效并且对业务零侵入地解决分布式事务问题。 阿里云对象存储：阿里云提供的海量、安全、低成本、高可靠的云存储服务。支持在任何应用、任何时间、任何地点存储和访问任意类型的数据。 分布式任务调度：提供秒级、精准、高可靠、高可用的定时（基于 Cron 表达式）任务调度服务。同时提供分布式的任务执行模型，如网格任务。网格任务支持海量子任务均匀分配到所有 Worker（schedulerx-client）上执行。 阿里云短信服务：覆盖全球的短信服务，友好、高效、智能的互联化通讯能力，帮助企业迅速搭建客户触达通道 组件 Sentinel：把流量作为切入点，从流量控制、熔断降级、系统负载保护等多个维度保护服务的稳定性。
+Nacos：一个更易于构建云原生应用的动态服务发现、配置管理和服务管理平台。
+RocketMQ：一款开源的分布式消息系统，基于高可用分布式集群技术，提供低延时的、高可靠的消息发布与订阅服务。
+Dubbo：Apache Dubbo™ 是一款高性能 Java RPC 框架。
+Seata：阿里巴巴开源产品，一个易于使用的高性能微服务分布式事务解决方案。
+Alibaba Cloud OSS: 阿里云对象存储服务（Object Storage Service，简称 OSS），是阿里云提供的海量、安全、低成本、高可靠的云存储服务。您可以在任何应用、任何时间、任何地点存储和访问任意类型的数据。">
+  <meta itemprop="datePublished" content="2019-12-01T11:18:26+08:00">
+  <meta itemprop="dateModified" content="2019-12-01T11:18:26+08:00">
+  <meta itemprop="wordCount" content="1984">
+  <meta itemprop="keywords" content="Java,SpringCloud,SpringCloudAlibaba">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="SpringCloud">
+  <meta name="twitter:description" content="Spring Cloud Alibaba 介绍 Spring Cloud Alibaba 致力于提供微服务开发的一站式解决方案。此项目包含开发分布式应用微服务的必需组件，方便开发者通过 Spring Cloud 编程模型轻松使用这些组件来开发分布式应用服务。
+依托 Spring Cloud Alibaba，您只需要添加一些注解和少量配置，就可以将 Spring Cloud 应用接入阿里微服务解决方案，通过阿里中间件来迅速搭建分布式应用系统。
+主要功能 服务限流降级：默认支持 WebServlet、WebFlux, OpenFeign、RestTemplate、Spring Cloud Gateway, Zuul, Dubbo 和 RocketMQ 限流降级功能的接入，可以在运行时通过控制台实时修改限流降级规则，还支持查看限流降级 Metrics 监控。 服务注册与发现：适配 Spring Cloud 服务注册与发现标准，默认集成了 Ribbon 的支持。 分布式配置管理：支持分布式系统中的外部化配置，配置更改时自动刷新。 消息驱动能力：基于 Spring Cloud Stream 为微服务应用构建消息驱动能力。 分布式事务：使用 @GlobalTransactional 注解， 高效并且对业务零侵入地解决分布式事务问题。 阿里云对象存储：阿里云提供的海量、安全、低成本、高可靠的云存储服务。支持在任何应用、任何时间、任何地点存储和访问任意类型的数据。 分布式任务调度：提供秒级、精准、高可靠、高可用的定时（基于 Cron 表达式）任务调度服务。同时提供分布式的任务执行模型，如网格任务。网格任务支持海量子任务均匀分配到所有 Worker（schedulerx-client）上执行。 阿里云短信服务：覆盖全球的短信服务，友好、高效、智能的互联化通讯能力，帮助企业迅速搭建客户触达通道 组件 Sentinel：把流量作为切入点，从流量控制、熔断降级、系统负载保护等多个维度保护服务的稳定性。
+Nacos：一个更易于构建云原生应用的动态服务发现、配置管理和服务管理平台。
+RocketMQ：一款开源的分布式消息系统，基于高可用分布式集群技术，提供低延时的、高可靠的消息发布与订阅服务。
+Dubbo：Apache Dubbo™ 是一款高性能 Java RPC 框架。
+Seata：阿里巴巴开源产品，一个易于使用的高性能微服务分布式事务解决方案。
+Alibaba Cloud OSS: 阿里云对象存储服务（Object Storage Service，简称 OSS），是阿里云提供的海量、安全、低成本、高可靠的云存储服务。您可以在任何应用、任何时间、任何地点存储和访问任意类型的数据。">
+
+	
+  </head><body class="ma0 avenir bg-near-white development">
+
+    
+   
+  
+
+  <header>
+    <div class="bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l center items-center justify-between">
+    <a href="/" class="f3 fw2 hover-white white-90 dib no-underline">
+      
+        loveyu233
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      <div class="ananke-socials"></div>
+
+    </div>
+  </div>
+</nav>
+
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  
+  <article class="flex-l mw8 center ph3 flex-wrap justify-between">
+    <header class="mt4 w-100">
+      <aside class="instapaper_ignoref b helvetica tracked ttu">
+          
+        java
+      </aside><div id="sharing" class="mt3 ananke-socials"></div>
+<h1 class="f1 athelas mt3 mb1">SpringCloud</h1>
+      
+      <p class="tracked"><strong>loveyu</strong>
+      </p>
+      
+      
+      
+      <time class="f6 mv4 dib tracked" datetime="2019-12-01T11:18:26+08:00">December 1, 2019</time>
+      
+
+      
+      
+    </header>
+    <div class="nested-copy-line-height lh-copy serif f4 nested-links mid-gray pr4-l w-two-thirds-l"><h1 id="spring-cloud-alibaba">Spring Cloud Alibaba</h1>
+<h2 id="介绍">介绍</h2>
+<p>Spring Cloud Alibaba 致力于提供微服务开发的一站式解决方案。此项目包含开发分布式应用微服务的必需组件，方便开发者通过 Spring Cloud 编程模型轻松使用这些组件来开发分布式应用服务。</p>
+<p>依托 Spring Cloud Alibaba，您只需要添加一些注解和少量配置，就可以将 Spring Cloud 应用接入阿里微服务解决方案，通过阿里中间件来迅速搭建分布式应用系统。</p>
+<h2 id="主要功能">主要功能</h2>
+<ul>
+<li><strong>服务限流降级</strong>：默认支持 WebServlet、WebFlux, OpenFeign、RestTemplate、Spring Cloud Gateway, Zuul, Dubbo 和 RocketMQ 限流降级功能的接入，可以在运行时通过控制台实时修改限流降级规则，还支持查看限流降级 Metrics 监控。</li>
+<li><strong>服务注册与发现</strong>：适配 Spring Cloud 服务注册与发现标准，默认集成了 Ribbon 的支持。</li>
+<li><strong>分布式配置管理</strong>：支持分布式系统中的外部化配置，配置更改时自动刷新。</li>
+<li><strong>消息驱动能力</strong>：基于 Spring Cloud Stream 为微服务应用构建消息驱动能力。</li>
+<li><strong>分布式事务</strong>：使用 @GlobalTransactional 注解， 高效并且对业务零侵入地解决分布式事务问题。</li>
+<li><strong>阿里云对象存储</strong>：阿里云提供的海量、安全、低成本、高可靠的云存储服务。支持在任何应用、任何时间、任何地点存储和访问任意类型的数据。</li>
+<li><strong>分布式任务调度</strong>：提供秒级、精准、高可靠、高可用的定时（基于 Cron 表达式）任务调度服务。同时提供分布式的任务执行模型，如网格任务。网格任务支持海量子任务均匀分配到所有 Worker（schedulerx-client）上执行。</li>
+<li><strong>阿里云短信服务</strong>：覆盖全球的短信服务，友好、高效、智能的互联化通讯能力，帮助企业迅速搭建客户触达通道</li>
+</ul>
+<h2 id="组件">组件</h2>
+<ul>
+<li>
+<p><strong><a href="https://github.com/alibaba/Sentinel">Sentinel</a></strong>：把流量作为切入点，从流量控制、熔断降级、系统负载保护等多个维度保护服务的稳定性。</p>
+</li>
+<li>
+<p><strong><a href="https://github.com/alibaba/Nacos">Nacos</a></strong>：一个更易于构建云原生应用的动态服务发现、配置管理和服务管理平台。</p>
+</li>
+<li>
+<p><strong><a href="https://rocketmq.apache.org/">RocketMQ</a></strong>：一款开源的分布式消息系统，基于高可用分布式集群技术，提供低延时的、高可靠的消息发布与订阅服务。</p>
+</li>
+<li>
+<p><strong><a href="https://github.com/apache/dubbo">Dubbo</a></strong>：Apache Dubbo™ 是一款高性能 Java RPC 框架。</p>
+</li>
+<li>
+<p><strong><a href="https://github.com/seata/seata">Seata</a></strong>：阿里巴巴开源产品，一个易于使用的高性能微服务分布式事务解决方案。</p>
+</li>
+<li>
+<p><strong><a href="https://www.aliyun.com/product/oss">Alibaba Cloud OSS</a></strong>: 阿里云对象存储服务（Object Storage Service，简称 OSS），是阿里云提供的海量、安全、低成本、高可靠的云存储服务。您可以在任何应用、任何时间、任何地点存储和访问任意类型的数据。</p>
+</li>
+<li>
+<p><strong><a href="https://help.aliyun.com/document_detail/43136.html">Alibaba Cloud SchedulerX</a></strong>: 阿里中间件团队开发的一款分布式任务调度产品，提供秒级、精准、高可靠、高可用的定时（基于 Cron 表达式）任务调度服务。</p>
+</li>
+<li>
+<p><strong><a href="https://www.aliyun.com/product/sms">Alibaba Cloud SMS</a></strong>: 覆盖全球的短信服务，友好、高效、智能的互联化通讯能力，帮助企业迅速搭建客户触达通道。</p>
+</li>
+</ul>
+<h2 id="如何使用">如何使用</h2>
+<h3 id="如何引入依赖">如何引入依赖</h3>
+<p>如果需要使用已发布的版本，在 <code>dependencyManagement</code> 中添加如下配置。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span>	<span style="color:#f92672">&lt;dependencyManagement&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;dependencies&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&lt;groupId&gt;</span>com.alibaba.cloud<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&lt;artifactId&gt;</span>spring-cloud-alibaba-dependencies<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&lt;version&gt;</span>2.2.5.RELEASE<span style="color:#f92672">&lt;/version&gt;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&lt;type&gt;</span>pom<span style="color:#f92672">&lt;/type&gt;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&lt;scope&gt;</span>import<span style="color:#f92672">&lt;/scope&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;/dependencies&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/dependencyManagement&gt;</span>
+</span></span></code></pre></div><p>然后在 <code>dependencies</code> 中添加自己所需使用的依赖即可使用。</p>
+<h2 id="演示-demo">演示 Demo</h2>
+<p>为了演示如何使用，Spring Cloud Alibaba 项目包含了一个子模块<code>spring-cloud-alibaba-examples</code>。此模块中提供了演示用的 example ，您可以阅读对应的 example 工程下的 readme 文档，根据里面的步骤来体验。</p>
+<p>Example 列表：</p>
+<p><a href="https://github.com/alibaba/spring-cloud-alibaba/tree/master/spring-cloud-alibaba-examples/sentinel-example/sentinel-core-example/readme-zh.md">Sentinel Example</a></p>
+<p><a href="https://github.com/alibaba/spring-cloud-alibaba/blob/master/spring-cloud-alibaba-examples/nacos-example/nacos-config-example/readme-zh.md">Nacos Config Example</a></p>
+<p><a href="https://github.com/alibaba/spring-cloud-alibaba/blob/master/spring-cloud-alibaba-examples/nacos-example/nacos-discovery-example/readme-zh.md">Nacos Discovery Example</a></p>
+<p><a href="https://github.com/alibaba/spring-cloud-alibaba/blob/master/spring-cloud-alibaba-examples/rocketmq-example/readme-zh.md">RocketMQ Example</a></p>
+<p><a href="https://github.com/alibaba/spring-cloud-alibaba/blob/master/spring-cloud-alibaba-examples/seata-example/readme-zh.md">Seata Example</a></p>
+<p><a href="https://github.com/alibaba/aliyun-spring-boot/tree/master/aliyun-spring-boot-samples/aliyun-oss-spring-boot-sample">Alibaba Cloud OSS Example</a></p>
+<p><a href="https://github.com/alibaba/aliyun-spring-boot/tree/master/aliyun-spring-boot-samples/aliyun-sms-spring-boot-sample">Alibaba Cloud SMS Example</a></p>
+<p><a href="https://github.com/alibaba/aliyun-spring-boot">Alibaba Cloud SchedulerX Example</a></p>
+<h2 id="版本管理规范">版本管理规范</h2>
+<p>项目的版本号格式为 x.x.x 的形式，其中 x 的数值类型为数字，从 0 开始取值，且不限于 0~9 这个范围。项目处于孵化器阶段时，第一位版本号固定使用 0，即版本号为 0.x.x 的格式。</p>
+<p>由于 Spring Boot 1 和 Spring Boot 2 在 Actuator 模块的接口和注解有很大的变更，且 spring-cloud-commons 从 1.x.x 版本升级到 2.0.0 版本也有较大的变更，因此我们采取跟 SpringBoot 版本号一致的版本:</p>
+<ul>
+<li>1.5.x 版本适用于 Spring Boot 1.5.x</li>
+<li>2.0.x 版本适用于 Spring Boot 2.0.x</li>
+<li>2.1.x 版本适用于 Spring Boot 2.1.x</li>
+<li>2.2.x 版本适用于 Spring Boot 2.2.x</li>
+<li>2021.x 版本适用于 Spring Boot 2.4.x</li>
+</ul>
+<p>nacos开启：sh docker-startup.sh -m standalone</p>
+<p>spring.datasource.platform=mysql</p>
+<p>db.num=1
+db.url.0=jdbc:mysql://120.26.11.225:3306/nacos?characterEncoding=utf8&amp;connectTimeout=1000&amp;socketTimeout=3000&amp;autoReconnect=true
+db.user=root
+db.password=hzy1214..</p>
+<p>java -jar -Dservice.port=8080 /Users/huangzhenyu/Downloads/sentinel-dashboard-1.8.1.jar</p>
+<h1 id="nacos">nacos</h1>
+<h2 id="mysql版本高错误">mysql版本高错误：</h2>
+<h3 id="在nacos安装目录下创建pluginsmysql文件夹在其中放入80jar包">在nacos安装目录下创建/plugins/mysql文件夹，在其中放入8.0jar包</h3>
+<blockquote>
+<p>启动</p>
+<p>sh startup.sh -m standalone</p></blockquote>
+<h2 id="基本使用">基本使用</h2>
+<h3 id="服务方">服务方：</h3>
+<p>1.pom.xml</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#f92672">&lt;dependencies&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">&lt;!--SpringCloud ailibaba nacos --&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;groupId&gt;</span>com.alibaba.cloud<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;artifactId&gt;</span>spring-cloud-starter-alibaba-nacos-discovery<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">&lt;!-- SpringBoot整合Web组件 --&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;groupId&gt;</span>org.springframework.boot<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;artifactId&gt;</span>spring-boot-starter-web<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;groupId&gt;</span>org.springframework.boot<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;artifactId&gt;</span>spring-boot-starter-actuator<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">&lt;!--日常通用jar包配置--&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;groupId&gt;</span>org.springframework.boot<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;artifactId&gt;</span>spring-boot-devtools<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;scope&gt;</span>runtime<span style="color:#f92672">&lt;/scope&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;optional&gt;</span>true<span style="color:#f92672">&lt;/optional&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;groupId&gt;</span>org.projectlombok<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;artifactId&gt;</span>lombok<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;optional&gt;</span>true<span style="color:#f92672">&lt;/optional&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;groupId&gt;</span>org.springframework.boot<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;artifactId&gt;</span>spring-boot-starter-test<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;scope&gt;</span>test<span style="color:#f92672">&lt;/scope&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/dependencies&gt;</span>
+</span></span></code></pre></div><p>2.yml</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yml" data-lang="yml"><span style="display:flex;"><span><span style="color:#f92672">server</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">port</span>: <span style="color:#ae81ff">9001</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">spring</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">application</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">name</span>: <span style="color:#ae81ff">cloudalibaba-provider-payment</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">cloud</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">nacos</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">discovery</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">server-addr</span>: <span style="color:#ae81ff">120.26.11.225</span>:<span style="color:#ae81ff">8848</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">management</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">endpoints</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">web</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">exposure</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">include</span>: <span style="color:#e6db74">&#39;*&#39;</span>
+</span></span></code></pre></div><p>3.启动类</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@SpringBootApplication</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@EnableDiscoveryClient</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Cloudalibaba_provider_payment9001</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>(String<span style="color:#f92672">[]</span> args) {
+</span></span><span style="display:flex;"><span>        SpringApplication.<span style="color:#a6e22e">run</span>(Cloudalibaba_provider_payment9001.<span style="color:#a6e22e">class</span>,args);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>3.service</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@RestController</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">PaymentController</span> {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Value</span>(<span style="color:#e6db74">&#34;${server.port}&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> String serverPort;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@GetMapping</span>(<span style="color:#e6db74">&#34;/payment/nacos/{id}&#34;</span>)
+</span></span><span style="display:flex;"><span>    String <span style="color:#a6e22e">getPayment</span>(<span style="color:#a6e22e">@PathVariable</span>(<span style="color:#e6db74">&#34;id&#34;</span>) Integer id) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;nacos registry, server port : &#34;</span> <span style="color:#f92672">+</span> serverPort <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;, id : &#34;</span> <span style="color:#f92672">+</span> id;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="消费方">消费方：</h3>
+<h4 id="使用resttemplate">使用restTemplate</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#f92672">&lt;dependencies&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">&lt;!--SpringCloud ailibaba nacos --&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;groupId&gt;</span>com.alibaba.cloud<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;artifactId&gt;</span>spring-cloud-starter-alibaba-nacos-discovery<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">&lt;!-- 引入自己定义的api通用包，可以使用Payment支付Entity --&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;groupId&gt;</span>org.example<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;artifactId&gt;</span>cloud-api-commons<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;version&gt;</span>1.0-SNAPSHOT<span style="color:#f92672">&lt;/version&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">&lt;!-- SpringBoot整合Web组件 --&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;groupId&gt;</span>org.springframework.boot<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;artifactId&gt;</span>spring-boot-starter-web<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;groupId&gt;</span>org.springframework.boot<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;artifactId&gt;</span>spring-boot-starter-actuator<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">&lt;!--日常通用jar包配置--&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;groupId&gt;</span>org.springframework.boot<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;artifactId&gt;</span>spring-boot-devtools<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;scope&gt;</span>runtime<span style="color:#f92672">&lt;/scope&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;optional&gt;</span>true<span style="color:#f92672">&lt;/optional&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;groupId&gt;</span>org.projectlombok<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;artifactId&gt;</span>lombok<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;optional&gt;</span>true<span style="color:#f92672">&lt;/optional&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;groupId&gt;</span>org.springframework.boot<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;artifactId&gt;</span>spring-boot-starter-test<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;scope&gt;</span>test<span style="color:#f92672">&lt;/scope&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/dependencies&gt;</span>
+</span></span></code></pre></div><p>2.yml</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yml" data-lang="yml"><span style="display:flex;"><span><span style="color:#f92672">server</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">port</span>: <span style="color:#ae81ff">83</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">spring</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">application</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">name</span>: <span style="color:#ae81ff">cloudalibaba-consumer-order-nacos</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">cloud</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">nacos</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">discovery</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">server-addr</span>: <span style="color:#ae81ff">120.26.11.225</span>:<span style="color:#ae81ff">8848</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">service-url</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">nacos-user-service</span>: <span style="color:#ae81ff">http://cloudalibaba-provider-payment</span>
+</span></span></code></pre></div><p>3.启动类</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@SpringBootApplication</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@EnableDiscoveryClient</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Cloudalibaba_consumer_order_nacos83</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>(String<span style="color:#f92672">[]</span> args) {
+</span></span><span style="display:flex;"><span>        SpringApplication.<span style="color:#a6e22e">run</span>(Cloudalibaba_consumer_order_nacos83.<span style="color:#a6e22e">class</span>,args);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>4.config</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@Configuration</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">RestTemplateConfig</span> {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Bean</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@LoadBalanced</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> RestTemplate <span style="color:#a6e22e">restTemplate</span>() {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> RestTemplate();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>5.controller</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@RestController</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">OrderController</span> {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Resource</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> RestTemplate restTemplate;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Value</span>(<span style="color:#e6db74">&#34;${service-url.nacos-user-service}&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> String serviceURL;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@GetMapping</span>(<span style="color:#e6db74">&#34;/consumer/paymenr/nacos/{id}&#34;</span>)
+</span></span><span style="display:flex;"><span>    String <span style="color:#a6e22e">nacosPayment</span>(<span style="color:#a6e22e">@PathVariable</span>(<span style="color:#e6db74">&#34;id&#34;</span>) Integer id) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> restTemplate.<span style="color:#a6e22e">getForObject</span>(serviceURL<span style="color:#f92672">+</span><span style="color:#e6db74">&#34;/payment/nacos/&#34;</span><span style="color:#f92672">+</span>id,String.<span style="color:#a6e22e">class</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h4 id="使用openfeign">使用OpenFeign</h4>
+<p>pom.xml</p>
+<pre tabindex="0"><code>&lt;dependency&gt;
+&lt;groupId&gt;com.alibaba.cloud&lt;/groupId&gt;
+&lt;artifactId&gt;spring-cloud-starter-alibaba-nacos-discovery&lt;/artifactId&gt;
+&lt;/dependency&gt;
+
+&lt;dependency&gt;
+&lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;
+&lt;artifactId&gt;spring-cloud-starter-openfeign&lt;/artifactId&gt;
+&lt;/dependency&gt;
+</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@FeignClient</span>(name <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;SpringCloudAlibabaPro&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">DemoFeign</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@GetMapping</span>(<span style="color:#e6db74">&#34;/nacos/{id}&#34;</span>)
+</span></span><span style="display:flex;"><span>    String <span style="color:#a6e22e">t1</span> (<span style="color:#a6e22e">@PathVariable</span>(<span style="color:#e6db74">&#34;id&#34;</span>) Integer id);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@RestController</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">DemoController</span> {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Autowired</span>
+</span></span><span style="display:flex;"><span>    DemoFeign demoFeign;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@GetMapping</span>(<span style="color:#e6db74">&#34;/get/{id}&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">t1</span> (<span style="color:#a6e22e">@PathVariable</span>(<span style="color:#e6db74">&#34;id&#34;</span>) Integer id) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> demoFeign.<span style="color:#a6e22e">t1</span>(id);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><blockquote>
+<p>配置日志信息</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">//@Configuration     添加注解会将作用所有的服务提供方</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//如果是只想针对某一个服务就不需要加</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@Bean</span>
+</span></span><span style="display:flex;"><span>Logger.<span style="color:#a6e22e">Level</span> <span style="color:#a6e22e">feign</span>() {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * NONE:性能最佳适用于生产环境，不记录任何日志(默认值)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * BASIC:适用于成产环境的追踪问题，仅记录请求方式，URL，响应码以及执行时间
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * HEADERS:记录请求和响应头信息
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * FULL:适用于测试环境，记录请求和响应的头信息，body和元数据
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> Logger.<span style="color:#a6e22e">Level</span>.<span style="color:#a6e22e">FULL</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>logging:
+</span></span><span style="display:flex;"><span>  level:
+</span></span><span style="display:flex;"><span>    com.<span style="color:#a6e22e">xiaoyu</span>.<span style="color:#a6e22e">service</span>: debug
+</span></span></code></pre></div><blockquote>
+<p>配置超时时间</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * 全剧配置超时时间针对所有的服务
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * 只针对某一个服务的话在yml配置
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * @return
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> */</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@Bean</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> Request.<span style="color:#a6e22e">Options</span> <span style="color:#a6e22e">options</span> () {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> Request.<span style="color:#a6e22e">Options</span>(1000,1000);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">#</span>针对某一个服务的超时时间设置
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">#</span>全局和局部都配置的话生效的是局部配置
+</span></span><span style="display:flex;"><span>feign:
+</span></span><span style="display:flex;"><span>  client:
+</span></span><span style="display:flex;"><span>    config:
+</span></span><span style="display:flex;"><span>      SpringCloudAlibabaPro:
+</span></span><span style="display:flex;"><span>        <span style="color:#960050;background-color:#1e0010">#</span>默认2s
+</span></span><span style="display:flex;"><span>        connectTimeout: 3000
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">#</span>       默认5s
+</span></span><span style="display:flex;"><span>        readTimeout: 3000
+</span></span></code></pre></div><h3 id="配置中心">配置中心：</h3>
+<!-- raw HTML omitted -->
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#f92672">&lt;dependencies&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;groupId&gt;</span>com.alibaba.cloud<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;artifactId&gt;</span>spring-cloud-starter-alibaba-nacos-config<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">&lt;!--nacos-discovery--&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;groupId&gt;</span>com.alibaba.cloud<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;artifactId&gt;</span>spring-cloud-starter-alibaba-nacos-discovery<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">&lt;!--web + actuator--&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;groupId&gt;</span>org.springframework.boot<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;artifactId&gt;</span>spring-boot-starter-web<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;groupId&gt;</span>org.springframework.boot<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;artifactId&gt;</span>spring-boot-starter-actuator<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">&lt;!--一般基础配置--&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;groupId&gt;</span>org.springframework.boot<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;artifactId&gt;</span>spring-boot-devtools<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;scope&gt;</span>runtime<span style="color:#f92672">&lt;/scope&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;optional&gt;</span>true<span style="color:#f92672">&lt;/optional&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;groupId&gt;</span>org.projectlombok<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;artifactId&gt;</span>lombok<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;optional&gt;</span>true<span style="color:#f92672">&lt;/optional&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;groupId&gt;</span>org.springframework.boot<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;artifactId&gt;</span>spring-boot-starter-test<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;scope&gt;</span>test<span style="color:#f92672">&lt;/scope&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/dependencies&gt;</span>
+</span></span></code></pre></div><p>2.yml</p>
+<p>application.yml</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yml" data-lang="yml"><span style="display:flex;"><span><span style="color:#f92672">spring</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">profiles</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">active</span>: <span style="color:#ae81ff">dev</span>
+</span></span></code></pre></div><p>bootstrap.yml</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yml" data-lang="yml"><span style="display:flex;"><span><span style="color:#f92672">server</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">port</span>: <span style="color:#ae81ff">3377</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">spring</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">application</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">name</span>: <span style="color:#ae81ff">nacos-config</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">cloud</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">nacos</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">discovery</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">server-addr</span>: <span style="color:#ae81ff">120.26.11.225</span>:<span style="color:#ae81ff">8848</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">config</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">server-addr</span>: <span style="color:#ae81ff">120.26.11.225</span>:<span style="color:#ae81ff">8848</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">file-extension</span>: <span style="color:#ae81ff">yaml</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">max-retry</span>: <span style="color:#ae81ff">10</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">namespace</span>: <span style="color:#ae81ff">123456</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">group</span>: <span style="color:#ae81ff">DEV-GROUP</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># ${spring.application.name}-${spring.profile.active}.${spring.cloud.nacos.config.file-extension}</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 结果是：nacos-config-dev.yaml</span>
+</span></span></code></pre></div><p>3.启动类</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@SpringBootApplication</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@EnableDiscoveryClient</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Cloudalibaba_config_nacos3377</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>(String<span style="color:#f92672">[]</span> args) {
+</span></span><span style="display:flex;"><span>        SpringApplication.<span style="color:#a6e22e">run</span>(Cloudalibaba_config_nacos3377.<span style="color:#a6e22e">class</span>,args);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>4.controller</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@RestController</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@RefreshScope</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ConfigController</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Value</span>(<span style="color:#e6db74">&#34;${config.info}&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> String configInfo;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@GetMapping</span>(<span style="color:#e6db74">&#34;/config/info&#34;</span>)
+</span></span><span style="display:flex;"><span>    String <span style="color:#a6e22e">getConfigInfo</span>() {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> configInfo;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><!-- raw HTML omitted -->
+<h2 id="nacos集群搭建">nacos集群搭建</h2>
+<p>查看当前启动多少台nacos</p>
+<p>ps -ef|grep nacos|grep -v grep|wc -l</p>
+<h1 id="sentinel">sentinel</h1>
+<p>分布式系统的流量防卫兵</p>
+<!-- raw HTML omitted -->
+<h2 id="流控规则">流控规则</h2>
+<!-- raw HTML omitted -->
+<p>流控页面提示信息为：Blocked by Sentinel (flow limiting)</p>
+<h3 id="资源名称-">资源名称 ：</h3>
+<h4 id="rest路径例如testa">rest路径例如：/testA</h4>
+<h3 id="qps-">QPS ：</h3>
+<h4 id="每秒的并发量">每秒的并发量</h4>
+<h3 id="线程数-">线程数 ：</h3>
+<h4 id="同时访问的线程量">同时访问的线程量</h4>
+<h3 id="单机阈值-">单机阈值 ：</h3>
+<h4 id="每秒的并发量同时访问的线程量的最大值">每秒的并发量/同时访问的线程量的最大值</h4>
+<h3 id="直接-">直接 ：</h3>
+<h4 id="默认只针对当前的资源">默认只针对当前的资源</h4>
+<h3 id="关联-">关联 ：</h3>
+<h4 id="当资源名的资源达到设置的规则后访问关联的资源会被限流">当资源名的资源达到设置的规则后，访问关联的资源会被限流</h4>
+<h3 id="链路-">链路 ：</h3>
+<h4 id="以调用链路为单位做限流处理例如a-b-c-这个链路的总体流量只按入口a的请求量来计算">以调用链路为单位做限流处理，例如：A-&gt;B-&gt;C 这个链路的总体流量只按入口A的请求量来计算</h4>
+<h3 id="快速失败-">快速失败 ：</h3>
+<h4 id="就是超过这个阈值就直接显示错误页面">就是超过这个阈值就直接显示错误页面</h4>
+<h3 id="warmup-">WarmUp ：</h3>
+<h4 id="预热设置预热时间刚开始的访问量是设置阈值3当达到预热时间后会恢复到设置的阈值">预热，设置预热时间，刚开始的访问量是设置阈值/3，当达到预热时间后会恢复到设置的阈值</h4>
+<h3 id="排队等待-">排队等待 ：</h3>
+<h4 id="大于并发量可以进入但是要排队等待">大于并发量可以进入但是要排队等待</h4>
+<h2 id="服务熔断降级规则">服务熔断降级规则</h2>
+<!-- raw HTML omitted -->
+<p>服务降级后提示信息为：Blocked by Sentinel (flow limiting)</p>
+<h3 id="慢调用比例-">慢调用比例 ：</h3>
+<h4 id="当-统计时间内-的-达到最小请求数-且每条-请求数的处理时间达到最大rt的比例阈值-会进行-服务熔断-服务熔断的时间为设置的-熔断时长">当 统计时间内 的 达到最小请求数 且每条 请求数的处理时间达到最大RT的比例阈值 会进行 服务熔断 ，服务熔断的时间为设置的 熔断时长</h4>
+<!-- raw HTML omitted -->
+<h3 id="异常比例-">异常比例 ：</h3>
+<h4 id="当在-统计时长内-的-最小请求数-的-请求出现错误的比例-达到设置-比例阈值-就会-进行服务熔断-时间为-熔断时长">当在 统计时长内 的 最小请求数 的 请求出现错误的比例 达到设置 比例阈值 就会 进行服务熔断 ，时间为 熔断时长</h4>
+<!-- raw HTML omitted -->
+<h3 id="异常数-">异常数 ：</h3>
+<h4 id="当在-统计时长内-的-最小请求数-的-请求出现错误的比例-达到设置-异常数-就会进行-服务熔断-时间为-熔断时长">当在 统计时长内 的 最小请求数 的 请求出现错误的比例 达到设置 异常数 就会进行 服务熔断 ，时间为 熔断时长</h4>
+<h2 id="热点规则">热点规则</h2>
+<!-- raw HTML omitted -->
+<p>热点达到阈值后出现页面设置,相当于ex_testD是testD的兜底方法</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>    <span style="color:#a6e22e">@GetMapping</span>(<span style="color:#e6db74">&#34;/testD&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@SentinelResource</span>(value <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;testD&#34;</span>,blockHandler <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;ex_testD&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">testD</span>(<span style="color:#a6e22e">@RequestParam</span>(value <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;p1&#34;</span>,required <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span>) String p1,
+</span></span><span style="display:flex;"><span>                        <span style="color:#a6e22e">@RequestParam</span>(value <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;p2&#34;</span>,required <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span>) String p2) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;testD&#34;</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">ex_testD</span>(String p1, String p2, BlockException blockException) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;ex_testD&#34;</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span></code></pre></div><h3 id="资源名-">资源名 ：</h3>
+<h4 id="rest路径">rest路径</h4>
+<h3 id="参数索引-">参数索引 ：</h3>
+<h4 id="例如localhostuserzhangsanusernameaaapasswordhahhah参数索引0测试username依次类推">例如：localhost:/user/zhangsan?username=aaa&amp;password=hahhah,参数索引0测试username依次类推</h4>
+<h3 id="单机阈值--1">单机阈值 ：</h3>
+<h4 id="访问最大值">访问最大值</h4>
+<h3 id="统计窗口时长-">统计窗口时长 ：</h3>
+<h4 id="规定在多少秒内达到单机阈值生效">规定在多少秒内达到单机阈值生效</h4>
+<h3 id="参数类型-">参数类型 ：</h3>
+<h4 id="基本的八大数据类型intstringdouble等">基本的八大数据类型，int，string，double等</h4>
+<h3 id="参数值-">=参数值 ：</h3>
+<h4 id="参数索引的值">参数索引的值</h4>
+<h3 id="限定阈值-">限定阈值 ：</h3>
+<h4 id="参数索引的值为设置的参数值时的限流阈值">参数索引的值为设置的参数值时的限流阈值</h4>
+<h2 id="系统保护规则">系统保护规则</h2>
+<!-- raw HTML omitted -->
+<h3 id="load-">LOAD ：</h3>
+<h4 id="自适应仅对linuxunix-like机器生效设定的参考值为cpu核数25">自适应，仅对linux/unix-like机器生效，设定的参考值为CPU核数*2.5</h4>
+<h3 id="cpu-">CPU ：</h3>
+<h4 id="当系统cpu使用率达到阈值生效">当系统CPU使用率达到阈值生效</h4>
+<h3 id="平均rt-">平均RT ：</h3>
+<h4 id="当单台机器上所有入口流量的平均rt达到阈值生效单位毫秒">当单台机器上所有入口流量的平均RT达到阈值生效单位毫秒</h4>
+<h3 id="并发线程数-">并发线程数 ：</h3>
+<h4 id="当单台机器上所有入口流量的并发线程数达到阈值生效">当单台机器上所有入口流量的并发线程数达到阈值生效</h4>
+<h3 id="入口qps-">入口QPS ：</h3>
+<h4 id="当单台机器上所有入口流量的qps达到阈值生效">当单台机器上所有入口流量的QPS达到阈值生效</h4>
+<h2 id="sentinelresource">@SentinelResource</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>    <span style="color:#75715e">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    blockHandler:服务配置规格异常的兜底
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    fallback负责业务逻辑报错的兜底
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    exceptionsToIgnore当匹配这个错误的时候不会调用兜底方法
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    如果方法不在同一个类，则使用以下参数进行配置
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     blockHandlerClass = ,
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     fallbackClass = 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     */</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@SentinelResource</span>(value <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;fallback&#34;</span>,
+</span></span><span style="display:flex;"><span>        fallback <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;handlerFallback&#34;</span>,
+</span></span><span style="display:flex;"><span>        blockHandler <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;blockHandler&#34;</span>,
+</span></span><span style="display:flex;"><span>        exceptionsToIgnore <span style="color:#f92672">=</span> {RuntimeException.<span style="color:#a6e22e">class</span>})
+</span></span></code></pre></div><h2 id="sentinel持久化">sentinel持久化</h2>
+<ul>
+<li>
+<p>resource：资源名称</p>
+</li>
+<li>
+<p>limitApp：来源应用</p>
+</li>
+<li>
+<p>grade：阈值类型</p>
+<ul>
+<li>0：表示线程数</li>
+<li>1：表示QPS</li>
+</ul>
+</li>
+<li>
+<p>count：单机阈值</p>
+</li>
+<li>
+<p>strategy：流控模式</p>
+<ul>
+<li>0：表示直接</li>
+<li>1：表示关联</li>
+<li>2：表示链路</li>
+</ul>
+</li>
+<li>
+<p>controlBehavior：流控效果</p>
+<ul>
+<li>0：表示快速失败</li>
+<li>1：表示Warm Up</li>
+<li>2：表示排队等待</li>
+</ul>
+</li>
+<li>
+<p>clusterMode：是否集群</p>
+<ul>
+<li>true</li>
+<li>false</li>
+</ul>
+</li>
+</ul>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<h1 id="springcloudseata">springCloudSeata</h1>
+<blockquote>
+<p>下载seata</p></blockquote>
+<blockquote>
+<p>在seata目录下创建config.txt</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>nsport.type<span style="color:#f92672">=</span>TCP
+</span></span><span style="display:flex;"><span>transport.server<span style="color:#f92672">=</span>NIO
+</span></span><span style="display:flex;"><span>transport.heartbeat<span style="color:#f92672">=</span>true
+</span></span><span style="display:flex;"><span>transport.enableClientBatchSendRequest<span style="color:#f92672">=</span>true
+</span></span><span style="display:flex;"><span>transport.threadFactory.bossThreadPrefix<span style="color:#f92672">=</span>NettyBoss
+</span></span><span style="display:flex;"><span>transport.threadFactory.workerThreadPrefix<span style="color:#f92672">=</span>NettyServerNIOWorker
+</span></span><span style="display:flex;"><span>transport.threadFactory.serverExecutorThreadPrefix<span style="color:#f92672">=</span>NettyServerBizHandler
+</span></span><span style="display:flex;"><span>transport.threadFactory.shareBossWorker<span style="color:#f92672">=</span>false
+</span></span><span style="display:flex;"><span>transport.threadFactory.clientSelectorThreadPrefix<span style="color:#f92672">=</span>NettyClientSelector
+</span></span><span style="display:flex;"><span>transport.threadFactory.clientSelectorThreadSize<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>transport.threadFactory.clientWorkerThreadPrefix<span style="color:#f92672">=</span>NettyClientWorkerThread
+</span></span><span style="display:flex;"><span>transport.threadFactory.bossThreadSize<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>transport.threadFactory.workerThreadSize<span style="color:#f92672">=</span>default
+</span></span><span style="display:flex;"><span>transport.shutdown.wait<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span>
+</span></span><span style="display:flex;"><span>service.vgroupMapping.my_test_tx_group<span style="color:#f92672">=</span>default
+</span></span><span style="display:flex;"><span>service.default.grouplist<span style="color:#f92672">=</span>127.0.0.1:8091
+</span></span><span style="display:flex;"><span>service.enableDegrade<span style="color:#f92672">=</span>false
+</span></span><span style="display:flex;"><span>service.disableGlobalTransaction<span style="color:#f92672">=</span>false
+</span></span><span style="display:flex;"><span>client.rm.asyncCommitBufferLimit<span style="color:#f92672">=</span><span style="color:#ae81ff">10000</span>
+</span></span><span style="display:flex;"><span>client.rm.lock.retryInterval<span style="color:#f92672">=</span><span style="color:#ae81ff">10</span>
+</span></span><span style="display:flex;"><span>client.rm.lock.retryTimes<span style="color:#f92672">=</span><span style="color:#ae81ff">30</span>
+</span></span><span style="display:flex;"><span>client.rm.lock.retryPolicyBranchRollbackOnConflict<span style="color:#f92672">=</span>true
+</span></span><span style="display:flex;"><span>client.rm.reportRetryCount<span style="color:#f92672">=</span><span style="color:#ae81ff">5</span>
+</span></span><span style="display:flex;"><span>client.rm.tableMetaCheckEnable<span style="color:#f92672">=</span>false
+</span></span><span style="display:flex;"><span>client.rm.tableMetaCheckerInterval<span style="color:#f92672">=</span><span style="color:#ae81ff">60000</span>
+</span></span><span style="display:flex;"><span>client.rm.sqlParserType<span style="color:#f92672">=</span>druid
+</span></span><span style="display:flex;"><span>client.rm.reportSuccessEnable<span style="color:#f92672">=</span>false
+</span></span><span style="display:flex;"><span>client.rm.sagaBranchRegisterEnable<span style="color:#f92672">=</span>false
+</span></span><span style="display:flex;"><span>client.rm.tccActionInterceptorOrder<span style="color:#f92672">=</span>-2147482648
+</span></span><span style="display:flex;"><span>client.tm.commitRetryCount<span style="color:#f92672">=</span><span style="color:#ae81ff">5</span>
+</span></span><span style="display:flex;"><span>client.tm.rollbackRetryCount<span style="color:#f92672">=</span><span style="color:#ae81ff">5</span>
+</span></span><span style="display:flex;"><span>client.tm.defaultGlobalTransactionTimeout<span style="color:#f92672">=</span><span style="color:#ae81ff">60000</span>
+</span></span><span style="display:flex;"><span>client.tm.degradeCheck<span style="color:#f92672">=</span>false
+</span></span><span style="display:flex;"><span>client.tm.degradeCheckAllowTimes<span style="color:#f92672">=</span><span style="color:#ae81ff">10</span>
+</span></span><span style="display:flex;"><span>client.tm.degradeCheckPeriod<span style="color:#f92672">=</span><span style="color:#ae81ff">2000</span>
+</span></span><span style="display:flex;"><span>client.tm.interceptorOrder<span style="color:#f92672">=</span>-2147482648
+</span></span><span style="display:flex;"><span>store.lock.mode<span style="color:#f92672">=</span>file
+</span></span><span style="display:flex;"><span>store.session.mode<span style="color:#f92672">=</span>file
+</span></span><span style="display:flex;"><span>store.publicKey<span style="color:#f92672">=</span>
+</span></span><span style="display:flex;"><span>store.file.dir<span style="color:#f92672">=</span>file_store/data
+</span></span><span style="display:flex;"><span>store.file.maxBranchSessionSize<span style="color:#f92672">=</span><span style="color:#ae81ff">16384</span>
+</span></span><span style="display:flex;"><span>store.file.maxGlobalSessionSize<span style="color:#f92672">=</span><span style="color:#ae81ff">512</span>
+</span></span><span style="display:flex;"><span>store.file.fileWriteBufferCacheSize<span style="color:#f92672">=</span><span style="color:#ae81ff">16384</span>
+</span></span><span style="display:flex;"><span>store.file.flushDiskMode<span style="color:#f92672">=</span>async
+</span></span><span style="display:flex;"><span>store.file.sessionReloadReadSize<span style="color:#f92672">=</span><span style="color:#ae81ff">100</span>
+</span></span><span style="display:flex;"><span>store.db.datasource<span style="color:#f92672">=</span>druid
+</span></span><span style="display:flex;"><span>store.db.dbType<span style="color:#f92672">=</span>mysql
+</span></span><span style="display:flex;"><span>store.db.driverClassName<span style="color:#f92672">=</span>com.mysql.jdbc.Driver
+</span></span><span style="display:flex;"><span>store.db.url<span style="color:#f92672">=</span>jdbc:mysql://localhost:3306/seata?characterEncoding<span style="color:#f92672">=</span>utf8&amp;useSSL<span style="color:#f92672">=</span>false&amp;serverTimezone<span style="color:#f92672">=</span>UTC&amp;rewriteBatchedStatements<span style="color:#f92672">=</span>true
+</span></span><span style="display:flex;"><span>store.db.user<span style="color:#f92672">=</span>root
+</span></span><span style="display:flex;"><span>store.db.password<span style="color:#f92672">=</span>Hzyy1214
+</span></span><span style="display:flex;"><span>store.db.minConn<span style="color:#f92672">=</span><span style="color:#ae81ff">5</span>
+</span></span><span style="display:flex;"><span>store.db.maxConn<span style="color:#f92672">=</span><span style="color:#ae81ff">30</span>
+</span></span><span style="display:flex;"><span>store.db.globalTable<span style="color:#f92672">=</span>global_table
+</span></span><span style="display:flex;"><span>store.db.branchTable<span style="color:#f92672">=</span>branch_table
+</span></span><span style="display:flex;"><span>store.db.queryLimit<span style="color:#f92672">=</span><span style="color:#ae81ff">100</span>
+</span></span><span style="display:flex;"><span>store.db.lockTable<span style="color:#f92672">=</span>lock_table
+</span></span><span style="display:flex;"><span>store.db.maxWait<span style="color:#f92672">=</span><span style="color:#ae81ff">5000</span>
+</span></span><span style="display:flex;"><span>store.redis.mode<span style="color:#f92672">=</span>single
+</span></span><span style="display:flex;"><span>store.redis.single.host<span style="color:#f92672">=</span>127.0.0.1
+</span></span><span style="display:flex;"><span>store.redis.single.port<span style="color:#f92672">=</span><span style="color:#ae81ff">6379</span>
+</span></span><span style="display:flex;"><span>store.redis.sentinel.masterName<span style="color:#f92672">=</span>
+</span></span><span style="display:flex;"><span>store.redis.sentinel.sentinelHosts<span style="color:#f92672">=</span>
+</span></span><span style="display:flex;"><span>store.redis.maxConn<span style="color:#f92672">=</span><span style="color:#ae81ff">10</span>
+</span></span><span style="display:flex;"><span>store.redis.minConn<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>store.redis.maxTotal<span style="color:#f92672">=</span><span style="color:#ae81ff">100</span>
+</span></span><span style="display:flex;"><span>store.redis.database<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>store.redis.password<span style="color:#f92672">=</span>
+</span></span><span style="display:flex;"><span>store.redis.queryLimit<span style="color:#f92672">=</span><span style="color:#ae81ff">100</span>
+</span></span><span style="display:flex;"><span>server.recovery.committingRetryPeriod<span style="color:#f92672">=</span><span style="color:#ae81ff">1000</span>
+</span></span><span style="display:flex;"><span>server.recovery.asynCommittingRetryPeriod<span style="color:#f92672">=</span><span style="color:#ae81ff">1000</span>
+</span></span><span style="display:flex;"><span>server.recovery.rollbackingRetryPeriod<span style="color:#f92672">=</span><span style="color:#ae81ff">1000</span>
+</span></span><span style="display:flex;"><span>server.recovery.timeoutRetryPeriod<span style="color:#f92672">=</span><span style="color:#ae81ff">1000</span>
+</span></span><span style="display:flex;"><span>server.maxCommitRetryTimeout<span style="color:#f92672">=</span>-1
+</span></span><span style="display:flex;"><span>server.maxRollbackRetryTimeout<span style="color:#f92672">=</span>-1
+</span></span><span style="display:flex;"><span>server.rollbackRetryTimeoutUnlockEnable<span style="color:#f92672">=</span>false
+</span></span><span style="display:flex;"><span>server.distributedLockExpireTime<span style="color:#f92672">=</span><span style="color:#ae81ff">10000</span>
+</span></span><span style="display:flex;"><span>client.undo.dataValidation<span style="color:#f92672">=</span>true
+</span></span><span style="display:flex;"><span>client.undo.logSerialization<span style="color:#f92672">=</span>jackson
+</span></span><span style="display:flex;"><span>client.undo.onlyCareUpdateColumns<span style="color:#f92672">=</span>true
+</span></span><span style="display:flex;"><span>server.undo.logSaveDays<span style="color:#f92672">=</span><span style="color:#ae81ff">7</span>
+</span></span><span style="display:flex;"><span>server.undo.logDeletePeriod<span style="color:#f92672">=</span><span style="color:#ae81ff">86400000</span>
+</span></span><span style="display:flex;"><span>client.undo.logTable<span style="color:#f92672">=</span>undo_log
+</span></span><span style="display:flex;"><span>client.undo.compress.enable<span style="color:#f92672">=</span>true
+</span></span><span style="display:flex;"><span>client.undo.compress.type<span style="color:#f92672">=</span>zip
+</span></span><span style="display:flex;"><span>client.undo.compress.threshold<span style="color:#f92672">=</span>64k
+</span></span><span style="display:flex;"><span>log.exceptionRate<span style="color:#f92672">=</span><span style="color:#ae81ff">100</span>
+</span></span><span style="display:flex;"><span>transport.serialization<span style="color:#f92672">=</span>seata
+</span></span><span style="display:flex;"><span>transport.compressor<span style="color:#f92672">=</span>none
+</span></span><span style="display:flex;"><span>metrics.enabled<span style="color:#f92672">=</span>false
+</span></span><span style="display:flex;"><span>metrics.registryType<span style="color:#f92672">=</span>compact
+</span></span><span style="display:flex;"><span>metrics.exporterList<span style="color:#f92672">=</span>prometheus
+</span></span><span style="display:flex;"><span>metrics.exporterPrometheusPort<span style="color:#f92672">=</span><span style="color:#ae81ff">9898</span>
+</span></span></code></pre></div><blockquote>
+<p>上述配置解读：</p>
+<p>service.vgroupMapping.my_test_tx_group=default	配置信息到nacos的分组默认default</p>
+<p>service.default.grouplist=127.0.0.1:8091	seata的ip端口</p>
+<pre tabindex="0"><code>配置数据库
+store.db.datasource=druid
+store.db.dbType=mysql
+store.db.driverClassName=com.mysql.jdbc.Driver
+store.db.url=jdbc:mysql://localhost:3306/seata?characterEncoding=utf8&amp;useSSL=false&amp;serverTimezone=UTC&amp;rewriteBatchedStatements=true
+store.db.user=root
+store.db.password=Hzyy1214
+</code></pre><pre tabindex="0"><code>数据库的表默认名称即可，如果数据库表修改这里也要修改
+store.db.globalTable=global_table
+store.db.branchTable=branch_table
+store.db.queryLimit=100
+store.db.lockTable=lock_table
+</code></pre></blockquote>
+<blockquote>
+<p>在conf目录创建nacos-config.sh脚本用于提交config.txt的配置信息到nacos</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>opyright 1999-2019 Seata.io Group.
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Licensed under the Apache License, Version 2.0 (the &#34;License&#34;);</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># you may not use this file except in compliance with the License.</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># You may obtain a copy of the License at、</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#      http://www.apache.org/licenses/LICENSE-2.0</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Unless required by applicable law or agreed to in writing, software</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># distributed under the License is distributed on an &#34;AS IS&#34; BASIS,</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># See the License for the specific language governing permissions and</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># limitations under the License.</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">while</span> getopts <span style="color:#e6db74">&#34;:h:p:g:t:u:w:&#34;</span> opt
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">case</span> $opt in
+</span></span><span style="display:flex;"><span>  h<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>    host<span style="color:#f92672">=</span>$OPTARG
+</span></span><span style="display:flex;"><span>    ;;
+</span></span><span style="display:flex;"><span>  p<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>    port<span style="color:#f92672">=</span>$OPTARG
+</span></span><span style="display:flex;"><span>    ;;
+</span></span><span style="display:flex;"><span>  g<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>    group<span style="color:#f92672">=</span>$OPTARG
+</span></span><span style="display:flex;"><span>    ;;
+</span></span><span style="display:flex;"><span>  t<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>    tenant<span style="color:#f92672">=</span>$OPTARG
+</span></span><span style="display:flex;"><span>    ;;
+</span></span><span style="display:flex;"><span>  u<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>    username<span style="color:#f92672">=</span>$OPTARG
+</span></span><span style="display:flex;"><span>    ;;
+</span></span><span style="display:flex;"><span>  w<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>    password<span style="color:#f92672">=</span>$OPTARG
+</span></span><span style="display:flex;"><span>    ;;
+</span></span><span style="display:flex;"><span>  ?<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34; USAGE OPTION: </span>$0<span style="color:#e6db74"> [-h host] [-p port] [-g group] [-t tenant] [-u username] [-w password] &#34;</span>
+</span></span><span style="display:flex;"><span>    exit <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>    ;;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">esac</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">done</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>urlencode<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">for</span> <span style="color:#f92672">((</span>i<span style="color:#f92672">=</span>0; i &lt; <span style="color:#e6db74">${#</span>1<span style="color:#e6db74">}</span>; i++<span style="color:#f92672">))</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>    char<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>1:$i:1<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">case</span> $char in
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">[</span>a-zA-Z0-9.~_-<span style="color:#f92672">])</span> printf $char ;;
+</span></span><span style="display:flex;"><span>    *<span style="color:#f92672">)</span> printf <span style="color:#e6db74">&#39;%%%02X&#39;</span> <span style="color:#e6db74">&#34;&#39;</span>$char<span style="color:#e6db74">&#34;</span> ;;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">esac</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">done</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> -z <span style="color:#e6db74">${</span>host<span style="color:#e6db74">}</span> <span style="color:#f92672">]]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    host<span style="color:#f92672">=</span>localhost
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> -z <span style="color:#e6db74">${</span>port<span style="color:#e6db74">}</span> <span style="color:#f92672">]]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    port<span style="color:#f92672">=</span><span style="color:#ae81ff">8848</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> -z <span style="color:#e6db74">${</span>group<span style="color:#e6db74">}</span> <span style="color:#f92672">]]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    group<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;SEATA_GROUP&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> -z <span style="color:#e6db74">${</span>tenant<span style="color:#e6db74">}</span> <span style="color:#f92672">]]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    tenant<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> -z <span style="color:#e6db74">${</span>username<span style="color:#e6db74">}</span> <span style="color:#f92672">]]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    username<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> -z <span style="color:#e6db74">${</span>password<span style="color:#e6db74">}</span> <span style="color:#f92672">]]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    password<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>nacosAddr<span style="color:#f92672">=</span>$host:$port
+</span></span><span style="display:flex;"><span>contentType<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;content-type:application/json;charset=UTF-8&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;set nacosAddr=</span>$nacosAddr<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;set group=</span>$group<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>failCount<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>tempLog<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>mktemp -u<span style="color:#66d9ef">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">function</span> addConfig<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  curl -X POST -H <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>contentType<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> <span style="color:#e6db74">&#34;http://</span>$nacosAddr<span style="color:#e6db74">/nacos/v1/cs/configs?dataId=</span><span style="color:#66d9ef">$(</span>urlencode $1<span style="color:#66d9ef">)</span><span style="color:#e6db74">&amp;group=</span>$group<span style="color:#e6db74">&amp;content=</span><span style="color:#66d9ef">$(</span>urlencode $2<span style="color:#66d9ef">)</span><span style="color:#e6db74">&amp;tenant=</span>$tenant<span style="color:#e6db74">&amp;username=</span>$username<span style="color:#e6db74">&amp;password=</span>$password<span style="color:#e6db74">&#34;</span> &gt;<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>tempLog<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> 2&gt;/dev/null
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> -z <span style="color:#66d9ef">$(</span>cat <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>tempLog<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">)</span> <span style="color:#f92672">]]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34; Please check the cluster status. &#34;</span>
+</span></span><span style="display:flex;"><span>    exit <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> <span style="color:#66d9ef">$(</span>cat <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>tempLog<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">)</span> <span style="color:#f92672">=</span>~ <span style="color:#e6db74">&#34;true&#34;</span> <span style="color:#f92672">]]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;Set </span>$1<span style="color:#e6db74">=</span>$2<span style="color:#e6db74"> successfully &#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;Set </span>$1<span style="color:#e6db74">=</span>$2<span style="color:#e6db74"> failure &#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">((</span> failCount++ <span style="color:#f92672">))</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>count<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> line in <span style="color:#66d9ef">$(</span>cat <span style="color:#66d9ef">$(</span>dirname <span style="color:#e6db74">&#34;</span>$PWD<span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">)</span>/config.txt | sed s/<span style="color:#f92672">[[</span>:space:<span style="color:#f92672">]]</span>//g<span style="color:#66d9ef">)</span>; <span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">((</span> count++ <span style="color:#f92672">))</span>
+</span></span><span style="display:flex;"><span>	key<span style="color:#f92672">=</span><span style="color:#e6db74">${</span>line%%=*<span style="color:#e6db74">}</span>
+</span></span><span style="display:flex;"><span>    value<span style="color:#f92672">=</span><span style="color:#e6db74">${</span>line#*=<span style="color:#e6db74">}</span>
+</span></span><span style="display:flex;"><span>	addConfig <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>key<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>value<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">done</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;=========================================================================&#34;</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34; Complete initialization parameters,  total-count:</span>$count<span style="color:#e6db74"> ,  failure-count:</span>$failCount<span style="color:#e6db74"> &#34;</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;=========================================================================&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> <span style="color:#e6db74">${</span>failCount<span style="color:#e6db74">}</span> -eq <span style="color:#ae81ff">0</span> <span style="color:#f92672">]]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>	echo <span style="color:#e6db74">&#34; Init nacos config finished, please start seata-server. &#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>	echo <span style="color:#e6db74">&#34; init nacos config fail. &#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span></code></pre></div><blockquote>
+<p>修改配置文件file.config</p>
+<p>在 file.config中 store.db.driverClassName 默认是 com.mysql.jdbc.Driver。 mysql8.0是 com.mysql.cj.jdbc.Drive</p></blockquote>
+<blockquote>
+<p>执行命令提交配置信息</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>sh nacos-config.sh ip
+</span></span></code></pre></div></blockquote>
+<blockquote>
+<p>启动seata</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>sh seata-server.sh -h nacos的ip地址
+</span></span></code></pre></div></blockquote>
+<h2 id="是什么">是什么？</h2>
+<ul>
+<li>
+<p>1+3</p>
+</li>
+<li>
+<p>1：transactionID XID 全局唯一的事物ID</p>
+</li>
+<li>
+<p>3：3组件概念：</p>
+<ul>
+<li>TC (Transaction Coordinator) - 事务协调者
+<ul>
+<li>维护全局和分支事务的状态，驱动全局事务提交或回滚。</li>
+</ul>
+</li>
+<li>TM (Transaction Manager) - 事务管理器
+<ul>
+<li>定义全局事务的范围：开始全局事务、提交或回滚全局事务。</li>
+</ul>
+</li>
+<li>RM (Resource Manager) - 资源管理器
+<ul>
+<li>管理分支事务处理的资源，与TC交谈以注册分支事务和报告分支事务的状态，并驱动分支事务提交或回滚。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="处理过程">处理过程：</h2>
+<ul>
+<li>TM想TC申请开启一个全局事务，全局事务创建成功并生成 一个全局唯一的XID</li>
+<li>XID在微服务调用链路的上下文中传播</li>
+<li>RM向TC注册分支事务，将其纳入XID对应全局事务的管辖</li>
+<li>TM向TC发起针对XID的全局提交或回滚决议</li>
+<li>TC调度XID下管辖的全部分支事务完成提交或回滚请求</li>
+</ul>
+<table>
+  <thead>
+      <tr>
+          <th>分布式事务模式</th>
+          <th>介绍</th>
+          <th>技术栈</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>AT 模式</strong></td>
+          <td>无侵入的分布式事务解决方案，适用于不希望对业务进行改造的场景，几乎0学习成本（sql都由框架托管统一执行，会存在<strong>脏写</strong>问题）</td>
+          <td>seata、shardingsphere</td>
+      </tr>
+      <tr>
+          <td><strong>TCC 模式</strong></td>
+          <td>高性能分布式事务解决方案，适用于核心系统等对性能有很高要求的场景（第一阶段会产生行锁，事务执行太久会<strong>锁行很久</strong>）</td>
+          <td>seata、service-comb</td>
+      </tr>
+      <tr>
+          <td><strong>Saga 模式</strong></td>
+          <td>长事务解决方案，适用于业务流程长且需要保证事务最终一致性的业务系统（第一阶段就操作DB，会存在<strong>脏读</strong>问题）</td>
+          <td>seata、shardingsphere、service-comb</td>
+      </tr>
+      <tr>
+          <td><strong>XA模式</strong></td>
+          <td>分布式强一致性的解决方案，但<strong>性能低</strong>而使用较少。</td>
+          <td>seata、shardingsphere</td>
+      </tr>
+  </tbody>
+</table>
+<p>启动命令：sh seata-server.sh -p 9999 -h 120.26.11.225</p>
+<p>后台启动：nohup  sh seata-server.sh -p 9999 -h 120.26.11.225 -m file  &gt;nohup.out 2&gt;1 &amp;</p>
+<p>需要修改conf文件夹的file.conf改为db和配置数据库连接信息，具体建数据库信息如下，registry.conf修改为nacos配置nacos信息</p>
+<p>创建数据库和表，如图</p>
+<p><img src="../../../../../%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E6%96%87%E6%9C%AC%E7%AC%94%E8%AE%B0/otherImg/redis/%E6%95%B0%E6%8D%AE%E5%BA%93.png" alt="数据库"></p>
+<p>sql语句：</p>
+<p>seata数据库：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#75715e">-- -------------------------------- The script used when storeMode is &#39;db&#39; --------------------------------
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">-- the table to store GlobalSession data
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">DATABASE</span> seate;
+</span></span><span style="display:flex;"><span>USE seate;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">TABLE</span> <span style="color:#66d9ef">IF</span> <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">EXISTS</span> <span style="color:#f92672">`</span>global_table<span style="color:#f92672">`</span>
+</span></span><span style="display:flex;"><span>(
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">`</span>xid<span style="color:#f92672">`</span>                       VARCHAR(<span style="color:#ae81ff">128</span>) <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">NULL</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">`</span>transaction_id<span style="color:#f92672">`</span>            BIGINT,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">`</span>status<span style="color:#f92672">`</span>                    TINYINT      <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">NULL</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">`</span>application_id<span style="color:#f92672">`</span>            VARCHAR(<span style="color:#ae81ff">32</span>),
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">`</span>transaction_service_group<span style="color:#f92672">`</span> VARCHAR(<span style="color:#ae81ff">32</span>),
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">`</span>transaction_name<span style="color:#f92672">`</span>          VARCHAR(<span style="color:#ae81ff">128</span>),
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">`</span>timeout<span style="color:#f92672">`</span>                   INT,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">`</span>begin_time<span style="color:#f92672">`</span>                BIGINT,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">`</span>application_data<span style="color:#f92672">`</span>          VARCHAR(<span style="color:#ae81ff">2000</span>),
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">`</span>gmt_create<span style="color:#f92672">`</span>                DATETIME,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">`</span>gmt_modified<span style="color:#f92672">`</span>              DATETIME,
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">PRIMARY</span> <span style="color:#66d9ef">KEY</span> (<span style="color:#f92672">`</span>xid<span style="color:#f92672">`</span>),
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">KEY</span> <span style="color:#f92672">`</span>idx_gmt_modified_status<span style="color:#f92672">`</span> (<span style="color:#f92672">`</span>gmt_modified<span style="color:#f92672">`</span>, <span style="color:#f92672">`</span>status<span style="color:#f92672">`</span>),
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">KEY</span> <span style="color:#f92672">`</span>idx_transaction_id<span style="color:#f92672">`</span> (<span style="color:#f92672">`</span>transaction_id<span style="color:#f92672">`</span>)
+</span></span><span style="display:flex;"><span>) ENGINE <span style="color:#f92672">=</span> InnoDB
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">DEFAULT</span> CHARSET <span style="color:#f92672">=</span> utf8;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- the table to store BranchSession data
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">TABLE</span> <span style="color:#66d9ef">IF</span> <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">EXISTS</span> <span style="color:#f92672">`</span>branch_table<span style="color:#f92672">`</span>
+</span></span><span style="display:flex;"><span>(
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">`</span>branch_id<span style="color:#f92672">`</span>         BIGINT       <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">NULL</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">`</span>xid<span style="color:#f92672">`</span>               VARCHAR(<span style="color:#ae81ff">128</span>) <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">NULL</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">`</span>transaction_id<span style="color:#f92672">`</span>    BIGINT,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">`</span>resource_group_id<span style="color:#f92672">`</span> VARCHAR(<span style="color:#ae81ff">32</span>),
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">`</span>resource_id<span style="color:#f92672">`</span>       VARCHAR(<span style="color:#ae81ff">256</span>),
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">`</span>branch_type<span style="color:#f92672">`</span>       VARCHAR(<span style="color:#ae81ff">8</span>),
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">`</span>status<span style="color:#f92672">`</span>            TINYINT,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">`</span>client_id<span style="color:#f92672">`</span>         VARCHAR(<span style="color:#ae81ff">64</span>),
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">`</span>application_data<span style="color:#f92672">`</span>  VARCHAR(<span style="color:#ae81ff">2000</span>),
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">`</span>gmt_create<span style="color:#f92672">`</span>        DATETIME(<span style="color:#ae81ff">6</span>),
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">`</span>gmt_modified<span style="color:#f92672">`</span>      DATETIME(<span style="color:#ae81ff">6</span>),
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">PRIMARY</span> <span style="color:#66d9ef">KEY</span> (<span style="color:#f92672">`</span>branch_id<span style="color:#f92672">`</span>),
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">KEY</span> <span style="color:#f92672">`</span>idx_xid<span style="color:#f92672">`</span> (<span style="color:#f92672">`</span>xid<span style="color:#f92672">`</span>)
+</span></span><span style="display:flex;"><span>) ENGINE <span style="color:#f92672">=</span> InnoDB
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">DEFAULT</span> CHARSET <span style="color:#f92672">=</span> utf8;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- the table to store lock data
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">TABLE</span> <span style="color:#66d9ef">IF</span> <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">EXISTS</span> <span style="color:#f92672">`</span>lock_table<span style="color:#f92672">`</span>
+</span></span><span style="display:flex;"><span>(
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">`</span>row_key<span style="color:#f92672">`</span>        VARCHAR(<span style="color:#ae81ff">128</span>) <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">NULL</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">`</span>xid<span style="color:#f92672">`</span>            VARCHAR(<span style="color:#ae81ff">128</span>),
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">`</span>transaction_id<span style="color:#f92672">`</span> BIGINT,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">`</span>branch_id<span style="color:#f92672">`</span>      BIGINT       <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">NULL</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">`</span>resource_id<span style="color:#f92672">`</span>    VARCHAR(<span style="color:#ae81ff">256</span>),
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">`</span><span style="color:#66d9ef">table_name</span><span style="color:#f92672">`</span>     VARCHAR(<span style="color:#ae81ff">32</span>),
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">`</span>pk<span style="color:#f92672">`</span>             VARCHAR(<span style="color:#ae81ff">36</span>),
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">`</span>gmt_create<span style="color:#f92672">`</span>     DATETIME,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">`</span>gmt_modified<span style="color:#f92672">`</span>   DATETIME,
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">PRIMARY</span> <span style="color:#66d9ef">KEY</span> (<span style="color:#f92672">`</span>row_key<span style="color:#f92672">`</span>),
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">KEY</span> <span style="color:#f92672">`</span>idx_branch_id<span style="color:#f92672">`</span> (<span style="color:#f92672">`</span>branch_id<span style="color:#f92672">`</span>)
+</span></span><span style="display:flex;"><span>) ENGINE <span style="color:#f92672">=</span> InnoDB
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">DEFAULT</span> CHARSET <span style="color:#f92672">=</span> utf8;
+</span></span></code></pre></div><p>seata_account/order/storage数据库：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">DATABASE</span> seata_order;
+</span></span><span style="display:flex;"><span>USE seata_order;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">TABLE</span> t_order(
+</span></span><span style="display:flex;"><span>    id BIGINT(<span style="color:#ae81ff">11</span>) <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">NULL</span> AUTO_INCREMENT <span style="color:#66d9ef">PRIMARY</span> <span style="color:#66d9ef">KEY</span> ,
+</span></span><span style="display:flex;"><span>    user_id BIGINT(<span style="color:#ae81ff">11</span>) <span style="color:#66d9ef">DEFAULT</span> <span style="color:#66d9ef">NULL</span> <span style="color:#66d9ef">COMMENT</span> <span style="color:#e6db74">&#39;用户id&#39;</span>,
+</span></span><span style="display:flex;"><span>    product_id BIGINT(<span style="color:#ae81ff">11</span>) <span style="color:#66d9ef">DEFAULT</span> <span style="color:#66d9ef">NULL</span> <span style="color:#66d9ef">COMMENT</span> <span style="color:#e6db74">&#39;产品id&#39;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">count</span> INT(<span style="color:#ae81ff">11</span>) <span style="color:#66d9ef">DEFAULT</span> <span style="color:#66d9ef">NULL</span> <span style="color:#66d9ef">COMMENT</span> <span style="color:#e6db74">&#39;数量&#39;</span>,
+</span></span><span style="display:flex;"><span>    money DECIMAL(<span style="color:#ae81ff">11</span>,<span style="color:#ae81ff">0</span>) <span style="color:#66d9ef">DEFAULT</span> <span style="color:#66d9ef">NULL</span> <span style="color:#66d9ef">COMMENT</span> <span style="color:#e6db74">&#39;金额&#39;</span>,
+</span></span><span style="display:flex;"><span>    status INT(<span style="color:#ae81ff">1</span>) <span style="color:#66d9ef">DEFAULT</span> <span style="color:#66d9ef">NULL</span> <span style="color:#66d9ef">COMMENT</span> <span style="color:#e6db74">&#39;订单状态：0创建中，1已完结&#39;</span>
+</span></span><span style="display:flex;"><span>)ENGINE<span style="color:#f92672">=</span>InnoDB AUTO_INCREMENT<span style="color:#f92672">=</span><span style="color:#ae81ff">7</span> CHARSET<span style="color:#f92672">=</span>utf8;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">DATABASE</span> seata_storage;
+</span></span><span style="display:flex;"><span>USE seata_storage;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">TABLE</span> t_storage(
+</span></span><span style="display:flex;"><span>    id BIGINT(<span style="color:#ae81ff">11</span>) <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">NULL</span> AUTO_INCREMENT <span style="color:#66d9ef">PRIMARY</span> <span style="color:#66d9ef">KEY</span> ,
+</span></span><span style="display:flex;"><span>    product_id BIGINT(<span style="color:#ae81ff">11</span>) <span style="color:#66d9ef">DEFAULT</span> <span style="color:#66d9ef">NULL</span> <span style="color:#66d9ef">COMMENT</span> <span style="color:#e6db74">&#39;产品id&#39;</span>,
+</span></span><span style="display:flex;"><span>    total INT(<span style="color:#ae81ff">11</span>) <span style="color:#66d9ef">DEFAULT</span> <span style="color:#66d9ef">NULL</span> <span style="color:#66d9ef">COMMENT</span> <span style="color:#e6db74">&#39;总库存&#39;</span>,
+</span></span><span style="display:flex;"><span>    used INT(<span style="color:#ae81ff">11</span>) <span style="color:#66d9ef">DEFAULT</span> <span style="color:#66d9ef">NULL</span> <span style="color:#66d9ef">COMMENT</span> <span style="color:#e6db74">&#39;已用库存&#39;</span>,
+</span></span><span style="display:flex;"><span>    residue INT(<span style="color:#ae81ff">11</span>) <span style="color:#66d9ef">DEFAULT</span> <span style="color:#66d9ef">NULL</span> <span style="color:#66d9ef">COMMENT</span> <span style="color:#e6db74">&#39;剩余库存&#39;</span>
+</span></span><span style="display:flex;"><span>)ENGINE<span style="color:#f92672">=</span>InnoDB AUTO_INCREMENT<span style="color:#f92672">=</span><span style="color:#ae81ff">7</span> CHARSET<span style="color:#f92672">=</span>utf8;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">INSERT</span> <span style="color:#66d9ef">INTO</span> t_storage(id, product_id, total, used, residue) <span style="color:#66d9ef">VALUES</span>(<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">100</span>,<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">100</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">DATABASE</span> seata_account;
+</span></span><span style="display:flex;"><span>USE seata_account;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">TABLE</span> t_account(
+</span></span><span style="display:flex;"><span>    id BIGINT(<span style="color:#ae81ff">11</span>) <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">NULL</span> AUTO_INCREMENT <span style="color:#66d9ef">PRIMARY</span> <span style="color:#66d9ef">KEY</span> ,
+</span></span><span style="display:flex;"><span>    user_id BIGINT(<span style="color:#ae81ff">11</span>) <span style="color:#66d9ef">DEFAULT</span> <span style="color:#66d9ef">NULL</span> <span style="color:#66d9ef">COMMENT</span> <span style="color:#e6db74">&#39;用户id&#39;</span>,
+</span></span><span style="display:flex;"><span>    total DECIMAL(<span style="color:#ae81ff">10</span>,<span style="color:#ae81ff">0</span>) <span style="color:#66d9ef">DEFAULT</span> <span style="color:#66d9ef">NULL</span> <span style="color:#66d9ef">COMMENT</span> <span style="color:#e6db74">&#39;总额度&#39;</span>,
+</span></span><span style="display:flex;"><span>    used DECIMAL(<span style="color:#ae81ff">10</span>,<span style="color:#ae81ff">0</span>) <span style="color:#66d9ef">DEFAULT</span> <span style="color:#66d9ef">NULL</span> <span style="color:#66d9ef">COMMENT</span> <span style="color:#e6db74">&#39;已用额度&#39;</span>,
+</span></span><span style="display:flex;"><span>    residue DECIMAL(<span style="color:#ae81ff">10</span>,<span style="color:#ae81ff">0</span>) <span style="color:#66d9ef">DEFAULT</span> <span style="color:#ae81ff">0</span> <span style="color:#66d9ef">COMMENT</span> <span style="color:#e6db74">&#39;剩余可用额度&#39;</span>
+</span></span><span style="display:flex;"><span>)ENGINE<span style="color:#f92672">=</span>InnoDB AUTO_INCREMENT<span style="color:#f92672">=</span><span style="color:#ae81ff">7</span> CHARSET<span style="color:#f92672">=</span>utf8;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">INSERT</span> <span style="color:#66d9ef">INTO</span> t_account(id, user_id, total, used, residue) <span style="color:#66d9ef">VALUES</span>(<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">1000</span>,<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">1000</span>);
+</span></span></code></pre></div><h2 id="pomxml">pom.xml</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#f92672">&lt;dependencies&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;groupId&gt;</span>com.alibaba.cloud<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;artifactId&gt;</span>spring-cloud-starter-alibaba-seata<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;groupId&gt;</span>com.alibaba.cloud<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;artifactId&gt;</span>spring-cloud-starter-alibaba-nacos-discovery<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">&lt;!--feign--&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;groupId&gt;</span>org.springframework.cloud<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;artifactId&gt;</span>spring-cloud-starter-openfeign<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">&lt;!--web-actuator--&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;groupId&gt;</span>org.springframework.boot<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;artifactId&gt;</span>spring-boot-starter-web<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">&lt;!--mysql-druid--&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;groupId&gt;</span>mysql<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;artifactId&gt;</span>mysql-connector-java<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;version&gt;</span>8.0.23<span style="color:#f92672">&lt;/version&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;groupId&gt;</span>com.alibaba<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;artifactId&gt;</span>druid-spring-boot-starter<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;version&gt;</span>1.1.10<span style="color:#f92672">&lt;/version&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;groupId&gt;</span>org.mybatis.spring.boot<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;artifactId&gt;</span>mybatis-spring-boot-starter<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;version&gt;</span>2.0.0<span style="color:#f92672">&lt;/version&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;groupId&gt;</span>org.springframework.boot<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;artifactId&gt;</span>spring-boot-starter-test<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;scope&gt;</span>test<span style="color:#f92672">&lt;/scope&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;groupId&gt;</span>org.projectlombok<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;artifactId&gt;</span>lombok<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;optional&gt;</span>true<span style="color:#f92672">&lt;/optional&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;groupId&gt;</span>com.baomidou<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;artifactId&gt;</span>mybatis-plus-boot-starter<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;version&gt;</span>3.0.5<span style="color:#f92672">&lt;/version&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/dependencies&gt;</span>
+</span></span></code></pre></div><h2 id="applicationyml">application.yml</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yml" data-lang="yml"><span style="display:flex;"><span><span style="color:#f92672">seata</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">enabled</span>: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">enable-auto-data-source-proxy</span>: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">tx-service-group</span>: <span style="color:#ae81ff">my_test_tx_group</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">registry</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">type</span>: <span style="color:#ae81ff">nacos</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">nacos</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">application</span>: <span style="color:#ae81ff">seata-server</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">server-addr</span>: <span style="color:#ae81ff">127.0.0.1</span>:<span style="color:#ae81ff">8848</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">username</span>: <span style="color:#ae81ff">nacos</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">password</span>: <span style="color:#ae81ff">nacos</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">config</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">type</span>: <span style="color:#ae81ff">nacos</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">nacos</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">server-addr</span>: <span style="color:#ae81ff">127.0.0.1</span>:<span style="color:#ae81ff">8848</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">group</span>: <span style="color:#ae81ff">SEATA_GROUP</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">username</span>: <span style="color:#ae81ff">nacos</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">password</span>: <span style="color:#ae81ff">nacos</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">namespace</span>: <span style="color:#ae81ff">0af6e97b-a684-4647-b696-7c6d42aecce7</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">service</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">vgroupMapping</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">my_test_tx_group</span>: <span style="color:#ae81ff">default</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">disable-global-transaction</span>: <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">client</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">rm</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">report-success-enable</span>: <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">spring</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">application</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Seata</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">datasource</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">driver-class-name</span>: <span style="color:#ae81ff">com.mysql.cj.jdbc.Driver</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">url</span>: <span style="color:#ae81ff">jdbc:mysql://localhost:3306/seata_order?characterEncoding=utf8&amp;useSSL=false&amp;serverTimezone=UTC&amp;rewriteBatchedStatements=true</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">username</span>: <span style="color:#ae81ff">root</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">password</span>: <span style="color:#ae81ff">Hzyy1214</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">server</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">port</span>: <span style="color:#ae81ff">8999</span>
+</span></span></code></pre></div><h2 id="datasource">dataSource</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#f92672">package</span> com.xiaoyu.config;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> com.zaxxer.hikari.HikariDataSource;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> io.seata.rm.datasource.DataSourceProxy;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> org.springframework.beans.factory.annotation.Value;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> org.springframework.context.annotation.Bean;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> org.springframework.context.annotation.Configuration;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> org.springframework.context.annotation.Primary;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> javax.sql.DataSource;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@Configuration</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">DataSourceProxyConfig</span> {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * 需要将 DataSourceProxy 设置为主数据源，否则事务无法回滚
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Primary</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Bean</span>(<span style="color:#e6db74">&#34;dataSource&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> DataSource <span style="color:#a6e22e">dataSource</span>(<span style="color:#a6e22e">@Value</span>(<span style="color:#e6db74">&#34;${spring.datasource.url}&#34;</span>)String url, <span style="color:#a6e22e">@Value</span>(<span style="color:#e6db74">&#34;${spring.datasource.driver-class-name}&#34;</span>)String driverClassName,
+</span></span><span style="display:flex;"><span>                                 <span style="color:#a6e22e">@Value</span>(<span style="color:#e6db74">&#34;${spring.datasource.username}&#34;</span>)String username, <span style="color:#a6e22e">@Value</span>(<span style="color:#e6db74">&#34;${spring.datasource.password}&#34;</span>)String password) {
+</span></span><span style="display:flex;"><span>        HikariDataSource hikariDataSource <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> HikariDataSource();
+</span></span><span style="display:flex;"><span>        hikariDataSource.<span style="color:#a6e22e">setJdbcUrl</span>(url);
+</span></span><span style="display:flex;"><span>        hikariDataSource.<span style="color:#a6e22e">setDriverClassName</span>(driverClassName);
+</span></span><span style="display:flex;"><span>        hikariDataSource.<span style="color:#a6e22e">setUsername</span>(username);
+</span></span><span style="display:flex;"><span>        hikariDataSource.<span style="color:#a6e22e">setPassword</span>(password);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> DataSourceProxy(hikariDataSource);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="回滚">回滚</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@Service</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">OrderService</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">//出现异常自动回滚无异常自动提交</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@GlobalTransactional</span>(name <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;my_test_tx_group&#34;</span>, rollbackFor <span style="color:#f92672">=</span> Exception.<span style="color:#a6e22e">class</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">t1</span>() {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//业务逻辑</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">//捕捉异常手动回滚</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">t2</span>() {
+</span></span><span style="display:flex;"><span>        GlobalTransaction globalTransaction <span style="color:#f92672">=</span> GlobalTransactionContext.<span style="color:#a6e22e">getCurrentOrCreate</span>();
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">try</span> {
+</span></span><span style="display:flex;"><span>          <span style="color:#75715e">//开始事物</span>
+</span></span><span style="display:flex;"><span>            globalTransaction.<span style="color:#a6e22e">begin</span>(3000, <span style="color:#e6db74">&#34;my_test_tx_group&#34;</span>);
+</span></span><span style="display:flex;"><span>          
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">//业务逻辑</span>
+</span></span><span style="display:flex;"><span>          
+</span></span><span style="display:flex;"><span>          <span style="color:#75715e">//没有异常提交事务</span>
+</span></span><span style="display:flex;"><span>            globalTransaction.<span style="color:#a6e22e">commit</span>();
+</span></span><span style="display:flex;"><span>        } <span style="color:#66d9ef">catch</span> (Exception e) {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">try</span> {
+</span></span><span style="display:flex;"><span>              <span style="color:#75715e">//出现异常回滚事务</span>
+</span></span><span style="display:flex;"><span>                globalTransaction.<span style="color:#a6e22e">rollback</span>();
+</span></span><span style="display:flex;"><span>            } <span style="color:#66d9ef">catch</span> (TransactionException ex) {
+</span></span><span style="display:flex;"><span>                ex.<span style="color:#a6e22e">printStackTrace</span>();
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="other">other</h2>
+<blockquote>
+<p>使用openfeign调用其他服务时，参数&gt;=两个会报错，解决办法：</p>
+<p>使用@RequestParam(&ldquo;id&rdquo;)</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@FeignClient</span>(value <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Seata-Storage&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">StorageService</span> {
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@GetMapping</span>(<span style="color:#e6db74">&#34;/update/storage&#34;</span>)
+</span></span><span style="display:flex;"><span>String <span style="color:#a6e22e">updateStorage</span> (<span style="color:#a6e22e">@RequestParam</span>(<span style="color:#e6db74">&#34;id&#34;</span>) Integer id,<span style="color:#a6e22e">@RequestParam</span>(<span style="color:#e6db74">&#34;account&#34;</span>) Integer account);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div></blockquote>
+<ul class="pa0">
+  
+   <li class="list di">
+     <a href="/tags/java/" class="link f5 grow br-pill ba ph3 pv2 mb2 dib black sans-serif no-underline">Java</a>
+   </li>
+  
+   <li class="list di">
+     <a href="/tags/springcloud/" class="link f5 grow br-pill ba ph3 pv2 mb2 dib black sans-serif no-underline">SpringCloud</a>
+   </li>
+  
+   <li class="list di">
+     <a href="/tags/springcloudalibaba/" class="link f5 grow br-pill ba ph3 pv2 mb2 dib black sans-serif no-underline">SpringCloudAlibaba</a>
+   </li>
+  
+</ul>
+<div class="mt6 instapaper_ignoref">
+      
+      
+      </div>
+    </div>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+  <div class="bg-light-gray pa3 nested-list-reset nested-copy-line-height nested-links">
+    <p class="f5 b mb3">Related</p>
+    <ul class="pa0 list">
+	   
+	     <li  class="mb2">
+          <a href="/posts/java/springsecurity%E5%8D%95%E7%82%B9%E7%99%BB%E5%BD%95/">SpringSecurity单点登录</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/java/springboot%E6%95%B4%E5%90%88rabbitmq/">springBoot整合rabbitMQ</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/java/java-rabbitmq/">Java RabbitMQ</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/java/shiro/">Shiro</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/java/java-swagger/">Java Swagger</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/java/springmvc/">SpringMVC</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/java/java-email/">Java Email</a>
+        </li>
+	    
+    </ul>
+</div>
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white white-70 dn dib-ns pv2 ph3 no-underline" href="http://localhost:1313/" >
+    &copy;  loveyu233 2025 
+  </a>
+    <div><div class="ananke-socials"></div>
+</div>
+  </div>
+</footer>
+
+  </body>
+</html>

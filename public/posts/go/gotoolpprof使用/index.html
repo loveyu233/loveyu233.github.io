@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>pprof | loveyu233</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="go test [包路径] [选项]
+
+
+-v：输出详细的测试日志，包括每个测试函数的名称和执行结果。
+-run &lt;正则表达式&gt;：指定要运行的测试函数或测试组的正则表达式。
+-cover：计算测试覆盖率，并显示每个文件的覆盖率百分比。
+-bench &lt;正则表达式&gt;：运行性能基准测试，并显示基准测试的结果。
+-timeout &lt;时长&gt;：设置超时时间，单个测试的最大执行时间。
+-count &lt;次数&gt;：执行测试的次数，默认为 1 次。
+-benchmem
+打印出申请内存的次数。一般用于简单的性能测试，不会导出数据文件。
+-blockprofile block.out
+将协程的阻塞数据写入特定的文件（block.out）。如果-c，则写成二进制文件。
+-cpuprofile cpu.out
+将协程的CPU使用数据写入特定的文件（cpu.out）。如果-c，则写成二进制文件。
+-memprofile mem.out
+将协程的内存申请数据写入特定的文件（mem.out）。如果-c，则写成二进制文件。
+-mutexprofile mutex.out
+将协程的互斥数据写入特定的文件（mutex.out）。如果-c，则写成二进制文件。
+-trace trace.out
+将执行调用链写入特定文件（trace.out）。
+
+例如，要运行当前目录下所有测试文件的测试，可以执行以下命令：
+bashCopy Codego test
+如果你只想运行某个特定包的测试，可以指定包的导入路径：
+bashCopy Codego test github.com/example/package
+你还可以使用 -run 标志来选择性地运行特定的测试函数或测试组。例如，下面的命令将运行名称中包含 &ldquo;TestFoo&rdquo; 的测试函数：
+bashCopy Codego test -run TestFoo
+如果你想在测试运行时生成并查看测试覆盖率报告，可以使用 -cover 标志：
+bashCopy Codego test -cover
+项目配置
+
+在项目中导入
+
+_ &#34;net/http/pprof&#34;
+
+启动http服务
+
+http.ListenAndServe(&#34;:6060&#34;, nil)
+
+访问网址
+
+http://27.0.0.1:6060/debug/pprof
+
+
+allocs：查看过去所有内存分配的样本（历史累计）。
+block：查看导致阻塞同步的堆栈跟踪（历史累计）。
+cmdline： 当前程序的命令行的完整调用路径（从程序一开始运行时决定）。
+goroutine：查看当前所有运行的 goroutines 堆栈跟踪（实时变化）。
+heap：查看活动对象的内存分配情况（实时变化）。
+mutex：查看导致互斥锁的竞争持有者的堆栈跟踪（历史累计）。
+profile： 默认进行 30s 的 CPU Profiling，得到一个分析用的 profile 文件（从开始分析，到分析结束）。
+threadcreate：查看创建新 OS 线程的堆栈跟踪（一般没啥用）。
+
+
+默认情况下是不追踪block和mutex的信息,开启方式:">
+    <meta name="generator" content="Hugo 0.147.7">
+    
+    
+    
+      <meta name="robots" content="noindex, nofollow">
+    
+    <meta name="author" content="loveyu">
+    
+
+    
+<link rel="stylesheet" href="/ananke/css/main.min.css" >
+
+
+
+
+    
+
+
+    
+      
+
+    
+
+    
+
+    
+      <link rel="canonical" href="http://localhost:1313/posts/go/gotoolpprof%E4%BD%BF%E7%94%A8/">
+    
+
+    <meta property="og:url" content="http://localhost:1313/posts/go/gotoolpprof%E4%BD%BF%E7%94%A8/">
+  <meta property="og:site_name" content="loveyu233">
+  <meta property="og:title" content="pprof">
+  <meta property="og:description" content="go test [包路径] [选项] -v：输出详细的测试日志，包括每个测试函数的名称和执行结果。 -run &lt;正则表达式&gt;：指定要运行的测试函数或测试组的正则表达式。 -cover：计算测试覆盖率，并显示每个文件的覆盖率百分比。 -bench &lt;正则表达式&gt;：运行性能基准测试，并显示基准测试的结果。 -timeout &lt;时长&gt;：设置超时时间，单个测试的最大执行时间。 -count &lt;次数&gt;：执行测试的次数，默认为 1 次。 -benchmem 打印出申请内存的次数。一般用于简单的性能测试，不会导出数据文件。 -blockprofile block.out 将协程的阻塞数据写入特定的文件（block.out）。如果-c，则写成二进制文件。 -cpuprofile cpu.out 将协程的CPU使用数据写入特定的文件（cpu.out）。如果-c，则写成二进制文件。 -memprofile mem.out 将协程的内存申请数据写入特定的文件（mem.out）。如果-c，则写成二进制文件。 -mutexprofile mutex.out 将协程的互斥数据写入特定的文件（mutex.out）。如果-c，则写成二进制文件。 -trace trace.out 将执行调用链写入特定文件（trace.out）。 例如，要运行当前目录下所有测试文件的测试，可以执行以下命令：
+bashCopy Codego test 如果你只想运行某个特定包的测试，可以指定包的导入路径：
+bashCopy Codego test github.com/example/package 你还可以使用 -run 标志来选择性地运行特定的测试函数或测试组。例如，下面的命令将运行名称中包含 “TestFoo” 的测试函数：
+bashCopy Codego test -run TestFoo 如果你想在测试运行时生成并查看测试覆盖率报告，可以使用 -cover 标志：
+bashCopy Codego test -cover 项目配置 在项目中导入 _ &#34;net/http/pprof&#34; 启动http服务 http.ListenAndServe(&#34;:6060&#34;, nil) 访问网址 http://27.0.0.1:6060/debug/pprof allocs：查看过去所有内存分配的样本（历史累计）。 block：查看导致阻塞同步的堆栈跟踪（历史累计）。 cmdline： 当前程序的命令行的完整调用路径（从程序一开始运行时决定）。 goroutine：查看当前所有运行的 goroutines 堆栈跟踪（实时变化）。 heap：查看活动对象的内存分配情况（实时变化）。 mutex：查看导致互斥锁的竞争持有者的堆栈跟踪（历史累计）。 profile： 默认进行 30s 的 CPU Profiling，得到一个分析用的 profile 文件（从开始分析，到分析结束）。 threadcreate：查看创建新 OS 线程的堆栈跟踪（一般没啥用）。 默认情况下是不追踪block和mutex的信息,开启方式:">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2023-07-15T11:18:37+08:00">
+    <meta property="article:modified_time" content="2023-07-15T11:18:37+08:00">
+    <meta property="article:tag" content="Go">
+    <meta property="article:tag" content="Pprof">
+    <meta property="article:tag" content="Go Test">
+
+  <meta itemprop="name" content="pprof">
+  <meta itemprop="description" content="go test [包路径] [选项] -v：输出详细的测试日志，包括每个测试函数的名称和执行结果。 -run &lt;正则表达式&gt;：指定要运行的测试函数或测试组的正则表达式。 -cover：计算测试覆盖率，并显示每个文件的覆盖率百分比。 -bench &lt;正则表达式&gt;：运行性能基准测试，并显示基准测试的结果。 -timeout &lt;时长&gt;：设置超时时间，单个测试的最大执行时间。 -count &lt;次数&gt;：执行测试的次数，默认为 1 次。 -benchmem 打印出申请内存的次数。一般用于简单的性能测试，不会导出数据文件。 -blockprofile block.out 将协程的阻塞数据写入特定的文件（block.out）。如果-c，则写成二进制文件。 -cpuprofile cpu.out 将协程的CPU使用数据写入特定的文件（cpu.out）。如果-c，则写成二进制文件。 -memprofile mem.out 将协程的内存申请数据写入特定的文件（mem.out）。如果-c，则写成二进制文件。 -mutexprofile mutex.out 将协程的互斥数据写入特定的文件（mutex.out）。如果-c，则写成二进制文件。 -trace trace.out 将执行调用链写入特定文件（trace.out）。 例如，要运行当前目录下所有测试文件的测试，可以执行以下命令：
+bashCopy Codego test 如果你只想运行某个特定包的测试，可以指定包的导入路径：
+bashCopy Codego test github.com/example/package 你还可以使用 -run 标志来选择性地运行特定的测试函数或测试组。例如，下面的命令将运行名称中包含 “TestFoo” 的测试函数：
+bashCopy Codego test -run TestFoo 如果你想在测试运行时生成并查看测试覆盖率报告，可以使用 -cover 标志：
+bashCopy Codego test -cover 项目配置 在项目中导入 _ &#34;net/http/pprof&#34; 启动http服务 http.ListenAndServe(&#34;:6060&#34;, nil) 访问网址 http://27.0.0.1:6060/debug/pprof allocs：查看过去所有内存分配的样本（历史累计）。 block：查看导致阻塞同步的堆栈跟踪（历史累计）。 cmdline： 当前程序的命令行的完整调用路径（从程序一开始运行时决定）。 goroutine：查看当前所有运行的 goroutines 堆栈跟踪（实时变化）。 heap：查看活动对象的内存分配情况（实时变化）。 mutex：查看导致互斥锁的竞争持有者的堆栈跟踪（历史累计）。 profile： 默认进行 30s 的 CPU Profiling，得到一个分析用的 profile 文件（从开始分析，到分析结束）。 threadcreate：查看创建新 OS 线程的堆栈跟踪（一般没啥用）。 默认情况下是不追踪block和mutex的信息,开启方式:">
+  <meta itemprop="datePublished" content="2023-07-15T11:18:37+08:00">
+  <meta itemprop="dateModified" content="2023-07-15T11:18:37+08:00">
+  <meta itemprop="wordCount" content="227">
+  <meta itemprop="keywords" content="Go,Pprof,Go Test">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="pprof">
+  <meta name="twitter:description" content="go test [包路径] [选项] -v：输出详细的测试日志，包括每个测试函数的名称和执行结果。 -run &lt;正则表达式&gt;：指定要运行的测试函数或测试组的正则表达式。 -cover：计算测试覆盖率，并显示每个文件的覆盖率百分比。 -bench &lt;正则表达式&gt;：运行性能基准测试，并显示基准测试的结果。 -timeout &lt;时长&gt;：设置超时时间，单个测试的最大执行时间。 -count &lt;次数&gt;：执行测试的次数，默认为 1 次。 -benchmem 打印出申请内存的次数。一般用于简单的性能测试，不会导出数据文件。 -blockprofile block.out 将协程的阻塞数据写入特定的文件（block.out）。如果-c，则写成二进制文件。 -cpuprofile cpu.out 将协程的CPU使用数据写入特定的文件（cpu.out）。如果-c，则写成二进制文件。 -memprofile mem.out 将协程的内存申请数据写入特定的文件（mem.out）。如果-c，则写成二进制文件。 -mutexprofile mutex.out 将协程的互斥数据写入特定的文件（mutex.out）。如果-c，则写成二进制文件。 -trace trace.out 将执行调用链写入特定文件（trace.out）。 例如，要运行当前目录下所有测试文件的测试，可以执行以下命令：
+bashCopy Codego test 如果你只想运行某个特定包的测试，可以指定包的导入路径：
+bashCopy Codego test github.com/example/package 你还可以使用 -run 标志来选择性地运行特定的测试函数或测试组。例如，下面的命令将运行名称中包含 “TestFoo” 的测试函数：
+bashCopy Codego test -run TestFoo 如果你想在测试运行时生成并查看测试覆盖率报告，可以使用 -cover 标志：
+bashCopy Codego test -cover 项目配置 在项目中导入 _ &#34;net/http/pprof&#34; 启动http服务 http.ListenAndServe(&#34;:6060&#34;, nil) 访问网址 http://27.0.0.1:6060/debug/pprof allocs：查看过去所有内存分配的样本（历史累计）。 block：查看导致阻塞同步的堆栈跟踪（历史累计）。 cmdline： 当前程序的命令行的完整调用路径（从程序一开始运行时决定）。 goroutine：查看当前所有运行的 goroutines 堆栈跟踪（实时变化）。 heap：查看活动对象的内存分配情况（实时变化）。 mutex：查看导致互斥锁的竞争持有者的堆栈跟踪（历史累计）。 profile： 默认进行 30s 的 CPU Profiling，得到一个分析用的 profile 文件（从开始分析，到分析结束）。 threadcreate：查看创建新 OS 线程的堆栈跟踪（一般没啥用）。 默认情况下是不追踪block和mutex的信息,开启方式:">
+
+	
+  </head><body class="ma0 avenir bg-near-white development">
+
+    
+   
+  
+
+  <header>
+    <div class="bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l center items-center justify-between">
+    <a href="/" class="f3 fw2 hover-white white-90 dib no-underline">
+      
+        loveyu233
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      <div class="ananke-socials"></div>
+
+    </div>
+  </div>
+</nav>
+
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  
+  <article class="flex-l mw8 center ph3 flex-wrap justify-between">
+    <header class="mt4 w-100">
+      <aside class="instapaper_ignoref b helvetica tracked ttu">
+          
+        go
+      </aside><div id="sharing" class="mt3 ananke-socials"></div>
+<h1 class="f1 athelas mt3 mb1">pprof</h1>
+      
+      <p class="tracked"><strong>loveyu</strong>
+      </p>
+      
+      
+      
+      <time class="f6 mv4 dib tracked" datetime="2023-07-15T11:18:37+08:00">July 15, 2023</time>
+      
+
+      
+      
+    </header>
+    <div class="nested-copy-line-height lh-copy serif f4 nested-links mid-gray pr4-l w-two-thirds-l"><h1 id="go-test-包路径-选项">go test [包路径] [选项]</h1>
+<blockquote>
+<ul>
+<li><code>-v</code>：输出详细的测试日志，包括每个测试函数的名称和执行结果。</li>
+<li><code>-run &lt;正则表达式&gt;</code>：指定要运行的测试函数或测试组的正则表达式。</li>
+<li><code>-cover</code>：计算测试覆盖率，并显示每个文件的覆盖率百分比。</li>
+<li><code>-bench &lt;正则表达式&gt;</code>：运行性能基准测试，并显示基准测试的结果。</li>
+<li><code>-timeout &lt;时长&gt;</code>：设置超时时间，单个测试的最大执行时间。</li>
+<li><code>-count &lt;次数&gt;</code>：执行测试的次数，默认为 1 次。</li>
+<li>-benchmem
+打印出申请内存的次数。一般用于简单的性能测试，不会导出数据文件。</li>
+<li>-blockprofile block.out
+将协程的阻塞数据写入特定的文件（block.out）。如果-c，则写成二进制文件。</li>
+<li>-cpuprofile cpu.out
+将协程的CPU使用数据写入特定的文件（cpu.out）。如果-c，则写成二进制文件。</li>
+<li>-memprofile mem.out
+将协程的内存申请数据写入特定的文件（mem.out）。如果-c，则写成二进制文件。</li>
+<li>-mutexprofile mutex.out
+将协程的互斥数据写入特定的文件（mutex.out）。如果-c，则写成二进制文件。</li>
+<li>-trace trace.out
+将执行调用链写入特定文件（trace.out）。</li>
+</ul></blockquote>
+<p>例如，要运行当前目录下所有测试文件的测试，可以执行以下命令：</p>
+<pre tabindex="0"><code>bashCopy Codego test
+</code></pre><p>如果你只想运行某个特定包的测试，可以指定包的导入路径：</p>
+<pre tabindex="0"><code>bashCopy Codego test github.com/example/package
+</code></pre><p>你还可以使用 <code>-run</code> 标志来选择性地运行特定的测试函数或测试组。例如，下面的命令将运行名称中包含 &ldquo;TestFoo&rdquo; 的测试函数：</p>
+<pre tabindex="0"><code>bashCopy Codego test -run TestFoo
+</code></pre><p>如果你想在测试运行时生成并查看测试覆盖率报告，可以使用 <code>-cover</code> 标志：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>bashCopy Codego test -cover
+</span></span></code></pre></div><h1 id="项目配置">项目配置</h1>
+<ol>
+<li>在项目中导入</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#a6e22e">_</span> <span style="color:#e6db74">&#34;net/http/pprof&#34;</span>
+</span></span></code></pre></div><ol start="2">
+<li>启动http服务</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ListenAndServe</span>(<span style="color:#e6db74">&#34;:6060&#34;</span>, <span style="color:#66d9ef">nil</span>)
+</span></span></code></pre></div><ol start="3">
+<li>访问网址</li>
+</ol>
+<pre tabindex="0"><code class="language-url" data-lang="url">http://27.0.0.1:6060/debug/pprof
+</code></pre><blockquote>
+<ul>
+<li>allocs：查看过去所有内存分配的样本（历史累计）。</li>
+<li>block：查看导致阻塞同步的堆栈跟踪（历史累计）。</li>
+<li>cmdline： 当前程序的命令行的完整调用路径（从程序一开始运行时决定）。</li>
+<li>goroutine：查看当前所有运行的 goroutines 堆栈跟踪（实时变化）。</li>
+<li>heap：查看活动对象的内存分配情况（实时变化）。</li>
+<li>mutex：查看导致互斥锁的竞争持有者的堆栈跟踪（历史累计）。</li>
+<li>profile： 默认进行 30s 的 CPU Profiling，得到一个分析用的 profile 文件（从开始分析，到分析结束）。</li>
+<li>threadcreate：查看创建新 OS 线程的堆栈跟踪（一般没啥用）。</li>
+</ul></blockquote>
+<blockquote>
+<p>默认情况下是不追踪block和mutex的信息,开启方式:</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#a6e22e">runtime</span>.<span style="color:#a6e22e">SetBlockProfileRate</span>(<span style="color:#ae81ff">1</span>) <span style="color:#75715e">// 开启对阻塞操作的跟踪，block  </span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">runtime</span>.<span style="color:#a6e22e">SetMutexProfileFraction</span>(<span style="color:#ae81ff">1</span>) <span style="color:#75715e">// 开启对锁调用的跟踪，mutex</span>
+</span></span></code></pre></div><h1 id="可视化安装">可视化安装</h1>
+<blockquote>
+<p>安装并配置graphviz/bin到环境变量中</p></blockquote>
+<pre tabindex="0"><code class="language-url" data-lang="url">https://graphviz.org/download/
+</code></pre><h1 id="go-tool-pprof">go tool pprof</h1>
+<h2 id="直接获取并分析">直接获取并分析</h2>
+<blockquote>
+<p>go tool pprof http://localhost:6060/debug/pprof/XXX</p>
+<p>自动下载到本地并分析,执行后会提示分析文件的保存位置</p>
+<p>Saved profile in C:\Users\user\pprof\pprof.___go_build_goTest.exe.contentions.delay.002.pb.gz</p></blockquote>
+<h2 id="下载到本地再分析">下载到本地再分析</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>curl -o 目录名称 http://localhost:6060/debug/pprof/XXX
+</span></span><span style="display:flex;"><span>go tool pprof 目录名称
+</span></span></code></pre></div><h2 id="go-test">go test</h2>
+<blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>-bench<span style="color:#f92672">=</span>.
+</span></span><span style="display:flex;"><span>进行性能测试，“.”是正则匹配，匹配了所有的测试函数
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>-benchmem
+</span></span><span style="display:flex;"><span>打印出申请内存的次数。一般用于简单的性能测试，不会导出数据文件。
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>-blockprofile block.out
+</span></span><span style="display:flex;"><span>将协程的阻塞数据写入特定的文件（block.out）。如果-c，则写成二进制文件。
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>-cpuprofile cpu.out
+</span></span><span style="display:flex;"><span>将协程的CPU使用数据写入特定的文件（cpu.out）。如果-c，则写成二进制文件。
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>-memprofile mem.out
+</span></span><span style="display:flex;"><span>将协程的内存申请数据写入特定的文件（mem.out）。如果-c，则写成二进制文件。
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>-mutexprofile mutex.out
+</span></span><span style="display:flex;"><span>将协程的互斥数据写入特定的文件（mutex.out）。如果-c，则写成二进制文件。
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>-trace trace.out
+</span></span><span style="display:flex;"><span>将执行调用链写入特定文件（trace.out）。
+</span></span></code></pre></div></blockquote>
+<h2 id="代码获取文件">代码获取文件</h2>
+<blockquote>
+<p>其他的，包括alloc、heap、mutex、block、goroutine、threadcreate，写法上都是一样的，只需要替换那个字符串就行了。</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#a6e22e">f</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Create</span>(<span style="color:#e6db74">&#34;cpu.pprof&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">f</span>.<span style="color:#a6e22e">Close</span>()
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// cpu文件的获取</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">_</span> = <span style="color:#a6e22e">pprof</span>.<span style="color:#a6e22e">StartCPUProfile</span>(<span style="color:#a6e22e">f</span>)
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Sleep</span>(<span style="color:#ae81ff">1</span> <span style="color:#f92672">*</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Minute</span>)
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">pprof</span>.<span style="color:#a6e22e">StopCPUProfile</span>()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 其他</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">f</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Create</span>(<span style="color:#e6db74">&#34;XXX.pprof&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">f</span>.<span style="color:#a6e22e">Close</span>()
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">_</span> = <span style="color:#a6e22e">pprof</span>.<span style="color:#a6e22e">Lookup</span>(<span style="color:#e6db74">&#34;allocs&#34;</span>).<span style="color:#a6e22e">WriteTo</span>(<span style="color:#a6e22e">f</span>, <span style="color:#ae81ff">0</span>) <span style="color:#75715e">// 前面这个字符串</span>
+</span></span></code></pre></div><h1 id="获取测试信息">获取测试信息</h1>
+<blockquote>
+<p>在执行完 go tool pprof xxx 后会等待新的输入</p>
+<p>top: 文本分析</p>
+<p>web: 开启一个http服务可视化的查看</p></blockquote>
+<h2 id="更方便的方式">更方便的方式</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>go tool pprof -http<span style="color:#f92672">=</span>:端口 分析文件位置
+</span></span><span style="display:flex;"><span>分析文件位置可以是: 目录, pprof.XXX.samples.cpu.001.pb.gz http://127.0.0.1:6060/debug/pprof/xxx
+</span></span></code></pre></div><h1 id="指标理解">指标理解</h1>
+<h2 id="flat-flat">flat flat%</h2>
+<blockquote>
+<p>一个函数内<code>直接操作</code>的物理耗时,a函数调用b函数,则调用的b函数的执行时间不算到flat</p>
+<p>所有的flat相加即是总采样时间，所有的flat%相加应该等于100%。</p></blockquote>
+<h2 id="cum-cum">cum cum%</h2>
+<blockquote>
+<p>一个函数内的全部操作耗时, 包括函数内调用的其他函数</p>
+<p>cum%即是cum的时间/总运行时间。内存等参数同理。</p>
+<p>cum%其上所有行的flat%的累加。可以视为，这一行及其以上行，其所有的directly操作一共占了多少物理时间。</p></blockquote>
+<p>sum%</p>
+<blockquote>
+<p>函数自身累积使用 CPU 总比例</p></blockquote>
+<p>Name</p>
+<blockquote>
+<p>函数名</p></blockquote>
+<h2 id="连线图">连线图</h2>
+<p>格式:</p>
+<blockquote>
+<p>包名</p>
+<p>函数名</p>
+<p>flat(flat%)</p>
+<p>cum(cum%)</p></blockquote>
+<blockquote>
+<p>节点的颜色越红，其cum和cum%越大。其颜色越灰白，则cum和cum%越小。</p>
+<p>节点越大，其flat和flat%越大；其越小，则flat和flat%越小</p>
+<p>线条代表了函数的调用链，线条越粗，代表指向的函数消耗了越多的资源。反之亦然。</p>
+<p>线条的样式代表了调用关系。实线代表直接调用；虚线代表中间少了几个节点；带有inline字段表示该函数被内联进了调用方（不用在意，可以理解成实线）。</p></blockquote>
+<h2 id="火焰图">火焰图</h2>
+<blockquote>
+<p>火焰图的横向长度表示cum，相比下面超出的一截代表flat。</p></blockquote>
+<h1 id="trace">trace</h1>
+<blockquote>
+<p>go tool trace 文件</p></blockquote>
+<ul class="pa0">
+  
+   <li class="list di">
+     <a href="/tags/go/" class="link f5 grow br-pill ba ph3 pv2 mb2 dib black sans-serif no-underline">Go</a>
+   </li>
+  
+   <li class="list di">
+     <a href="/tags/pprof/" class="link f5 grow br-pill ba ph3 pv2 mb2 dib black sans-serif no-underline">Pprof</a>
+   </li>
+  
+   <li class="list di">
+     <a href="/tags/go-test/" class="link f5 grow br-pill ba ph3 pv2 mb2 dib black sans-serif no-underline">Go Test</a>
+   </li>
+  
+</ul>
+<div class="mt6 instapaper_ignoref">
+      
+      
+      </div>
+    </div>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+  <div class="bg-light-gray pa3 nested-list-reset nested-copy-line-height nested-links">
+    <p class="f5 b mb3">Related</p>
+    <ul class="pa0 list">
+	   
+	     <li  class="mb2">
+          <a href="/posts/other/git%E9%A1%B9%E7%9B%AE%E4%BD%BF%E7%94%A8/">git项目使用</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/fiber%E7%AC%94%E8%AE%B0/">fiber基础</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/other/%E9%93%BE%E8%B7%AF%E8%BF%BD%E8%B8%AA%E7%9B%91%E6%8E%A7/">链路追踪</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/go%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86%E4%BD%BF%E7%94%A8/">Go非对称加密使用</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/interview/">面试指南</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/%E5%AE%9E%E6%88%98%E6%8A%80%E5%B7%A7/">实战技巧</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/%E6%BB%91%E5%9D%97%E9%AA%8C%E8%AF%81%E7%A0%81%E5%AE%9E%E7%8E%B0/">滑块验证码实现</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/go-redis%E9%A1%B9%E7%9B%AE%E4%BD%BF%E7%94%A8/">Go Redis项目使用</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/grpc/">go GRPC使用</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/go-swagger/">Go Swagger</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/go%E5%8D%95%E7%82%B9%E7%99%BB%E5%BD%95/">Go单点登录</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/go-redis%E4%BD%BF%E7%94%A8lua%E8%84%9A%E6%9C%AC/">Go Redis使用lua脚本</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/gorm/">Gorm</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/gin%E6%96%87%E4%BB%B6%E4%B8%8B%E8%BD%BD%E4%B9%B1%E7%A0%81/">Gin文件下载乱码</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/casbin/">go使用casbin</a>
+        </li>
+	    
+    </ul>
+</div>
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white white-70 dn dib-ns pv2 ph3 no-underline" href="http://localhost:1313/" >
+    &copy;  loveyu233 2025 
+  </a>
+    <div><div class="ananke-socials"></div>
+</div>
+  </div>
+</footer>
+
+  </body>
+</html>

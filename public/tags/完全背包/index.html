@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>loveyu233</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="">
+    <meta name="generator" content="Hugo 0.147.7">
+    
+    
+    
+      <meta name="robots" content="noindex, nofollow">
+    
+    
+
+    
+<link rel="stylesheet" href="/ananke/css/main.min.css" >
+
+
+
+
+    
+
+
+    
+      
+
+    
+
+    
+    
+      <link href="/tags/%E5%AE%8C%E5%85%A8%E8%83%8C%E5%8C%85/index.xml" rel="alternate" type="application/rss+xml" title="loveyu233" />
+      <link href="/tags/%E5%AE%8C%E5%85%A8%E8%83%8C%E5%8C%85/index.xml" rel="feed" type="application/rss+xml" title="loveyu233" />
+      
+    
+
+    
+      <link rel="canonical" href="http://localhost:1313/tags/%E5%AE%8C%E5%85%A8%E8%83%8C%E5%8C%85/">
+    
+
+    <meta property="og:url" content="http://localhost:1313/tags/%E5%AE%8C%E5%85%A8%E8%83%8C%E5%8C%85/">
+  <meta property="og:site_name" content="loveyu233">
+  <meta property="og:title" content="完全背包">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="website">
+
+  <meta itemprop="name" content="完全背包">
+  <meta itemprop="datePublished" content="2024-09-03T17:54:25+08:00">
+  <meta itemprop="dateModified" content="2024-09-03T17:54:25+08:00">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="完全背包">
+
+	
+  </head><body class="ma0 avenir bg-near-white development">
+
+    
+
+  <header>
+    <div class="pb3-m pb6-l bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l center items-center justify-between">
+    <a href="/" class="f3 fw2 hover-white white-90 dib no-underline">
+      
+        loveyu233
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      <div class="ananke-socials"></div>
+
+    </div>
+  </div>
+</nav>
+
+      <div class="tc-l pv3 ph3 ph4-ns">
+        <h1 class="f2 f-subheadline-l fw2 light-silver mb0 lh-title">
+          完全背包
+        </h1>
+        
+      </div>
+    </div>
+  </header>
+
+
+    <main class="pb7" role="main">
+      
+  <article class="cf pa3 pa4-m pa4-l">
+    <div class="measure-wide-l center f4 lh-copy nested-copy-line-height nested-links mid-gray">
+      <p>Below you will find pages that utilize the taxonomy term “完全背包”</p>
+    </div>
+  </article>
+  <div class="mw8 center">
+    <section class="flex-ns mt5 flex-wrap justify-around">
+      
+        <div class="w-100 mb4 relative bg-white">
+          <div class="w-100 mb4 nested-copy-line-height relative bg-white">
+  <div class="mb3 pa4 gray overflow-hidden bg-white">
+    <span class="f6 db">other</span>
+    <h1 class="f3 near-black">
+      <a href="/posts/other/%E8%83%8C%E5%8C%85/" class="link black dim">
+        背包
+      </a>
+    </h1>
+    <div class="nested-links f5 lh-copy nested-copy-line-height">
+      <h1 id="背包">背包</h1>
+<p><a href="https://www.bilibili.com/video/BV16Y411v7Y6/?spm_id_from=333.788&amp;vd_source=c82892ceed4b858d308c45829c725d98">灵神哔哩哔哩视频</a></p>
+<h2 id="分类">分类</h2>
+<blockquote>
+<h4 id="01背包-有n个物品第i个物品的体积为wi价值为vi每种物品只能选一次求体积不超过cap的最大价值和"><code>01背包:</code> 有<code>n个</code>物品,第i个物品的体积为w[i]价值为v[i],每种物品<code>只能选一次</code>,求体积不超过cap的最大价值和</h4>
+<h4 id="完全背包有n种物品第i种物品的体积为wi价值为vi每种物品可以选无数次求体积不超过cap的最大价值和"><code>完全背包:</code>有<code>n种</code>物品,第i种物品的体积为w[i]价值为v[i],每种物品<code>可以选无数次</code>,求体积不超过cap的最大价值和</h4></blockquote>
+<h2 id="01背包dp">01背包dp</h2>
+<blockquote>
+<h3 id="求价值和">求价值和</h3>
+<p><code>dfs(i,c) = max(dfs(i-1,c), dfs(i-1,c-w[i])+v[i])</code></p>
+<h3 id="求方案数">求方案数</h3>
+<p><code>dfs(i,c) = dfs(i-1,c) + dfs(i-1,c-w[i])</code></p>
+<p>这叫加法原理，如果事件 A 和事件 B 是互斥的（即不能同时发生，不选 nums[i] 的同时，又选了 nums[i]），那么发生事件 A 或事件 B 的总数等于事件 A 的数量加上事件 B 的数量</p>
+<p>在转为dp是将i+1可以避免下标为负数的情况</p></blockquote>
+<h2 id="先背包先物品">先背包/先物品</h2>
+<blockquote>
+<p>如果是<code>求组合</code>就是外层for物品,内层for背包</p>
+<p>如果是<code>求排列</code>就是外层for背包,内层for物品</p></blockquote>
+<h2 id="正序倒序">正序/倒序</h2>
+<blockquote>
+<h3 id="如果使用的是二维数组则无所谓正序和倒序因为本次的循环不会给上次循环的结果覆盖掉"><code>如果使用的是二维数组则无所谓正序和倒序因为本次的循环不会给上次循环的结果覆盖掉</code></h3>
+<p>这里的正序和倒序<code>指的是内层for循环</code>,<code>而外层for循环都是正序(0 - n-1)的情况</code></p>
+<p>如果使用一维数组则要考虑:</p>
+<ol>
+<li>转移来源是否会被覆盖</li>
+<li>结果是否已经计算出来</li>
+</ol>
+<p>正序遍历会导致 0-1 背包状态被覆盖，而完全背包则是正确的（转移来源被计算出来，且不存在被覆盖的问题<code>如果dp[i]依赖超过两个数据源则不适用,例如求LCS(最长公共子序列)和递增子序列(LS)以及最长递增子序列(LIS)</code>）</p>
+<p>逆序遍历对于 0-1 背包是正确的（转移来源是上一行的，早就被计算出来了且没有被覆盖），而完全背包则不行（转移来源没有被计算出来）。</p>
+<p><code>具体推到看下边的优化到一维数组</code></p></blockquote>
+<h2 id="优化到一维数组">优化到一维数组</h2>
+<h3 id="常规情况">常规情况</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#ae81ff">01</span><span style="color:#a6e22e">背包的情况</span>(<span style="color:#a6e22e">目标和题目</span>):
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">i</span><span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>][<span style="color:#a6e22e">c</span>] = <span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">i</span>][<span style="color:#a6e22e">c</span>] <span style="color:#f92672">+</span> <span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">i</span>][<span style="color:#a6e22e">c</span><span style="color:#f92672">-</span><span style="color:#a6e22e">w</span>[<span style="color:#a6e22e">i</span>]]
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">改进为一维数组</span>:
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">c</span>] = <span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">c</span>] <span style="color:#f92672">+</span> <span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">c</span><span style="color:#f92672">-</span><span style="color:#a6e22e">w</span>[<span style="color:#a6e22e">i</span>]]
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">因为是求组合所以先遍历物品再遍历背包且是正序的情况下</span>,<span style="color:#a6e22e">当w</span>[<span style="color:#a6e22e">i</span>]=<span style="color:#ae81ff">2</span><span style="color:#a6e22e">时</span>:
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">i</span>  : <span style="color:#ae81ff">1</span> <span style="color:#ae81ff">2</span> <span style="color:#ae81ff">3</span> <span style="color:#ae81ff">5</span> <span style="color:#ae81ff">6</span> <span style="color:#ae81ff">7</span> <span style="color:#ae81ff">9</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">i</span><span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>: <span style="color:#ae81ff">1</span> <span style="color:#ae81ff">2</span> <span style="color:#ae81ff">4</span> <span style="color:#ae81ff">7</span> <span style="color:#a6e22e">到这个位置因为是一维数组所以新数据4吧源数据的3给覆盖了</span>,<span style="color:#a6e22e">继续变量得到的就是10而不是应该得到的9</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">改为逆序遍历</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">i</span>  : <span style="color:#ae81ff">1</span> <span style="color:#ae81ff">2</span> <span style="color:#ae81ff">3</span>  <span style="color:#ae81ff">5</span> <span style="color:#ae81ff">6</span>  <span style="color:#ae81ff">7</span>   <span style="color:#ae81ff">9</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">i</span><span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>:     <span style="color:#ae81ff">4</span>  <span style="color:#ae81ff">7</span> <span style="color:#ae81ff">9</span>  <span style="color:#ae81ff">12</span>  <span style="color:#ae81ff">15</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">完全背包的情况</span>(<span style="color:#a6e22e">零钱兑换题目</span>):
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">i</span><span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>][<span style="color:#a6e22e">c</span>] = min(<span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">i</span>][<span style="color:#a6e22e">c</span>],<span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">i</span><span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>][<span style="color:#a6e22e">c</span><span style="color:#f92672">-</span><span style="color:#a6e22e">w</span>[<span style="color:#a6e22e">i</span>]]<span style="color:#f92672">+</span><span style="color:#a6e22e">v</span>[<span style="color:#a6e22e">i</span>])  <span style="color:#a6e22e">看min的第二个参数是dp</span>[<span style="color:#a6e22e">i</span><span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>]<span style="color:#a6e22e">而01背包的情况下是dp</span>[<span style="color:#a6e22e">i</span>],<span style="color:#a6e22e">也就是说完全背包的i位置就是通过计算后的结果得到的</span>,<span style="color:#a6e22e">所以不存在覆盖后计算错误</span>,<span style="color:#a6e22e">完全背包要的就是这个计算后覆盖的数据</span>,<span style="color:#a6e22e">所以完全背包和01背包刚好相反</span>,<span style="color:#ae81ff">01</span><span style="color:#a6e22e">背包需要逆序而完全背包需要正序</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">c</span>] = min(<span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">c</span>], <span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">c</span><span style="color:#f92672">-</span><span style="color:#a6e22e">w</span>[<span style="color:#a6e22e">i</span>]]<span style="color:#f92672">+</span><span style="color:#a6e22e">v</span>[<span style="color:#a6e22e">i</span>])
+</span></span></code></pre></div><h3 id="其他情况">其他情况</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#a6e22e">最长公共子序列题目</span>:
+</span></span><span style="display:flex;"><span>						
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">i</span>][<span style="color:#a6e22e">j</span>]<span style="color:#a6e22e">需要考虑两种情况</span>:
+</span></span><span style="display:flex;"><span>					  <span style="color:#a6e22e">当s</span>[<span style="color:#a6e22e">i</span>]<span style="color:#f92672">==</span><span style="color:#a6e22e">t</span>[<span style="color:#a6e22e">j</span>]<span style="color:#a6e22e">的时候</span>  <span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">i</span>][<span style="color:#a6e22e">j</span>] = <span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">i</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>][<span style="color:#a6e22e">j</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>					  <span style="color:#a6e22e">当s</span>[<span style="color:#a6e22e">i</span>]<span style="color:#f92672">!=</span><span style="color:#a6e22e">t</span>[<span style="color:#a6e22e">j</span>]<span style="color:#a6e22e">的时候</span>  <span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">i</span>][<span style="color:#a6e22e">j</span>] = max(<span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">i</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>][<span style="color:#a6e22e">j</span>], <span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">i</span>][<span style="color:#a6e22e">j</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">i</span>][<span style="color:#a6e22e">j</span>]<span style="color:#a6e22e">需要依赖三个方向的数据</span>: <span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">i</span>][<span style="color:#a6e22e">j</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]: <span style="color:#a6e22e">左边</span>   <span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">i</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>][<span style="color:#a6e22e">j</span>]: <span style="color:#a6e22e">上边</span>   <span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">i</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>][<span style="color:#a6e22e">j</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]: <span style="color:#a6e22e">左上</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">常规情况下可以使用正序和逆序来得到正确结果但这里是三个方向的数据所以必须使用临时变量来记录左上的状态</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">先把dp公式改为一维</span>:<span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">j</span>]<span style="color:#a6e22e">依赖于</span>: <span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">j</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]: <span style="color:#a6e22e">左边</span>   <span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">j</span>]: <span style="color:#a6e22e">上边</span>   <span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">j</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]: <span style="color:#a6e22e">左上</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">在实际使用中为防止下标为负数所以会加上一个最大的减数确保下标最小为0例如这里则加上1</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">j</span><span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>] <span style="color:#f92672">==</span>&gt; <span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">j</span>]:<span style="color:#a6e22e">左边</span> <span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">j</span><span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>]:<span style="color:#a6e22e">上边</span>  <span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">j</span>]:<span style="color:#a6e22e">左上</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">根据公式</span>: 
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">相同时</span>: <span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">j</span><span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>] = <span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">j</span>] <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">不同时</span>: <span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">j</span><span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>] = max(<span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">j</span><span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>], <span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">j</span>])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">所以为什么是记录左上而不是别的</span>:
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">因为在计算到dp</span>[<span style="color:#a6e22e">j</span>]<span style="color:#a6e22e">的时候dp</span>[<span style="color:#a6e22e">j</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]<span style="color:#a6e22e">肯定已经计算完了且放到了dp</span>[<span style="color:#a6e22e">j</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]<span style="color:#a6e22e">的位置上了</span>,<span style="color:#a6e22e">那么对应的上一行数据也就是j的左上数据肯定就已经被覆盖了</span>,<span style="color:#a6e22e">所以需要一个临时变量来给记录一下</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">pre必须在每次i循环的时候都重新给初始化为</span> <span style="color:#a6e22e">pre</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">dp</span>[<span style="color:#ae81ff">0</span>], <span style="color:#a6e22e">因为从二维变成一维每次i遍历的时候都是新的开始所以要重置</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">longestCommonSubsequence</span>(<span style="color:#a6e22e">text1</span> <span style="color:#66d9ef">string</span>, <span style="color:#a6e22e">text2</span> <span style="color:#66d9ef">string</span>) <span style="color:#66d9ef">int</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">n</span>, <span style="color:#a6e22e">m</span> <span style="color:#f92672">:=</span> len(<span style="color:#a6e22e">text1</span>), len(<span style="color:#a6e22e">text2</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">dp</span> <span style="color:#f92672">:=</span> make([]<span style="color:#66d9ef">int</span>, <span style="color:#a6e22e">m</span><span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span>; <span style="color:#a6e22e">i</span> &lt; <span style="color:#a6e22e">n</span>; <span style="color:#a6e22e">i</span><span style="color:#f92672">++</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">pre</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">dp</span>[<span style="color:#ae81ff">0</span>]
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">j</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span>; <span style="color:#a6e22e">j</span> &lt; <span style="color:#a6e22e">m</span>; <span style="color:#a6e22e">j</span><span style="color:#f92672">++</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">tmp</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">j</span><span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>]
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">text1</span>[<span style="color:#a6e22e">i</span>] <span style="color:#f92672">==</span> <span style="color:#a6e22e">text2</span>[<span style="color:#a6e22e">j</span>] {
+</span></span><span style="display:flex;"><span>				<span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">j</span><span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>] = <span style="color:#a6e22e">pre</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>			} <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>				<span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">j</span><span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>] = max(<span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">j</span><span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>], <span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">j</span>])
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">pre</span> = <span style="color:#a6e22e">tmp</span>
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">m</span>]
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="模版">模版</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span>; <span style="color:#a6e22e">i</span> &lt; <span style="color:#a6e22e">n</span>; <span style="color:#a6e22e">i</span><span style="color:#f92672">++</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// pre都是等于dp[0],用来保存左上的状态</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">pre</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">dp</span>[<span style="color:#ae81ff">0</span>]
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 是否需要对i为0的情况进行初始化</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// dp[0] = i+1  (例如583题目)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> <span style="color:#a6e22e">j</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span>; <span style="color:#a6e22e">j</span> &lt; <span style="color:#a6e22e">m</span>; <span style="color:#a6e22e">j</span><span style="color:#f92672">++</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// tmp都是等于dp[j+1]</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">tmp</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">j</span><span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>]
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">text1</span>[<span style="color:#a6e22e">i</span>] <span style="color:#f92672">==</span> <span style="color:#a6e22e">text2</span>[<span style="color:#a6e22e">j</span>] {
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">j</span><span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>] = <span style="color:#a6e22e">pre</span>
+</span></span><span style="display:flex;"><span>        } <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 这里的dp[j+1]不能替换为pre,因为pre是左上的状态,这里的dp[j+1]是上边的状态</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">j</span><span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>] = max(<span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">j</span><span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>], <span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">j</span>])
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">pre</span> = <span style="color:#a6e22e">tmp</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="方案数例子">方案数例子</h1>
+<blockquote>
+<p>给你一个非负整数数组 <code>nums</code> 和一个整数 <code>target</code> 。</p>
+    </div>
+    <a href="/posts/other/%E8%83%8C%E5%8C%85/" class="ba b--moon-gray bg-light-gray br2 color-inherit dib f7 hover-bg-moon-gray link mt2 ph2 pv1">read more</a>
+  </div>
+</div>
+
+        </div>
+      
+    </section>
+  </div>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white white-70 dn dib-ns pv2 ph3 no-underline" href="http://localhost:1313/" >
+    &copy;  loveyu233 2025 
+  </a>
+    <div><div class="ananke-socials"></div>
+</div>
+  </div>
+</footer>
+
+  </body>
+</html>

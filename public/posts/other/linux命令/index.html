@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>linux命令 | loveyu233</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="后台运行相关命令
+
+nohup: 不受当前终端关闭的影响,就算当前终端关闭命令也一样会运行不会被迫终止
+### 只输出正常内容
+nohup command &gt; filePath &amp;
+
+### 错误也输出
+nohup command &gt; filePath 2&gt;1&amp; &amp;
+
+### 实例
+nohup minikube dashboard &gt; dashboard.log 2&gt;&amp;1 &amp;
+查看后台运行任务
+# jobs只能查看当次的
+jobs
+
+# 列出用户名下所有的进程，包括后台任务
+ps -ef | grep username
+
+### 输出实例,其中的中括号即为job_id
+[1]-  Running                 nohup minikube dashboard &gt; dashboard.log 2&gt;&amp;1 &amp;
+[2]&#43;  Running                 nohup kubectl proxy --port=9898 --address=&#39;10.220.10.50&#39; --accept-hosts=&#39;.*&#39; &gt; proxy.log 2&gt;&amp;1 &amp;
+关闭任务
+kill %job_id
+# 强制关闭
+kill -9 %job_id 
+后台任务调度到前台
+
+下 Ctrl &#43; Z 组合键将任务暂停并放入后台">
+    <meta name="generator" content="Hugo 0.147.7">
+    
+    
+    
+      <meta name="robots" content="noindex, nofollow">
+    
+    <meta name="author" content="loveyu">
+    
+
+    
+<link rel="stylesheet" href="/ananke/css/main.min.css" >
+
+
+
+
+    
+
+
+    
+      
+
+    
+
+    
+
+    
+      <link rel="canonical" href="http://localhost:1313/posts/other/linux%E5%91%BD%E4%BB%A4/">
+    
+
+    <meta property="og:url" content="http://localhost:1313/posts/other/linux%E5%91%BD%E4%BB%A4/">
+  <meta property="og:site_name" content="loveyu233">
+  <meta property="og:title" content="linux命令">
+  <meta property="og:description" content="后台运行相关命令 nohup: 不受当前终端关闭的影响,就算当前终端关闭命令也一样会运行不会被迫终止
+### 只输出正常内容 nohup command &gt; filePath &amp; ### 错误也输出 nohup command &gt; filePath 2&gt;1&amp; &amp; ### 实例 nohup minikube dashboard &gt; dashboard.log 2&gt;&amp;1 &amp; 查看后台运行任务 # jobs只能查看当次的 jobs # 列出用户名下所有的进程，包括后台任务 ps -ef | grep username ### 输出实例,其中的中括号即为job_id [1]- Running nohup minikube dashboard &gt; dashboard.log 2&gt;&amp;1 &amp; [2]&#43; Running nohup kubectl proxy --port=9898 --address=&#39;10.220.10.50&#39; --accept-hosts=&#39;.*&#39; &gt; proxy.log 2&gt;&amp;1 &amp; 关闭任务 kill %job_id # 强制关闭 kill -9 %job_id 后台任务调度到前台 下 Ctrl &#43; Z 组合键将任务暂停并放入后台">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2022-09-24T19:38:37+08:00">
+    <meta property="article:modified_time" content="2022-09-24T19:38:37+08:00">
+    <meta property="article:tag" content="Linux">
+
+  <meta itemprop="name" content="linux命令">
+  <meta itemprop="description" content="后台运行相关命令 nohup: 不受当前终端关闭的影响,就算当前终端关闭命令也一样会运行不会被迫终止
+### 只输出正常内容 nohup command &gt; filePath &amp; ### 错误也输出 nohup command &gt; filePath 2&gt;1&amp; &amp; ### 实例 nohup minikube dashboard &gt; dashboard.log 2&gt;&amp;1 &amp; 查看后台运行任务 # jobs只能查看当次的 jobs # 列出用户名下所有的进程，包括后台任务 ps -ef | grep username ### 输出实例,其中的中括号即为job_id [1]- Running nohup minikube dashboard &gt; dashboard.log 2&gt;&amp;1 &amp; [2]&#43; Running nohup kubectl proxy --port=9898 --address=&#39;10.220.10.50&#39; --accept-hosts=&#39;.*&#39; &gt; proxy.log 2&gt;&amp;1 &amp; 关闭任务 kill %job_id # 强制关闭 kill -9 %job_id 后台任务调度到前台 下 Ctrl &#43; Z 组合键将任务暂停并放入后台">
+  <meta itemprop="datePublished" content="2022-09-24T19:38:37+08:00">
+  <meta itemprop="dateModified" content="2022-09-24T19:38:37+08:00">
+  <meta itemprop="wordCount" content="388">
+  <meta itemprop="keywords" content="Linux">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="linux命令">
+  <meta name="twitter:description" content="后台运行相关命令 nohup: 不受当前终端关闭的影响,就算当前终端关闭命令也一样会运行不会被迫终止
+### 只输出正常内容 nohup command &gt; filePath &amp; ### 错误也输出 nohup command &gt; filePath 2&gt;1&amp; &amp; ### 实例 nohup minikube dashboard &gt; dashboard.log 2&gt;&amp;1 &amp; 查看后台运行任务 # jobs只能查看当次的 jobs # 列出用户名下所有的进程，包括后台任务 ps -ef | grep username ### 输出实例,其中的中括号即为job_id [1]- Running nohup minikube dashboard &gt; dashboard.log 2&gt;&amp;1 &amp; [2]&#43; Running nohup kubectl proxy --port=9898 --address=&#39;10.220.10.50&#39; --accept-hosts=&#39;.*&#39; &gt; proxy.log 2&gt;&amp;1 &amp; 关闭任务 kill %job_id # 强制关闭 kill -9 %job_id 后台任务调度到前台 下 Ctrl &#43; Z 组合键将任务暂停并放入后台">
+
+	
+  </head><body class="ma0 avenir bg-near-white development">
+
+    
+   
+  
+
+  <header>
+    <div class="bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l center items-center justify-between">
+    <a href="/" class="f3 fw2 hover-white white-90 dib no-underline">
+      
+        loveyu233
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      <div class="ananke-socials"></div>
+
+    </div>
+  </div>
+</nav>
+
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  
+  <article class="flex-l mw8 center ph3 flex-wrap justify-between">
+    <header class="mt4 w-100">
+      <aside class="instapaper_ignoref b helvetica tracked ttu">
+          
+        other
+      </aside><div id="sharing" class="mt3 ananke-socials"></div>
+<h1 class="f1 athelas mt3 mb1">linux命令</h1>
+      
+      <p class="tracked"><strong>loveyu</strong>
+      </p>
+      
+      
+      
+      <time class="f6 mv4 dib tracked" datetime="2022-09-24T19:38:37+08:00">September 24, 2022</time>
+      
+
+      
+      
+    </header>
+    <div class="nested-copy-line-height lh-copy serif f4 nested-links mid-gray pr4-l w-two-thirds-l"><h1 id="后台运行相关命令">后台运行相关命令</h1>
+<blockquote>
+<p>nohup: 不受当前终端关闭的影响,就算当前终端关闭命令也一样会运行不会被迫终止</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e">### 只输出正常内容</span>
+</span></span><span style="display:flex;"><span>nohup command &gt; filePath &amp;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">### 错误也输出</span>
+</span></span><span style="display:flex;"><span>nohup command &gt; filePath 2&gt;1&amp; &amp;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">### 实例</span>
+</span></span><span style="display:flex;"><span>nohup minikube dashboard &gt; dashboard.log 2&gt;&amp;<span style="color:#ae81ff">1</span> &amp;
+</span></span></code></pre></div><h2 id="查看后台运行任务">查看后台运行任务</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># jobs只能查看当次的</span>
+</span></span><span style="display:flex;"><span>jobs
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 列出用户名下所有的进程，包括后台任务</span>
+</span></span><span style="display:flex;"><span>ps -ef | grep username
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">### 输出实例,其中的中括号即为job_id</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>1<span style="color:#f92672">]</span>-  Running                 nohup minikube dashboard &gt; dashboard.log 2&gt;&amp;<span style="color:#ae81ff">1</span> &amp;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>2<span style="color:#f92672">]</span>+  Running                 nohup kubectl proxy --port<span style="color:#f92672">=</span><span style="color:#ae81ff">9898</span> --address<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;10.220.10.50&#39;</span> --accept-hosts<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;.*&#39;</span> &gt; proxy.log 2&gt;&amp;<span style="color:#ae81ff">1</span> &amp;
+</span></span></code></pre></div><h2 id="关闭任务">关闭任务</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>kill %job_id
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 强制关闭</span>
+</span></span><span style="display:flex;"><span>kill -9 %job_id 
+</span></span></code></pre></div><h2 id="后台任务调度到前台">后台任务调度到前台</h2>
+<blockquote>
+<p>下 Ctrl + Z 组合键将任务暂停并放入后台</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>fg %job_id
+</span></span></code></pre></div><h2 id="运行后台stopped任务">运行后台Stopped任务</h2>
+<blockquote>
+<p>Ctrl + Z后任务会进入Stopped状态</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>bg %job_id
+</span></span></code></pre></div><h1 id="查找">查找</h1>
+<h2 id="查找命令或可执行的文件名">查找命令或可执行的文件名</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>whereis &lt;command/file&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">### 例如</span>
+</span></span><span style="display:flex;"><span>whereis ls
+</span></span></code></pre></div><h2 id="查找文件位置">查找文件位置</h2>
+<blockquote>
+<p>是在指定目录及其子目录中进行递归搜索，可以根据多个条件进行搜索，功能比较强大。</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>find &lt;path&gt; &lt;options&gt; &lt;expression&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">### 例如</span>
+</span></span><span style="display:flex;"><span>find . -name <span style="color:#e6db74">&#34;file.txt&#34;</span>
+</span></span></code></pre></div><h2 id="查找文件内信息">查找文件内信息</h2>
+<blockquote>
+<p>是在文本文件中搜索指定模式，可以使用正则表达式进行高级匹配，适合于对文件内容进行查找。
+参数
+-i：忽略大小写。
+-r：递归地搜索目录中的文件。
+-v：反向匹配，显示不包含指定字符串的行。
+-n：显示匹配行的行号</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>grep &lt;pattern&gt; &lt;file&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">### 例如,会显示这一行并把查找信息加红</span>
+</span></span><span style="display:flex;"><span>grep <span style="color:#e6db74">&#34;jlk&#34;</span> asd.txt 
+</span></span></code></pre></div><h1 id="传输文件">传输文件</h1>
+<blockquote>
+<p>目录则加 -r, scp -r</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e">### 将本地文件复制到远程主机</span>
+</span></span><span style="display:flex;"><span>scp local_file remote_username@remote_ip:remote_folder
+</span></span><span style="display:flex;"><span>scp /home/user/file.txt user@192.168.1.100:/data
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">### 将远程文件复制到本地主机</span>
+</span></span><span style="display:flex;"><span>scp remote_username@remote_ip:remote_file local_folder
+</span></span><span style="display:flex;"><span>scp user@192.168.1.100:/data/file.txt /home/user
+</span></span></code></pre></div><h1 id="systemctl">systemctl</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e">### 启动一个服务</span>
+</span></span><span style="display:flex;"><span>systemctl start &lt;service&gt;
+</span></span><span style="display:flex;"><span><span style="color:#75715e">### 停止一个服务</span>
+</span></span><span style="display:flex;"><span>systemctl stop &lt;service&gt;
+</span></span><span style="display:flex;"><span><span style="color:#75715e">### 重启一个服务</span>
+</span></span><span style="display:flex;"><span>systemctl restart &lt;service&gt;
+</span></span><span style="display:flex;"><span><span style="color:#75715e">### 查看服务状态</span>
+</span></span><span style="display:flex;"><span>systemctl status &lt;service&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">### 查看服务列表</span>
+</span></span><span style="display:flex;"><span>systemctl list-units --type<span style="color:#f92672">=</span>service
+</span></span><span style="display:flex;"><span><span style="color:#75715e">### 查看服务日志</span>
+</span></span><span style="display:flex;"><span>journalctl -u &lt;service&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">### 启用一个服务,用于设置指定的服务在系统启动时自动启动</span>
+</span></span><span style="display:flex;"><span>systemctl enable &lt;service&gt;
+</span></span><span style="display:flex;"><span><span style="color:#75715e">### 禁用一个服务</span>
+</span></span><span style="display:flex;"><span>systemctl disable &lt;service&gt;
+</span></span><span style="display:flex;"><span><span style="color:#75715e">### 重新加载 systemd 并应用最新配置</span>
+</span></span><span style="display:flex;"><span>systemctl daemon-reload
+</span></span></code></pre></div><h1 id="vim">vim</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>h   左移一个字符
+</span></span><span style="display:flex;"><span>j   下移一行
+</span></span><span style="display:flex;"><span>k   上移一行
+</span></span><span style="display:flex;"><span>l   右移一个字符
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">0</span>   到行首
+</span></span><span style="display:flex;"><span>$   到行尾
+</span></span><span style="display:flex;"><span>G   跳转到文件末尾
+</span></span><span style="display:flex;"><span>gg  跳转到文件开头
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>i   在光标前插入文本
+</span></span><span style="display:flex;"><span>a   在光标后插入文本
+</span></span><span style="display:flex;"><span>o   在当前行下面插入一行并进入插入模式
+</span></span><span style="display:flex;"><span>A   在行尾插入文本
+</span></span><span style="display:flex;"><span>s   删除当前字符并进入插入模式
+</span></span><span style="display:flex;"><span>cw  删除从光标位置到单词结尾的内容并进入插入模式
+</span></span><span style="display:flex;"><span>dd  删除当前行
+</span></span><span style="display:flex;"><span>yy  复制当前行
+</span></span><span style="display:flex;"><span>p   将复制的内容粘贴到光标所在行的下一行
+</span></span><span style="display:flex;"><span>p   在光标下方粘贴复制或剪切的内容
+</span></span><span style="display:flex;"><span>u   撤销上一次操作
+</span></span><span style="display:flex;"><span>Ctrl+r 重做上一次撤销的操作
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>/word   查找字符串 <span style="color:#e6db74">&#34;word&#34;</span>
+</span></span><span style="display:flex;"><span>n       查找下一个匹配项
+</span></span><span style="display:flex;"><span>N       查找上一个匹配项
+</span></span><span style="display:flex;"><span>:%s/old/new/g  全局替换 old 字符串为 new 字符串
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>:n      跳转到第n行
+</span></span><span style="display:flex;"><span>:w      保存文件
+</span></span><span style="display:flex;"><span>:q      退出 Vim 编辑器
+</span></span><span style="display:flex;"><span>:q!     强制退出 Vim 编辑器，放弃更改
+</span></span><span style="display:flex;"><span>:wq     保存并退出 Vim 编辑器
+</span></span></code></pre></div><h1 id="系统信息">系统信息</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e">### 显示系统信息。</span>
+</span></span><span style="display:flex;"><span>uname -a
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">### 显示当前用户的用户名。</span>
+</span></span><span style="display:flex;"><span>whoami
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">### 显示系统资源使用情况和运行中的进程。</span>
+</span></span><span style="display:flex;"><span>top
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">### 显示文件系统的磁盘空间使用情况。</span>
+</span></span><span style="display:flex;"><span>df
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">### 显示系统内存使用情况。</span>
+</span></span><span style="display:flex;"><span>free
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">###  显示cpu信息</span>
+</span></span><span style="display:flex;"><span>lscpu
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">### 显示全部cpu的详细信息</span>
+</span></span><span style="display:flex;"><span>cat /proc/cpuinfo 
+</span></span></code></pre></div><h1 id="文件权限">文件权限</h1>
+<blockquote>
+<p>命令 权限/用户/用户组 文件/目录</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e">### 修改文件或目录的权限</span>
+</span></span><span style="display:flex;"><span>chmod
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">### 修改文件或目录的所有者</span>
+</span></span><span style="display:flex;"><span>chown
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">### 修改文件或目录的所属组</span>
+</span></span><span style="display:flex;"><span>chgrp
+</span></span></code></pre></div><h1 id="用户管理">用户管理</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e">### 创建新用户,--comment 添加说明; --create-home 同时创建/home/username目录; --shell指定新用户的默认shell选项; -g 指定用户组</span>
+</span></span><span style="display:flex;"><span>useradd username
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">### 更改用户密码</span>
+</span></span><span style="display:flex;"><span>passwd username
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">### 显示username的用户组</span>
+</span></span><span style="display:flex;"><span>groups username
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">### 修改username的用户组为new_group</span>
+</span></span><span style="display:flex;"><span>usermod -g new_group username
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>usermod -g root hzyy
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">### 删除username用户</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">### -r 不删除username的主目录</span>
+</span></span><span style="display:flex;"><span>userdel username
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">### 实例</span>
+</span></span><span style="display:flex;"><span>useradd --comment <span style="color:#e6db74">&#39;说明信息&#39;</span> -g group_name --create-home username --shell /bin/bash
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>sudo usermod -aG docker $USER
+</span></span><span style="display:flex;"><span>newgrp docker
+</span></span></code></pre></div><h1 id="防火墙">防火墙</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># 查看防火墙</span>
+</span></span><span style="display:flex;"><span>sudo iptables -L
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># -n 可以显示端口</span>
+</span></span><span style="display:flex;"><span>sudo iptables -L IN_public_allow -n
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 开放端口</span>
+</span></span><span style="display:flex;"><span>iptables -A IN_public_allow -p tcp --dport 端口 -j ACCEPT
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 删除端口</span>
+</span></span><span style="display:flex;"><span>iptables -A IN_public_allow -p tcp --dport 端口 -j DROP
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 系统重新启动后仍然生效</span>
+</span></span><span style="display:flex;"><span>iptables-save &gt; /etc/sysconfig/iptables
+</span></span></code></pre></div><ul class="pa0">
+  
+   <li class="list di">
+     <a href="/tags/linux/" class="link f5 grow br-pill ba ph3 pv2 mb2 dib black sans-serif no-underline">Linux</a>
+   </li>
+  
+</ul>
+<div class="mt6 instapaper_ignoref">
+      
+      
+      </div>
+    </div>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white white-70 dn dib-ns pv2 ph3 no-underline" href="http://localhost:1313/" >
+    &copy;  loveyu233 2025 
+  </a>
+    <div><div class="ananke-socials"></div>
+</div>
+  </div>
+</footer>
+
+  </body>
+</html>

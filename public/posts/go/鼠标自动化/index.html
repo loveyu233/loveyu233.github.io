@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>鼠标自动化 | loveyu233</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="package mou
+
+import &#34;github.com/go-vgo/robotgo&#34;
+
+func aa() {
+   /* ========================= 按键操作 ======================== */
+
+   // 向上滚动：3行
+   robotgo.ScrollMouse(3, `up`)
+   // 向下滚动：2行
+   robotgo.ScrollMouse(2, `down`)
+
+   // 按下鼠标左键
+   // 第1个参数：left(左键) / center(中键，即：滚轮) / right(右键)
+   // 第2个参数：是否双击
+   robotgo.MouseClick(`left`, false)
+
+   // 按住鼠标左键
+   robotgo.MouseToggle(`down`, `left`)
+   // 解除按住鼠标左键
+   robotgo.MouseToggle(`up`, `left`)
+
+   /* ========================= 位置操作 ======================== */
+
+   // 将鼠标移动到屏幕 x:800 y:400 的位置（闪现到指定位置）
+   robotgo.MoveMouse(800, 400)
+
+   // 将鼠标移动到屏幕 x:800 y:400 的位置（模仿人类操作）
+   robotgo.MoveMouseSmooth(800, 400)
+
+   // 将鼠标移动到屏幕 x:800 y:400 的位置（模仿人类操作）
+   // 第3个参数：纵坐标x 的延迟到达时间
+   // 第4个参数：横坐标y 的延迟到达时间
+   robotgo.MoveMouseSmooth(800, 400, 20.0, 200.0)
+
+   /* ========================= 组合操作 ======================== */
+
+   // 移动鼠标到 x:800 y:400 后，双击鼠标左键
+   robotgo.MoveClick(800, 400, `left`, true)
+
+   /* ========================= 所在位置 ======================== */
+
+   // 获取当前鼠标所在的位置
+   x, y := robotgo.GetMousePos()
+   println(`x：`, x, ` y：`, y)
+}
+">
+    <meta name="generator" content="Hugo 0.147.7">
+    
+    
+    
+      <meta name="robots" content="noindex, nofollow">
+    
+    <meta name="author" content="loveyu">
+    
+
+    
+<link rel="stylesheet" href="/ananke/css/main.min.css" >
+
+
+
+
+    
+
+
+    
+      
+
+    
+
+    
+
+    
+      <link rel="canonical" href="http://localhost:1313/posts/go/%E9%BC%A0%E6%A0%87%E8%87%AA%E5%8A%A8%E5%8C%96/">
+    
+
+    <meta property="og:url" content="http://localhost:1313/posts/go/%E9%BC%A0%E6%A0%87%E8%87%AA%E5%8A%A8%E5%8C%96/">
+  <meta property="og:site_name" content="loveyu233">
+  <meta property="og:title" content="鼠标自动化">
+  <meta property="og:description" content="package mou import &#34;github.com/go-vgo/robotgo&#34; func aa() { /* ========================= 按键操作 ======================== */ // 向上滚动：3行 robotgo.ScrollMouse(3, `up`) // 向下滚动：2行 robotgo.ScrollMouse(2, `down`) // 按下鼠标左键 // 第1个参数：left(左键) / center(中键，即：滚轮) / right(右键) // 第2个参数：是否双击 robotgo.MouseClick(`left`, false) // 按住鼠标左键 robotgo.MouseToggle(`down`, `left`) // 解除按住鼠标左键 robotgo.MouseToggle(`up`, `left`) /* ========================= 位置操作 ======================== */ // 将鼠标移动到屏幕 x:800 y:400 的位置（闪现到指定位置） robotgo.MoveMouse(800, 400) // 将鼠标移动到屏幕 x:800 y:400 的位置（模仿人类操作） robotgo.MoveMouseSmooth(800, 400) // 将鼠标移动到屏幕 x:800 y:400 的位置（模仿人类操作） // 第3个参数：纵坐标x 的延迟到达时间 // 第4个参数：横坐标y 的延迟到达时间 robotgo.MoveMouseSmooth(800, 400, 20.0, 200.0) /* ========================= 组合操作 ======================== */ // 移动鼠标到 x:800 y:400 后，双击鼠标左键 robotgo.MoveClick(800, 400, `left`, true) /* ========================= 所在位置 ======================== */ // 获取当前鼠标所在的位置 x, y := robotgo.GetMousePos() println(`x：`, x, ` y：`, y) }">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2020-04-01T10:04:10+08:00">
+    <meta property="article:modified_time" content="2020-04-01T10:04:10+08:00">
+    <meta property="article:tag" content="Go">
+
+  <meta itemprop="name" content="鼠标自动化">
+  <meta itemprop="description" content="package mou import &#34;github.com/go-vgo/robotgo&#34; func aa() { /* ========================= 按键操作 ======================== */ // 向上滚动：3行 robotgo.ScrollMouse(3, `up`) // 向下滚动：2行 robotgo.ScrollMouse(2, `down`) // 按下鼠标左键 // 第1个参数：left(左键) / center(中键，即：滚轮) / right(右键) // 第2个参数：是否双击 robotgo.MouseClick(`left`, false) // 按住鼠标左键 robotgo.MouseToggle(`down`, `left`) // 解除按住鼠标左键 robotgo.MouseToggle(`up`, `left`) /* ========================= 位置操作 ======================== */ // 将鼠标移动到屏幕 x:800 y:400 的位置（闪现到指定位置） robotgo.MoveMouse(800, 400) // 将鼠标移动到屏幕 x:800 y:400 的位置（模仿人类操作） robotgo.MoveMouseSmooth(800, 400) // 将鼠标移动到屏幕 x:800 y:400 的位置（模仿人类操作） // 第3个参数：纵坐标x 的延迟到达时间 // 第4个参数：横坐标y 的延迟到达时间 robotgo.MoveMouseSmooth(800, 400, 20.0, 200.0) /* ========================= 组合操作 ======================== */ // 移动鼠标到 x:800 y:400 后，双击鼠标左键 robotgo.MoveClick(800, 400, `left`, true) /* ========================= 所在位置 ======================== */ // 获取当前鼠标所在的位置 x, y := robotgo.GetMousePos() println(`x：`, x, ` y：`, y) }">
+  <meta itemprop="datePublished" content="2020-04-01T10:04:10+08:00">
+  <meta itemprop="dateModified" content="2020-04-01T10:04:10+08:00">
+  <meta itemprop="wordCount" content="105">
+  <meta itemprop="keywords" content="Go">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="鼠标自动化">
+  <meta name="twitter:description" content="package mou import &#34;github.com/go-vgo/robotgo&#34; func aa() { /* ========================= 按键操作 ======================== */ // 向上滚动：3行 robotgo.ScrollMouse(3, `up`) // 向下滚动：2行 robotgo.ScrollMouse(2, `down`) // 按下鼠标左键 // 第1个参数：left(左键) / center(中键，即：滚轮) / right(右键) // 第2个参数：是否双击 robotgo.MouseClick(`left`, false) // 按住鼠标左键 robotgo.MouseToggle(`down`, `left`) // 解除按住鼠标左键 robotgo.MouseToggle(`up`, `left`) /* ========================= 位置操作 ======================== */ // 将鼠标移动到屏幕 x:800 y:400 的位置（闪现到指定位置） robotgo.MoveMouse(800, 400) // 将鼠标移动到屏幕 x:800 y:400 的位置（模仿人类操作） robotgo.MoveMouseSmooth(800, 400) // 将鼠标移动到屏幕 x:800 y:400 的位置（模仿人类操作） // 第3个参数：纵坐标x 的延迟到达时间 // 第4个参数：横坐标y 的延迟到达时间 robotgo.MoveMouseSmooth(800, 400, 20.0, 200.0) /* ========================= 组合操作 ======================== */ // 移动鼠标到 x:800 y:400 后，双击鼠标左键 robotgo.MoveClick(800, 400, `left`, true) /* ========================= 所在位置 ======================== */ // 获取当前鼠标所在的位置 x, y := robotgo.GetMousePos() println(`x：`, x, ` y：`, y) }">
+
+	
+  </head><body class="ma0 avenir bg-near-white development">
+
+    
+   
+  
+
+  <header>
+    <div class="bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l center items-center justify-between">
+    <a href="/" class="f3 fw2 hover-white white-90 dib no-underline">
+      
+        loveyu233
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      <div class="ananke-socials"></div>
+
+    </div>
+  </div>
+</nav>
+
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  
+  <article class="flex-l mw8 center ph3 flex-wrap justify-between">
+    <header class="mt4 w-100">
+      <aside class="instapaper_ignoref b helvetica tracked ttu">
+          
+        go
+      </aside><div id="sharing" class="mt3 ananke-socials"></div>
+<h1 class="f1 athelas mt3 mb1">鼠标自动化</h1>
+      
+      <p class="tracked"><strong>loveyu</strong>
+      </p>
+      
+      
+      
+      <time class="f6 mv4 dib tracked" datetime="2020-04-01T10:04:10+08:00">April 1, 2020</time>
+      
+
+      
+      
+    </header>
+    <div class="nested-copy-line-height lh-copy serif f4 nested-links mid-gray pr4-l w-two-thirds-l"><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#f92672">package</span> <span style="color:#a6e22e">mou</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> <span style="color:#e6db74">&#34;github.com/go-vgo/robotgo&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">aa</span>() {
+</span></span><span style="display:flex;"><span>   <span style="color:#75715e">/* ========================= 按键操作 ======================== */</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>   <span style="color:#75715e">// 向上滚动：3行</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">robotgo</span>.<span style="color:#a6e22e">ScrollMouse</span>(<span style="color:#ae81ff">3</span>, <span style="color:#e6db74">`up`</span>)
+</span></span><span style="display:flex;"><span>   <span style="color:#75715e">// 向下滚动：2行</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">robotgo</span>.<span style="color:#a6e22e">ScrollMouse</span>(<span style="color:#ae81ff">2</span>, <span style="color:#e6db74">`down`</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>   <span style="color:#75715e">// 按下鼠标左键</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#75715e">// 第1个参数：left(左键) / center(中键，即：滚轮) / right(右键)</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#75715e">// 第2个参数：是否双击</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">robotgo</span>.<span style="color:#a6e22e">MouseClick</span>(<span style="color:#e6db74">`left`</span>, <span style="color:#66d9ef">false</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>   <span style="color:#75715e">// 按住鼠标左键</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">robotgo</span>.<span style="color:#a6e22e">MouseToggle</span>(<span style="color:#e6db74">`down`</span>, <span style="color:#e6db74">`left`</span>)
+</span></span><span style="display:flex;"><span>   <span style="color:#75715e">// 解除按住鼠标左键</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">robotgo</span>.<span style="color:#a6e22e">MouseToggle</span>(<span style="color:#e6db74">`up`</span>, <span style="color:#e6db74">`left`</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>   <span style="color:#75715e">/* ========================= 位置操作 ======================== */</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>   <span style="color:#75715e">// 将鼠标移动到屏幕 x:800 y:400 的位置（闪现到指定位置）</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">robotgo</span>.<span style="color:#a6e22e">MoveMouse</span>(<span style="color:#ae81ff">800</span>, <span style="color:#ae81ff">400</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>   <span style="color:#75715e">// 将鼠标移动到屏幕 x:800 y:400 的位置（模仿人类操作）</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">robotgo</span>.<span style="color:#a6e22e">MoveMouseSmooth</span>(<span style="color:#ae81ff">800</span>, <span style="color:#ae81ff">400</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>   <span style="color:#75715e">// 将鼠标移动到屏幕 x:800 y:400 的位置（模仿人类操作）</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#75715e">// 第3个参数：纵坐标x 的延迟到达时间</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#75715e">// 第4个参数：横坐标y 的延迟到达时间</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">robotgo</span>.<span style="color:#a6e22e">MoveMouseSmooth</span>(<span style="color:#ae81ff">800</span>, <span style="color:#ae81ff">400</span>, <span style="color:#ae81ff">20.0</span>, <span style="color:#ae81ff">200.0</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>   <span style="color:#75715e">/* ========================= 组合操作 ======================== */</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>   <span style="color:#75715e">// 移动鼠标到 x:800 y:400 后，双击鼠标左键</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">robotgo</span>.<span style="color:#a6e22e">MoveClick</span>(<span style="color:#ae81ff">800</span>, <span style="color:#ae81ff">400</span>, <span style="color:#e6db74">`left`</span>, <span style="color:#66d9ef">true</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>   <span style="color:#75715e">/* ========================= 所在位置 ======================== */</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>   <span style="color:#75715e">// 获取当前鼠标所在的位置</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">x</span>, <span style="color:#a6e22e">y</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">robotgo</span>.<span style="color:#a6e22e">GetMousePos</span>()
+</span></span><span style="display:flex;"><span>   println(<span style="color:#e6db74">`x：`</span>, <span style="color:#a6e22e">x</span>, <span style="color:#e6db74">` y：`</span>, <span style="color:#a6e22e">y</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul class="pa0">
+  
+   <li class="list di">
+     <a href="/tags/go/" class="link f5 grow br-pill ba ph3 pv2 mb2 dib black sans-serif no-underline">Go</a>
+   </li>
+  
+</ul>
+<div class="mt6 instapaper_ignoref">
+      
+      
+      </div>
+    </div>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+  <div class="bg-light-gray pa3 nested-list-reset nested-copy-line-height nested-links">
+    <p class="f5 b mb3">Related</p>
+    <ul class="pa0 list">
+	   
+	     <li  class="mb2">
+          <a href="/posts/go/gowebsocket/">GoWebsocket</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/go-email/">Go Email</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/gin%E6%97%A5%E5%BF%97%E8%87%AA%E5%AE%9A%E4%B9%89/">Gin日志自定义</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/go%E4%BD%BF%E7%94%A8%E4%BB%A4%E7%89%8C%E6%A1%B6/">Go使用令牌桶</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/zap/">Zap</a>
+        </li>
+	    
+    </ul>
+</div>
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white white-70 dn dib-ns pv2 ph3 no-underline" href="http://localhost:1313/" >
+    &copy;  loveyu233 2025 
+  </a>
+    <div><div class="ananke-socials"></div>
+</div>
+  </div>
+</footer>
+
+  </body>
+</html>

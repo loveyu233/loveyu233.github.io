@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>go使用casbin | loveyu233</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="官网：
+
+https://casbin.org/zh-CN/
+sub, obj, act 表示经典三元组: 访问实体 (Subject)，访问资源 (Object) 和访问方法 (Action)，还有一个eft这条属性默认就是allow，不声明就是默认的，如果声明的话改属性只能是allow/deny
+ACL模型
+例：
+
+
+[request_definition]
+r = sub, obj, act
+对应Request的 alice, data1, read  也就是sub=alice；obj=data1；act=read
+[policy_definition]
+p = sub, obj, act
+对应policy的 p, alice, data1, read ；p, bob, data2, write  属性
+[matchers]
+m = r.sub   p.sub &amp;&amp; r.obj   p.obj &amp;&amp; r.act   p.act
+R和P的对应法则
+[policy_effect]
+e = some(where (p.eft   allow))
+只能是以下几条不能自定义
+some(where (p.eft   allow))；
+!some(where (p.eft   deny))；">
+    <meta name="generator" content="Hugo 0.147.7">
+    
+    
+    
+      <meta name="robots" content="noindex, nofollow">
+    
+    <meta name="author" content="loveyu">
+    
+
+    
+<link rel="stylesheet" href="/ananke/css/main.min.css" >
+
+
+
+
+    
+
+
+    
+      
+
+    
+
+    
+
+    
+      <link rel="canonical" href="http://localhost:1313/posts/go/casbin/">
+    
+
+    <meta property="og:url" content="http://localhost:1313/posts/go/casbin/">
+  <meta property="og:site_name" content="loveyu233">
+  <meta property="og:title" content="go使用casbin">
+  <meta property="og:description" content="官网：
+https://casbin.org/zh-CN/
+sub, obj, act 表示经典三元组: 访问实体 (Subject)，访问资源 (Object) 和访问方法 (Action)，还有一个eft这条属性默认就是allow，不声明就是默认的，如果声明的话改属性只能是allow/deny
+ACL模型 例：
+[request_definition] r = sub, obj, act
+对应Request的 alice, data1, read 也就是sub=alice；obj=data1；act=read
+[policy_definition] p = sub, obj, act
+对应policy的 p, alice, data1, read ；p, bob, data2, write 属性
+[matchers] m = r.sub p.sub &amp;&amp; r.obj p.obj &amp;&amp; r.act p.act
+R和P的对应法则
+[policy_effect] e = some(where (p.eft allow))
+只能是以下几条不能自定义
+some(where (p.eft allow))；
+!some(where (p.eft deny))；">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2020-06-04T19:38:37+08:00">
+    <meta property="article:modified_time" content="2020-06-04T19:38:37+08:00">
+    <meta property="article:tag" content="Go">
+    <meta property="article:tag" content="Casbin">
+
+  <meta itemprop="name" content="go使用casbin">
+  <meta itemprop="description" content="官网：
+https://casbin.org/zh-CN/
+sub, obj, act 表示经典三元组: 访问实体 (Subject)，访问资源 (Object) 和访问方法 (Action)，还有一个eft这条属性默认就是allow，不声明就是默认的，如果声明的话改属性只能是allow/deny
+ACL模型 例：
+[request_definition] r = sub, obj, act
+对应Request的 alice, data1, read 也就是sub=alice；obj=data1；act=read
+[policy_definition] p = sub, obj, act
+对应policy的 p, alice, data1, read ；p, bob, data2, write 属性
+[matchers] m = r.sub p.sub &amp;&amp; r.obj p.obj &amp;&amp; r.act p.act
+R和P的对应法则
+[policy_effect] e = some(where (p.eft allow))
+只能是以下几条不能自定义
+some(where (p.eft allow))；
+!some(where (p.eft deny))；">
+  <meta itemprop="datePublished" content="2020-06-04T19:38:37+08:00">
+  <meta itemprop="dateModified" content="2020-06-04T19:38:37+08:00">
+  <meta itemprop="wordCount" content="491">
+  <meta itemprop="keywords" content="Go,Casbin">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="go使用casbin">
+  <meta name="twitter:description" content="官网：
+https://casbin.org/zh-CN/
+sub, obj, act 表示经典三元组: 访问实体 (Subject)，访问资源 (Object) 和访问方法 (Action)，还有一个eft这条属性默认就是allow，不声明就是默认的，如果声明的话改属性只能是allow/deny
+ACL模型 例：
+[request_definition] r = sub, obj, act
+对应Request的 alice, data1, read 也就是sub=alice；obj=data1；act=read
+[policy_definition] p = sub, obj, act
+对应policy的 p, alice, data1, read ；p, bob, data2, write 属性
+[matchers] m = r.sub p.sub &amp;&amp; r.obj p.obj &amp;&amp; r.act p.act
+R和P的对应法则
+[policy_effect] e = some(where (p.eft allow))
+只能是以下几条不能自定义
+some(where (p.eft allow))；
+!some(where (p.eft deny))；">
+
+	
+  </head><body class="ma0 avenir bg-near-white development">
+
+    
+   
+  
+
+  <header>
+    <div class="bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l center items-center justify-between">
+    <a href="/" class="f3 fw2 hover-white white-90 dib no-underline">
+      
+        loveyu233
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      <div class="ananke-socials"></div>
+
+    </div>
+  </div>
+</nav>
+
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  
+  <article class="flex-l mw8 center ph3 flex-wrap justify-between">
+    <header class="mt4 w-100">
+      <aside class="instapaper_ignoref b helvetica tracked ttu">
+          
+        go
+      </aside><div id="sharing" class="mt3 ananke-socials"></div>
+<h1 class="f1 athelas mt3 mb1">go使用casbin</h1>
+      
+      <p class="tracked"><strong>loveyu</strong>
+      </p>
+      
+      
+      
+      <time class="f6 mv4 dib tracked" datetime="2020-06-04T19:38:37+08:00">June 4, 2020</time>
+      
+
+      
+      
+    </header>
+    <div class="nested-copy-line-height lh-copy serif f4 nested-links mid-gray pr4-l w-two-thirds-l"><p>官网：</p>
+<blockquote>
+<p><a href="https://casbin.org/zh-CN/">https://casbin.org/zh-CN/</a></p></blockquote>
+<p><code>sub, obj, act</code> 表示经典三元组: 访问实体 (Subject)，访问资源 (Object) 和访问方法 (Action)，还有一个eft这条属性默认就是allow，不声明就是默认的，如果声明的话改属性只能是allow/deny</p>
+<h2 id="acl模型">ACL模型</h2>
+<p>例：</p>
+<!-- raw HTML omitted -->
+<blockquote>
+<p>[request_definition]
+r = sub, obj, act</p>
+<p>对应Request的 alice, data1, read  也就是sub=alice；obj=data1；act=read</p>
+<p>[policy_definition]
+p = sub, obj, act</p>
+<p>对应policy的 p, alice, data1, read ；p, bob, data2, write  属性</p>
+<p>[matchers]
+m = r.sub   p.sub &amp;&amp; r.obj   p.obj &amp;&amp; r.act   p.act</p>
+<p>R和P的对应法则</p>
+<p>[policy_effect]
+e = some(where (p.eft   allow))</p>
+<p>只能是以下几条不能自定义</p>
+<p>some(where (p.eft   allow))；</p>
+<p>!some(where (p.eft   deny))；</p>
+<p>some(where (p.eft   allow)) &amp;&amp; !some(where (p.eft   deny))；</p>
+<p>priority(p.eft) || deny；subjectPriority(p.eft)</p></blockquote>
+<h2 id="rbac模型">RBAC模型</h2>
+<!-- raw HTML omitted -->
+<blockquote>
+<p>该模型多出一个属性 [role_definition]   g = _, _</p>
+<p>可以理解为第一个 下划线 指的是角色；第二个 下划线 指的是组</p>
+<p>RBAC模型的匹配理解为：</p>
+<p>先拿 r的sub 值到 Policy的g 中查找和第一个 下划线 一样的，查找到后再拿对应的 g的第二个下划线 值和 r的obj和act 两个值共三个值和 p的三个值比对  如果相同就通过</p>
+<p>这里会有两种情况， 如果上边情况不通过但是r的三条属性有对应的p的三条属性一样的就会通过</p>
+<p>可以理解为：</p>
+<ol>
+<li>
+<p>这个组不允许但是这个组的这个用户却允许，这样的情况一样会返回true也就是通过</p>
+</li>
+<li>
+<p>如果这个用户不允许但是这个组允许，这样的情况也会返回true</p>
+</li>
+</ol>
+<p>正常情况下希望的是用第二种情况来通过，因为第一种情况的通过就没必要用RBAC模型了，ACl就是第一种情况的</p></blockquote>
+<h2 id="域内rbac模型">域内RBAC模型</h2>
+<!-- raw HTML omitted -->
+<blockquote>
+<p>这个模型属于RBAC的另一种情况</p>
+<p>区别就是 g多了一个下划线 ； 其他的r和p也多了一个属性dom</p>
+<p>g的这个下划线指的就是 域</p>
+<p>理解为：</p>
+<p>用户，用户组，用户组的域</p>
+<p>这时的判别方式就是：</p>
+<p>用r的sub和dom到policy中查找对应g的第一个下划线和第三个下划线  没有直接返回false， 有的话再拿对应g的第二个下划线值和sub，dom，obj以及act这四条属性到policy中查找是否有对应一样的，有就返回true</p>
+<p>这里返回true的情况也是两种：</p>
+<ol>
+<li>r的四条值再polcy种有对应一样的，这时就算没有对应g也一样返回true</li>
+<li>r的前两个值比对g的第一个和第三个值，拿到对比成功的g的第二个值和第三个值以及r的后两个值的这四个值去对比policy的p对应四个值一样返回true</li>
+</ol></blockquote>
+<!-- raw HTML omitted -->
+<blockquote>
+<p>和RBAC一样</p></blockquote>
+<h2 id="代码使用">代码使用：</h2>
+<h3 id="第一不用数据库">第一：不用数据库</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> (
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;fmt&#34;</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;github.com/casbin/casbin/v2&#34;</span>
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">e</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">casbin</span>.<span style="color:#a6e22e">NewEnforcer</span>(<span style="color:#e6db74">&#34;demo1/model.conf&#34;</span>, <span style="color:#e6db74">&#34;demo1/policy.csv&#34;</span>)
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>   }
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">sub</span> <span style="color:#f92672">:=</span> <span style="color:#e6db74">&#34;alice&#34;</span> <span style="color:#75715e">// 想要访问资源的用户。</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">obj</span> <span style="color:#f92672">:=</span> <span style="color:#e6db74">&#34;data1&#34;</span> <span style="color:#75715e">// 将被访问的资源。</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">act</span> <span style="color:#f92672">:=</span> <span style="color:#e6db74">&#34;read&#34;</span>  <span style="color:#75715e">// 用户对资源执行的操作。</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>   <span style="color:#75715e">//添加</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">policy</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">e</span>.<span style="color:#a6e22e">AddPolicy</span>(<span style="color:#e6db74">&#34;alice&#34;</span>, <span style="color:#e6db74">&#34;data1&#34;</span>, <span style="color:#e6db74">&#34;read&#34;</span>)
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>   }
+</span></span><span style="display:flex;"><span>   <span style="color:#75715e">//添加是否成功</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">policy</span> {
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;add success&#34;</span>)
+</span></span><span style="display:flex;"><span>   }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>   <span style="color:#75715e">//查找对应的p</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">ok</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">e</span>.<span style="color:#a6e22e">Enforce</span>(<span style="color:#a6e22e">sub</span>, <span style="color:#a6e22e">obj</span>, <span style="color:#a6e22e">act</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">// 处理err</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>   }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">ok</span>   <span style="color:#66d9ef">true</span> {
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">// 允许alice读取data1</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;success&#34;</span>)
+</span></span><span style="display:flex;"><span>   } <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">// 拒绝请求，抛出异常</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;no success&#34;</span>)
+</span></span><span style="display:flex;"><span>   }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>model.conf</p>
+<pre tabindex="0"><code>[request_definition]
+r = sub, obj, act
+
+[policy_definition]
+p = sub, obj, act
+
+[policy_effect]
+e = some(where (p.eft   allow))
+
+[matchers]
+m = r.sub   p.sub &amp;&amp; r.obj   p.obj &amp;&amp; r.act   p.act
+</code></pre><p>policy.csv</p>
+<pre tabindex="0"><code>p,zhangsan,data1,read
+</code></pre><h3 id="第二使用数据库">第二：使用数据库</h3>
+<p>使用数据库就是吧policy.CSV的属性添加到数据库中保存，这里的数据库操作使用gorm</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> (
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;fmt&#34;</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;github.com/casbin/casbin/v2&#34;</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">_</span> <span style="color:#e6db74">&#34;github.com/casbin/casbin/v2&#34;</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">gormadapter</span> <span style="color:#e6db74">&#34;github.com/casbin/gorm-adapter/v3&#34;</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">_</span> <span style="color:#e6db74">&#34;github.com/go-sql-driver/mysql&#34;</span>
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">judgePolicy</span>(<span style="color:#a6e22e">e</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">casbin</span>.<span style="color:#a6e22e">Enforcer</span>, <span style="color:#a6e22e">sub</span>, <span style="color:#a6e22e">obj</span>, <span style="color:#a6e22e">act</span> <span style="color:#66d9ef">string</span>) {
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">ok</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">e</span>.<span style="color:#a6e22e">Enforce</span>(<span style="color:#a6e22e">sub</span>, <span style="color:#a6e22e">obj</span>, <span style="color:#a6e22e">act</span>)
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">// 处理err</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>   }
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">ok</span>   <span style="color:#66d9ef">true</span> {
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">// 允许alice读取data1</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;true&#34;</span>)
+</span></span><span style="display:flex;"><span>   } <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">// 拒绝请求，抛出异常</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;false&#34;</span>)
+</span></span><span style="display:flex;"><span>   }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">addPolicy</span>(<span style="color:#a6e22e">e</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">casbin</span>.<span style="color:#a6e22e">Enforcer</span>, <span style="color:#a6e22e">sub</span>, <span style="color:#a6e22e">obj</span>, <span style="color:#a6e22e">act</span> <span style="color:#66d9ef">string</span>) {
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">policy</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">e</span>.<span style="color:#a6e22e">AddPolicy</span>(<span style="color:#a6e22e">sub</span>, <span style="color:#a6e22e">obj</span>, <span style="color:#a6e22e">act</span>)
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>   }
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">policy</span> {
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;添加成功&#34;</span>)
+</span></span><span style="display:flex;"><span>   }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">selectPolicy</span>(<span style="color:#a6e22e">e</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">casbin</span>.<span style="color:#a6e22e">Enforcer</span>, <span style="color:#a6e22e">i</span> <span style="color:#66d9ef">int</span>, <span style="color:#a6e22e">s</span> <span style="color:#66d9ef">string</span>) {
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">policy</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">e</span>.<span style="color:#a6e22e">GetFilteredPolicy</span>(<span style="color:#a6e22e">i</span>, <span style="color:#a6e22e">s</span>)
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i2</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">policy</span> {
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">policy</span>[<span style="color:#a6e22e">i2</span>])
+</span></span><span style="display:flex;"><span>   }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">removePolicy</span>(<span style="color:#a6e22e">e</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">casbin</span>.<span style="color:#a6e22e">Enforcer</span>, <span style="color:#a6e22e">sub</span>, <span style="color:#a6e22e">obj</span>, <span style="color:#a6e22e">act</span> <span style="color:#66d9ef">string</span>) {
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">policy</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">e</span>.<span style="color:#a6e22e">RemovePolicy</span>(<span style="color:#a6e22e">sub</span>, <span style="color:#a6e22e">obj</span>, <span style="color:#a6e22e">act</span>)
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> <span style="color:#f92672">||</span> !<span style="color:#a6e22e">policy</span> {
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;删除失败&#34;</span>)
+</span></span><span style="display:flex;"><span>   } <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;删除成功&#34;</span>)
+</span></span><span style="display:flex;"><span>   }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">updatePolicy</span>(<span style="color:#a6e22e">e</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">casbin</span>.<span style="color:#a6e22e">Enforcer</span>, <span style="color:#a6e22e">o</span>, <span style="color:#a6e22e">n</span> []<span style="color:#66d9ef">string</span>) {
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">policy</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">e</span>.<span style="color:#a6e22e">UpdatePolicy</span>(<span style="color:#a6e22e">o</span>, <span style="color:#a6e22e">n</span>)
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> <span style="color:#f92672">||</span> !<span style="color:#a6e22e">policy</span> {
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;修改失败&#34;</span>)
+</span></span><span style="display:flex;"><span>   } <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;修改成功&#34;</span>)
+</span></span><span style="display:flex;"><span>   }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">addGroupPolicy</span>(<span style="color:#a6e22e">e</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">casbin</span>.<span style="color:#a6e22e">Enforcer</span>, <span style="color:#a6e22e">s1</span>, <span style="color:#a6e22e">s2</span> <span style="color:#66d9ef">string</span>) {
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">policy</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">e</span>.<span style="color:#a6e22e">AddGroupingPolicy</span>(<span style="color:#a6e22e">s1</span>, <span style="color:#a6e22e">s2</span>)
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> <span style="color:#f92672">||</span> !<span style="color:#a6e22e">policy</span> {
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;添加group失败&#34;</span>)
+</span></span><span style="display:flex;"><span>   } <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;添加group成功&#34;</span>)
+</span></span><span style="display:flex;"><span>   }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">a</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">gormadapter</span>.<span style="color:#a6e22e">NewAdapter</span>(<span style="color:#e6db74">&#34;mysql&#34;</span>, <span style="color:#e6db74">&#34;root:mysql233..@tcp(127.0.0.1:3306)/casbin?charset=utf8&amp;parseTime=True&amp;loc=Local&#34;</span>, <span style="color:#66d9ef">true</span>) <span style="color:#75715e">// Your driver and data source.</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">e</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">casbin</span>.<span style="color:#a6e22e">NewEnforcer</span>(<span style="color:#e6db74">&#34;demo2/model.conf&#34;</span>, <span style="color:#a6e22e">a</span>)
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">sub</span> <span style="color:#f92672">:=</span> <span style="color:#e6db74">&#34;guest&#34;</span> <span style="color:#75715e">// 想要访问资源的用户。</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">obj</span> <span style="color:#f92672">:=</span> <span style="color:#e6db74">&#34;/v1&#34;</span>   <span style="color:#75715e">// 将被访问的资源。</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">act</span> <span style="color:#f92672">:=</span> <span style="color:#e6db74">&#34;GET&#34;</span>   <span style="color:#75715e">// 用户对资源执行的操作。</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>   <span style="color:#75715e">//addPolicy(e, sub, obj, act)</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#75715e">//selectPolicy(e, 2, &#34;read&#34;)</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#75715e">//removePolicy(e, sub, obj, act)</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#75715e">//updatePolicy(e, []string{sub, obj, act}, []string{&#34;a&#34;, &#34;b&#34;, &#34;c&#34;})</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>   <span style="color:#75715e">//addGroupPolicy(e, &#34;alice&#34;, &#34;g1&#34;)</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">judgePolicy</span>(<span style="color:#a6e22e">e</span>, <span style="color:#a6e22e">sub</span>, <span style="color:#a6e22e">obj</span>, <span style="color:#a6e22e">act</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul class="pa0">
+  
+   <li class="list di">
+     <a href="/tags/go/" class="link f5 grow br-pill ba ph3 pv2 mb2 dib black sans-serif no-underline">Go</a>
+   </li>
+  
+   <li class="list di">
+     <a href="/tags/casbin/" class="link f5 grow br-pill ba ph3 pv2 mb2 dib black sans-serif no-underline">Casbin</a>
+   </li>
+  
+</ul>
+<div class="mt6 instapaper_ignoref">
+      
+      
+      </div>
+    </div>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+  <div class="bg-light-gray pa3 nested-list-reset nested-copy-line-height nested-links">
+    <p class="f5 b mb3">Related</p>
+    <ul class="pa0 list">
+	   
+	     <li  class="mb2">
+          <a href="/posts/go/jwt/">go使用Jwt</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/%E9%BC%A0%E6%A0%87%E8%87%AA%E5%8A%A8%E5%8C%96/">鼠标自动化</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/gowebsocket/">GoWebsocket</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/go-email/">Go Email</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/gin%E6%97%A5%E5%BF%97%E8%87%AA%E5%AE%9A%E4%B9%89/">Gin日志自定义</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/go%E4%BD%BF%E7%94%A8%E4%BB%A4%E7%89%8C%E6%A1%B6/">Go使用令牌桶</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/zap/">Zap</a>
+        </li>
+	    
+    </ul>
+</div>
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white white-70 dn dib-ns pv2 ph3 no-underline" href="http://localhost:1313/" >
+    &copy;  loveyu233 2025 
+  </a>
+    <div><div class="ananke-socials"></div>
+</div>
+  </div>
+</footer>
+
+  </body>
+</html>

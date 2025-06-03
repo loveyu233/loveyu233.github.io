@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>loveyu233</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="">
+    <meta name="generator" content="Hugo 0.147.7">
+    
+    
+    
+      <meta name="robots" content="noindex, nofollow">
+    
+    
+
+    
+<link rel="stylesheet" href="/ananke/css/main.min.css" >
+
+
+
+
+    
+
+
+    
+      
+
+    
+
+    
+    
+      <link href="/tags/shiro/index.xml" rel="alternate" type="application/rss+xml" title="loveyu233" />
+      <link href="/tags/shiro/index.xml" rel="feed" type="application/rss+xml" title="loveyu233" />
+      
+    
+
+    
+      <link rel="canonical" href="http://localhost:1313/tags/shiro/">
+    
+
+    <meta property="og:url" content="http://localhost:1313/tags/shiro/">
+  <meta property="og:site_name" content="loveyu233">
+  <meta property="og:title" content="Shiro">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="website">
+
+  <meta itemprop="name" content="Shiro">
+  <meta itemprop="datePublished" content="2019-08-04T19:38:37+08:00">
+  <meta itemprop="dateModified" content="2019-08-04T19:38:37+08:00">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Shiro">
+
+	
+  </head><body class="ma0 avenir bg-near-white development">
+
+    
+
+  <header>
+    <div class="pb3-m pb6-l bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l center items-center justify-between">
+    <a href="/" class="f3 fw2 hover-white white-90 dib no-underline">
+      
+        loveyu233
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      <div class="ananke-socials"></div>
+
+    </div>
+  </div>
+</nav>
+
+      <div class="tc-l pv3 ph3 ph4-ns">
+        <h1 class="f2 f-subheadline-l fw2 light-silver mb0 lh-title">
+          Shiro
+        </h1>
+        
+      </div>
+    </div>
+  </header>
+
+
+    <main class="pb7" role="main">
+      
+  <article class="cf pa3 pa4-m pa4-l">
+    <div class="measure-wide-l center f4 lh-copy nested-copy-line-height nested-links mid-gray">
+      <p>Below you will find pages that utilize the taxonomy term “Shiro”</p>
+    </div>
+  </article>
+  <div class="mw8 center">
+    <section class="flex-ns mt5 flex-wrap justify-around">
+      
+        <div class="w-100 mb4 relative bg-white">
+          <div class="w-100 mb4 nested-copy-line-height relative bg-white">
+  <div class="mb3 pa4 gray overflow-hidden bg-white">
+    <span class="f6 db">java</span>
+    <h1 class="f3 near-black">
+      <a href="/posts/java/shiro/" class="link black dim">
+        Shiro
+      </a>
+    </h1>
+    <div class="nested-links f5 lh-copy nested-copy-line-height">
+      <h1 id="基本框架搭建">基本框架搭建：</h1>
+<ul>
+<li>
+<h2 id="创建userrealmjava">创建UserRealm.java</h2>
+<ul>
+<li>
+<h3 id="继承authorizingrealm">继承AuthorizingRealm</h3>
+<ul>
+<li>
+<h4 id="实现authorizationinfo授权方法">实现AuthorizationInfo()：授权方法。</h4>
+</li>
+<li>
+<h4 id="实现authenticationinfo认证方法">实现AuthenticationInfo()：认证方法。</h4>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<h2 id="创建shiroconfigjava配置类">创建ShiroConfig.java配置类</h2>
+<ul>
+<li>
+<h3 id="bean加载userrealm加载userrealmjava到spring">@bean加载UserRealm()：加载UserRealm.java到Spring。</h3>
+</li>
+<li>
+<h3 id="bean加载defaultwebsecuritymanagershiro管理器">@bean加载DefaultWebSecurityManager()：shiro管理器。</h3>
+</li>
+<li>
+<h3 id="bean加载shirofilterfactorybeanshiro过滤器">@bean加载ShiroFilterFactoryBean()：shiro过滤器。</h3>
+</li>
+<li>
+<h3 id="根据需要可加载的方法">根据需要可加载的方法：</h3>
+</li>
+<li>
+<h3 id="shirodialect用来整合shiro-thymeleaf">ShiroDialect()：用来整合shiro thymeleaf。</h3>
+</li>
+<li>
+<h3 id="hashedcredentialsmatcher设置加密">HashedCredentialsMatcher()：设置加密。</h3>
+</li>
+<li>
+<h3 id="ehcachemanager缓存">EhCacheManager()：缓存。</h3>
+</li>
+<li>
+<h3 id="defaultwebsessionmanager设置session管理器">DefaultWebSessionManager()：设置session管理器。</h3>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="userrealmjava具体方法实现">UserRealm.java具体方法实现</h1>
+<h2 id="授权方法">授权方法：</h2>
+<blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">protected</span> AuthorizationInfo <span style="color:#a6e22e">doGetAuthorizationInfo</span>(PrincipalCollection principalCollection) {
+</span></span><span style="display:flex;"><span>SimpleAuthorizationInfo info <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> SimpleAuthorizationInfo();
+</span></span><span style="display:flex;"><span>Subject subject <span style="color:#f92672">=</span> SecurityUtils.<span style="color:#a6e22e">getSubject</span>();
+</span></span><span style="display:flex;"><span>Users users <span style="color:#f92672">=</span> (Users)subject.<span style="color:#a6e22e">getPrincipal</span>();
+</span></span><span style="display:flex;"><span>info.<span style="color:#a6e22e">addStringPermission</span>(users.<span style="color:#a6e22e">getPerms</span>());
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">return</span> info;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
+<li>
+<h3 id="simpleauthorizationinfo-info--new-simpleauthorizationinfo授权方法">SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();授权方法。</h3>
+</li>
+<li>
+<h3 id="subject-subject--securityutilsgetsubject获取subject">Subject subject = SecurityUtils.getSubject();获取subject。</h3>
+</li>
+<li>
+<h3 id="users-users--userssubjectgetprincipal通过subject获取到当前用户">Users users = (Users)subject.getPrincipal();通过subject获取到当前用户。</h3>
+</li>
+<li>
+<h4 id="users是由authenticationinfo认证方法的simpleauthenticationinfo通过参数传入">users是由AuthenticationInfo()认证方法的SimpleAuthenticationInfo通过参数传入。</h4>
+</li>
+<li>
+<h3 id="infoaddstringpermissionusersgetperms根据用户权限添加权限">info.addStringPermission(users.getPerms());根据用户权限添加权限。</h3>
+</li>
+<li>
+<h3 id="return-info即可">return info即可</h3>
+</li>
+</ul></blockquote>
+<h2 id="认证方法">认证方法：</h2>
+<blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@Autowired</span>
+</span></span><span style="display:flex;"><span>UserServiceImpl userService;
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">protected</span> AuthenticationInfo <span style="color:#a6e22e">doGetAuthenticationInfo</span>(AuthenticationToken token) <span style="color:#66d9ef">throws</span> AuthenticationException {
+</span></span><span style="display:flex;"><span>UsernamePasswordToken upToken <span style="color:#f92672">=</span> (UsernamePasswordToken) token;
+</span></span><span style="display:flex;"><span>Users users <span style="color:#f92672">=</span> userService.<span style="color:#a6e22e">queryUserByName</span>(upToken.<span style="color:#a6e22e">getUsername</span>());
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> (users <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span>) {
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">return</span> <span style="color:#66d9ef">null</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>Subject subject <span style="color:#f92672">=</span> SecurityUtils.<span style="color:#a6e22e">getSubject</span>();
+</span></span><span style="display:flex;"><span>Session session <span style="color:#f92672">=</span> subject.<span style="color:#a6e22e">getSession</span>();
+</span></span><span style="display:flex;"><span>session.<span style="color:#a6e22e">setAttribute</span>(<span style="color:#e6db74">&#34;loginuser&#34;</span>,users);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//ByteSource.Util.bytes(users.getSalt()):告诉shiro加盐的盐值</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> (users.<span style="color:#a6e22e">getSalt</span>() <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span>){<span style="color:#75715e">//必须判断是否有盐值不然会报错：null</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> SimpleAuthenticationInfo(users,users.<span style="color:#a6e22e">getPassword</span>(),ByteSource.<span style="color:#a6e22e">Util</span>.<span style="color:#a6e22e">bytes</span>(users.<span style="color:#a6e22e">getSalt</span>()),<span style="color:#e6db74">&#34;&#34;</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> SimpleAuthenticationInfo(users,users.<span style="color:#a6e22e">getPassword</span>(),<span style="color:#e6db74">&#34;&#34;</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
+<li>
+<h3 id="usernamepasswordtoken-uptoken--usernamepasswordtoken-token获取账号密码令牌">UsernamePasswordToken upToken = (UsernamePasswordToken) token;获取账号密码令牌</h3>
+</li>
+<li>
+<h3 id="autowired属性注入userserviceimpl">@autoWired属性注入UserServiceImpl</h3>
+</li>
+<li>
+<h3 id="users-users--userservicequeryuserbynameuptokengetusername">Users users = userService.queryUserByName(upToken.getUsername())；</h3>
+</li>
+<li>
+<h4 id="uptokengetusername获取当前用户名称">upToken.getUsername()：获取当前用户名称。</h4>
+</li>
+<li>
+<h4 id="userservicequeryuserbyname查询该用户并返回">userService.queryUserByName：查询该用户，并返回。</h4>
+</li>
+<li>
+<h3 id="判断users是否为空如果为空返回nullshiro会自动报错没有用户错误">判断users是否为空，如果为空返回null。shiro会自动报错：没有用户错误。</h3>
+</li>
+<li>
+<h3 id="subject-subject--securityutilsgetsubject获取subject-1">Subject subject = SecurityUtils.getSubject();获取subject。</h3>
+</li>
+<li>
+<h3 id="session-session--subjectgetsession获取session">Session session = subject.getSession();获取session。</h3>
+</li>
+<li>
+<h3 id="sessionsetattributeloginuserusers把用户信息传入session方便后边使用">session.setAttribute(&ldquo;loginuser&rdquo;,users);把用户信息传入session方便后边使用。</h3>
+</li>
+<li>
+<h3 id="usersgetsalt--null判断该用户是否有加盐">users.getSalt() != null;判断该用户是否有加盐。</h3>
+</li>
+<li>
+<h3 id="不等于null代表加盐需要返回盐值">不等于null代表加盐，需要返回盐值。</h3>
+</li>
+<li>
+<h4 id="return-new-simpleauthenticationinfousersusersgetpasswordbytesourceutilbytesusersgetsalt">return new SimpleAuthenticationInfo(users,users.getPassword(),ByteSource.Util.bytes(users.getSalt()),&quot;&quot;);</h4>
+</li>
+<li>
+<h4 id="第一个参数为传递该用户的信息">第一个参数为传递该用户的信息</h4>
+</li>
+<li>
+<h4 id="第二个参数usersgetpassword传入密码由shiro来判断密码是否正确">第二个参数：users.getPassword()：传入密码由shiro来判断密码是否正确。</h4>
+</li>
+<li>
+<h4 id="第三个参数bytesourceutilbytesusersgetsalt传入盐值">第三个参数：ByteSource.Util.bytes(users.getSalt())：传入盐值</h4>
+</li>
+<li>
+<h4 id="第四个参数当前的realm名称">第四个参数：当前的realm名称</h4>
+</li>
+<li>
+<h3 id="等于null代表没有加盐不需要返回盐值">等于null代表没有加盐，不需要返回盐值。</h3>
+</li>
+<li>
+<h4 id="return-new-simpleauthenticationinfousersusersgetpassword">return new SimpleAuthenticationInfo(users,users.getPassword(),&quot;&quot;);</h4>
+</li>
+</ul>
+<h1 id="controllerjava">Controller.java</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@RequestMapping</span>(<span style="color:#e6db74">&#34;/login&#34;</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">public</span> ModelAndView <span style="color:#a6e22e">log</span>(String username,String password,<span style="color:#66d9ef">boolean</span> rememberme){
+</span></span><span style="display:flex;"><span>      ModelAndView modelAndView <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ModelAndView();
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">//获取当前用户</span>
+</span></span><span style="display:flex;"><span>      Subject subject <span style="color:#f92672">=</span> SecurityUtils.<span style="color:#a6e22e">getSubject</span>();
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">//封装用户的登录数据</span>
+</span></span><span style="display:flex;"><span>      UsernamePasswordToken token <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> UsernamePasswordToken(username, password);
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">try</span> {
+</span></span><span style="display:flex;"><span>          subject.<span style="color:#a6e22e">login</span>(token);<span style="color:#75715e">//执行登录方法，如果没有异常就ok</span>
+</span></span><span style="display:flex;"><span>          token.<span style="color:#a6e22e">setRememberMe</span>(rememberme);
+</span></span><span style="display:flex;"><span>          modelAndView.<span style="color:#a6e22e">setViewName</span>(<span style="color:#e6db74">&#34;/index&#34;</span>);
+</span></span><span style="display:flex;"><span>      } <span style="color:#66d9ef">catch</span> (UnknownAccountException e) {<span style="color:#75715e">//用户名不存在异常</span>
+</span></span><span style="display:flex;"><span>          modelAndView.<span style="color:#a6e22e">addObject</span>(<span style="color:#e6db74">&#34;msgUP&#34;</span>,<span style="color:#e6db74">&#34;用户名不存在或者错误&#34;</span>);
+</span></span><span style="display:flex;"><span>          modelAndView.<span style="color:#a6e22e">setViewName</span>(<span style="color:#e6db74">&#34;/login&#34;</span>);
+</span></span><span style="display:flex;"><span>          System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(e);
+</span></span><span style="display:flex;"><span>      } <span style="color:#66d9ef">catch</span> (IncorrectCredentialsException e) {<span style="color:#75715e">//密码不存在</span>
+</span></span><span style="display:flex;"><span>          modelAndView.<span style="color:#a6e22e">addObject</span>(<span style="color:#e6db74">&#34;msgUP&#34;</span>,<span style="color:#e6db74">&#34;密码不存在&#34;</span>);
+</span></span><span style="display:flex;"><span>          modelAndView.<span style="color:#a6e22e">setViewName</span>(<span style="color:#e6db74">&#34;/login&#34;</span>);
+</span></span><span style="display:flex;"><span>          System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(e);
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">return</span> modelAndView;
+</span></span><span style="display:flex;"><span>  }
+</span></span></code></pre></div><blockquote>
+<h4 id="登录过程">登录过程</h4></blockquote>
+<blockquote>
+<ul>
+<li>
+<h4 id="登录页面填写账号密码">登录页面填写账号密码.</h4>
+</li>
+<li>
+<h4 id="传入到对应的映射方法">传入到对应的映射方法.</h4>
+</li>
+<li>
+<h4 id="方法调用subjectlogintoken进行登录">方法调用subject.login(token)进行登录.</h4>
+</li>
+<li>
+<h4 id="跳转到认证方法方法进行账号密码判断">跳转到认证方法方法进行账号密码判断.</h4>
+</li>
+<li>
+<h4 id="判断之后返回到映射方法">判断之后返回到映射方法.</h4>
+</li>
+<li>
+<h4 id="映射方法根据返回结果进行对应逻辑">映射方法根据返回结果进行对应逻辑.</h4>
+</li>
+</ul></blockquote></blockquote>
+<h1 id="shiroconfigjava配置类">ShiroConfig.java配置类</h1>
+<h2 id="userrealmuserrealm方法">UserRealm()：UserRealm方法</h2>
+<blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@Bean</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> UserRealm <span style="color:#a6e22e">userRealm</span>(<span style="color:#a6e22e">@Qualifier</span>(<span style="color:#e6db74">&#34;hashedCredentialsMatcher&#34;</span>)HashedCredentialsMatcher hashedCredentialsMatcher) {
+</span></span><span style="display:flex;"><span>UserRealm userRealm <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> UserRealm();
+</span></span><span style="display:flex;"><span>userRealm.<span style="color:#a6e22e">setCredentialsMatcher</span>(hashedCredentialsMatcher);<span style="color:#75715e">//添加密码设置。</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">return</span> userRealm;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="该方法的主要作用就是把userrealmjava类加载到spring容器">该方法的主要作用就是把UserRealm.java类加载到Spring容器</h2></blockquote>
+<h2 id="defaultwebsecuritymanagershiro安全管理器方法">DefaultWebSecurityManager()：shiro安全管理器方法</h2>
+<blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@Bean</span>()
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> DefaultWebSecurityManager <span style="color:#a6e22e">getDefaultWebSecurityManager</span>(
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@Qualifier</span>(<span style="color:#e6db74">&#34;userRealm&#34;</span>) UserRealm userRealm,
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@Qualifier</span>(<span style="color:#e6db74">&#34;ehCacheManager&#34;</span>)EhCacheManager ehCacheManager,
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@Qualifier</span>(<span style="color:#e6db74">&#34;defaultWebSessionManager&#34;</span>)DefaultWebSessionManager defaultWebSessionManager,
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@Qualifier</span>(<span style="color:#e6db74">&#34;cookieRememberMeManager&#34;</span>)CookieRememberMeManager meManager) {
+</span></span><span style="display:flex;"><span>DefaultWebSecurityManager securityManager <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> DefaultWebSecurityManager();
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//关联userRealm</span>
+</span></span><span style="display:flex;"><span>securityManager.<span style="color:#a6e22e">setRealm</span>(userRealm);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//添加第三方缓存</span>
+</span></span><span style="display:flex;"><span>securityManager.<span style="color:#a6e22e">setCacheManager</span>(ehCacheManager);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//添加设置的sessionManager</span>
+</span></span><span style="display:flex;"><span>securityManager.<span style="color:#a6e22e">setSessionManager</span>(defaultWebSessionManager);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//添加cookie管理器</span>
+</span></span><span style="display:flex;"><span>securityManager.<span style="color:#a6e22e">setRememberMeManager</span>(meManager);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">return</span> securityManager;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="该方法作用为">该方法作用为：</h2>
+<ul>
+<li>
+<h3 id="添加关联userrealm">添加关联userRealm</h3>
+</li>
+<li>
+<h3 id="添加第三方缓存管理器">添加第三方缓存管理器</h3>
+</li>
+<li>
+<h3 id="添加自定义设置的session管理器">添加自定义设置的session管理器</h3>
+</li>
+</ul></blockquote>
+<h2 id="shirofilterfactorybeanshiro权限过滤器方法">ShiroFilterFactoryBean()：shiro权限过滤器方法</h2>
+<blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@Bean</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> ShiroFilterFactoryBean <span style="color:#a6e22e">shiroFilterFactoryBean</span>(<span style="color:#a6e22e">@Qualifier</span>(<span style="color:#e6db74">&#34;getDefaultWebSecurityManager&#34;</span>) DefaultWebSecurityManager defa) {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>ShiroFilterFactoryBean bean <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ShiroFilterFactoryBean();
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//设置安全管理器</span>
+</span></span><span style="display:flex;"><span>bean.<span style="color:#a6e22e">setSecurityManager</span>(defa);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//添加shiro的内置过滤器</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/* shiro已经定义的关键字
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">          anon:无需认证就可以访问
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">          authc：必须认证才能访问
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">          user：必须拥有记住我功能才能访问
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">          perms：拥有对某个资源的权限才能访问
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">          logout:退出当前登录
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">   */</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//设置访问拦截</span>
+</span></span><span style="display:flex;"><span>LinkedHashMap<span style="color:#f92672">&lt;</span>String, String<span style="color:#f92672">&gt;</span> hashMap <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> LinkedHashMap<span style="color:#f92672">&lt;&gt;</span>();
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//授权</span>
+</span></span><span style="display:flex;"><span>hashMap.<span style="color:#a6e22e">put</span>(<span style="color:#e6db74">&#34;/user/add&#34;</span>,<span style="color:#e6db74">&#34;perms[user:add]&#34;</span>);
+</span></span><span style="display:flex;"><span>hashMap.<span style="color:#a6e22e">put</span>(<span style="color:#e6db74">&#34;/user/update&#34;</span>,<span style="color:#e6db74">&#34;perms[user:update]&#34;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//授权要在认证前边</span>
+</span></span><span style="display:flex;"><span>hashMap.<span style="color:#a6e22e">put</span>(<span style="color:#e6db74">&#34;/user/*&#34;</span>, <span style="color:#e6db74">&#34;authc&#34;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//退出登录,/logout不需要具体的映射方法，只要跳转到这个路径就退出。</span>
+</span></span><span style="display:flex;"><span>hashMap.<span style="color:#a6e22e">put</span>(<span style="color:#e6db74">&#34;/logout&#34;</span>,<span style="color:#e6db74">&#34;logout&#34;</span>);
+</span></span><span style="display:flex;"><span>bean.<span style="color:#a6e22e">setFilterChainDefinitionMap</span>(hashMap);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//设置登录页面</span>
+</span></span><span style="display:flex;"><span>bean.<span style="color:#a6e22e">setLoginUrl</span>(<span style="color:#e6db74">&#34;/toLogin&#34;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//设置未授权请求</span>
+</span></span><span style="display:flex;"><span>bean.<span style="color:#a6e22e">setUnauthorizedUrl</span>(<span style="color:#e6db74">&#34;/unauthorized&#34;</span>);
+</span></span><span style="display:flex;"><span>bean.<span style="color:#a6e22e">setSuccessUrl</span>(<span style="color:#e6db74">&#34;/toLogin&#34;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">return</span> bean;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="安全管理器需要添加到该bean-beansetsecuritymanagerdefa">安全管理器需要添加到该bean： bean.setSecurityManager(defa);</h3>
+<h3 id="授权map集合的key为资源value为访问这些资源要携带的权限字符串">授权map集合的key为资源，value为访问这些资源要携带的权限字符串。</h3>
+<h3 id="退出登录的路径只需要和前端的退出按钮上的路径一样即可不需要具体的映射实现方法">退出登录的路径只需要和前端的退出按钮上的路径一样即可，不需要具体的映射实现方法。</h3>
+<h3 id="未授权请求就是当该用户没有该权限时访问该资源就会跳转到这个路径的前端页面上这个需要映射方法的实现来进行跳转">未授权请求就是当该用户没有该权限时访问该资源就会跳转到这个路径的前端页面上，这个需要映射方法的实现来进行跳转</h3>
+<h3 id="授权和认证的区别">授权和认证的区别：</h3>
+<h3 id="认证就是必须要登录账号才可以访问">认证就是必须要登录账号才可以访问</h3>
+<h3 id="授权时必须要用户登录并携带该权限才可以访问">授权时必须要用户登录并携带该权限才可以访问</h3></blockquote>
+<h2 id="shirodialect用来整合shiro-thymeleaf方法">ShiroDialect()：用来整合shiro thymeleaf方法</h2>
+<blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@Bean</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> ShiroDialect <span style="color:#a6e22e">shiroDialect</span>(){
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> ShiroDialect();
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-html" data-lang="html"><span style="display:flex;"><span>&lt;<span style="color:#f92672">h1</span>&gt;首页&lt;/<span style="color:#f92672">h1</span>&gt;
+</span></span><span style="display:flex;"><span><span style="color:#75715e">&lt;!--    th:if=&#34;${session.loginuser!=null}&#34;判断是否有这个session值--&gt;</span>
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#f92672">h2</span> <span style="color:#a6e22e">th:if</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;${session.loginuser!=null}&#34;</span>&gt;&lt;<span style="color:#f92672">a</span> <span style="color:#a6e22e">href</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/logout&#34;</span>&gt;退出&lt;/<span style="color:#f92672">a</span>&gt;&lt;/<span style="color:#f92672">h2</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#f92672">h2</span> <span style="color:#a6e22e">th:if</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;${session.loginuser==null}&#34;</span>&gt;&lt;<span style="color:#f92672">a</span> <span style="color:#a6e22e">href</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/toLogin&#34;</span>&gt;登录&lt;/<span style="color:#f92672">a</span>&gt;&lt;/<span style="color:#f92672">h2</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#f92672">p</span> <span style="color:#a6e22e">th:text</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;${msg}&#34;</span>&gt;&lt;/<span style="color:#f92672">p</span>&gt;
+</span></span><span style="display:flex;"><span><span style="color:#75715e">&lt;!--    shiro:hasPermission=&#34;user:add&#34;检查是否有这个权限--&gt;</span>
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#f92672">div</span> <span style="color:#a6e22e">shiro:hasPermission</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;user:add&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#f92672">a</span> <span style="color:#a6e22e">th:href</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;@{/user/add}&#34;</span>&gt;add&lt;/<span style="color:#f92672">a</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">div</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#f92672">div</span> <span style="color:#a6e22e">shiro:hasPermission</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;user:update&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#f92672">a</span> <span style="color:#a6e22e">th:href</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;@{/user/update}&#34;</span>&gt;update&lt;/<span style="color:#f92672">a</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">div</span>&gt;
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-html" data-lang="html"><span style="display:flex;"><span><span style="color:#75715e">&lt;!--    thymeleaf和shiro的名称空间--&gt;</span>
+</span></span><span style="display:flex;"><span>xmlns:th=&#34;http://www.thymeleaf.org&#34;
+</span></span><span style="display:flex;"><span>xmlns:shiro=&#34;http://www.pollix.at/thymeleaf/shiro&#34;
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#75715e">&lt;!--   pom.xml坐标     --&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;groupId&gt;</span>com.github.theborakompanioni<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;artifactId&gt;</span>thymeleaf-extras-shiro<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;version&gt;</span>2.0.0<span style="color:#f92672">&lt;/version&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/dependency&gt;</span>
+</span></span></code></pre></div></blockquote>
+<h2 id="hashedcredentialsmatcher设置加密方法">HashedCredentialsMatcher()：设置加密方法</h2>
+<blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@Bean</span>(name <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;hashedCredentialsMatcher&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> HashedCredentialsMatcher <span style="color:#a6e22e">shiro</span>(){
+</span></span><span style="display:flex;"><span>HashedCredentialsMatcher credentialsMatcher <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> HashedCredentialsMatcher();
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//加密方式</span>
+</span></span><span style="display:flex;"><span>credentialsMatcher.<span style="color:#a6e22e">setHashAlgorithmName</span>(<span style="color:#e6db74">&#34;md5&#34;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//散列次数，次数整个项目要统一不然会报错</span>
+</span></span><span style="display:flex;"><span>credentialsMatcher.<span style="color:#a6e22e">setHashIterations</span>(1);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">return</span> credentialsMatcher;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@RequestMapping</span>(<span style="color:#e6db74">&#34;/adduser&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@ResponseBody</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">md5</span>(String username,String password){
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//在注册是对密码进行加密</span>
+</span></span><span style="display:flex;"><span>Md5Hash md5Hash <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Md5Hash(password);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//加盐加密</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> num <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Random().<span style="color:#a6e22e">nextInt</span>(90000)<span style="color:#f92672">+</span>10000;
+</span></span><span style="display:flex;"><span>Md5Hash md5Hash1 <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Md5Hash(password, num<span style="color:#f92672">+</span><span style="color:#e6db74">&#34;&#34;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//加盐加密加散列</span>
+</span></span><span style="display:flex;"><span>val md5Hash2 <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Md5Hash(password, num <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;&#34;</span>, 3);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//第二种方法进行加密,和Md5Hash一样是重载形式的</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">final</span> SimpleHash md5 <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> SimpleHash(<span style="color:#e6db74">&#34;md5&#34;</span>, password, num <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;&#34;</span>, 3);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;只加密&#34;</span><span style="color:#f92672">+</span>md5Hash.<span style="color:#a6e22e">toString</span>()<span style="color:#f92672">+</span><span style="color:#e6db74">&#34;&lt;br&gt;&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">+</span><span style="color:#e6db74">&#34;加盐加密：&#34;</span><span style="color:#f92672">+</span>md5Hash1.<span style="color:#a6e22e">toString</span>()<span style="color:#f92672">+</span><span style="color:#e6db74">&#34;盐值：&#34;</span><span style="color:#f92672">+</span>num<span style="color:#f92672">+</span><span style="color:#e6db74">&#34;&lt;br&gt;&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">+</span><span style="color:#e6db74">&#34;加盐加密加散列&#34;</span><span style="color:#f92672">+</span>md5Hash2.<span style="color:#a6e22e">toString</span>()<span style="color:#f92672">+</span><span style="color:#e6db74">&#34;盐值：&#34;</span><span style="color:#f92672">+</span>num<span style="color:#f92672">+</span><span style="color:#e6db74">&#34;&lt;br&gt;&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">+</span><span style="color:#e6db74">&#34;SimpleHash加密&#34;</span><span style="color:#f92672">+</span>md5.<span style="color:#a6e22e">toString</span>()<span style="color:#f92672">+</span><span style="color:#e6db74">&#34;盐值：&#34;</span><span style="color:#f92672">+</span>num;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="这两个的散列次数要一致">这两个的散列次数要一致。</h3>
+<h3 id="散列不一定要随机数字也可以是字符串或者用户名称或者自定义">散列不一定要随机数字，也可以是字符串，或者用户名称，或者自定义。</h3>
+<h3 id="shiro默认的加盐是加在密码前边这个可以自定义实现">shiro默认的加盐是加在密码前边，这个可以自定义实现。</h3>
+<h3 id="加盐必须是字符串形式不然会报错">加盐必须是字符串形式不然会报错。</h3></blockquote>
+<h2 id="ehcachemanager缓存方法">EhCacheManager()：缓存方法</h2>
+<blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@Bean</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> EhCacheManager <span style="color:#a6e22e">ehCacheManager</span>(){
+</span></span><span style="display:flex;"><span>EhCacheManager ehCacheManager <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> EhCacheManager();
+</span></span><span style="display:flex;"><span>ehCacheManager.<span style="color:#a6e22e">setCacheManagerConfigFile</span>(<span style="color:#e6db74">&#34;classpath:ehcache.xml&#34;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">return</span> ehCacheManager;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;groupId&gt;</span>org.springframework.boot<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;artifactId&gt;</span>spring-boot-starter-cache<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;groupId&gt;</span>net.sf.ehcache<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;artifactId&gt;</span>ehcache<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;groupId&gt;</span>org.apache.shiro<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;artifactId&gt;</span>shiro-ehcache<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;version&gt;</span>1.7.1<span style="color:#f92672">&lt;/version&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/dependency&gt;</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#75715e">&lt;?xml version=&#34;1.0&#34; encoding=&#34;utf-8&#34; ?&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;ehcache</span> <span style="color:#a6e22e">updateCheck=</span><span style="color:#e6db74">&#34;false&#34;</span> <span style="color:#a6e22e">dynamicConfig=</span><span style="color:#e6db74">&#34;false&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;diskStore</span> <span style="color:#a6e22e">path=</span><span style="color:#e6db74">&#34;&#34;</span><span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;cache</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;user&#34;</span> <span style="color:#a6e22e">maxEntriesLocalHeap=</span><span style="color:#e6db74">&#34;1000&#34;</span><span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;defaultCache</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;defaultCache&#34;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">maxElementsInMemory=</span><span style="color:#e6db74">&#34;1000&#34;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">maxElementsOnDisk=</span><span style="color:#e6db74">&#34;10000000&#34;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">eternal=</span><span style="color:#e6db74">&#34;false&#34;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">overflowToDisk=</span><span style="color:#e6db74">&#34;false&#34;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">diskPersistent=</span><span style="color:#e6db74">&#34;false&#34;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">timeToIdleSeconds=</span><span style="color:#e6db74">&#34;120&#34;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">timeToLiveSeconds=</span><span style="color:#e6db74">&#34;120&#34;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">diskExpiryThreadIntervalSeconds=</span><span style="color:#e6db74">&#34;120&#34;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">memoryStoreEvictionPolicy=</span><span style="color:#e6db74">&#34;LRU&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/ehcache&gt;</span>
+</span></span></code></pre></div><p>第一步导入坐标。</p>
+    </div>
+    <a href="/posts/java/shiro/" class="ba b--moon-gray bg-light-gray br2 color-inherit dib f7 hover-bg-moon-gray link mt2 ph2 pv1">read more</a>
+  </div>
+</div>
+
+        </div>
+      
+    </section>
+  </div>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white white-70 dn dib-ns pv2 ph3 no-underline" href="http://localhost:1313/" >
+    &copy;  loveyu233 2025 
+  </a>
+    <div><div class="ananke-socials"></div>
+</div>
+  </div>
+</footer>
+
+  </body>
+</html>

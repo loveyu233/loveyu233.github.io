@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Fiber on loveyu233</title>
+    <link>http://localhost:1313/tags/fiber/</link>
+    <description>Recent content in Fiber on loveyu233</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 10 Jul 2023 11:18:37 +0800</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/fiber/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>fiber基础</title>
+      <link>http://localhost:1313/posts/go/fiber%E7%AC%94%E8%AE%B0/</link>
+      <pubDate>Mon, 10 Jul 2023 11:18:37 +0800</pubDate>
+      <guid>http://localhost:1313/posts/go/fiber%E7%AC%94%E8%AE%B0/</guid>
+      <description>&lt;h1 id=&#34;获取参数&#34;&gt;获取参数&lt;/h1&gt;&#xA;&lt;p&gt;Params: 获取url参数&lt;/p&gt;&#xA;&lt;p&gt;Query: 获取get请求参数&lt;/p&gt;&#xA;&lt;p&gt;Get: 获取请求头参数&lt;/p&gt;&#xA;&lt;p&gt;FormValue: 获取表单参数&lt;/p&gt;&#xA;&lt;p&gt;BodyParser: 获取json格式参数&lt;/p&gt;&#xA;&lt;p&gt;FormFile: 获取文件类型参数, 配合SaveFile使用&lt;/p&gt;&#xA;&lt;!-- raw HTML omitted --&gt;&#xA;&lt;!-- raw HTML omitted --&gt;&#xA;&lt;h1 id=&#34;app&#34;&gt;APP&lt;/h1&gt;&#xA;&lt;p&gt;Name: 给路由起一个名字&lt;/p&gt;&#xA;&lt;p&gt;GetRoute: 获取指定name的路由信息&lt;/p&gt;&#xA;&lt;p&gt;Stack: 获取全部的路由信息&lt;/p&gt;&#xA;&lt;!-- raw HTML omitted --&gt;&#xA;&lt;p&gt;Mount: 挂载&lt;/p&gt;&#xA;&lt;p&gt;MountPath: 获取挂载后的路由path地址&lt;/p&gt;&#xA;&lt;!-- raw HTML omitted --&gt;&#xA;&lt;p&gt;GetRoutes: 参数为true过滤中间件,false则不过滤&lt;/p&gt;&#xA;&lt;!-- raw HTML omitted --&gt;&#xA;&lt;p&gt;ListenTLS: 用于设置https, 参数分别为地址,pem,key&lt;/p&gt;&#xA;&lt;!-- raw HTML omitted --&gt;&#xA;&lt;p&gt;hooks := app.Hooks():&lt;/p&gt;&#xA;&lt;p&gt;onRoute 是请求路由注册时的钩子函数切片。可以通过 app.OnRoute() 方法向切片中添加钩子函数，这些函数将在每次调用 app.Method() 注册路由时触发。&lt;/p&gt;&#xA;&lt;p&gt;onName 是命名路由注册时的钩子函数切片。可以通过 app.OnName() 方法向切片中添加钩子函数，这些函数将在每次调用 app.Get(&amp;quot;/path&amp;quot;, handler).Name(&amp;ldquo;name&amp;rdquo;) 设置命名路由时触发。&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

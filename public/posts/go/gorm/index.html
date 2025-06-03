@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>Gorm | loveyu233</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="关联关系
+
+关联关系必须要求外键
+关联标签
+
+  
+      
+          标签
+          描述
+      
+  
+  
+      
+          foreignKey
+          指定当前模型的列作为连接表的外键
+      
+      
+          references
+          指定引用表的列名，其将被映射为连接表外键
+      
+      
+          polymorphic
+          指定多态类型，比如模型名
+      
+      
+          polymorphicValue
+          指定多态值、默认表名
+      
+      
+          many2many
+          指定连接表表名
+      
+      
+          joinForeignKey
+          指定连接表的外键列名，其将被映射到当前表
+      
+      
+          joinReferences
+          指定连接表的外键列名，其将被映射到引用表
+      
+      
+          constraint
+          关系约束，例如：OnUpdate、OnDelete
+      
+  
+
+无关联
+CRUD
+	DB.Where(&#34;id &gt; ?&#34;, 2).Select(&#34;id&#34;, &#34;name&#34;).Order(&#34;id&#34;).Find(&amp;users)
+BeLongs To：属于
+
+ belongs to 会与另一个模型建立了一对一的连接。 这种模型的每一个实例都“属于”另一个模型的一个实例。
+// `User` 属于 `Company`，`CompanyID` 是外键
+type User struct {
+	gorm.Model
+	Name      string
+	CompanyID int
+	Company   Company
+}
+
+type Company struct {
+	ID   int
+	Name string
+}
+重写外键
+
+foreignKey：重写外键，可以不用外键表&#43;ID这种形式
+默认外键是外键表的名称&#43;ID，创建顺序为先创建User后创建CreditCard；DB.AutoMigrate(&amp;User{}, &amp;CreditCard{})
+type User struct {
+  gorm.Model
+  Name         string
+  CompanyRefer int
+  Company      Company `gorm:&#34;foreignKey:CompanyRefer&#34;`
+  // 使用 CompanyRefer 作为外键
+}
+
+type Company struct {
+  ID   int
+  Name string
+}
+重写引用
+
+references：重写引用，默认引用的是ID，使用references可以更改引用；">
+    <meta name="generator" content="Hugo 0.147.7">
+    
+    
+    
+      <meta name="robots" content="noindex, nofollow">
+    
+    <meta name="author" content="loveyu">
+    
+
+    
+<link rel="stylesheet" href="/ananke/css/main.min.css" >
+
+
+
+
+    
+
+
+    
+      
+
+    
+
+    
+
+    
+      <link rel="canonical" href="http://localhost:1313/posts/go/gorm/">
+    
+
+    <meta property="og:url" content="http://localhost:1313/posts/go/gorm/">
+  <meta property="og:site_name" content="loveyu233">
+  <meta property="og:title" content="Gorm">
+  <meta property="og:description" content="关联关系 关联关系必须要求外键
+关联标签 标签 描述 foreignKey 指定当前模型的列作为连接表的外键 references 指定引用表的列名，其将被映射为连接表外键 polymorphic 指定多态类型，比如模型名 polymorphicValue 指定多态值、默认表名 many2many 指定连接表表名 joinForeignKey 指定连接表的外键列名，其将被映射到当前表 joinReferences 指定连接表的外键列名，其将被映射到引用表 constraint 关系约束，例如：OnUpdate、OnDelete 无关联 CRUD DB.Where(&#34;id &gt; ?&#34;, 2).Select(&#34;id&#34;, &#34;name&#34;).Order(&#34;id&#34;).Find(&amp;users) BeLongs To：属于 belongs to 会与另一个模型建立了一对一的连接。 这种模型的每一个实例都“属于”另一个模型的一个实例。
+// `User` 属于 `Company`，`CompanyID` 是外键 type User struct { gorm.Model Name string CompanyID int Company Company } type Company struct { ID int Name string } 重写外键 foreignKey：重写外键，可以不用外键表&#43;ID这种形式
+默认外键是外键表的名称&#43;ID，创建顺序为先创建User后创建CreditCard；DB.AutoMigrate(&amp;User{}, &amp;CreditCard{})
+type User struct { gorm.Model Name string CompanyRefer int Company Company `gorm:&#34;foreignKey:CompanyRefer&#34;` // 使用 CompanyRefer 作为外键 } type Company struct { ID int Name string } 重写引用 references：重写引用，默认引用的是ID，使用references可以更改引用；">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2020-10-04T19:38:37+08:00">
+    <meta property="article:modified_time" content="2020-10-04T19:38:37+08:00">
+    <meta property="article:tag" content="Go">
+    <meta property="article:tag" content="Gorm">
+
+  <meta itemprop="name" content="Gorm">
+  <meta itemprop="description" content="关联关系 关联关系必须要求外键
+关联标签 标签 描述 foreignKey 指定当前模型的列作为连接表的外键 references 指定引用表的列名，其将被映射为连接表外键 polymorphic 指定多态类型，比如模型名 polymorphicValue 指定多态值、默认表名 many2many 指定连接表表名 joinForeignKey 指定连接表的外键列名，其将被映射到当前表 joinReferences 指定连接表的外键列名，其将被映射到引用表 constraint 关系约束，例如：OnUpdate、OnDelete 无关联 CRUD DB.Where(&#34;id &gt; ?&#34;, 2).Select(&#34;id&#34;, &#34;name&#34;).Order(&#34;id&#34;).Find(&amp;users) BeLongs To：属于 belongs to 会与另一个模型建立了一对一的连接。 这种模型的每一个实例都“属于”另一个模型的一个实例。
+// `User` 属于 `Company`，`CompanyID` 是外键 type User struct { gorm.Model Name string CompanyID int Company Company } type Company struct { ID int Name string } 重写外键 foreignKey：重写外键，可以不用外键表&#43;ID这种形式
+默认外键是外键表的名称&#43;ID，创建顺序为先创建User后创建CreditCard；DB.AutoMigrate(&amp;User{}, &amp;CreditCard{})
+type User struct { gorm.Model Name string CompanyRefer int Company Company `gorm:&#34;foreignKey:CompanyRefer&#34;` // 使用 CompanyRefer 作为外键 } type Company struct { ID int Name string } 重写引用 references：重写引用，默认引用的是ID，使用references可以更改引用；">
+  <meta itemprop="datePublished" content="2020-10-04T19:38:37+08:00">
+  <meta itemprop="dateModified" content="2020-10-04T19:38:37+08:00">
+  <meta itemprop="wordCount" content="992">
+  <meta itemprop="keywords" content="Go,Gorm">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Gorm">
+  <meta name="twitter:description" content="关联关系 关联关系必须要求外键
+关联标签 标签 描述 foreignKey 指定当前模型的列作为连接表的外键 references 指定引用表的列名，其将被映射为连接表外键 polymorphic 指定多态类型，比如模型名 polymorphicValue 指定多态值、默认表名 many2many 指定连接表表名 joinForeignKey 指定连接表的外键列名，其将被映射到当前表 joinReferences 指定连接表的外键列名，其将被映射到引用表 constraint 关系约束，例如：OnUpdate、OnDelete 无关联 CRUD DB.Where(&#34;id &gt; ?&#34;, 2).Select(&#34;id&#34;, &#34;name&#34;).Order(&#34;id&#34;).Find(&amp;users) BeLongs To：属于 belongs to 会与另一个模型建立了一对一的连接。 这种模型的每一个实例都“属于”另一个模型的一个实例。
+// `User` 属于 `Company`，`CompanyID` 是外键 type User struct { gorm.Model Name string CompanyID int Company Company } type Company struct { ID int Name string } 重写外键 foreignKey：重写外键，可以不用外键表&#43;ID这种形式
+默认外键是外键表的名称&#43;ID，创建顺序为先创建User后创建CreditCard；DB.AutoMigrate(&amp;User{}, &amp;CreditCard{})
+type User struct { gorm.Model Name string CompanyRefer int Company Company `gorm:&#34;foreignKey:CompanyRefer&#34;` // 使用 CompanyRefer 作为外键 } type Company struct { ID int Name string } 重写引用 references：重写引用，默认引用的是ID，使用references可以更改引用；">
+
+	
+  </head><body class="ma0 avenir bg-near-white development">
+
+    
+   
+  
+
+  <header>
+    <div class="bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l center items-center justify-between">
+    <a href="/" class="f3 fw2 hover-white white-90 dib no-underline">
+      
+        loveyu233
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      <div class="ananke-socials"></div>
+
+    </div>
+  </div>
+</nav>
+
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  
+  <article class="flex-l mw8 center ph3 flex-wrap justify-between">
+    <header class="mt4 w-100">
+      <aside class="instapaper_ignoref b helvetica tracked ttu">
+          
+        go
+      </aside><div id="sharing" class="mt3 ananke-socials"></div>
+<h1 class="f1 athelas mt3 mb1">Gorm</h1>
+      
+      <p class="tracked"><strong>loveyu</strong>
+      </p>
+      
+      
+      
+      <time class="f6 mv4 dib tracked" datetime="2020-10-04T19:38:37+08:00">October 4, 2020</time>
+      
+
+      
+      
+    </header>
+    <div class="nested-copy-line-height lh-copy serif f4 nested-links mid-gray pr4-l w-two-thirds-l"><h1 id="关联关系">关联关系</h1>
+<blockquote>
+<p>关联关系必须要求外键</p></blockquote>
+<h2 id="关联标签">关联标签</h2>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">标签</th>
+          <th style="text-align: left">描述</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">foreignKey</td>
+          <td style="text-align: left">指定当前模型的列作为连接表的外键</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">references</td>
+          <td style="text-align: left">指定引用表的列名，其将被映射为连接表外键</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">polymorphic</td>
+          <td style="text-align: left">指定多态类型，比如模型名</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">polymorphicValue</td>
+          <td style="text-align: left">指定多态值、默认表名</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">many2many</td>
+          <td style="text-align: left">指定连接表表名</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">joinForeignKey</td>
+          <td style="text-align: left">指定连接表的外键列名，其将被映射到当前表</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">joinReferences</td>
+          <td style="text-align: left">指定连接表的外键列名，其将被映射到引用表</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">constraint</td>
+          <td style="text-align: left">关系约束，例如：<code>OnUpdate</code>、<code>OnDelete</code></td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="无关联">无关联</h2>
+<h3 id="crud">CRUD</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>	<span style="color:#a6e22e">DB</span>.<span style="color:#a6e22e">Where</span>(<span style="color:#e6db74">&#34;id &gt; ?&#34;</span>, <span style="color:#ae81ff">2</span>).<span style="color:#a6e22e">Select</span>(<span style="color:#e6db74">&#34;id&#34;</span>, <span style="color:#e6db74">&#34;name&#34;</span>).<span style="color:#a6e22e">Order</span>(<span style="color:#e6db74">&#34;id&#34;</span>).<span style="color:#a6e22e">Find</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">users</span>)
+</span></span></code></pre></div><h2 id="belongs-to属于">BeLongs To：属于</h2>
+<blockquote>
+<p><code> belongs to</code> 会与另一个模型建立了一对一的连接。 这种模型的每一个实例都“属于”另一个模型的一个实例。</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">// `User` 属于 `Company`，`CompanyID` 是外键</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">User</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">gorm</span>.<span style="color:#a6e22e">Model</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Name</span>      <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">CompanyID</span> <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Company</span>   <span style="color:#a6e22e">Company</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Company</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">ID</span>   <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Name</span> <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="重写外键">重写外键</h3>
+<blockquote>
+<p><code>foreignKey</code>：重写外键，可以不用外键表+ID这种形式</p>
+<p>默认外键是外键表的名称+ID，创建顺序为先创建User后创建CreditCard；DB.AutoMigrate(&amp;User{}, &amp;CreditCard{})</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">User</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">gorm</span>.<span style="color:#a6e22e">Model</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">Name</span>         <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">CompanyRefer</span> <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">Company</span>      <span style="color:#a6e22e">Company</span> <span style="color:#e6db74">`gorm:&#34;foreignKey:CompanyRefer&#34;`</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 使用 CompanyRefer 作为外键</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Company</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">ID</span>   <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">Name</span> <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="重写引用">重写引用</h3>
+<blockquote>
+<p><code>references</code>：重写引用，默认引用的是ID，使用references可以更改引用；</p>
+<p>必须要在外键和被引用外键都标注<code>gorm:&quot;index&quot;</code></p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">User</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">gorm</span>.<span style="color:#a6e22e">Model</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Name</span>      <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">CompanyID</span> <span style="color:#66d9ef">string</span>  <span style="color:#e6db74">`gorm:&#34;index&#34;`</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Company</span>   <span style="color:#a6e22e">Company</span> <span style="color:#e6db74">`gorm:&#34;references:Code&#34;`</span> <span style="color:#75715e">// 使用 Code 作为引用</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Company</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">ID</span>   <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Code</span> <span style="color:#66d9ef">string</span> <span style="color:#e6db74">`gorm:&#34;index&#34;`</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Name</span> <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="crud-1">CRUD</h3>
+<blockquote>
+<p>Select：选择要添加值的字段</p>
+<p>Omit：跳过指定字段，向未指定字段值添加值</p>
+<p>tx.RowsAffected：影响行数</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">TestInsert</span>(<span style="color:#a6e22e">t</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">testing</span>.<span style="color:#a6e22e">T</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">tx</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">Create</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">User</span>{
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">Name</span>: <span style="color:#e6db74">&#34;user1&#34;</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">Company</span>: <span style="color:#a6e22e">Company</span>{
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">Name</span>: <span style="color:#e6db74">&#34;company1&#34;</span>,
+</span></span><span style="display:flex;"><span>		},
+</span></span><span style="display:flex;"><span>	})
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">tx</span>.<span style="color:#a6e22e">RowsAffected</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">Select</span>(<span style="color:#e6db74">&#34;name&#34;</span>).<span style="color:#a6e22e">Create</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">User</span>{<span style="color:#a6e22e">Name</span>: <span style="color:#e6db74">&#34;abc&#34;</span>, <span style="color:#a6e22e">Company</span>: <span style="color:#a6e22e">Company</span>{<span style="color:#a6e22e">Name</span>: <span style="color:#e6db74">&#34;abcCompany&#34;</span>}})
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">Omit</span>(<span style="color:#e6db74">&#34;name&#34;</span>).<span style="color:#a6e22e">Create</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">User</span>{<span style="color:#a6e22e">Name</span>: <span style="color:#e6db74">&#34;abc&#34;</span>, <span style="color:#a6e22e">Company</span>: <span style="color:#a6e22e">Company</span>{<span style="color:#a6e22e">Name</span>: <span style="color:#e6db74">&#34;abcCompany&#34;</span>}})
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">TestFind</span>(<span style="color:#a6e22e">t</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">testing</span>.<span style="color:#a6e22e">T</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">user</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">User</span>{}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">Preload</span>(<span style="color:#e6db74">&#34;Company&#34;</span>).<span style="color:#a6e22e">First</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">user</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// {ID:1 Name:user1 CompanyID:1 Company:{ID:1 Name:company1}}</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%+v&#34;</span>, <span style="color:#a6e22e">user</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">users</span> <span style="color:#f92672">:=</span> []<span style="color:#a6e22e">User</span>{}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">Preload</span>(<span style="color:#e6db74">&#34;Company&#34;</span>).<span style="color:#a6e22e">Find</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">users</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// [{ID:1 Name:user1 CompanyID:1 Company:{ID:1 Name:company1}} {ID:2 Name:user2 CompanyID:2 Company:{ID:2 Name:company2}}]</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%+v&#34;</span>, <span style="color:#a6e22e">users</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">userw</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">User</span>{}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">Preload</span>(<span style="color:#e6db74">&#34;Company&#34;</span>).<span style="color:#a6e22e">Where</span>(<span style="color:#e6db74">&#34;name=?&#34;</span>, <span style="color:#e6db74">&#34;user2&#34;</span>).<span style="color:#a6e22e">Find</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">userw</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// {ID:2 Name:user2 CompanyID:2 Company:{ID:2 Name:company2}}</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%+v&#34;</span>, <span style="color:#a6e22e">userw</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">TestUpdate</span>(<span style="color:#a6e22e">t</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">testing</span>.<span style="color:#a6e22e">T</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//修改</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">tx</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">Model</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">User</span>{<span style="color:#a6e22e">ID</span>: <span style="color:#ae81ff">1</span>}).<span style="color:#a6e22e">Update</span>(<span style="color:#e6db74">&#34;name&#34;</span>, <span style="color:#e6db74">&#34;asd&#34;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">tx</span>.<span style="color:#a6e22e">RowsAffected</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">Model</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">User</span>{}).<span style="color:#a6e22e">Where</span>(<span style="color:#e6db74">&#34;id&#34;</span>, <span style="color:#ae81ff">1</span>).<span style="color:#a6e22e">Update</span>(<span style="color:#e6db74">&#34;name&#34;</span>, <span style="color:#e6db74">&#34;asd&#34;</span>)
+</span></span><span style="display:flex;"><span>  	<span style="color:#75715e">//更新关联的数据，原本company_id为1，执行后为新创建的comoany的id，新创建的company数据为：Company: Company{Name: &#34;llll&#34;}</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">Session</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">gorm</span>.<span style="color:#a6e22e">Session</span>{<span style="color:#a6e22e">FullSaveAssociations</span>: <span style="color:#66d9ef">true</span>}).<span style="color:#a6e22e">Updates</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">User</span>{<span style="color:#a6e22e">ID</span>: <span style="color:#ae81ff">7</span>, <span style="color:#a6e22e">Company</span>: <span style="color:#a6e22e">Company</span>{<span style="color:#a6e22e">Name</span>: <span style="color:#e6db74">&#34;llll&#34;</span>}})
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//删除关联关系	原本user的id为1的company_id为1删除后为null</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">Model</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">User</span>{<span style="color:#a6e22e">ID</span>: <span style="color:#ae81ff">1</span>}).<span style="color:#a6e22e">Association</span>(<span style="color:#e6db74">&#34;Company&#34;</span>).<span style="color:#a6e22e">Delete</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">Company</span>{<span style="color:#a6e22e">ID</span>: <span style="color:#ae81ff">1</span>})
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//清空关联关系	原本user的id为2的company_id为2清空后为null</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">Model</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">User</span>{<span style="color:#a6e22e">ID</span>: <span style="color:#ae81ff">2</span>}).<span style="color:#a6e22e">Association</span>(<span style="color:#e6db74">&#34;Company&#34;</span>).<span style="color:#a6e22e">Clear</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//添加关联关系	原本user的id为1的company_id为null添加后为2</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">Model</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">User</span>{<span style="color:#a6e22e">ID</span>: <span style="color:#ae81ff">1</span>}).<span style="color:#a6e22e">Association</span>(<span style="color:#e6db74">&#34;Company&#34;</span>).<span style="color:#a6e22e">Append</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">Company</span>{<span style="color:#a6e22e">ID</span>: <span style="color:#ae81ff">2</span>})
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//替换关联关系	原本user的id为1的company_id为2替换后为1</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">Model</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">User</span>{<span style="color:#a6e22e">ID</span>: <span style="color:#ae81ff">1</span>}).<span style="color:#a6e22e">Association</span>(<span style="color:#e6db74">&#34;Company&#34;</span>).<span style="color:#a6e22e">Replace</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">Company</span>{<span style="color:#a6e22e">ID</span>: <span style="color:#ae81ff">1</span>})
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">TestDel</span>(<span style="color:#a6e22e">t</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">testing</span>.<span style="color:#a6e22e">T</span>) {
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 效果一样</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">Delete</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">User</span>{<span style="color:#a6e22e">ID</span>: <span style="color:#ae81ff">2</span>})
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">Where</span>(<span style="color:#e6db74">&#34;id&#34;</span>, <span style="color:#ae81ff">2</span>).<span style="color:#a6e22e">Delete</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">User</span>{})
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="has-one拥有">Has One：拥有</h2>
+<blockquote>
+<p><code>has one</code> 与另一个模型建立一对一的关联，但它和一对一关系有些许不同。 这种关联表明一个模型的每个实例都包含或拥有另一个模型的一个实例。</p></blockquote>
+<p>例如：用户拥有一张信用卡</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">// User 有一张 CreditCard，UserID 是外键</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">User</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">gorm</span>.<span style="color:#a6e22e">Model</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">CreditCard</span> <span style="color:#a6e22e">CreditCard</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">CreditCard</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">gorm</span>.<span style="color:#a6e22e">Model</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Number</span> <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">UserID</span> <span style="color:#66d9ef">uint</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="重写外健">重写外健</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">User</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">gorm</span>.<span style="color:#a6e22e">Model</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">CreditCard</span> <span style="color:#a6e22e">CreditCard</span> <span style="color:#e6db74">`gorm:&#34;foreignKey:SuiBian&#34;`</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">CreditCard</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">gorm</span>.<span style="color:#a6e22e">Model</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Number</span>  <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">SuiBian</span> <span style="color:#66d9ef">uint</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="重写引用-1">重写引用</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">User</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">gorm</span>.<span style="color:#a6e22e">Model</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Abc</span>        <span style="color:#66d9ef">int</span>        <span style="color:#e6db74">`gorm:&#34;index&#34;`</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">CreditCard</span> <span style="color:#a6e22e">CreditCard</span> <span style="color:#e6db74">`gorm:&#34;foreignkey:UserAbc;references:Abc&#34;`</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">CreditCard</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">gorm</span>.<span style="color:#a6e22e">Model</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Number</span>  <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">UserAbc</span> <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><blockquote>
+<p>references：重写引用，默认引用的是ID，使用references可以更改引用；has one 的被引用的字段必须要有 <code>gorm:&quot;index&quot;</code>不然会报错</p></blockquote>
+<h2 id="has-many一对多">Has Many：一对多</h2>
+<blockquote>
+<p><code>has many</code> 与另一个模型建立了一对多的连接。 不同于 <code>has one</code>，拥有者可以有零或多个关联模型。</p>
+<p>例如，您的应用包含 user 和 credit card 模型，且每个 user 可以有多张 credit card。</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">// User 有多张 CreditCard，UserID 是外键</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">User</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">gorm</span>.<span style="color:#a6e22e">Model</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">CreditCards</span> []<span style="color:#a6e22e">CreditCard</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">CreditCard</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">gorm</span>.<span style="color:#a6e22e">Model</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">Number</span> <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">UserID</span> <span style="color:#66d9ef">uint</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="重写外键-1">重写外键</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">User</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">gorm</span>.<span style="color:#a6e22e">Model</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">CreditCards</span> []<span style="color:#a6e22e">CreditCard</span> <span style="color:#e6db74">`gorm:&#34;foreignKey:UserRefer&#34;`</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">CreditCard</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">gorm</span>.<span style="color:#a6e22e">Model</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">Number</span>    <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">UserRefer</span> <span style="color:#66d9ef">uint</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="重写引用-2">重写引用</h3>
+<blockquote>
+<p>外键和被引用外键都必须标注<code>gorm:&quot;index&quot;</code></p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">User</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">gorm</span>.<span style="color:#a6e22e">Model</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">MemberNumber</span> <span style="color:#66d9ef">string</span>       <span style="color:#e6db74">`gorm:&#34;index&#34;`</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">CreditCards</span>  []<span style="color:#a6e22e">CreditCard</span> <span style="color:#e6db74">`gorm:&#34;foreignKey:UserNumber;references:MemberNumber&#34;`</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">CreditCard</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">gorm</span>.<span style="color:#a6e22e">Model</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Number</span>     <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">UserNumber</span> <span style="color:#66d9ef">string</span> <span style="color:#e6db74">`gorm:&#34;index&#34;`</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="多态关联">多态关联</h3>
+<blockquote>
+<p>GORM 为 <code>has one</code> 和 <code>has many</code> 提供了多态关联支持，它会将拥有者实体的表名、主键都保存到多态类型的字段中。</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Dog</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">ID</span>   <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">Name</span> <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">Toys</span> []<span style="color:#a6e22e">Toy</span> <span style="color:#e6db74">`gorm:&#34;polymorphic:Owner;&#34;`</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Toy</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">ID</span>        <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">Name</span>      <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">OwnerID</span>   <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">OwnerType</span> <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">Create</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">Dog</span>{<span style="color:#a6e22e">Name</span>: <span style="color:#e6db74">&#34;dog1&#34;</span>, <span style="color:#a6e22e">Toys</span>: []<span style="color:#a6e22e">Toy</span>{{<span style="color:#a6e22e">Name</span>: <span style="color:#e6db74">&#34;toy1&#34;</span>}, {<span style="color:#a6e22e">Name</span>: <span style="color:#e6db74">&#34;toy2&#34;</span>}}})
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// INSERT INTO `dogs` (`name`) VALUES (&#34;dog1&#34;)</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// INSERT INTO `toys` (`name`,`owner_id`,`owner_type`) VALUES (&#34;toy1&#34;,&#34;1&#34;,&#34;dogs&#34;), (&#34;toy2&#34;,&#34;1&#34;,&#34;dogs&#34;)</span>
+</span></span></code></pre></div><blockquote>
+<p>可以使用标签 <code>polymorphicValue</code> 来更改多态类型的值，例如：</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Dog</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">ID</span>   <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">Name</span> <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">Toys</span> []<span style="color:#a6e22e">Toy</span> <span style="color:#e6db74">`gorm:&#34;polymorphic:Owner;polymorphicValue:master&#34;`</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Toy</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">ID</span>        <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">Name</span>      <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">OwnerID</span>   <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">OwnerType</span> <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">Create</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">Dog</span>{<span style="color:#a6e22e">Name</span>: <span style="color:#e6db74">&#34;dog1&#34;</span>, <span style="color:#a6e22e">Toy</span>: []<span style="color:#a6e22e">Toy</span>{{<span style="color:#a6e22e">Name</span>: <span style="color:#e6db74">&#34;toy1&#34;</span>}, {<span style="color:#a6e22e">Name</span>: <span style="color:#e6db74">&#34;toy2&#34;</span>}}})
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// INSERT INTO `dogs` (`name`) VALUES (&#34;dog1&#34;)</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// INSERT INTO `toys` (`name`,`owner_id`,`owner_type`) VALUES (&#34;toy1&#34;,&#34;1&#34;,&#34;master&#34;), (&#34;toy2&#34;,&#34;1&#34;,&#34;master&#34;)</span>
+</span></span></code></pre></div><h3 id="自引用-has-many">自引用 Has Many</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">User</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">gorm</span>.<span style="color:#a6e22e">Model</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">Name</span>      <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">ManagerID</span> <span style="color:#f92672">*</span><span style="color:#66d9ef">uint</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">Team</span>      []<span style="color:#a6e22e">User</span> <span style="color:#e6db74">`gorm:&#34;foreignkey:ManagerID&#34;`</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="外键约束">外键约束</h3>
+<blockquote>
+<p>可以通过为标签 <code>constraint</code> 配置 <code>OnUpdate</code>、<code>OnDelete</code> 实现外键约束，在使用 GORM 进行迁移时它会被创建，例如</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">User</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">gorm</span>.<span style="color:#a6e22e">Model</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">CreditCards</span> []<span style="color:#a6e22e">CreditCard</span> <span style="color:#e6db74">`gorm:&#34;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;&#34;`</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">CreditCard</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">gorm</span>.<span style="color:#a6e22e">Model</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">Number</span> <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">UserID</span> <span style="color:#66d9ef">uint</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="many-to-many多对多">Many To Many：多对多</h2>
+<blockquote>
+<p>Many to Many 会在两个 model 中添加一张连接表。</p>
+<p>例如，您的应用包含了 user 和 language，且一个 user 可以说多种 language，多个 user 也可以说一种 language。</p>
+<p>当使用 GORM 的 <code>AutoMigrate</code> 为 <code>User</code> 创建表时，GORM 会自动创建连接表</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">// User 拥有并属于多种 language，`user_languages` 是连接表</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">User</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">gorm</span>.<span style="color:#a6e22e">Model</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">Languages</span> []<span style="color:#a6e22e">Language</span> <span style="color:#e6db74">`gorm:&#34;many2many:user_languages;&#34;`</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Language</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">gorm</span>.<span style="color:#a6e22e">Model</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">Name</span> <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="反向引用">反向引用</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">// User 拥有并属于多种 language，`user_languages` 是连接表</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">User</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">gorm</span>.<span style="color:#a6e22e">Model</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">Languages</span> []<span style="color:#f92672">*</span><span style="color:#a6e22e">Language</span> <span style="color:#e6db74">`gorm:&#34;many2many:user_languages;&#34;`</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Language</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">gorm</span>.<span style="color:#a6e22e">Model</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">Name</span> <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">Users</span> []<span style="color:#f92672">*</span><span style="color:#a6e22e">User</span> <span style="color:#e6db74">`gorm:&#34;many2many:user_languages;&#34;`</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>分别查询两张表</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">// Retrieve user list with edger loading languages</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">GetAllUsers</span>(<span style="color:#a6e22e">db</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gorm</span>.<span style="color:#a6e22e">DB</span>) ([]<span style="color:#a6e22e">User</span>, <span style="color:#66d9ef">error</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">users</span> []<span style="color:#a6e22e">User</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">Model</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">User</span>{}).<span style="color:#a6e22e">Preload</span>(<span style="color:#e6db74">&#34;Languages&#34;</span>).<span style="color:#a6e22e">Find</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">users</span>).<span style="color:#a6e22e">Error</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">users</span>, <span style="color:#a6e22e">err</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Retrieve language list with edger loading users</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">GetAllLanguages</span>(<span style="color:#a6e22e">db</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gorm</span>.<span style="color:#a6e22e">DB</span>) ([]<span style="color:#a6e22e">Language</span>, <span style="color:#66d9ef">error</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">languages</span> []<span style="color:#a6e22e">Language</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">Model</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">Language</span>{}).<span style="color:#a6e22e">Preload</span>(<span style="color:#e6db74">&#34;Users&#34;</span>).<span style="color:#a6e22e">Find</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">languages</span>).<span style="color:#a6e22e">Error</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">languages</span>, <span style="color:#a6e22e">err</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="重写外键-2">重写外键</h3>
+<blockquote>
+<p>对于 <code>many2many</code> 关系，连接表会同时拥有两个模型的外键，例如：</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">User</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">gorm</span>.<span style="color:#a6e22e">Model</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">Languages</span> []<span style="color:#a6e22e">Language</span> <span style="color:#e6db74">`gorm:&#34;many2many:user_languages;&#34;`</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Language</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">gorm</span>.<span style="color:#a6e22e">Model</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">Name</span> <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Join Table: user_languages</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//   foreign key: user_id, reference: users.id</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//   foreign key: language_id, reference: languages.id</span>
+</span></span></code></pre></div><blockquote>
+<p>若要重写它们，可以使用标签 <code>foreignKey</code>、<code>references</code>、<code>joinforeignKey</code>、<code>joinReferences</code>。当然，不需要使用全部的标签，你可以仅使用其中的一个重写部分的外键、引用。</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">User</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">gorm</span>.<span style="color:#a6e22e">Model</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">Profiles</span> []<span style="color:#a6e22e">Profile</span> <span style="color:#e6db74">`gorm:&#34;many2many:user_profiles;foreignKey:Refer;joinForeignKey:UserReferID;References:UserRefer;joinReferences:ProfileRefer&#34;`</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">Refer</span>    <span style="color:#66d9ef">uint</span>      <span style="color:#e6db74">`gorm:&#34;index:,unique&#34;`</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Profile</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">gorm</span>.<span style="color:#a6e22e">Model</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">Name</span>      <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">UserRefer</span> <span style="color:#66d9ef">uint</span> <span style="color:#e6db74">`gorm:&#34;index:,unique&#34;`</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Which creates join table: user_profiles</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//   foreign key: user_refer_id, reference: users.refer</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//   foreign key: profile_refer, reference: profiles.user_refer</span>
+</span></span></code></pre></div><h3 id="自引用-many2many">自引用 Many2Many</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">User</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">gorm</span>.<span style="color:#a6e22e">Model</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">Friends</span> []<span style="color:#f92672">*</span><span style="color:#a6e22e">User</span> <span style="color:#e6db74">`gorm:&#34;many2many:user_friends&#34;`</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Which creates join table: user_friends</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//   foreign key: user_id, reference: users.id</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//   foreign key: friend_id, reference: users.id</span>
+</span></span></code></pre></div><h3 id="自定义连接表">自定义连接表</h3>
+<blockquote>
+<p><code>连接表</code> 可以是一个全功能的模型，支持 <code>Soft Delete</code>、<code>钩子</code>、更多的字段，就跟其它模型一样。您可以通过 <code>SetupJoinTable</code> 指定它，例如：</p>
+<p><strong>注意：</strong> 自定义连接表要求外键是复合主键或复合唯一索引</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Person</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">ID</span>        <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">Name</span>      <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">Addresses</span> []<span style="color:#a6e22e">Address</span> <span style="color:#e6db74">`gorm:&#34;many2many:person_addresses;&#34;`</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Address</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">ID</span>   <span style="color:#66d9ef">uint</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">Name</span> <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">PersonAddress</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">PersonID</span>  <span style="color:#66d9ef">int</span> <span style="color:#e6db74">`gorm:&#34;primaryKey&#34;`</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">AddressID</span> <span style="color:#66d9ef">int</span> <span style="color:#e6db74">`gorm:&#34;primaryKey&#34;`</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">CreatedAt</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Time</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">DeletedAt</span> <span style="color:#a6e22e">gorm</span>.<span style="color:#a6e22e">DeletedAt</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">PersonAddress</span>) <span style="color:#a6e22e">BeforeCreate</span>(<span style="color:#a6e22e">db</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gorm</span>.<span style="color:#a6e22e">DB</span>) <span style="color:#66d9ef">error</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// ...</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Change model Person&#39;s field Addresses&#39; join table to PersonAddress</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// PersonAddress must defined all required foreign keys or it will raise error</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">SetupJoinTable</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">Person</span>{}, <span style="color:#e6db74">&#34;Addresses&#34;</span>, <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">PersonAddress</span>{})
+</span></span></code></pre></div><h3 id="外键约束-1">外键约束</h3>
+<blockquote>
+<p>你可以通过为标签 <code>constraint</code> 配置 <code>OnUpdate</code>、<code>OnDelete</code> 实现外键约束，在使用 GORM 进行迁移时它会被创建，例如：</p>
+<p>也可以在删除记录时通过 <code>Select</code> 来删除 many2many 关系的记录</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">User</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">gorm</span>.<span style="color:#a6e22e">Model</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">Languages</span> []<span style="color:#a6e22e">Language</span> <span style="color:#e6db74">`gorm:&#34;many2many:user_speaks;&#34;`</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Language</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">Code</span> <span style="color:#66d9ef">string</span> <span style="color:#e6db74">`gorm:&#34;primarykey&#34;`</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">Name</span> <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// CREATE TABLE `user_speaks` (`user_id` integer,`language_code` text,PRIMARY KEY (`user_id`,`language_code`),CONSTRAINT `fk_user_speaks_user` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE SET NULL ON UPDATE CASCADE,CONSTRAINT `fk_user_speaks_language` FOREIGN KEY (`language_code`) REFERENCES `languages`(`code`) ON DELETE SET NULL ON UPDATE CASCADE);</span>
+</span></span></code></pre></div><h3 id="复合外键">复合外键</h3>
+<blockquote>
+<p>如果您的模型使用了 <a href="https://gorm.io/zh_CN/docs/composite_primary_key.html">复合主键</a>，GORM 会默认启用复合外键。</p>
+<p>您也可以覆盖默认的外键、指定多个外键，只需用逗号分隔那些键名，例如：</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Tag</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">ID</span>     <span style="color:#66d9ef">uint</span>   <span style="color:#e6db74">`gorm:&#34;primaryKey&#34;`</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">Locale</span> <span style="color:#66d9ef">string</span> <span style="color:#e6db74">`gorm:&#34;primaryKey&#34;`</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">Value</span>  <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Blog</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">ID</span>         <span style="color:#66d9ef">uint</span>   <span style="color:#e6db74">`gorm:&#34;primaryKey&#34;`</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">Locale</span>     <span style="color:#66d9ef">string</span> <span style="color:#e6db74">`gorm:&#34;primaryKey&#34;`</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">Subject</span>    <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">Body</span>       <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">Tags</span>       []<span style="color:#a6e22e">Tag</span> <span style="color:#e6db74">`gorm:&#34;many2many:blog_tags;&#34;`</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">LocaleTags</span> []<span style="color:#a6e22e">Tag</span> <span style="color:#e6db74">`gorm:&#34;many2many:locale_blog_tags;ForeignKey:id,locale;References:id&#34;`</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">SharedTags</span> []<span style="color:#a6e22e">Tag</span> <span style="color:#e6db74">`gorm:&#34;many2many:shared_blog_tags;ForeignKey:id;References:id&#34;`</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul class="pa0">
+  
+   <li class="list di">
+     <a href="/tags/go/" class="link f5 grow br-pill ba ph3 pv2 mb2 dib black sans-serif no-underline">Go</a>
+   </li>
+  
+   <li class="list di">
+     <a href="/tags/gorm/" class="link f5 grow br-pill ba ph3 pv2 mb2 dib black sans-serif no-underline">Gorm</a>
+   </li>
+  
+</ul>
+<div class="mt6 instapaper_ignoref">
+      
+      
+      </div>
+    </div>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+  <div class="bg-light-gray pa3 nested-list-reset nested-copy-line-height nested-links">
+    <p class="f5 b mb3">Related</p>
+    <ul class="pa0 list">
+	   
+	     <li  class="mb2">
+          <a href="/posts/go/gin%E6%96%87%E4%BB%B6%E4%B8%8B%E8%BD%BD%E4%B9%B1%E7%A0%81/">Gin文件下载乱码</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/casbin/">go使用casbin</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/jwt/">go使用Jwt</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/%E9%BC%A0%E6%A0%87%E8%87%AA%E5%8A%A8%E5%8C%96/">鼠标自动化</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/gowebsocket/">GoWebsocket</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/go-email/">Go Email</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/gin%E6%97%A5%E5%BF%97%E8%87%AA%E5%AE%9A%E4%B9%89/">Gin日志自定义</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/go%E4%BD%BF%E7%94%A8%E4%BB%A4%E7%89%8C%E6%A1%B6/">Go使用令牌桶</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/posts/go/zap/">Zap</a>
+        </li>
+	    
+    </ul>
+</div>
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white white-70 dn dib-ns pv2 ph3 no-underline" href="http://localhost:1313/" >
+    &copy;  loveyu233 2025 
+  </a>
+    <div><div class="ananke-socials"></div>
+</div>
+  </div>
+</footer>
+
+  </body>
+</html>

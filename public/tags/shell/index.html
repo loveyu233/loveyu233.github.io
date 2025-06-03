@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>loveyu233</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="">
+    <meta name="generator" content="Hugo 0.147.7">
+    
+    
+    
+      <meta name="robots" content="noindex, nofollow">
+    
+    
+
+    
+<link rel="stylesheet" href="/ananke/css/main.min.css" >
+
+
+
+
+    
+
+
+    
+      
+
+    
+
+    
+    
+      <link href="/tags/shell/index.xml" rel="alternate" type="application/rss+xml" title="loveyu233" />
+      <link href="/tags/shell/index.xml" rel="feed" type="application/rss+xml" title="loveyu233" />
+      
+    
+
+    
+      <link rel="canonical" href="http://localhost:1313/tags/shell/">
+    
+
+    <meta property="og:url" content="http://localhost:1313/tags/shell/">
+  <meta property="og:site_name" content="loveyu233">
+  <meta property="og:title" content="Shell">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="website">
+
+  <meta itemprop="name" content="Shell">
+  <meta itemprop="datePublished" content="2020-12-04T11:38:37+08:00">
+  <meta itemprop="dateModified" content="2020-12-04T11:38:37+08:00">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Shell">
+
+	
+  </head><body class="ma0 avenir bg-near-white development">
+
+    
+
+  <header>
+    <div class="pb3-m pb6-l bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l center items-center justify-between">
+    <a href="/" class="f3 fw2 hover-white white-90 dib no-underline">
+      
+        loveyu233
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      <div class="ananke-socials"></div>
+
+    </div>
+  </div>
+</nav>
+
+      <div class="tc-l pv3 ph3 ph4-ns">
+        <h1 class="f2 f-subheadline-l fw2 light-silver mb0 lh-title">
+          Shell
+        </h1>
+        
+      </div>
+    </div>
+  </header>
+
+
+    <main class="pb7" role="main">
+      
+  <article class="cf pa3 pa4-m pa4-l">
+    <div class="measure-wide-l center f4 lh-copy nested-copy-line-height nested-links mid-gray">
+      <p>Below you will find pages that utilize the taxonomy term “Shell”</p>
+    </div>
+  </article>
+  <div class="mw8 center">
+    <section class="flex-ns mt5 flex-wrap justify-around">
+      
+        <div class="w-100 mb4 relative bg-white">
+          <div class="w-100 mb4 nested-copy-line-height relative bg-white">
+  <div class="mb3 pa4 gray overflow-hidden bg-white">
+    <span class="f6 db">other</span>
+    <h1 class="f3 near-black">
+      <a href="/posts/other/homebrew/" class="link black dim">
+        homeBrew自动安装脚本
+      </a>
+    </h1>
+    <div class="nested-links f5 lh-copy nested-copy-line-height">
+      <blockquote>
+<p>下面脚本保存为.sh，添加执行权限，运行即可</p></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e">#HomeBrew自动安装脚本</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#cunkai.wang@foxmail.com</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#获取硬件信息</span>
+</span></span><span style="display:flex;"><span>UNAME_MACHINE<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>uname -m<span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#在X86电脑上测试arm电脑</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># UNAME_MACHINE=&#34;arm64&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 判断是Linux还是Mac os</span>
+</span></span><span style="display:flex;"><span>OS<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>uname<span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> <span style="color:#e6db74">&#34;</span>$OS<span style="color:#e6db74">&#34;</span> <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;Linux&#34;</span> <span style="color:#f92672">]]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>  HOMEBREW_ON_LINUX<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">elif</span> <span style="color:#f92672">[[</span> <span style="color:#e6db74">&#34;</span>$OS<span style="color:#e6db74">&#34;</span> !<span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Darwin&#34;</span> <span style="color:#f92672">]]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>  echo <span style="color:#e6db74">&#34;Homebrew 只运行在 Mac OS 或 Linux.&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 字符串染色程序</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> -t <span style="color:#ae81ff">1</span> <span style="color:#f92672">]]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>  tty_escape<span style="color:#f92672">()</span> <span style="color:#f92672">{</span> printf <span style="color:#e6db74">&#34;\033[%sm&#34;</span> <span style="color:#e6db74">&#34;</span>$1<span style="color:#e6db74">&#34;</span>; <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>  tty_escape<span style="color:#f92672">()</span> <span style="color:#f92672">{</span> :; <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>tty_universal<span style="color:#f92672">()</span> <span style="color:#f92672">{</span> tty_escape <span style="color:#e6db74">&#34;0;</span>$1<span style="color:#e6db74">&#34;</span>; <span style="color:#f92672">}</span> <span style="color:#75715e">#正常显示</span>
+</span></span><span style="display:flex;"><span>tty_mkbold<span style="color:#f92672">()</span> <span style="color:#f92672">{</span> tty_escape <span style="color:#e6db74">&#34;1;</span>$1<span style="color:#e6db74">&#34;</span>; <span style="color:#f92672">}</span> <span style="color:#75715e">#设置高亮</span>
+</span></span><span style="display:flex;"><span>tty_underline<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>tty_escape <span style="color:#e6db74">&#34;4;39&#34;</span><span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span> <span style="color:#75715e">#下划线</span>
+</span></span><span style="display:flex;"><span>tty_blue<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>tty_universal 34<span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span> <span style="color:#75715e">#蓝色</span>
+</span></span><span style="display:flex;"><span>tty_red<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>tty_universal 31<span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span> <span style="color:#75715e">#红色</span>
+</span></span><span style="display:flex;"><span>tty_green<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>tty_universal 32<span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span> <span style="color:#75715e">#绿色</span>
+</span></span><span style="display:flex;"><span>tty_yellow<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>tty_universal 33<span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span> <span style="color:#75715e">#黄色</span>
+</span></span><span style="display:flex;"><span>tty_bold<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>tty_universal 39<span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span> <span style="color:#75715e">#加黑</span>
+</span></span><span style="display:flex;"><span>tty_cyan<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>tty_universal 36<span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span> <span style="color:#75715e">#青色</span>
+</span></span><span style="display:flex;"><span>tty_reset<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>tty_escape 0<span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span> <span style="color:#75715e">#去除颜色</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#用户输入极速安装speed，git克隆只取最近新版本</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#但是update会出错，提示需要下载全部数据</span>
+</span></span><span style="display:flex;"><span>GIT_SPEED<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> $0 <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;speed&#34;</span> <span style="color:#f92672">]]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>  GIT_SPEED<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;--depth=1&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">for</span> dir in $@; <span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>      echo $dir
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> $dir <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;speed&#34;</span> <span style="color:#f92672">]]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>          GIT_SPEED<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;--depth=1&#34;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">done</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> $GIT_SPEED !<span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;&#34;</span> <span style="color:#f92672">]]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>tty_red<span style="color:#e6db74">}</span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">              检测到参数speed，只拉取最新数据，可以正常install使用！
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">          但是以后brew update的时候会报错，运行报错提示的两句命令即可修复
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">          </span><span style="color:#e6db74">${</span>tty_reset<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#获取前面两个.的数据</span>
+</span></span><span style="display:flex;"><span>major_minor<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  echo <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>1%%.*<span style="color:#e6db74">}</span><span style="color:#e6db74">.</span><span style="color:#66d9ef">$(</span>x<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>1#*.<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>; echo <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>x%%.*<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#设置一些平台地址</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> -z <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>HOMEBREW_ON_LINUX-<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">#Mac</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> <span style="color:#e6db74">&#34;</span>$UNAME_MACHINE<span style="color:#e6db74">&#34;</span> <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;arm64&#34;</span> <span style="color:#f92672">]]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">#M1</span>
+</span></span><span style="display:flex;"><span>    HOMEBREW_PREFIX<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/opt/homebrew&#34;</span>
+</span></span><span style="display:flex;"><span>    HOMEBREW_REPOSITORY<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>HOMEBREW_PREFIX<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">#Inter</span>
+</span></span><span style="display:flex;"><span>    HOMEBREW_PREFIX<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/usr/local&#34;</span>
+</span></span><span style="display:flex;"><span>    HOMEBREW_REPOSITORY<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>HOMEBREW_PREFIX<span style="color:#e6db74">}</span><span style="color:#e6db74">/Homebrew&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    HOMEBREW_CACHE<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>HOME<span style="color:#e6db74">}</span><span style="color:#e6db74">/Library/Caches/Homebrew&#34;</span>
+</span></span><span style="display:flex;"><span>    HOMEBREW_LOGS<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>HOME<span style="color:#e6db74">}</span><span style="color:#e6db74">/Library/Logs/Homebrew&#34;</span>
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">#国内没有homebrew-services，手动在gitee创建了一个，有少数人用到。</span>
+</span></span><span style="display:flex;"><span>    USER_SERVICES_GIT<span style="color:#f92672">=</span>https://gitee.com/cunkai/homebrew-services.git
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    STAT<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;stat -f&#34;</span>
+</span></span><span style="display:flex;"><span>    CHOWN<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/usr/sbin/chown&#34;</span>
+</span></span><span style="display:flex;"><span>    CHGRP<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/usr/bin/chgrp&#34;</span>
+</span></span><span style="display:flex;"><span>    GROUP<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;admin&#34;</span>
+</span></span><span style="display:flex;"><span>    TOUCH<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/usr/bin/touch&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">#获取Mac系统版本</span>
+</span></span><span style="display:flex;"><span>    macos_version<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>major_minor <span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>/usr/bin/sw_vers -productVersion<span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">#Linux</span>
+</span></span><span style="display:flex;"><span>  UNAME_MACHINE<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>uname -m<span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  HOMEBREW_PREFIX<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/home/linuxbrew/.linuxbrew&#34;</span>
+</span></span><span style="display:flex;"><span>  HOMEBREW_REPOSITORY<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>HOMEBREW_PREFIX<span style="color:#e6db74">}</span><span style="color:#e6db74">/Homebrew&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  HOMEBREW_CACHE<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>HOME<span style="color:#e6db74">}</span><span style="color:#e6db74">/.cache/Homebrew&#34;</span>
+</span></span><span style="display:flex;"><span>  HOMEBREW_LOGS<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>HOME<span style="color:#e6db74">}</span><span style="color:#e6db74">/.logs/Homebrew&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  STAT<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;stat --printf&#34;</span>
+</span></span><span style="display:flex;"><span>  CHOWN<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/bin/chown&#34;</span>
+</span></span><span style="display:flex;"><span>  CHGRP<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/bin/chgrp&#34;</span>
+</span></span><span style="display:flex;"><span>  GROUP<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>id -gn<span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>  TOUCH<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/bin/touch&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#获取系统时间</span>
+</span></span><span style="display:flex;"><span>TIME<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>date <span style="color:#e6db74">&#34;+%Y-%m-%d %H:%M:%S&#34;</span><span style="color:#66d9ef">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>JudgeSuccess<span style="color:#f92672">()</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> $? -ne <span style="color:#ae81ff">0</span> <span style="color:#f92672">]</span>;<span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>        echo <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>tty_red<span style="color:#e6db74">}</span><span style="color:#e6db74">m此步骤失败 &#39;</span>$1<span style="color:#e6db74">&#39;</span><span style="color:#e6db74">${</span>tty_reset<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> <span style="color:#e6db74">&#34;</span>$2<span style="color:#e6db74">&#34;</span> <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;out&#39;</span> <span style="color:#f92672">]]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>          exit <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>        echo <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>tty_green<span style="color:#e6db74">}</span><span style="color:#e6db74">此步骤成功</span><span style="color:#e6db74">${</span>tty_reset<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 判断是否有系统权限</span>
+</span></span><span style="display:flex;"><span>have_sudo_access<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> -z <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>HAVE_SUDO_ACCESS-<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    /usr/bin/sudo -l mkdir &amp;&gt;/dev/null
+</span></span><span style="display:flex;"><span>    HAVE_SUDO_ACCESS<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span>$?<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> <span style="color:#e6db74">&#34;</span>$HAVE_SUDO_ACCESS<span style="color:#e6db74">&#34;</span> -ne <span style="color:#ae81ff">0</span> <span style="color:#f92672">]]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>tty_red<span style="color:#e6db74">}</span><span style="color:#e6db74">开机密码输入错误，获取权限失败!</span><span style="color:#e6db74">${</span>tty_reset<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;</span>$HAVE_SUDO_ACCESS<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>abort<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  printf <span style="color:#e6db74">&#34;%s\n&#34;</span> <span style="color:#e6db74">&#34;</span>$1<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># exit 1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>shell_join<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  local arg
+</span></span><span style="display:flex;"><span>  printf <span style="color:#e6db74">&#34;%s&#34;</span> <span style="color:#e6db74">&#34;</span>$1<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>  shift
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">for</span> arg in <span style="color:#e6db74">&#34;</span>$@<span style="color:#e6db74">&#34;</span>; <span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>    printf <span style="color:#e6db74">&#34; &#34;</span>
+</span></span><span style="display:flex;"><span>    printf <span style="color:#e6db74">&#34;%s&#34;</span> <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>arg// /<span style="color:#ae81ff">\ </span><span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">done</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>execute<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> ! <span style="color:#e6db74">&#34;</span>$@<span style="color:#e6db74">&#34;</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    abort <span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>printf <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>tty_red<span style="color:#e6db74">}</span><span style="color:#e6db74">此命令运行失败: %s</span><span style="color:#e6db74">${</span>tty_reset<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> <span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>shell_join <span style="color:#e6db74">&#34;</span>$@<span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>ohai<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  printf <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>tty_blue<span style="color:#e6db74">}</span><span style="color:#e6db74">运行代码 ==&gt;</span><span style="color:#e6db74">${</span>tty_bold<span style="color:#e6db74">}</span><span style="color:#e6db74"> %s</span><span style="color:#e6db74">${</span>tty_reset<span style="color:#e6db74">}</span><span style="color:#e6db74">\n&#34;</span> <span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>shell_join <span style="color:#e6db74">&#34;</span>$@<span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 管理员运行</span>
+</span></span><span style="display:flex;"><span>execute_sudo<span style="color:#f92672">()</span> 
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  local -a args<span style="color:#f92672">=(</span><span style="color:#e6db74">&#34;</span>$@<span style="color:#e6db74">&#34;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> have_sudo_access; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> -n <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>SUDO_ASKPASS-<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>      args<span style="color:#f92672">=(</span><span style="color:#e6db74">&#34;-A&#34;</span> <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>args[@]<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>    ohai <span style="color:#e6db74">&#34;/usr/bin/sudo&#34;</span> <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>args[@]<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>    execute <span style="color:#e6db74">&#34;/usr/bin/sudo&#34;</span> <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>args[@]<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>    ohai <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>args[@]<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>    execute <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>args[@]<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#添加文件夹权限</span>
+</span></span><span style="display:flex;"><span>AddPermission<span style="color:#f92672">()</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  execute_sudo <span style="color:#e6db74">&#34;/bin/chmod&#34;</span> <span style="color:#e6db74">&#34;-R&#34;</span> <span style="color:#e6db74">&#34;a+rwx&#34;</span> <span style="color:#e6db74">&#34;</span>$1<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>  execute_sudo <span style="color:#e6db74">&#34;</span>$CHOWN<span style="color:#e6db74">&#34;</span> <span style="color:#e6db74">&#34;</span>$USER<span style="color:#e6db74">&#34;</span> <span style="color:#e6db74">&#34;</span>$1<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>  execute_sudo <span style="color:#e6db74">&#34;</span>$CHGRP<span style="color:#e6db74">&#34;</span> <span style="color:#e6db74">&#34;</span>$GROUP<span style="color:#e6db74">&#34;</span> <span style="color:#e6db74">&#34;</span>$1<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#创建文件夹</span>
+</span></span><span style="display:flex;"><span>CreateFolder<span style="color:#f92672">()</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#39;-&gt; 创建文件夹&#39;</span> $1
+</span></span><span style="display:flex;"><span>    execute_sudo <span style="color:#e6db74">&#34;/bin/mkdir&#34;</span> <span style="color:#e6db74">&#34;-p&#34;</span> <span style="color:#e6db74">&#34;</span>$1<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>    JudgeSuccess
+</span></span><span style="display:flex;"><span>    AddPermission $1
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>RmAndCopy<span style="color:#f92672">()</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> -d $1 <span style="color:#f92672">]]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;  ---备份要删除的</span>$1<span style="color:#e6db74">到系统桌面....&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> ! <span style="color:#f92672">[[</span> -d $HOME/Desktop/Old_Homebrew/$TIME/$1 <span style="color:#f92672">]]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>      sudo mkdir -p <span style="color:#e6db74">&#34;</span>$HOME<span style="color:#e6db74">/Desktop/Old_Homebrew/</span>$TIME<span style="color:#e6db74">/</span>$1<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>    sudo cp -rf $1 <span style="color:#e6db74">&#34;</span>$HOME<span style="color:#e6db74">/Desktop/Old_Homebrew/</span>$TIME<span style="color:#e6db74">/</span>$1<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;   ---</span>$1<span style="color:#e6db74"> 备份完成&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>  sudo rm -rf $1
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>RmCreate<span style="color:#f92672">()</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    RmAndCopy $1
+</span></span><span style="display:flex;"><span>    CreateFolder $1
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#判断文件夹存在但不可写</span>
+</span></span><span style="display:flex;"><span>exists_but_not_writable<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">[[</span> -e <span style="color:#e6db74">&#34;</span>$1<span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]]</span> <span style="color:#f92672">&amp;&amp;</span> ! <span style="color:#f92672">[[</span> -r <span style="color:#e6db74">&#34;</span>$1<span style="color:#e6db74">&#34;</span> <span style="color:#f92672">&amp;&amp;</span> -w <span style="color:#e6db74">&#34;</span>$1<span style="color:#e6db74">&#34;</span> <span style="color:#f92672">&amp;&amp;</span> -x <span style="color:#e6db74">&#34;</span>$1<span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]]</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#文件所有者</span>
+</span></span><span style="display:flex;"><span>get_owner<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">$(</span>shell_join <span style="color:#e6db74">&#34;</span>$STAT<span style="color:#e6db74"> %u </span>$1<span style="color:#e6db74">&#34;</span> <span style="color:#66d9ef">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#文件本人无权限</span>
+</span></span><span style="display:flex;"><span>file_not_owned<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">[[</span> <span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>get_owner <span style="color:#e6db74">&#34;</span>$1<span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span> !<span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>id -u<span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]]</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#获取所属的组</span>
+</span></span><span style="display:flex;"><span>get_group<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">$(</span>shell_join <span style="color:#e6db74">&#34;</span>$STAT<span style="color:#e6db74"> %g </span>$1<span style="color:#e6db74">&#34;</span> <span style="color:#66d9ef">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#不在所属组</span>
+</span></span><span style="display:flex;"><span>file_not_grpowned<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">[[</span> <span style="color:#e6db74">&#34; </span><span style="color:#66d9ef">$(</span>id -G <span style="color:#e6db74">&#34;</span>$USER<span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">)</span><span style="color:#e6db74"> &#34;</span> !<span style="color:#f92672">=</span> *<span style="color:#e6db74">&#34; </span><span style="color:#66d9ef">$(</span>get_group <span style="color:#e6db74">&#34;</span>$1<span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">)</span><span style="color:#e6db74"> &#34;</span>*  <span style="color:#f92672">]]</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#获得当前文件夹权限 例如777</span>
+</span></span><span style="display:flex;"><span>get_permission<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">$(</span>shell_join <span style="color:#e6db74">&#34;</span>$STAT<span style="color:#e6db74"> %A </span>$1<span style="color:#e6db74">&#34;</span> <span style="color:#66d9ef">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#授权当前用户权限</span>
+</span></span><span style="display:flex;"><span>user_only_chmod<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">[[</span> -d <span style="color:#e6db74">&#34;</span>$1<span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]]</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#f92672">[[</span> <span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>get_permission <span style="color:#e6db74">&#34;</span>$1<span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span> !<span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;755&#34;</span> <span style="color:#f92672">]]</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#创建brew需要的目录 直接复制于国外版本，同步</span>
+</span></span><span style="display:flex;"><span>CreateBrewLinkFolder<span style="color:#f92672">()</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  echo <span style="color:#e6db74">&#34;--创建Brew所需要的目录&#34;</span>
+</span></span><span style="display:flex;"><span>  directories<span style="color:#f92672">=(</span>bin etc include lib sbin share opt var
+</span></span><span style="display:flex;"><span>             Frameworks
+</span></span><span style="display:flex;"><span>             etc/bash_completion.d lib/pkgconfig
+</span></span><span style="display:flex;"><span>             share/aclocal share/doc share/info share/locale share/man
+</span></span><span style="display:flex;"><span>             share/man/man1 share/man/man2 share/man/man3 share/man/man4
+</span></span><span style="display:flex;"><span>             share/man/man5 share/man/man6 share/man/man7 share/man/man8
+</span></span><span style="display:flex;"><span>             var/log var/homebrew var/homebrew/linked
+</span></span><span style="display:flex;"><span>             bin/brew<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>  group_chmods<span style="color:#f92672">=()</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">for</span> dir in <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>directories[@]<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>; <span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> exists_but_not_writable <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>HOMEBREW_PREFIX<span style="color:#e6db74">}</span><span style="color:#e6db74">/</span><span style="color:#e6db74">${</span>dir<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>      group_chmods<span style="color:#f92672">+=(</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>HOMEBREW_PREFIX<span style="color:#e6db74">}</span><span style="color:#e6db74">/</span><span style="color:#e6db74">${</span>dir<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">done</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  directories<span style="color:#f92672">=(</span>share/zsh share/zsh/site-functions<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>  zsh_dirs<span style="color:#f92672">=()</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">for</span> dir in <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>directories[@]<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>; <span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>    zsh_dirs<span style="color:#f92672">+=(</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>HOMEBREW_PREFIX<span style="color:#e6db74">}</span><span style="color:#e6db74">/</span><span style="color:#e6db74">${</span>dir<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">done</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  directories<span style="color:#f92672">=(</span>bin etc include lib sbin share var opt
+</span></span><span style="display:flex;"><span>              share/zsh share/zsh/site-functions
+</span></span><span style="display:flex;"><span>              var/homebrew var/homebrew/linked
+</span></span><span style="display:flex;"><span>              Cellar Caskroom Frameworks<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>  mkdirs<span style="color:#f92672">=()</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">for</span> dir in <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>directories[@]<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>; <span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> ! <span style="color:#f92672">[[</span> -d <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>HOMEBREW_PREFIX<span style="color:#e6db74">}</span><span style="color:#e6db74">/</span><span style="color:#e6db74">${</span>dir<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>      mkdirs<span style="color:#f92672">+=(</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>HOMEBREW_PREFIX<span style="color:#e6db74">}</span><span style="color:#e6db74">/</span><span style="color:#e6db74">${</span>dir<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">done</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  user_chmods<span style="color:#f92672">=()</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${#</span>zsh_dirs[@]<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> -gt <span style="color:#ae81ff">0</span> <span style="color:#f92672">]]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> dir in <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>zsh_dirs[@]<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>; <span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">if</span> user_only_chmod <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>dir<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>        user_chmods<span style="color:#f92672">+=(</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>dir<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">done</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  chmods<span style="color:#f92672">=()</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${#</span>group_chmods[@]<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> -gt <span style="color:#ae81ff">0</span> <span style="color:#f92672">]]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    chmods<span style="color:#f92672">+=(</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>group_chmods[@]<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${#</span>user_chmods[@]<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> -gt <span style="color:#ae81ff">0</span> <span style="color:#f92672">]]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    chmods<span style="color:#f92672">+=(</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>user_chmods[@]<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  chowns<span style="color:#f92672">=()</span>
+</span></span><span style="display:flex;"><span>  chgrps<span style="color:#f92672">=()</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${#</span>chmods[@]<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> -gt <span style="color:#ae81ff">0</span> <span style="color:#f92672">]]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> dir in <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>chmods[@]<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>; <span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">if</span> file_not_owned <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>dir<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>        chowns<span style="color:#f92672">+=(</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>dir<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">if</span> file_not_grpowned <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>dir<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>        chgrps<span style="color:#f92672">+=(</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>dir<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">done</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> -d <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>HOMEBREW_PREFIX<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${#</span>chmods[@]<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> -gt <span style="color:#ae81ff">0</span> <span style="color:#f92672">]]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>      execute_sudo <span style="color:#e6db74">&#34;/bin/chmod&#34;</span> <span style="color:#e6db74">&#34;u+rwx&#34;</span> <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>chmods[@]<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${#</span>group_chmods[@]<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> -gt <span style="color:#ae81ff">0</span> <span style="color:#f92672">]]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>      execute_sudo <span style="color:#e6db74">&#34;/bin/chmod&#34;</span> <span style="color:#e6db74">&#34;g+rwx&#34;</span> <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>group_chmods[@]<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${#</span>user_chmods[@]<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> -gt <span style="color:#ae81ff">0</span> <span style="color:#f92672">]]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>      execute_sudo <span style="color:#e6db74">&#34;/bin/chmod&#34;</span> <span style="color:#e6db74">&#34;755&#34;</span> <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>user_chmods[@]<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${#</span>chowns[@]<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> -gt <span style="color:#ae81ff">0</span> <span style="color:#f92672">]]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>      execute_sudo <span style="color:#e6db74">&#34;</span>$CHOWN<span style="color:#e6db74">&#34;</span> <span style="color:#e6db74">&#34;</span>$USER<span style="color:#e6db74">&#34;</span> <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>chowns[@]<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${#</span>chgrps[@]<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> -gt <span style="color:#ae81ff">0</span> <span style="color:#f92672">]]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>      execute_sudo <span style="color:#e6db74">&#34;</span>$CHGRP<span style="color:#e6db74">&#34;</span> <span style="color:#e6db74">&#34;</span>$GROUP<span style="color:#e6db74">&#34;</span> <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>chgrps[@]<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>    execute_sudo <span style="color:#e6db74">&#34;/bin/mkdir&#34;</span> <span style="color:#e6db74">&#34;-p&#34;</span> <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>HOMEBREW_PREFIX<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> -z <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>HOMEBREW_ON_LINUX-<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>      execute_sudo <span style="color:#e6db74">&#34;</span>$CHOWN<span style="color:#e6db74">&#34;</span> <span style="color:#e6db74">&#34;root:wheel&#34;</span> <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>HOMEBREW_PREFIX<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>      execute_sudo <span style="color:#e6db74">&#34;</span>$CHOWN<span style="color:#e6db74">&#34;</span> <span style="color:#e6db74">&#34;</span>$USER<span style="color:#e6db74">:</span>$GROUP<span style="color:#e6db74">&#34;</span> <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>HOMEBREW_PREFIX<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${#</span>mkdirs[@]<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> -gt <span style="color:#ae81ff">0</span> <span style="color:#f92672">]]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    execute_sudo <span style="color:#e6db74">&#34;/bin/mkdir&#34;</span> <span style="color:#e6db74">&#34;-p&#34;</span> <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>mkdirs[@]<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>    execute_sudo <span style="color:#e6db74">&#34;/bin/chmod&#34;</span> <span style="color:#e6db74">&#34;g+rwx&#34;</span> <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>mkdirs[@]<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>    execute_sudo <span style="color:#e6db74">&#34;</span>$CHOWN<span style="color:#e6db74">&#34;</span> <span style="color:#e6db74">&#34;</span>$USER<span style="color:#e6db74">&#34;</span> <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>mkdirs[@]<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>    execute_sudo <span style="color:#e6db74">&#34;</span>$CHGRP<span style="color:#e6db74">&#34;</span> <span style="color:#e6db74">&#34;</span>$GROUP<span style="color:#e6db74">&#34;</span> <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>mkdirs[@]<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> ! <span style="color:#f92672">[[</span> -d <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>HOMEBREW_REPOSITORY<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    execute_sudo <span style="color:#e6db74">&#34;/bin/mkdir&#34;</span> <span style="color:#e6db74">&#34;-p&#34;</span> <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>HOMEBREW_REPOSITORY<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>  execute_sudo <span style="color:#e6db74">&#34;</span>$CHOWN<span style="color:#e6db74">&#34;</span> <span style="color:#e6db74">&#34;-R&#34;</span> <span style="color:#e6db74">&#34;</span>$USER<span style="color:#e6db74">:</span>$GROUP<span style="color:#e6db74">&#34;</span> <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>HOMEBREW_REPOSITORY<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> ! <span style="color:#f92672">[[</span> -d <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>HOMEBREW_CACHE<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> -z <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>HOMEBREW_ON_LINUX-<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>      execute_sudo <span style="color:#e6db74">&#34;/bin/mkdir&#34;</span> <span style="color:#e6db74">&#34;-p&#34;</span> <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>HOMEBREW_CACHE<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>      execute <span style="color:#e6db74">&#34;/bin/mkdir&#34;</span> <span style="color:#e6db74">&#34;-p&#34;</span> <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>HOMEBREW_CACHE<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> exists_but_not_writable <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>HOMEBREW_CACHE<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    execute_sudo <span style="color:#e6db74">&#34;/bin/chmod&#34;</span> <span style="color:#e6db74">&#34;g+rwx&#34;</span> <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>HOMEBREW_CACHE<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> file_not_owned <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>HOMEBREW_CACHE<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    execute_sudo <span style="color:#e6db74">&#34;</span>$CHOWN<span style="color:#e6db74">&#34;</span> <span style="color:#e6db74">&#34;-R&#34;</span> <span style="color:#e6db74">&#34;</span>$USER<span style="color:#e6db74">&#34;</span> <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>HOMEBREW_CACHE<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> file_not_grpowned <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>HOMEBREW_CACHE<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    execute_sudo <span style="color:#e6db74">&#34;</span>$CHGRP<span style="color:#e6db74">&#34;</span> <span style="color:#e6db74">&#34;-R&#34;</span> <span style="color:#e6db74">&#34;</span>$GROUP<span style="color:#e6db74">&#34;</span> <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>HOMEBREW_CACHE<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> -d <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>HOMEBREW_CACHE<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    execute <span style="color:#e6db74">&#34;</span>$TOUCH<span style="color:#e6db74">&#34;</span> <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>HOMEBREW_CACHE<span style="color:#e6db74">}</span><span style="color:#e6db74">/.cleaned&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>  echo <span style="color:#e6db74">&#34;--依赖目录脚本运行完成&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#git提交</span>
+</span></span><span style="display:flex;"><span>git_commit<span style="color:#f92672">(){</span>
+</span></span><span style="display:flex;"><span>    git add .
+</span></span><span style="display:flex;"><span>    git commit -m <span style="color:#e6db74">&#34;your del&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#version_gt 判断$1是否大于$2</span>
+</span></span><span style="display:flex;"><span>version_gt<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">[[</span> <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>1%.*<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> -gt <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>2%.*<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]]</span> <span style="color:#f92672">||</span> <span style="color:#f92672">[[</span> <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>1%.*<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> -eq <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>2%.*<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>1#*.<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> -gt <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>2#*.<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]]</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#version_ge 判断$1是否大于等于$2</span>
+</span></span><span style="display:flex;"><span>version_ge<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">[[</span> <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>1%.*<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> -gt <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>2%.*<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]]</span> <span style="color:#f92672">||</span> <span style="color:#f92672">[[</span> <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>1%.*<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> -eq <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>2%.*<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>1#*.<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> -ge <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>2#*.<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]]</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#version_lt 判断$1是否小于$2</span>
+</span></span><span style="display:flex;"><span>version_lt<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">[[</span> <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>1%.*<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> -lt <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>2%.*<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]]</span> <span style="color:#f92672">||</span> <span style="color:#f92672">[[</span> <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>1%.*<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> -eq <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>2%.*<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>1#*.<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> -lt <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>2#*.<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]]</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#发现错误 关闭脚本 提示如何解决</span>
+</span></span><span style="display:flex;"><span>error_game_over<span style="color:#f92672">(){</span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    </span><span style="color:#e6db74">${</span>tty_red<span style="color:#e6db74">}</span><span style="color:#e6db74">失败</span>$MY_DOWN_NUM<span style="color:#e6db74"> 右键下面地址查看常见错误解决办法
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    https://gitee.com/cunkai/HomebrewCN/blob/master/error.md
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    如果没有解决，把全部运行过程截图发到 cunkai.wang@foxmail.com </span><span style="color:#e6db74">${</span>tty_reset<span style="color:#e6db74">}</span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    &#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    exit <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#一些警告判断</span>
+</span></span><span style="display:flex;"><span>warning_if<span style="color:#f92672">(){</span>
+</span></span><span style="display:flex;"><span>  git_https_proxy<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>git config --global https.proxy<span style="color:#66d9ef">)</span>
+</span></span><span style="display:flex;"><span>  git_http_proxy<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>git config --global http.proxy<span style="color:#66d9ef">)</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> -z <span style="color:#e6db74">&#34;</span>$git_https_proxy<span style="color:#e6db74">&#34;</span>  <span style="color:#f92672">&amp;&amp;</span>  -z <span style="color:#e6db74">&#34;</span>$git_http_proxy<span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>  echo <span style="color:#e6db74">&#34;未发现Git代理（属于正常状态）&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>  echo <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>tty_yellow<span style="color:#e6db74">}</span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      提示：发现你电脑设置了Git代理，如果Git报错，请运行下面两句话：
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">              git config --global --unset https.proxy
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">              git config --global --unset http.proxy</span><span style="color:#e6db74">${</span>tty_reset<span style="color:#e6db74">}</span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  &#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">              </span><span style="color:#e6db74">${</span>tty_green<span style="color:#e6db74">}</span><span style="color:#e6db74"> 开始执行Brew自动安装程序 </span><span style="color:#e6db74">${</span>tty_reset<span style="color:#e6db74">}</span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">             </span><span style="color:#e6db74">${</span>tty_cyan<span style="color:#e6db74">}</span><span style="color:#e6db74"> [cunkai.wang@foxmail.com] </span><span style="color:#e6db74">${</span>tty_reset<span style="color:#e6db74">}</span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">           [&#39;</span>$TIME<span style="color:#e6db74">&#39;][&#39;</span>$macos_version<span style="color:#e6db74">&#39;]
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">       </span><span style="color:#e6db74">${</span>tty_cyan<span style="color:#e6db74">}</span><span style="color:#e6db74"> https://zhuanlan.zhihu.com/p/111014448 </span><span style="color:#e6db74">${</span>tty_reset<span style="color:#e6db74">}</span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#选择一个下载源</span>
+</span></span><span style="display:flex;"><span>echo -n <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>tty_green<span style="color:#e6db74">}</span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">请选择一个下载镜像，例如中科大，输入1回车。
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">源有时候不稳定，如果git克隆报错重新运行脚本选择源。cask非必须，有部分人需要。
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">1、中科大下载源 2、清华大学下载源 3、北京外国语大学下载源 </span><span style="color:#e6db74">${</span>tty_reset<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> -z <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>HOMEBREW_ON_LINUX-<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#mac才显示腾讯 阿里，他们对linux目前支持很差</span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>tty_green<span style="color:#e6db74">}</span><span style="color:#e6db74"> 4、腾讯下载源（不推荐） 5、阿里巴巴下载源(不推荐 缺少cask源) </span><span style="color:#e6db74">${</span>tty_reset<span style="color:#e6db74">}</span><span style="color:#e6db74"> &#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>echo -n <span style="color:#e6db74">&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"></span><span style="color:#e6db74">${</span>tty_blue<span style="color:#e6db74">}</span><span style="color:#e6db74">请输入序号: &#34;</span>
+</span></span><span style="display:flex;"><span>read MY_DOWN_NUM
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>tty_reset<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">case</span> $MY_DOWN_NUM in
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;2&#34;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    你选择了清华大学下载源
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    &#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> -z <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>HOMEBREW_ON_LINUX-<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>        USER_HOMEBREW_BOTTLE_DOMAIN<span style="color:#f92672">=</span>https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles/bottles
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>        USER_HOMEBREW_BOTTLE_DOMAIN<span style="color:#f92672">=</span>https://mirrors.tuna.tsinghua.edu.cn/linuxbrew-bottles/bottles
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">#HomeBrew基础框架</span>
+</span></span><span style="display:flex;"><span>    USER_BREW_GIT<span style="color:#f92672">=</span>https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/brew.git
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">#HomeBrew Core</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> -z <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>HOMEBREW_ON_LINUX-<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>        USER_CORE_GIT<span style="color:#f92672">=</span>https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/homebrew-core.git
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>        USER_CORE_GIT<span style="color:#f92672">=</span>https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/linuxbrew-core.git
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">#HomeBrew Cask</span>
+</span></span><span style="display:flex;"><span>    USER_CASK_GIT<span style="color:#f92672">=</span>https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/homebrew-cask.git
+</span></span><span style="display:flex;"><span>    USER_CASK_FONTS_GIT<span style="color:#f92672">=</span>https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/homebrew-cask-fonts.git
+</span></span><span style="display:flex;"><span>    USER_CASK_DRIVERS_GIT<span style="color:#f92672">=</span>https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/homebrew-cask-drivers.git
+</span></span><span style="display:flex;"><span>;;
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;3&#34;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    北京外国语大学下载源
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    &#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> -z <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>HOMEBREW_ON_LINUX-<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>        USER_HOMEBREW_BOTTLE_DOMAIN<span style="color:#f92672">=</span>https://mirrors.bfsu.edu.cn/homebrew-bottles/bottles
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>        USER_HOMEBREW_BOTTLE_DOMAIN<span style="color:#f92672">=</span>https://mirrors.bfsu.edu.cn/linuxbrew-bottles/bottles
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">#HomeBrew基础框架</span>
+</span></span><span style="display:flex;"><span>    USER_BREW_GIT<span style="color:#f92672">=</span>https://mirrors.bfsu.edu.cn/git/homebrew/brew.git
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">#HomeBrew Core</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> -z <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>HOMEBREW_ON_LINUX-<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>        USER_CORE_GIT<span style="color:#f92672">=</span>https://mirrors.bfsu.edu.cn/git/homebrew/homebrew-core.git
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>        USER_CORE_GIT<span style="color:#f92672">=</span>https://mirrors.bfsu.edu.cn/git/homebrew/linuxbrew-core.git
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">#HomeBrew Cask</span>
+</span></span><span style="display:flex;"><span>    USER_CASK_GIT<span style="color:#f92672">=</span>https://mirrors.bfsu.edu.cn/git/homebrew/homebrew-cask.git
+</span></span><span style="display:flex;"><span>    USER_CASK_FONTS_GIT<span style="color:#f92672">=</span>https://mirrors.bfsu.edu.cn/git/homebrew/homebrew-cask-fonts.git
+</span></span><span style="display:flex;"><span>    USER_CASK_DRIVERS_GIT<span style="color:#f92672">=</span>https://mirrors.bfsu.edu.cn/git/homebrew/homebrew-cask-drivers.git
+</span></span><span style="display:flex;"><span>;;
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;4&#34;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    你选择了腾讯下载源
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    &#34;</span>
+</span></span><span style="display:flex;"><span>    USER_HOMEBREW_BOTTLE_DOMAIN<span style="color:#f92672">=</span>https://mirrors.cloud.tencent.com/homebrew-bottles/bottles
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">#HomeBrew基础框架</span>
+</span></span><span style="display:flex;"><span>    USER_BREW_GIT<span style="color:#f92672">=</span>https://mirrors.cloud.tencent.com/homebrew/brew.git 
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">#HomeBrew Core</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> -z <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>HOMEBREW_ON_LINUX-<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>        USER_CORE_GIT<span style="color:#f92672">=</span>https://mirrors.cloud.tencent.com/homebrew/homebrew-core.git
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>        USER_CORE_GIT<span style="color:#f92672">=</span>https://mirrors.cloud.tencent.com/homebrew/linuxbrew-core.git
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">#HomeBrew Cask</span>
+</span></span><span style="display:flex;"><span>    USER_CASK_GIT<span style="color:#f92672">=</span>https://mirrors.cloud.tencent.com/homebrew/homebrew-cask.git
+</span></span><span style="display:flex;"><span>;;
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;5&#34;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    你选择了阿里巴巴下载源(有可能维护中,无Linux版本)
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    &#34;</span>
+</span></span><span style="display:flex;"><span>    USER_HOMEBREW_BOTTLE_DOMAIN<span style="color:#f92672">=</span>https://mirrors.aliyun.com/homebrew/homebrew-bottles
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">#HomeBrew基础框架</span>
+</span></span><span style="display:flex;"><span>    USER_BREW_GIT<span style="color:#f92672">=</span>https://mirrors.aliyun.com/homebrew/brew.git 
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">#HomeBrew Core</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> -z <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>HOMEBREW_ON_LINUX-<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>        USER_CORE_GIT<span style="color:#f92672">=</span>https://mirrors.aliyun.com/homebrew/homebrew-core.git
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>        USER_CORE_GIT<span style="color:#f92672">=</span>https://mirrors.ustc.edu.cn/linuxbrew-core.git
+</span></span><span style="display:flex;"><span>        echo <span style="color:#e6db74">&#34;阿里巴巴无core，这里替换为了中国科学技术大学的linuxbrew-core&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">#HomeBrew Cask</span>
+</span></span><span style="display:flex;"><span>    USER_CASK_GIT<span style="color:#f92672">=</span>https://mirrors.aliyun.com/homebrew/homebrew-cask.git
+</span></span><span style="display:flex;"><span>;;
+</span></span><span style="display:flex;"><span>*<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>  echo <span style="color:#e6db74">&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  你选择了中国科学技术大学下载源
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  &#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">#HomeBrew 下载源 install</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> -z <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>HOMEBREW_ON_LINUX-<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    USER_HOMEBREW_BOTTLE_DOMAIN<span style="color:#f92672">=</span>https://mirrors.ustc.edu.cn/homebrew-bottles/bottles
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>    USER_HOMEBREW_BOTTLE_DOMAIN<span style="color:#f92672">=</span>https://mirrors.ustc.edu.cn/linuxbrew-bottles/bottles
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">#HomeBrew基础框架</span>
+</span></span><span style="display:flex;"><span>  USER_BREW_GIT<span style="color:#f92672">=</span>https://mirrors.ustc.edu.cn/brew.git
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">#HomeBrew Core</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> -z <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>HOMEBREW_ON_LINUX-<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    USER_CORE_GIT<span style="color:#f92672">=</span>https://mirrors.ustc.edu.cn/homebrew-core.git
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>    USER_CORE_GIT<span style="color:#f92672">=</span>https://mirrors.ustc.edu.cn/linuxbrew-core.git
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">#HomeBrew Cask</span>
+</span></span><span style="display:flex;"><span>  USER_CASK_GIT<span style="color:#f92672">=</span>https://mirrors.ustc.edu.cn/homebrew-cask.git
+</span></span><span style="display:flex;"><span>;;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">esac</span>
+</span></span><span style="display:flex;"><span>echo -n <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>tty_green<span style="color:#e6db74">}</span><span style="color:#e6db74">！！！此脚本将要删除之前的brew(包括它下载的软件)，请自行备份。
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">-&gt;是否现在开始执行脚本（N/Y） &#34;</span>
+</span></span><span style="display:flex;"><span>read MY_Del_Old
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>tty_reset<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">case</span> $MY_Del_Old in
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;y&#34;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;--&gt; 脚本开始执行&#34;</span>
+</span></span><span style="display:flex;"><span>;;
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;Y&#34;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;--&gt; 脚本开始执行&#34;</span>
+</span></span><span style="display:flex;"><span>;;
+</span></span><span style="display:flex;"><span>*<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;你输入了 </span>$MY_Del_Old<span style="color:#e6db74"> ，自行备份老版brew和它下载的软件, 如果继续运行脚本应该输入Y或者y
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>exit <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>;;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">esac</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> -z <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>HOMEBREW_ON_LINUX-<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#MAC</span>
+</span></span><span style="display:flex;"><span>  echo <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>tty_yellow<span style="color:#e6db74">}</span><span style="color:#e6db74"> Mac os设置开机密码方法：
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  (设置开机密码：在左上角苹果图标-&gt;系统偏好设置-&gt;&#34;</span>用户与群组<span style="color:#e6db74">&#34;-&gt;更改密码)
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  (如果提示This incident will be reported. 在&#34;</span>用户与群组<span style="color:#e6db74">&#34;中查看是否管理员) </span><span style="color:#e6db74">${</span>tty_reset<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;==&gt; 通过命令删除之前的brew、创建一个新的Homebrew文件夹
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"></span><span style="color:#e6db74">${</span>tty_cyan<span style="color:#e6db74">}</span><span style="color:#e6db74">请输入开机密码，输入过程不显示，输入完后回车</span><span style="color:#e6db74">${</span>tty_reset<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>sudo echo <span style="color:#e6db74">&#39;开始执行&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#删除以前的Homebrew</span>
+</span></span><span style="display:flex;"><span>RmCreate <span style="color:#e6db74">${</span>HOMEBREW_REPOSITORY<span style="color:#e6db74">}</span>
+</span></span><span style="display:flex;"><span>RmAndCopy $HOMEBREW_CACHE
+</span></span><span style="display:flex;"><span>RmAndCopy $HOMEBREW_LOGS
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 让环境暂时纯粹，脚本运行结束后恢复</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> -z <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>HOMEBREW_ON_LINUX-<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    export PATH<span style="color:#f92672">=</span>/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:<span style="color:#e6db74">${</span>HOMEBREW_REPOSITORY<span style="color:#e6db74">}</span>/bin
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>git --version
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> $? -ne <span style="color:#ae81ff">0</span> <span style="color:#f92672">]</span>;<span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> -z <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>HOMEBREW_ON_LINUX-<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>        sudo rm -rf <span style="color:#e6db74">&#34;/Library/Developer/CommandLineTools/&#34;</span>
+</span></span><span style="display:flex;"><span>        echo <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>tty_cyan<span style="color:#e6db74">}</span><span style="color:#e6db74">安装Git</span><span style="color:#e6db74">${</span>tty_reset<span style="color:#e6db74">}</span><span style="color:#e6db74">后再运行此脚本，</span><span style="color:#e6db74">${</span>tty_red<span style="color:#e6db74">}</span><span style="color:#e6db74">在系统弹窗中点击“安装”按钮
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        如果没有弹窗的老系统，需要自己下载安装：https://sourceforge.net/projects/git-osx-installer/ </span><span style="color:#e6db74">${</span>tty_reset<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>        xcode-select --install
+</span></span><span style="display:flex;"><span>        exit <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>        echo <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>tty_red<span style="color:#e6db74">}</span><span style="color:#e6db74"> 发现缺少git，开始安装，请输入Y </span><span style="color:#e6db74">${</span>tty_reset<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>        sudo apt install git
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"></span><span style="color:#e6db74">${</span>tty_cyan<span style="color:#e6db74">}</span><span style="color:#e6db74">下载速度觉得慢可以ctrl+c或control+c重新运行脚本选择下载源</span><span style="color:#e6db74">${</span>tty_reset<span style="color:#e6db74">}</span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">==&gt; 克隆Homebrew基本文件
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>warning_if
+</span></span><span style="display:flex;"><span>sudo git clone <span style="color:#e6db74">${</span>GIT_SPEED<span style="color:#e6db74">}</span> $USER_BREW_GIT <span style="color:#e6db74">${</span>HOMEBREW_REPOSITORY<span style="color:#e6db74">}</span>
+</span></span><span style="display:flex;"><span>JudgeSuccess 尝试再次运行自动脚本选择其他下载源或者切换网络 out
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#依赖目录创建 授权等等</span>
+</span></span><span style="display:flex;"><span>CreateBrewLinkFolder
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#39;==&gt; 创建brew的替身&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>HOMEBREW_REPOSITORY<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> !<span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>HOMEBREW_PREFIX<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>  find <span style="color:#e6db74">${</span>HOMEBREW_PREFIX<span style="color:#e6db74">}</span>/bin -name brew -exec sudo rm -f <span style="color:#f92672">{}</span> <span style="color:#ae81ff">\;</span>
+</span></span><span style="display:flex;"><span>  execute <span style="color:#e6db74">&#34;ln&#34;</span> <span style="color:#e6db74">&#34;-sf&#34;</span> <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>HOMEBREW_REPOSITORY<span style="color:#e6db74">}</span><span style="color:#e6db74">/bin/brew&#34;</span> <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>HOMEBREW_PREFIX<span style="color:#e6db74">}</span><span style="color:#e6db74">/bin/brew&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;==&gt; 克隆Homebrew Core
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"></span><span style="color:#e6db74">${</span>tty_cyan<span style="color:#e6db74">}</span><span style="color:#e6db74">此处如果显示Password表示需要再次输入开机密码，输入完后回车</span><span style="color:#e6db74">${</span>tty_reset<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>sudo mkdir -p <span style="color:#e6db74">${</span>HOMEBREW_REPOSITORY<span style="color:#e6db74">}</span>/Library/Taps/homebrew/homebrew-core
+</span></span><span style="display:flex;"><span>sudo git clone <span style="color:#e6db74">${</span>GIT_SPEED<span style="color:#e6db74">}</span> $USER_CORE_GIT <span style="color:#e6db74">${</span>HOMEBREW_REPOSITORY<span style="color:#e6db74">}</span>/Library/Taps/homebrew/homebrew-core/
+</span></span><span style="display:flex;"><span>JudgeSuccess 尝试再次运行自动脚本选择其他下载源或者切换网络 out
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> -z <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>HOMEBREW_ON_LINUX-<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#MAC</span>
+</span></span><span style="display:flex;"><span>  echo <span style="color:#e6db74">&#34;==&gt; 克隆Homebrew Cask 图形化软件
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  </span><span style="color:#e6db74">${</span>tty_cyan<span style="color:#e6db74">}</span><span style="color:#e6db74">此处如果显示Password表示需要再次输入开机密码，输入完后回车</span><span style="color:#e6db74">${</span>tty_reset<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> <span style="color:#e6db74">&#34;</span>$MY_DOWN_NUM<span style="color:#e6db74">&#34;</span> -eq <span style="color:#e6db74">&#34;5&#34;</span> <span style="color:#f92672">]]</span>;<span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>tty_yellow<span style="color:#e6db74">}</span><span style="color:#e6db74"> 阿里源没有Cask 跳过</span><span style="color:#e6db74">${</span>tty_reset<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>    sudo mkdir -p <span style="color:#e6db74">${</span>HOMEBREW_REPOSITORY<span style="color:#e6db74">}</span>/Library/Taps/homebrew/homebrew-cask
+</span></span><span style="display:flex;"><span>    sudo git clone <span style="color:#e6db74">${</span>GIT_SPEED<span style="color:#e6db74">}</span> $USER_CASK_GIT <span style="color:#e6db74">${</span>HOMEBREW_REPOSITORY<span style="color:#e6db74">}</span>/Library/Taps/homebrew/homebrew-cask/
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> $? -ne <span style="color:#ae81ff">0</span> <span style="color:#f92672">]</span>;<span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>        sudo rm -rf <span style="color:#e6db74">${</span>HOMEBREW_REPOSITORY<span style="color:#e6db74">}</span>/Library/Taps/homebrew/homebrew-cask
+</span></span><span style="display:flex;"><span>        echo <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>tty_red<span style="color:#e6db74">}</span><span style="color:#e6db74">尝试切换下载源或者切换网络,不过Cask组件非必须模块。可以忽略</span><span style="color:#e6db74">${</span>tty_reset<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>        echo <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>tty_green<span style="color:#e6db74">}</span><span style="color:#e6db74">此步骤成功</span><span style="color:#e6db74">${</span>tty_reset<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  echo <span style="color:#e6db74">&#34;==&gt; 克隆Homebrew services 管理服务的启停
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  &#34;</span>
+</span></span><span style="display:flex;"><span>  sudo mkdir -p <span style="color:#e6db74">${</span>HOMEBREW_REPOSITORY<span style="color:#e6db74">}</span>/Library/Taps/homebrew/homebrew-cask
+</span></span><span style="display:flex;"><span>  sudo git clone <span style="color:#e6db74">${</span>GIT_SPEED<span style="color:#e6db74">}</span> $USER_SERVICES_GIT <span style="color:#e6db74">${</span>HOMEBREW_REPOSITORY<span style="color:#e6db74">}</span>/Library/Taps/homebrew/homebrew-services/
+</span></span><span style="display:flex;"><span>  JudgeSuccess
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#Linux</span>
+</span></span><span style="display:flex;"><span>  echo <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>tty_yellow<span style="color:#e6db74">}</span><span style="color:#e6db74"> Linux 不支持Cask图形化软件下载 此步骤跳过</span><span style="color:#e6db74">${</span>tty_reset<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#39;==&gt; 配置国内镜像源HOMEBREW BOTTLE&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#判断下终端是Bash还是zsh</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">case</span> <span style="color:#e6db74">&#34;</span>$SHELL<span style="color:#e6db74">&#34;</span> in
+</span></span><span style="display:flex;"><span>  */bash*<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> -r <span style="color:#e6db74">&#34;</span>$HOME<span style="color:#e6db74">/.bash_profile&#34;</span> <span style="color:#f92672">]]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>      shell_profile<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>HOME<span style="color:#e6db74">}</span><span style="color:#e6db74">/.bash_profile&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>      shell_profile<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>HOME<span style="color:#e6db74">}</span><span style="color:#e6db74">/.profile&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>    ;;
+</span></span><span style="display:flex;"><span>  */zsh*<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>    shell_profile<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>HOME<span style="color:#e6db74">}</span><span style="color:#e6db74">/.zprofile&#34;</span>
+</span></span><span style="display:flex;"><span>    ;;
+</span></span><span style="display:flex;"><span>  *<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>    shell_profile<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>HOME<span style="color:#e6db74">}</span><span style="color:#e6db74">/.profile&#34;</span>
+</span></span><span style="display:flex;"><span>    ;;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">esac</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> -f <span style="color:#e6db74">${</span>shell_profile<span style="color:#e6db74">}</span> <span style="color:#f92672">]]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>  AddPermission <span style="color:#e6db74">${</span>shell_profile<span style="color:#e6db74">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#删除之前的环境变量</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> -z <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>HOMEBREW_ON_LINUX-<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">#Mac</span>
+</span></span><span style="display:flex;"><span>  sed -i <span style="color:#e6db74">&#34;&#34;</span> <span style="color:#e6db74">&#34;/ckbrew/d&#34;</span> <span style="color:#e6db74">${</span>shell_profile<span style="color:#e6db74">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">#Linux</span>
+</span></span><span style="display:flex;"><span>  sed -i <span style="color:#e6db74">&#34;/ckbrew/d&#34;</span> <span style="color:#e6db74">${</span>shell_profile<span style="color:#e6db74">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#写入环境变量到文件</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;环境变量写入-&gt;</span><span style="color:#e6db74">${</span>shell_profile<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  export HOMEBREW_BOTTLE_DOMAIN=</span><span style="color:#e6db74">${</span>USER_HOMEBREW_BOTTLE_DOMAIN<span style="color:#e6db74">}</span><span style="color:#e6db74"> #ckbrew
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  eval \$(</span><span style="color:#e6db74">${</span>HOMEBREW_REPOSITORY<span style="color:#e6db74">}</span><span style="color:#e6db74">/bin/brew shellenv) #ckbrew
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;</span> &gt;&gt; <span style="color:#e6db74">${</span>shell_profile<span style="color:#e6db74">}</span> 
+</span></span><span style="display:flex;"><span>JudgeSuccess
+</span></span><span style="display:flex;"><span>source <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>shell_profile<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> $? -ne <span style="color:#ae81ff">0</span> <span style="color:#f92672">]</span>;<span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>tty_red<span style="color:#e6db74">}</span><span style="color:#e6db74">发现错误，</span><span style="color:#e6db74">${</span>shell_profile<span style="color:#e6db74">}</span><span style="color:#e6db74"> 文件中有错误，建议根据上一句提示修改；
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                否则会导致提示 permission denied: brew</span><span style="color:#e6db74">${</span>tty_reset<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>AddPermission <span style="color:#e6db74">${</span>HOMEBREW_REPOSITORY<span style="color:#e6db74">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> -n <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>HOMEBREW_ON_LINUX-<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">#检测linux curl是否有安装</span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>tty_red<span style="color:#e6db74">}</span><span style="color:#e6db74">-检测curl是否安装 留意是否需要输入Y</span><span style="color:#e6db74">${</span>tty_reset<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>    curl -V
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> $? -ne <span style="color:#ae81ff">0</span> <span style="color:#f92672">]</span>;<span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>        sudo apt-get install curl
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> $? -ne <span style="color:#ae81ff">0</span> <span style="color:#f92672">]</span>;<span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>            sudo yum install curl
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> $? -ne <span style="color:#ae81ff">0</span> <span style="color:#f92672">]</span>;<span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>                echo <span style="color:#e6db74">&#39;失败 请自行安装curl 可以参考https://www.howtoing.com/install-curl-in-linux&#39;</span>
+</span></span><span style="display:flex;"><span>                error_game_over
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#39;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">==&gt; 安装完成，brew版本
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">&#39;</span>
+</span></span><span style="display:flex;"><span>brew -v
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> $? -ne <span style="color:#ae81ff">0</span> <span style="color:#f92672">]</span>;<span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#39;发现错误，自动修复一次！&#39;</span>
+</span></span><span style="display:flex;"><span>    rm -rf $HOMEBREW_CACHE
+</span></span><span style="display:flex;"><span>    export PATH<span style="color:#f92672">=</span>/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:<span style="color:#e6db74">${</span>HOMEBREW_REPOSITORY<span style="color:#e6db74">}</span>/bin
+</span></span><span style="display:flex;"><span>    brew update-reset
+</span></span><span style="display:flex;"><span>    brew -v
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> $? -ne <span style="color:#ae81ff">0</span> <span style="color:#f92672">]</span>;<span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>      error_game_over
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>tty_green<span style="color:#e6db74">}</span><span style="color:#e6db74">Brew前期配置成功</span><span style="color:#e6db74">${</span>tty_reset<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#brew 3.1.2版本 修改了很多地址，都写死在了代码中，没有调用环境变量。。额。。</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#ruby下载需要改官方文件</span>
+</span></span><span style="display:flex;"><span>ruby_URL_file<span style="color:#f92672">=</span>$HOMEBREW_REPOSITORY/Library/Homebrew/cmd/vendor-install.sh
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#判断Mac系统版本</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> -z <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>HOMEBREW_ON_LINUX-<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> version_gt <span style="color:#e6db74">&#34;</span>$macos_version<span style="color:#e6db74">&#34;</span> <span style="color:#e6db74">&#34;10.14&#34;</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>      echo <span style="color:#e6db74">&#34;电脑系统版本：</span>$macos_version<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>      echo <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>tty_red<span style="color:#e6db74">}</span><span style="color:#e6db74">检测到你不是最新系统，会有一些报错，请稍等Ruby下载安装;</span><span style="color:#e6db74">${</span>tty_reset<span style="color:#e6db74">}</span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      &#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> -f <span style="color:#e6db74">${</span>ruby_URL_file<span style="color:#e6db74">}</span> <span style="color:#f92672">]]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>      sed -i <span style="color:#e6db74">&#34;&#34;</span> <span style="color:#e6db74">&#34;s/ruby_URL=/ruby_URL=\&#34;https:\/\/mirrors.tuna.tsinghua.edu.cn\/homebrew-bottles\/bottles-portable-ruby\/\$ruby_FILENAME\&#34; \#/g&#34;</span> $ruby_URL_file
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> -f <span style="color:#e6db74">${</span>ruby_URL_file<span style="color:#e6db74">}</span> <span style="color:#f92672">]]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>      sed -i <span style="color:#e6db74">&#34;s/ruby_URL=/ruby_URL=\&#34;https:\/\/mirrors.tuna.tsinghua.edu.cn\/linuxbrew-bottles\/bottles-portable-ruby\/\$ruby_FILENAME\&#34; \#/g&#34;</span> $ruby_URL_file
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>brew services cleanup
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> $GIT_SPEED <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;&#34;</span> <span style="color:#f92672">]]</span>;<span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>  echo <span style="color:#e6db74">&#39;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  ==&gt; brew update-reset
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  &#39;</span>
+</span></span><span style="display:flex;"><span>  brew update-reset
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> $? -ne <span style="color:#ae81ff">0</span> <span style="color:#f92672">]]</span>;<span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>      brew config
+</span></span><span style="display:flex;"><span>      error_game_over
+</span></span><span style="display:flex;"><span>      exit <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#75715e">#极速模式提示Update修复方法</span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"></span><span style="color:#e6db74">${</span>tty_red<span style="color:#e6db74">}</span><span style="color:#e6db74">  极速版本安装完成，</span><span style="color:#e6db74">${</span>tty_reset<span style="color:#e6db74">}</span><span style="color:#e6db74"> install功能正常，如果需要update功能请自行运行下面三句命令
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">git -C </span><span style="color:#e6db74">${</span>HOMEBREW_REPOSITORY<span style="color:#e6db74">}</span><span style="color:#e6db74">/Library/Taps/homebrew/homebrew-core fetch --unshallow
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">git -C </span><span style="color:#e6db74">${</span>HOMEBREW_REPOSITORY<span style="color:#e6db74">}</span><span style="color:#e6db74">/Library/Taps/homebrew/homebrew-cask fetch --unshallow
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">brew update-reset
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  &#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        </span><span style="color:#e6db74">${</span>tty_green<span style="color:#e6db74">}</span><span style="color:#e6db74">Brew自动安装程序运行完成</span><span style="color:#e6db74">${</span>tty_reset<span style="color:#e6db74">}</span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">          </span><span style="color:#e6db74">${</span>tty_green<span style="color:#e6db74">}</span><span style="color:#e6db74">国内地址已经配置完成</span><span style="color:#e6db74">${</span>tty_reset<span style="color:#e6db74">}</span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  桌面的Old_Homebrew文件夹，大致看看没有你需要的可以删除。
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">              初步介绍几个brew命令
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">本地软件库列表：brew ls
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">查找软件：brew search google（其中google替换为要查找的关键字）
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">查看brew版本：brew -v  更新brew版本：brew update
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">安装cask软件：brew install --cask firefox 把firefox换成你要安装的
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        </span><span style="color:#e6db74">${</span>tty_green<span style="color:#e6db74">}</span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        欢迎右键点击下方地址-打开URL 来给点个赞</span><span style="color:#e6db74">${</span>tty_reset<span style="color:#e6db74">}</span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        </span><span style="color:#e6db74">${</span>tty_underline<span style="color:#e6db74">}</span><span style="color:#e6db74"> https://zhuanlan.zhihu.com/p/111014448 </span><span style="color:#e6db74">${</span>tty_reset<span style="color:#e6db74">}</span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> -z <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>HOMEBREW_ON_LINUX-<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">#Mac</span>
+</span></span><span style="display:flex;"><span>  echo <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>tty_red<span style="color:#e6db74">}</span><span style="color:#e6db74"> 重启终端 或者 运行</span><span style="color:#e6db74">${</span>tty_bold<span style="color:#e6db74">}</span><span style="color:#e6db74"> source </span><span style="color:#e6db74">${</span>shell_profile<span style="color:#e6db74">}</span><span style="color:#e6db74">  </span><span style="color:#e6db74">${</span>tty_reset<span style="color:#e6db74">}</span><span style="color:#e6db74"> </span><span style="color:#e6db74">${</span>tty_red<span style="color:#e6db74">}</span><span style="color:#e6db74">否则可能无法使用</span><span style="color:#e6db74">${</span>tty_reset<span style="color:#e6db74">}</span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  &#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">#Linux</span>
+</span></span><span style="display:flex;"><span>  echo <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>tty_red<span style="color:#e6db74">}</span><span style="color:#e6db74"> Linux需要重启电脑 或者暂时运行</span><span style="color:#e6db74">${</span>tty_bold<span style="color:#e6db74">}</span><span style="color:#e6db74"> source </span><span style="color:#e6db74">${</span>shell_profile<span style="color:#e6db74">}</span><span style="color:#e6db74"> </span><span style="color:#e6db74">${</span>tty_reset<span style="color:#e6db74">}</span><span style="color:#e6db74"> </span><span style="color:#e6db74">${</span>tty_red<span style="color:#e6db74">}</span><span style="color:#e6db74">否则可能无法使用</span><span style="color:#e6db74">${</span>tty_reset<span style="color:#e6db74">}</span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  &#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span></code></pre></div>
+    </div>
+    <a href="/posts/other/homebrew/" class="ba b--moon-gray bg-light-gray br2 color-inherit dib f7 hover-bg-moon-gray link mt2 ph2 pv1">read more</a>
+  </div>
+</div>
+
+        </div>
+      
+    </section>
+  </div>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white white-70 dn dib-ns pv2 ph3 no-underline" href="http://localhost:1313/" >
+    &copy;  loveyu233 2025 
+  </a>
+    <div><div class="ananke-socials"></div>
+</div>
+  </div>
+</footer>
+
+  </body>
+</html>

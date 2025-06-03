@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>Channel实现原理 | loveyu233</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="数据结构
+
+type hchan struct {
+	qcount   uint           // 当前 channel 中存在多少个元素
+	dataqsiz uint           // 当前 channel 能存放的元素容量
+	buf      unsafe.Pointer // channel 中用于存放元素的环形缓冲区
+	elemsize uint16         // chan元素类型大小
+	closed   uint32         // chan是否关闭
+	elemtype *_type         // chan元素的类型
+	sendx    uint           // 发送元素进入环形缓冲区的 index
+	recvx    uint           // 接收元素所处的环形缓冲区的 index
+	recvq    waitq          // 因接收而陷入阻塞的协程队列
+	sendq    waitq          // 因发送而陷入阻塞的协程队列
+	lock     mutex          // 锁
+}
+type waitq struct {
+	first *sudog // 队头
+	last  *sudog // 队尾
+}
+
+type sudog struct {
+	g *g // goroutine
+
+	next *sudog // 下一个节点指针
+	prev *sudog // 上一个节点指针
+  
+  elem unsafe.Pointer // 读取/写入 channel 的数据的容器
+  
+  isSelect bool  // 标识当前协程是否处在 select 多路复用的流程中
+  
+  c        *hchan // 标识与当前 sudog 交互的 chan
+}
+初始化
+func makechan(t *chantype, size int) *hchan {
+	elem := t.elem
+	// 判断元素大小是否超出限制
+	if elem.size &gt;= 1&lt;&lt;16 {
+		throw(&#34;makechan: invalid channel element type&#34;)
+	}
+  // 判断对齐方式是否正确
+	if hchanSize%maxAlign != 0 || elem.align &gt; maxAlign {
+		throw(&#34;makechan: bad alignment&#34;)
+	}
+
+  // 计算需要分配的内存大小，并进行溢出和范围检查。如果溢出或者大小超过了允许的最大值抛出异常
+	mem, overflow := math.MulUintptr(elem.size, uintptr(size))
+	if overflow || mem &gt; maxAlloc-hchanSize || size &lt; 0 {
+		panic(plainError(&#34;makechan: size out of range&#34;))
+	}
+
+	var c *hchan
+	switch {
+  // 无缓冲
+	case mem == 0:
+  	// 分配hchanSize大小的内存并转为*hchan类型
+    // 则仅申请一个大小为默认值 96 的空间
+		c = (*hchan)(mallocgc(hchanSize, nil, true))
+		c.buf = c.raceaddr()
+  // 有缓冲的 struct 型
+	case elem.ptrdata == 0:
+    //一次性分配好 96 &#43; mem 大小的空间，并且调整 chan 的 buf 指向 mem 的起始位置
+		c = (*hchan)(mallocgc(hchanSize&#43;mem, nil, true))
+		c.buf = add(unsafe.Pointer(c), hchanSize)
+  // 指针类型元素
+	default:
+    // 分别申请 chan 和 buf 的空间，因为是指针类型的所以两者无需连续
+		c = new(hchan)
+		c.buf = mallocgc(mem, elem, true)
+	}
+
+  // 初始化元素类型大小
+	c.elemsize = uint16(elem.size)
+  // 元素类型
+	c.elemtype = elem
+  // 容量
+	c.dataqsiz = uint(size)
+	// 锁
+  lockInit(&amp;c.lock, lockRankHchan)
+
+	if debugChan {
+		print(&#34;makechan: chan=&#34;, c, &#34;; elemsize=&#34;, elem.size, &#34;; dataqsiz=&#34;, size, &#34;\n&#34;)
+	}
+	return c
+}
+发送
+">
+    <meta name="generator" content="Hugo 0.147.7">
+    
+    
+    
+      <meta name="robots" content="noindex, nofollow">
+    
+    <meta name="author" content="loveyu">
+    
+
+    
+<link rel="stylesheet" href="/ananke/css/main.min.css" >
+
+
+
+
+    
+
+
+    
+      
+
+    
+
+    
+
+    
+      <link rel="canonical" href="http://localhost:1313/posts/go/channel%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/">
+    
+
+    <meta property="og:url" content="http://localhost:1313/posts/go/channel%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/">
+  <meta property="og:site_name" content="loveyu233">
+  <meta property="og:title" content="Channel实现原理">
+  <meta property="og:description" content="数据结构 type hchan struct { qcount uint // 当前 channel 中存在多少个元素 dataqsiz uint // 当前 channel 能存放的元素容量 buf unsafe.Pointer // channel 中用于存放元素的环形缓冲区 elemsize uint16 // chan元素类型大小 closed uint32 // chan是否关闭 elemtype *_type // chan元素的类型 sendx uint // 发送元素进入环形缓冲区的 index recvx uint // 接收元素所处的环形缓冲区的 index recvq waitq // 因接收而陷入阻塞的协程队列 sendq waitq // 因发送而陷入阻塞的协程队列 lock mutex // 锁 } type waitq struct { first *sudog // 队头 last *sudog // 队尾 } type sudog struct { g *g // goroutine next *sudog // 下一个节点指针 prev *sudog // 上一个节点指针 elem unsafe.Pointer // 读取/写入 channel 的数据的容器 isSelect bool // 标识当前协程是否处在 select 多路复用的流程中 c *hchan // 标识与当前 sudog 交互的 chan } 初始化 func makechan(t *chantype, size int) *hchan { elem := t.elem // 判断元素大小是否超出限制 if elem.size &gt;= 1&lt;&lt;16 { throw(&#34;makechan: invalid channel element type&#34;) } // 判断对齐方式是否正确 if hchanSize%maxAlign != 0 || elem.align &gt; maxAlign { throw(&#34;makechan: bad alignment&#34;) } // 计算需要分配的内存大小，并进行溢出和范围检查。如果溢出或者大小超过了允许的最大值抛出异常 mem, overflow := math.MulUintptr(elem.size, uintptr(size)) if overflow || mem &gt; maxAlloc-hchanSize || size &lt; 0 { panic(plainError(&#34;makechan: size out of range&#34;)) } var c *hchan switch { // 无缓冲 case mem == 0: // 分配hchanSize大小的内存并转为*hchan类型 // 则仅申请一个大小为默认值 96 的空间 c = (*hchan)(mallocgc(hchanSize, nil, true)) c.buf = c.raceaddr() // 有缓冲的 struct 型 case elem.ptrdata == 0: //一次性分配好 96 &#43; mem 大小的空间，并且调整 chan 的 buf 指向 mem 的起始位置 c = (*hchan)(mallocgc(hchanSize&#43;mem, nil, true)) c.buf = add(unsafe.Pointer(c), hchanSize) // 指针类型元素 default: // 分别申请 chan 和 buf 的空间，因为是指针类型的所以两者无需连续 c = new(hchan) c.buf = mallocgc(mem, elem, true) } // 初始化元素类型大小 c.elemsize = uint16(elem.size) // 元素类型 c.elemtype = elem // 容量 c.dataqsiz = uint(size) // 锁 lockInit(&amp;c.lock, lockRankHchan) if debugChan { print(&#34;makechan: chan=&#34;, c, &#34;; elemsize=&#34;, elem.size, &#34;; dataqsiz=&#34;, size, &#34;\n&#34;) } return c } 发送">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2023-10-28T16:06:27+08:00">
+    <meta property="article:modified_time" content="2023-10-28T16:06:27+08:00">
+    <meta property="article:tag" content="Channel">
+    <meta property="article:tag" content="源码">
+
+  <meta itemprop="name" content="Channel实现原理">
+  <meta itemprop="description" content="数据结构 type hchan struct { qcount uint // 当前 channel 中存在多少个元素 dataqsiz uint // 当前 channel 能存放的元素容量 buf unsafe.Pointer // channel 中用于存放元素的环形缓冲区 elemsize uint16 // chan元素类型大小 closed uint32 // chan是否关闭 elemtype *_type // chan元素的类型 sendx uint // 发送元素进入环形缓冲区的 index recvx uint // 接收元素所处的环形缓冲区的 index recvq waitq // 因接收而陷入阻塞的协程队列 sendq waitq // 因发送而陷入阻塞的协程队列 lock mutex // 锁 } type waitq struct { first *sudog // 队头 last *sudog // 队尾 } type sudog struct { g *g // goroutine next *sudog // 下一个节点指针 prev *sudog // 上一个节点指针 elem unsafe.Pointer // 读取/写入 channel 的数据的容器 isSelect bool // 标识当前协程是否处在 select 多路复用的流程中 c *hchan // 标识与当前 sudog 交互的 chan } 初始化 func makechan(t *chantype, size int) *hchan { elem := t.elem // 判断元素大小是否超出限制 if elem.size &gt;= 1&lt;&lt;16 { throw(&#34;makechan: invalid channel element type&#34;) } // 判断对齐方式是否正确 if hchanSize%maxAlign != 0 || elem.align &gt; maxAlign { throw(&#34;makechan: bad alignment&#34;) } // 计算需要分配的内存大小，并进行溢出和范围检查。如果溢出或者大小超过了允许的最大值抛出异常 mem, overflow := math.MulUintptr(elem.size, uintptr(size)) if overflow || mem &gt; maxAlloc-hchanSize || size &lt; 0 { panic(plainError(&#34;makechan: size out of range&#34;)) } var c *hchan switch { // 无缓冲 case mem == 0: // 分配hchanSize大小的内存并转为*hchan类型 // 则仅申请一个大小为默认值 96 的空间 c = (*hchan)(mallocgc(hchanSize, nil, true)) c.buf = c.raceaddr() // 有缓冲的 struct 型 case elem.ptrdata == 0: //一次性分配好 96 &#43; mem 大小的空间，并且调整 chan 的 buf 指向 mem 的起始位置 c = (*hchan)(mallocgc(hchanSize&#43;mem, nil, true)) c.buf = add(unsafe.Pointer(c), hchanSize) // 指针类型元素 default: // 分别申请 chan 和 buf 的空间，因为是指针类型的所以两者无需连续 c = new(hchan) c.buf = mallocgc(mem, elem, true) } // 初始化元素类型大小 c.elemsize = uint16(elem.size) // 元素类型 c.elemtype = elem // 容量 c.dataqsiz = uint(size) // 锁 lockInit(&amp;c.lock, lockRankHchan) if debugChan { print(&#34;makechan: chan=&#34;, c, &#34;; elemsize=&#34;, elem.size, &#34;; dataqsiz=&#34;, size, &#34;\n&#34;) } return c } 发送">
+  <meta itemprop="datePublished" content="2023-10-28T16:06:27+08:00">
+  <meta itemprop="dateModified" content="2023-10-28T16:06:27+08:00">
+  <meta itemprop="wordCount" content="985">
+  <meta itemprop="keywords" content="Channel,源码">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Channel实现原理">
+  <meta name="twitter:description" content="数据结构 type hchan struct { qcount uint // 当前 channel 中存在多少个元素 dataqsiz uint // 当前 channel 能存放的元素容量 buf unsafe.Pointer // channel 中用于存放元素的环形缓冲区 elemsize uint16 // chan元素类型大小 closed uint32 // chan是否关闭 elemtype *_type // chan元素的类型 sendx uint // 发送元素进入环形缓冲区的 index recvx uint // 接收元素所处的环形缓冲区的 index recvq waitq // 因接收而陷入阻塞的协程队列 sendq waitq // 因发送而陷入阻塞的协程队列 lock mutex // 锁 } type waitq struct { first *sudog // 队头 last *sudog // 队尾 } type sudog struct { g *g // goroutine next *sudog // 下一个节点指针 prev *sudog // 上一个节点指针 elem unsafe.Pointer // 读取/写入 channel 的数据的容器 isSelect bool // 标识当前协程是否处在 select 多路复用的流程中 c *hchan // 标识与当前 sudog 交互的 chan } 初始化 func makechan(t *chantype, size int) *hchan { elem := t.elem // 判断元素大小是否超出限制 if elem.size &gt;= 1&lt;&lt;16 { throw(&#34;makechan: invalid channel element type&#34;) } // 判断对齐方式是否正确 if hchanSize%maxAlign != 0 || elem.align &gt; maxAlign { throw(&#34;makechan: bad alignment&#34;) } // 计算需要分配的内存大小，并进行溢出和范围检查。如果溢出或者大小超过了允许的最大值抛出异常 mem, overflow := math.MulUintptr(elem.size, uintptr(size)) if overflow || mem &gt; maxAlloc-hchanSize || size &lt; 0 { panic(plainError(&#34;makechan: size out of range&#34;)) } var c *hchan switch { // 无缓冲 case mem == 0: // 分配hchanSize大小的内存并转为*hchan类型 // 则仅申请一个大小为默认值 96 的空间 c = (*hchan)(mallocgc(hchanSize, nil, true)) c.buf = c.raceaddr() // 有缓冲的 struct 型 case elem.ptrdata == 0: //一次性分配好 96 &#43; mem 大小的空间，并且调整 chan 的 buf 指向 mem 的起始位置 c = (*hchan)(mallocgc(hchanSize&#43;mem, nil, true)) c.buf = add(unsafe.Pointer(c), hchanSize) // 指针类型元素 default: // 分别申请 chan 和 buf 的空间，因为是指针类型的所以两者无需连续 c = new(hchan) c.buf = mallocgc(mem, elem, true) } // 初始化元素类型大小 c.elemsize = uint16(elem.size) // 元素类型 c.elemtype = elem // 容量 c.dataqsiz = uint(size) // 锁 lockInit(&amp;c.lock, lockRankHchan) if debugChan { print(&#34;makechan: chan=&#34;, c, &#34;; elemsize=&#34;, elem.size, &#34;; dataqsiz=&#34;, size, &#34;\n&#34;) } return c } 发送">
+
+	
+  </head><body class="ma0 avenir bg-near-white development">
+
+    
+   
+  
+
+  <header>
+    <div class="bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l center items-center justify-between">
+    <a href="/" class="f3 fw2 hover-white white-90 dib no-underline">
+      
+        loveyu233
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      <div class="ananke-socials"></div>
+
+    </div>
+  </div>
+</nav>
+
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  
+  <article class="flex-l mw8 center ph3 flex-wrap justify-between">
+    <header class="mt4 w-100">
+      <aside class="instapaper_ignoref b helvetica tracked ttu">
+          
+        go
+      </aside><div id="sharing" class="mt3 ananke-socials"></div>
+<h1 class="f1 athelas mt3 mb1">Channel实现原理</h1>
+      
+      <p class="tracked"><strong>loveyu</strong>
+      </p>
+      
+      
+      
+      <time class="f6 mv4 dib tracked" datetime="2023-10-28T16:06:27+08:00">October 28, 2023</time>
+      
+
+      
+      
+    </header>
+    <div class="nested-copy-line-height lh-copy serif f4 nested-links mid-gray pr4-l w-two-thirds-l"><h1 id="数据结构">数据结构</h1>
+<p><img src="https://www.loveyu.asia//img/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.png" alt="数据结构"></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">hchan</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">qcount</span>   <span style="color:#66d9ef">uint</span>           <span style="color:#75715e">// 当前 channel 中存在多少个元素</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">dataqsiz</span> <span style="color:#66d9ef">uint</span>           <span style="color:#75715e">// 当前 channel 能存放的元素容量</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">buf</span>      <span style="color:#a6e22e">unsafe</span>.<span style="color:#a6e22e">Pointer</span> <span style="color:#75715e">// channel 中用于存放元素的环形缓冲区</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">elemsize</span> <span style="color:#66d9ef">uint16</span>         <span style="color:#75715e">// chan元素类型大小</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">closed</span>   <span style="color:#66d9ef">uint32</span>         <span style="color:#75715e">// chan是否关闭</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">elemtype</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">_type</span>         <span style="color:#75715e">// chan元素的类型</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">sendx</span>    <span style="color:#66d9ef">uint</span>           <span style="color:#75715e">// 发送元素进入环形缓冲区的 index</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">recvx</span>    <span style="color:#66d9ef">uint</span>           <span style="color:#75715e">// 接收元素所处的环形缓冲区的 index</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">recvq</span>    <span style="color:#a6e22e">waitq</span>          <span style="color:#75715e">// 因接收而陷入阻塞的协程队列</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">sendq</span>    <span style="color:#a6e22e">waitq</span>          <span style="color:#75715e">// 因发送而陷入阻塞的协程队列</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">lock</span>     <span style="color:#a6e22e">mutex</span>          <span style="color:#75715e">// 锁</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">waitq</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">first</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">sudog</span> <span style="color:#75715e">// 队头</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">last</span>  <span style="color:#f92672">*</span><span style="color:#a6e22e">sudog</span> <span style="color:#75715e">// 队尾</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">sudog</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">g</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">g</span> <span style="color:#75715e">// goroutine</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">next</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">sudog</span> <span style="color:#75715e">// 下一个节点指针</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">prev</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">sudog</span> <span style="color:#75715e">// 上一个节点指针</span>
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">elem</span> <span style="color:#a6e22e">unsafe</span>.<span style="color:#a6e22e">Pointer</span> <span style="color:#75715e">// 读取/写入 channel 的数据的容器</span>
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">isSelect</span> <span style="color:#66d9ef">bool</span>  <span style="color:#75715e">// 标识当前协程是否处在 select 多路复用的流程中</span>
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">c</span>        <span style="color:#f92672">*</span><span style="color:#a6e22e">hchan</span> <span style="color:#75715e">// 标识与当前 sudog 交互的 chan</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="初始化">初始化</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">makechan</span>(<span style="color:#a6e22e">t</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">chantype</span>, <span style="color:#a6e22e">size</span> <span style="color:#66d9ef">int</span>) <span style="color:#f92672">*</span><span style="color:#a6e22e">hchan</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">elem</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">t</span>.<span style="color:#a6e22e">elem</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 判断元素大小是否超出限制</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">elem</span>.<span style="color:#a6e22e">size</span> <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">1</span><span style="color:#f92672">&lt;&lt;</span><span style="color:#ae81ff">16</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">throw</span>(<span style="color:#e6db74">&#34;makechan: invalid channel element type&#34;</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 判断对齐方式是否正确</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">hchanSize</span><span style="color:#f92672">%</span><span style="color:#a6e22e">maxAlign</span> <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">||</span> <span style="color:#a6e22e">elem</span>.<span style="color:#a6e22e">align</span> &gt; <span style="color:#a6e22e">maxAlign</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">throw</span>(<span style="color:#e6db74">&#34;makechan: bad alignment&#34;</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 计算需要分配的内存大小，并进行溢出和范围检查。如果溢出或者大小超过了允许的最大值抛出异常</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">mem</span>, <span style="color:#a6e22e">overflow</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">math</span>.<span style="color:#a6e22e">MulUintptr</span>(<span style="color:#a6e22e">elem</span>.<span style="color:#a6e22e">size</span>, uintptr(<span style="color:#a6e22e">size</span>))
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">overflow</span> <span style="color:#f92672">||</span> <span style="color:#a6e22e">mem</span> &gt; <span style="color:#a6e22e">maxAlloc</span><span style="color:#f92672">-</span><span style="color:#a6e22e">hchanSize</span> <span style="color:#f92672">||</span> <span style="color:#a6e22e">size</span> &lt; <span style="color:#ae81ff">0</span> {
+</span></span><span style="display:flex;"><span>		panic(<span style="color:#a6e22e">plainError</span>(<span style="color:#e6db74">&#34;makechan: size out of range&#34;</span>))
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">hchan</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">switch</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 无缓冲</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">case</span> <span style="color:#a6e22e">mem</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>:
+</span></span><span style="display:flex;"><span>  	<span style="color:#75715e">// 分配hchanSize大小的内存并转为*hchan类型</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 则仅申请一个大小为默认值 96 的空间</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">c</span> = (<span style="color:#f92672">*</span><span style="color:#a6e22e">hchan</span>)(<span style="color:#a6e22e">mallocgc</span>(<span style="color:#a6e22e">hchanSize</span>, <span style="color:#66d9ef">nil</span>, <span style="color:#66d9ef">true</span>))
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">buf</span> = <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">raceaddr</span>()
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 有缓冲的 struct 型</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">case</span> <span style="color:#a6e22e">elem</span>.<span style="color:#a6e22e">ptrdata</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//一次性分配好 96 + mem 大小的空间，并且调整 chan 的 buf 指向 mem 的起始位置</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">c</span> = (<span style="color:#f92672">*</span><span style="color:#a6e22e">hchan</span>)(<span style="color:#a6e22e">mallocgc</span>(<span style="color:#a6e22e">hchanSize</span><span style="color:#f92672">+</span><span style="color:#a6e22e">mem</span>, <span style="color:#66d9ef">nil</span>, <span style="color:#66d9ef">true</span>))
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">buf</span> = <span style="color:#a6e22e">add</span>(<span style="color:#a6e22e">unsafe</span>.<span style="color:#a6e22e">Pointer</span>(<span style="color:#a6e22e">c</span>), <span style="color:#a6e22e">hchanSize</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 指针类型元素</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">default</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 分别申请 chan 和 buf 的空间，因为是指针类型的所以两者无需连续</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">c</span> = new(<span style="color:#a6e22e">hchan</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">buf</span> = <span style="color:#a6e22e">mallocgc</span>(<span style="color:#a6e22e">mem</span>, <span style="color:#a6e22e">elem</span>, <span style="color:#66d9ef">true</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 初始化元素类型大小</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">elemsize</span> = uint16(<span style="color:#a6e22e">elem</span>.<span style="color:#a6e22e">size</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 元素类型</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">elemtype</span> = <span style="color:#a6e22e">elem</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 容量</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">dataqsiz</span> = uint(<span style="color:#a6e22e">size</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 锁</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">lockInit</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">lock</span>, <span style="color:#a6e22e">lockRankHchan</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">debugChan</span> {
+</span></span><span style="display:flex;"><span>		print(<span style="color:#e6db74">&#34;makechan: chan=&#34;</span>, <span style="color:#a6e22e">c</span>, <span style="color:#e6db74">&#34;; elemsize=&#34;</span>, <span style="color:#a6e22e">elem</span>.<span style="color:#a6e22e">size</span>, <span style="color:#e6db74">&#34;; dataqsiz=&#34;</span>, <span style="color:#a6e22e">size</span>, <span style="color:#e6db74">&#34;\n&#34;</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">c</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="发送">发送</h1>
+<p><img src="https://www.loveyu.asia//img/chansend.png" alt="chansend"></p>
+<blockquote>
+<ol>
+<li>对没有初始化的channel进行发送数据会死锁</li>
+<li>对关闭的channel进行发送数据会报错</li>
+<li>发送数据时如果该管道对应的读操作有阻塞的goroutine则直接把数据拷贝到被阻塞的读goroutine</li>
+<li>发送数据时如果该管道内还有容量则把数据插入对应的槽位</li>
+<li>发送数据时如果该管道内没有容量则把当前goroutine封装后放入到阻塞写队列中然后挂起等待唤醒</li>
+</ol></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">// block 用来标识是否为阻塞,在select中使用则为不阻塞</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">chansend</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">hchan</span>, <span style="color:#a6e22e">ep</span> <span style="color:#a6e22e">unsafe</span>.<span style="color:#a6e22e">Pointer</span>, <span style="color:#a6e22e">block</span> <span style="color:#66d9ef">bool</span>, <span style="color:#a6e22e">callerpc</span> <span style="color:#66d9ef">uintptr</span>) <span style="color:#66d9ef">bool</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 如果chan没有初始化则死锁</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">c</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> !<span style="color:#a6e22e">block</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">gopark</span>(<span style="color:#66d9ef">nil</span>, <span style="color:#66d9ef">nil</span>, <span style="color:#a6e22e">waitReasonChanSendNilChan</span>, <span style="color:#a6e22e">traceEvGoStop</span>, <span style="color:#ae81ff">2</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">throw</span>(<span style="color:#e6db74">&#34;unreachable&#34;</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 加锁</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">lock</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">lock</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 如果chan被关闭则报错</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">closed</span> <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">unlock</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">lock</span>)
+</span></span><span style="display:flex;"><span>		panic(<span style="color:#a6e22e">plainError</span>(<span style="color:#e6db74">&#34;send on closed channel&#34;</span>))
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 写数据时存在阻塞读协程,从读堵塞队列中拿到第一个被阻塞的goroutine封装对象sudog</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">sg</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">recvq</span>.<span style="color:#a6e22e">dequeue</span>(); <span style="color:#a6e22e">sg</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 调用send方法直接把写数据拷贝给该读goroutine并在拷贝后执行解锁操作</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">send</span>(<span style="color:#a6e22e">c</span>, <span style="color:#a6e22e">sg</span>, <span style="color:#a6e22e">ep</span>, <span style="color:#66d9ef">func</span>() { <span style="color:#a6e22e">unlock</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">lock</span>) }, <span style="color:#ae81ff">3</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 写数据时无阻塞读协程但环形缓冲区仍有空间</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">qcount</span> &lt; <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">dataqsiz</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 获取环形缓冲数组中发送索引的槽位指针</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">qp</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">chanbuf</span>(<span style="color:#a6e22e">c</span>, <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">sendx</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">raceenabled</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">racenotify</span>(<span style="color:#a6e22e">c</span>, <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">sendx</span>, <span style="color:#66d9ef">nil</span>)
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 把数据写入到该槽位</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">typedmemmove</span>(<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">elemtype</span>, <span style="color:#a6e22e">qp</span>, <span style="color:#a6e22e">ep</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 发送索引++</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">sendx</span><span style="color:#f92672">++</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 如果索引值等于数组容量值则赋值为0(以此来实现环形数组)</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">sendx</span> <span style="color:#f92672">==</span> <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">dataqsiz</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">sendx</span> = <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 环形数组的当前存在元素数量++</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">qcount</span><span style="color:#f92672">++</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 解锁</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">unlock</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">lock</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 如果为非阻塞则直接解锁返回</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> !<span style="color:#a6e22e">block</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">unlock</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">lock</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 获取到当前的goroutine</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">gp</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">getg</span>()
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 构造封装当前 goroutine 的 sudog 对象</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">mysg</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">acquireSudog</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">mysg</span>.<span style="color:#a6e22e">releasetime</span> = <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">t0</span> <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">mysg</span>.<span style="color:#a6e22e">releasetime</span> = <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">mysg</span>.<span style="color:#a6e22e">elem</span> = <span style="color:#a6e22e">ep</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">mysg</span>.<span style="color:#a6e22e">waitlink</span> = <span style="color:#66d9ef">nil</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">mysg</span>.<span style="color:#a6e22e">g</span> = <span style="color:#a6e22e">gp</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">mysg</span>.<span style="color:#a6e22e">isSelect</span> = <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">mysg</span>.<span style="color:#a6e22e">c</span> = <span style="color:#a6e22e">c</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">gp</span>.<span style="color:#a6e22e">waiting</span> = <span style="color:#a6e22e">mysg</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">gp</span>.<span style="color:#a6e22e">param</span> = <span style="color:#66d9ef">nil</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 把 sudog 添加到当前 channel 的阻塞写协程队列中</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">sendq</span>.<span style="color:#a6e22e">enqueue</span>(<span style="color:#a6e22e">mysg</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">gp</span>.<span style="color:#a6e22e">parkingOnChan</span>.<span style="color:#a6e22e">Store</span>(<span style="color:#66d9ef">true</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// gopark 挂起当前协程</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">gopark</span>(<span style="color:#a6e22e">chanparkcommit</span>, <span style="color:#a6e22e">unsafe</span>.<span style="color:#a6e22e">Pointer</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">lock</span>), <span style="color:#a6e22e">waitReasonChanSend</span>, <span style="color:#a6e22e">traceEvGoBlockSend</span>, <span style="color:#ae81ff">2</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// KeepAlive将其参数标记为当前可访问。这确保了在程序中调用KeepAlive的点之前，对象不会被释放</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">KeepAlive</span>(<span style="color:#a6e22e">ep</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">mysg</span> <span style="color:#f92672">!=</span> <span style="color:#a6e22e">gp</span>.<span style="color:#a6e22e">waiting</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">throw</span>(<span style="color:#e6db74">&#34;G waiting list is corrupted&#34;</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 倘若协程从 park 中被唤醒，则回收 sudog（sudog能被唤醒，其对应的元素必然已经被读协程取走）</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">gp</span>.<span style="color:#a6e22e">waiting</span> = <span style="color:#66d9ef">nil</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">gp</span>.<span style="color:#a6e22e">activeStackChans</span> = <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">closed</span> <span style="color:#f92672">:=</span> !<span style="color:#a6e22e">mysg</span>.<span style="color:#a6e22e">success</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">gp</span>.<span style="color:#a6e22e">param</span> = <span style="color:#66d9ef">nil</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">mysg</span>.<span style="color:#a6e22e">releasetime</span> &gt; <span style="color:#ae81ff">0</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">blockevent</span>(<span style="color:#a6e22e">mysg</span>.<span style="color:#a6e22e">releasetime</span><span style="color:#f92672">-</span><span style="color:#a6e22e">t0</span>, <span style="color:#ae81ff">2</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">mysg</span>.<span style="color:#a6e22e">c</span> = <span style="color:#66d9ef">nil</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">releaseSudog</span>(<span style="color:#a6e22e">mysg</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">closed</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">closed</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">throw</span>(<span style="color:#e6db74">&#34;chansend: spurious wakeup&#34;</span>)
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		panic(<span style="color:#a6e22e">plainError</span>(<span style="color:#e6db74">&#34;send on closed channel&#34;</span>))
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="读取">读取</h1>
+<p><img src="https://www.loveyu.asia//img/recv.png" alt="recv"></p>
+<blockquote>
+<ol>
+<li>读没有初始化的channel死锁</li>
+<li>读已经关闭的channel且channel内数据则返回false</li>
+<li>读时有写阻塞的队列</li>
+<li>无缓冲则直接读取写goroutine数据然后唤醒写goroutine</li>
+<li>有缓存则读取缓冲区头部数据然后唤醒写goroutine</li>
+<li>读时无写阻塞队列</li>
+<li>缓冲区有数据直接读取返回</li>
+<li>缓冲区无数据挂起阻塞</li>
+</ol></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">chanrecv</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">hchan</span>, <span style="color:#a6e22e">ep</span> <span style="color:#a6e22e">unsafe</span>.<span style="color:#a6e22e">Pointer</span>, <span style="color:#a6e22e">block</span> <span style="color:#66d9ef">bool</span>) (<span style="color:#a6e22e">selected</span>, <span style="color:#a6e22e">received</span> <span style="color:#66d9ef">bool</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">debugChan</span> {
+</span></span><span style="display:flex;"><span>		print(<span style="color:#e6db74">&#34;chanrecv: chan=&#34;</span>, <span style="color:#a6e22e">c</span>, <span style="color:#e6db74">&#34;\n&#34;</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// channel没有初始化则死锁</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">c</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> !<span style="color:#a6e22e">block</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">return</span>
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">gopark</span>(<span style="color:#66d9ef">nil</span>, <span style="color:#66d9ef">nil</span>, <span style="color:#a6e22e">waitReasonChanReceiveNilChan</span>, <span style="color:#a6e22e">traceEvGoStop</span>, <span style="color:#ae81ff">2</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">throw</span>(<span style="color:#e6db74">&#34;unreachable&#34;</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 如果为非阻塞且队列为空则直接返回</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> !<span style="color:#a6e22e">block</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">empty</span>(<span style="color:#a6e22e">c</span>) {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">atomic</span>.<span style="color:#a6e22e">Load</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">closed</span>) <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">return</span>
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">empty</span>(<span style="color:#a6e22e">c</span>) {
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">raceenabled</span> {
+</span></span><span style="display:flex;"><span>				<span style="color:#a6e22e">raceacquire</span>(<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">raceaddr</span>())
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">ep</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>				<span style="color:#a6e22e">typedmemclr</span>(<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">elemtype</span>, <span style="color:#a6e22e">ep</span>)
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span>, <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">t0</span> <span style="color:#66d9ef">int64</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">blockprofilerate</span> &gt; <span style="color:#ae81ff">0</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">t0</span> = <span style="color:#a6e22e">cputicks</span>()
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">lock</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">lock</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 如果读已经关闭的channel</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">closed</span> <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 且channel内无数据</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">qcount</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">raceenabled</span> {
+</span></span><span style="display:flex;"><span>				<span style="color:#a6e22e">raceacquire</span>(<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">raceaddr</span>())
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">// 解锁并返回false标志没有读取到数据</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">unlock</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">lock</span>)
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">ep</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>				<span style="color:#a6e22e">typedmemclr</span>(<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">elemtype</span>, <span style="color:#a6e22e">ep</span>)
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span>, <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		<span style="color:#75715e">// 如果通道已关闭但缓冲区有数据，则继续执行后边代码</span>
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 没有关闭</span>
+</span></span><span style="display:flex;"><span>	} <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 如果 channel 未关闭，则尝试从等待的发送者队列中获取数据</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">sg</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">sendq</span>.<span style="color:#a6e22e">dequeue</span>(); <span style="color:#a6e22e">sg</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">recv</span>(<span style="color:#a6e22e">c</span>, <span style="color:#a6e22e">sg</span>, <span style="color:#a6e22e">ep</span>, <span style="color:#66d9ef">func</span>() { <span style="color:#a6e22e">unlock</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">lock</span>) }, <span style="color:#ae81ff">3</span>)
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span>, <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 如果 channel 中有数据，则直接从 channel 中获取数据</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">qcount</span> &gt; <span style="color:#ae81ff">0</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#75715e">// Receive directly from queue</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">qp</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">chanbuf</span>(<span style="color:#a6e22e">c</span>, <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">recvx</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">raceenabled</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">racenotify</span>(<span style="color:#a6e22e">c</span>, <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">recvx</span>, <span style="color:#66d9ef">nil</span>)
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">ep</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">typedmemmove</span>(<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">elemtype</span>, <span style="color:#a6e22e">ep</span>, <span style="color:#a6e22e">qp</span>)
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">typedmemclr</span>(<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">elemtype</span>, <span style="color:#a6e22e">qp</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">recvx</span><span style="color:#f92672">++</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">recvx</span> <span style="color:#f92672">==</span> <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">dataqsiz</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">recvx</span> = <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">qcount</span><span style="color:#f92672">--</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">unlock</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">lock</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span>, <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 非阻塞直接返回</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> !<span style="color:#a6e22e">block</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">unlock</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">lock</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span>, <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 获取当前goroutine添加到读阻塞队列中,然后调用gopark挂起</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">gp</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">getg</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">mysg</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">acquireSudog</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">mysg</span>.<span style="color:#a6e22e">releasetime</span> = <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">t0</span> <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">mysg</span>.<span style="color:#a6e22e">releasetime</span> = <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">mysg</span>.<span style="color:#a6e22e">elem</span> = <span style="color:#a6e22e">ep</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">mysg</span>.<span style="color:#a6e22e">waitlink</span> = <span style="color:#66d9ef">nil</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">gp</span>.<span style="color:#a6e22e">waiting</span> = <span style="color:#a6e22e">mysg</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">mysg</span>.<span style="color:#a6e22e">g</span> = <span style="color:#a6e22e">gp</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">mysg</span>.<span style="color:#a6e22e">isSelect</span> = <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">mysg</span>.<span style="color:#a6e22e">c</span> = <span style="color:#a6e22e">c</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">gp</span>.<span style="color:#a6e22e">param</span> = <span style="color:#66d9ef">nil</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">recvq</span>.<span style="color:#a6e22e">enqueue</span>(<span style="color:#a6e22e">mysg</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">gp</span>.<span style="color:#a6e22e">parkingOnChan</span>.<span style="color:#a6e22e">Store</span>(<span style="color:#66d9ef">true</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">gopark</span>(<span style="color:#a6e22e">chanparkcommit</span>, <span style="color:#a6e22e">unsafe</span>.<span style="color:#a6e22e">Pointer</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">lock</span>), <span style="color:#a6e22e">waitReasonChanReceive</span>, <span style="color:#a6e22e">traceEvGoBlockRecv</span>, <span style="color:#ae81ff">2</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 当可以添加数据时唤醒</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">mysg</span> <span style="color:#f92672">!=</span> <span style="color:#a6e22e">gp</span>.<span style="color:#a6e22e">waiting</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">throw</span>(<span style="color:#e6db74">&#34;G waiting list is corrupted&#34;</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">gp</span>.<span style="color:#a6e22e">waiting</span> = <span style="color:#66d9ef">nil</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">gp</span>.<span style="color:#a6e22e">activeStackChans</span> = <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">mysg</span>.<span style="color:#a6e22e">releasetime</span> &gt; <span style="color:#ae81ff">0</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">blockevent</span>(<span style="color:#a6e22e">mysg</span>.<span style="color:#a6e22e">releasetime</span><span style="color:#f92672">-</span><span style="color:#a6e22e">t0</span>, <span style="color:#ae81ff">2</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">success</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">mysg</span>.<span style="color:#a6e22e">success</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">gp</span>.<span style="color:#a6e22e">param</span> = <span style="color:#66d9ef">nil</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">mysg</span>.<span style="color:#a6e22e">c</span> = <span style="color:#66d9ef">nil</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">releaseSudog</span>(<span style="color:#a6e22e">mysg</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span>, <span style="color:#a6e22e">success</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="关闭">关闭</h1>
+<p><img src="https://www.loveyu.asia//img/close.png" alt="close"></p>
+<blockquote>
+<ul>
+<li>关闭未初始化过的 channel 会 panic；</li>
+<li>加锁；</li>
+<li>重复关闭 channel 会 panic；</li>
+<li>将阻塞读协程队列中的协程节点统一添加到 glist；</li>
+<li>将阻塞写协程队列中的协程节点统一添加到 glist；</li>
+<li>唤醒 glist 当中的所有协程.</li>
+</ul></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">closechan</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">hchan</span>) {
+</span></span><span style="display:flex;"><span>  	<span style="color:#75715e">// 关闭未初始化的channel直接报错</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">c</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>        panic(<span style="color:#a6e22e">plainError</span>(<span style="color:#e6db74">&#34;close of nil channel&#34;</span>))
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">lock</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">lock</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 重复关闭channel直接报错</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">closed</span> <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">unlock</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">lock</span>)
+</span></span><span style="display:flex;"><span>        panic(<span style="color:#a6e22e">plainError</span>(<span style="color:#e6db74">&#34;close of closed channel&#34;</span>))
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">closed</span> = <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">glist</span> <span style="color:#a6e22e">gList</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 遍历该channel的读阻塞队列到glist</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">sg</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">recvq</span>.<span style="color:#a6e22e">dequeue</span>()
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">sg</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">break</span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">sg</span>.<span style="color:#a6e22e">elem</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">typedmemclr</span>(<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">elemtype</span>, <span style="color:#a6e22e">sg</span>.<span style="color:#a6e22e">elem</span>)
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">sg</span>.<span style="color:#a6e22e">elem</span> = <span style="color:#66d9ef">nil</span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">gp</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">sg</span>.<span style="color:#a6e22e">g</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">gp</span>.<span style="color:#a6e22e">param</span> = <span style="color:#a6e22e">unsafe</span>.<span style="color:#a6e22e">Pointer</span>(<span style="color:#a6e22e">sg</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">sg</span>.<span style="color:#a6e22e">success</span> = <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">glist</span>.<span style="color:#a6e22e">push</span>(<span style="color:#a6e22e">gp</span>)
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// // 遍历该channel的写阻塞队列到glist</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">sg</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">sendq</span>.<span style="color:#a6e22e">dequeue</span>()
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">sg</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">break</span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">sg</span>.<span style="color:#a6e22e">elem</span> = <span style="color:#66d9ef">nil</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">gp</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">sg</span>.<span style="color:#a6e22e">g</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">gp</span>.<span style="color:#a6e22e">param</span> = <span style="color:#a6e22e">unsafe</span>.<span style="color:#a6e22e">Pointer</span>(<span style="color:#a6e22e">sg</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">sg</span>.<span style="color:#a6e22e">success</span> = <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">glist</span>.<span style="color:#a6e22e">push</span>(<span style="color:#a6e22e">gp</span>)
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">unlock</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">lock</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 唤醒全部阻塞中的goroutine</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> !<span style="color:#a6e22e">glist</span>.<span style="color:#a6e22e">empty</span>() {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">gp</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">glist</span>.<span style="color:#a6e22e">pop</span>()
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">gp</span>.<span style="color:#a6e22e">schedlink</span> = <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">goready</span>(<span style="color:#a6e22e">gp</span>, <span style="color:#ae81ff">3</span>)
+</span></span><span style="display:flex;"><span>      
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul class="pa0">
+  
+   <li class="list di">
+     <a href="/tags/channel/" class="link f5 grow br-pill ba ph3 pv2 mb2 dib black sans-serif no-underline">Channel</a>
+   </li>
+  
+   <li class="list di">
+     <a href="/tags/%E6%BA%90%E7%A0%81/" class="link f5 grow br-pill ba ph3 pv2 mb2 dib black sans-serif no-underline">源码</a>
+   </li>
+  
+</ul>
+<div class="mt6 instapaper_ignoref">
+      
+      
+      </div>
+    </div>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white white-70 dn dib-ns pv2 ph3 no-underline" href="http://localhost:1313/" >
+    &copy;  loveyu233 2025 
+  </a>
+    <div><div class="ananke-socials"></div>
+</div>
+  </div>
+</footer>
+
+  </body>
+</html>

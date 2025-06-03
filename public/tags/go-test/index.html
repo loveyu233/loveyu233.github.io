@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>loveyu233</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="">
+    <meta name="generator" content="Hugo 0.147.7">
+    
+    
+    
+      <meta name="robots" content="noindex, nofollow">
+    
+    
+
+    
+<link rel="stylesheet" href="/ananke/css/main.min.css" >
+
+
+
+
+    
+
+
+    
+      
+
+    
+
+    
+    
+      <link href="/tags/go-test/index.xml" rel="alternate" type="application/rss+xml" title="loveyu233" />
+      <link href="/tags/go-test/index.xml" rel="feed" type="application/rss+xml" title="loveyu233" />
+      
+    
+
+    
+      <link rel="canonical" href="http://localhost:1313/tags/go-test/">
+    
+
+    <meta property="og:url" content="http://localhost:1313/tags/go-test/">
+  <meta property="og:site_name" content="loveyu233">
+  <meta property="og:title" content="Go Test">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="website">
+
+  <meta itemprop="name" content="Go Test">
+  <meta itemprop="datePublished" content="2023-07-15T11:18:37+08:00">
+  <meta itemprop="dateModified" content="2023-07-15T11:18:37+08:00">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Go Test">
+
+	
+  </head><body class="ma0 avenir bg-near-white development">
+
+    
+
+  <header>
+    <div class="pb3-m pb6-l bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l center items-center justify-between">
+    <a href="/" class="f3 fw2 hover-white white-90 dib no-underline">
+      
+        loveyu233
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      <div class="ananke-socials"></div>
+
+    </div>
+  </div>
+</nav>
+
+      <div class="tc-l pv3 ph3 ph4-ns">
+        <h1 class="f2 f-subheadline-l fw2 light-silver mb0 lh-title">
+          Go Test
+        </h1>
+        
+      </div>
+    </div>
+  </header>
+
+
+    <main class="pb7" role="main">
+      
+  <article class="cf pa3 pa4-m pa4-l">
+    <div class="measure-wide-l center f4 lh-copy nested-copy-line-height nested-links mid-gray">
+      <p>Below you will find pages that utilize the taxonomy term “Go Test”</p>
+    </div>
+  </article>
+  <div class="mw8 center">
+    <section class="flex-ns mt5 flex-wrap justify-around">
+      
+        <div class="w-100 mb4 relative bg-white">
+          <div class="w-100 mb4 nested-copy-line-height relative bg-white">
+  <div class="mb3 pa4 gray overflow-hidden bg-white">
+    <span class="f6 db">go</span>
+    <h1 class="f3 near-black">
+      <a href="/posts/go/gotoolpprof%E4%BD%BF%E7%94%A8/" class="link black dim">
+        pprof
+      </a>
+    </h1>
+    <div class="nested-links f5 lh-copy nested-copy-line-height">
+      <h1 id="go-test-包路径-选项">go test [包路径] [选项]</h1>
+<blockquote>
+<ul>
+<li><code>-v</code>：输出详细的测试日志，包括每个测试函数的名称和执行结果。</li>
+<li><code>-run &lt;正则表达式&gt;</code>：指定要运行的测试函数或测试组的正则表达式。</li>
+<li><code>-cover</code>：计算测试覆盖率，并显示每个文件的覆盖率百分比。</li>
+<li><code>-bench &lt;正则表达式&gt;</code>：运行性能基准测试，并显示基准测试的结果。</li>
+<li><code>-timeout &lt;时长&gt;</code>：设置超时时间，单个测试的最大执行时间。</li>
+<li><code>-count &lt;次数&gt;</code>：执行测试的次数，默认为 1 次。</li>
+<li>-benchmem
+打印出申请内存的次数。一般用于简单的性能测试，不会导出数据文件。</li>
+<li>-blockprofile block.out
+将协程的阻塞数据写入特定的文件（block.out）。如果-c，则写成二进制文件。</li>
+<li>-cpuprofile cpu.out
+将协程的CPU使用数据写入特定的文件（cpu.out）。如果-c，则写成二进制文件。</li>
+<li>-memprofile mem.out
+将协程的内存申请数据写入特定的文件（mem.out）。如果-c，则写成二进制文件。</li>
+<li>-mutexprofile mutex.out
+将协程的互斥数据写入特定的文件（mutex.out）。如果-c，则写成二进制文件。</li>
+<li>-trace trace.out
+将执行调用链写入特定文件（trace.out）。</li>
+</ul></blockquote>
+<p>例如，要运行当前目录下所有测试文件的测试，可以执行以下命令：</p>
+<pre tabindex="0"><code>bashCopy Codego test
+</code></pre><p>如果你只想运行某个特定包的测试，可以指定包的导入路径：</p>
+<pre tabindex="0"><code>bashCopy Codego test github.com/example/package
+</code></pre><p>你还可以使用 <code>-run</code> 标志来选择性地运行特定的测试函数或测试组。例如，下面的命令将运行名称中包含 &ldquo;TestFoo&rdquo; 的测试函数：</p>
+<pre tabindex="0"><code>bashCopy Codego test -run TestFoo
+</code></pre><p>如果你想在测试运行时生成并查看测试覆盖率报告，可以使用 <code>-cover</code> 标志：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>bashCopy Codego test -cover
+</span></span></code></pre></div><h1 id="项目配置">项目配置</h1>
+<ol>
+<li>在项目中导入</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#a6e22e">_</span> <span style="color:#e6db74">&#34;net/http/pprof&#34;</span>
+</span></span></code></pre></div><ol start="2">
+<li>启动http服务</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ListenAndServe</span>(<span style="color:#e6db74">&#34;:6060&#34;</span>, <span style="color:#66d9ef">nil</span>)
+</span></span></code></pre></div><ol start="3">
+<li>访问网址</li>
+</ol>
+<pre tabindex="0"><code class="language-url" data-lang="url">http://27.0.0.1:6060/debug/pprof
+</code></pre><blockquote>
+<ul>
+<li>allocs：查看过去所有内存分配的样本（历史累计）。</li>
+<li>block：查看导致阻塞同步的堆栈跟踪（历史累计）。</li>
+<li>cmdline： 当前程序的命令行的完整调用路径（从程序一开始运行时决定）。</li>
+<li>goroutine：查看当前所有运行的 goroutines 堆栈跟踪（实时变化）。</li>
+<li>heap：查看活动对象的内存分配情况（实时变化）。</li>
+<li>mutex：查看导致互斥锁的竞争持有者的堆栈跟踪（历史累计）。</li>
+<li>profile： 默认进行 30s 的 CPU Profiling，得到一个分析用的 profile 文件（从开始分析，到分析结束）。</li>
+<li>threadcreate：查看创建新 OS 线程的堆栈跟踪（一般没啥用）。</li>
+</ul></blockquote>
+<blockquote>
+<p>默认情况下是不追踪block和mutex的信息,开启方式:</p>
+    </div>
+    <a href="/posts/go/gotoolpprof%E4%BD%BF%E7%94%A8/" class="ba b--moon-gray bg-light-gray br2 color-inherit dib f7 hover-bg-moon-gray link mt2 ph2 pv1">read more</a>
+  </div>
+</div>
+
+        </div>
+      
+    </section>
+  </div>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white white-70 dn dib-ns pv2 ph3 no-underline" href="http://localhost:1313/" >
+    &copy;  loveyu233 2025 
+  </a>
+    <div><div class="ananke-socials"></div>
+</div>
+  </div>
+</footer>
+
+  </body>
+</html>
