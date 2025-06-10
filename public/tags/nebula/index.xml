@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Nebula on loveyu233</title>
+    <link>http://localhost:1313/tags/nebula/</link>
+    <description>Recent content in Nebula on loveyu233</description>
+    <image>
+      <title>loveyu233</title>
+      <url>http://localhost:1313/images/cover.png</url>
+      <link>http://localhost:1313/images/cover.png</link>
+    </image>
+    <generator>Hugo -- 0.147.7</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Sun, 24 Mar 2024 19:38:37 +0800</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/nebula/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>nebula</title>
+      <link>http://localhost:1313/posts/databases/nebula/</link>
+      <pubDate>Sun, 24 Mar 2024 19:38:37 +0800</pubDate>
+      <guid>http://localhost:1313/posts/databases/nebula/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;https://docs.nebula-graph.com.cn/3.6.0/2.quick-start/3.quick-start-on-premise/4.nebula-graph-crud/#_10&#34;&gt;官网文档&lt;/a&gt;&lt;/p&gt;&lt;/blockquote&gt;
+&lt;h1 id=&#34;初始化&#34;&gt;初始化&lt;/h1&gt;
+&lt;h2 id=&#34;添加storage-主机&#34;&gt;添加Storage 主机&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;刚部署好不添加主机&lt;code&gt;有可能&lt;/code&gt;会报错&lt;/p&gt;&lt;/blockquote&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;ADD HOSTS &lt;span class=&#34;s2&#34;&gt;&amp;#34;storaged0&amp;#34;&lt;/span&gt;:9779,&lt;span class=&#34;s2&#34;&gt;&amp;#34;storaged1&amp;#34;&lt;/span&gt;:9779,&lt;span class=&#34;s2&#34;&gt;&amp;#34;storaged2&amp;#34;&lt;/span&gt;:9779
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h1 id=&#34;图&#34;&gt;图&lt;/h1&gt;
+&lt;h2 id=&#34;创建&#34;&gt;创建&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;必须指定vid_type,partition_num:分区数，通常为全集群硬盘数量的 5 倍;replica_factor：指定集群中副本的数量，通常生产环境为 3，测试环境为 1&lt;/p&gt;
+&lt;p&gt;如果报错提示&lt;code&gt;[ERROR (-1005)]: Host not enough!&lt;/code&gt;，请检查是否已添加 Storage 主机。&lt;/p&gt;&lt;/blockquote&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;CREATE SPACE &lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;IF NOT EXISTS&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt; &amp;lt;graph_space_name&amp;gt; &lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;partition_num&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &amp;lt;partition_number&amp;gt;,&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;replica_factor&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &amp;lt;replica_number&amp;gt;,&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nv&#34;&gt;vid_type&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;{&lt;/span&gt;FIXED_STRING&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&amp;lt;N&amp;gt;&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;|&lt;/span&gt; INT64&lt;span class=&#34;o&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;COMMENT&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;&amp;lt;comment&amp;gt;&amp;#39;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# 实例&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;CREATE SPACE IF NOT EXISTS hzy &lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;partition_num&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; 1, &lt;span class=&#34;nv&#34;&gt;replica_factor&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;1, &lt;span class=&#34;nv&#34;&gt;vid_type&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;fixed_string&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;30&lt;span class=&#34;o&#34;&gt;))&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;COMMENT&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;测试图&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;nebula&amp;gt; CREATE SPACE basketballplayer&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;partition_num&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;15, &lt;span class=&#34;nv&#34;&gt;replica_factor&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;1, &lt;span class=&#34;nv&#34;&gt;vid_type&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;fixed_string&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;30&lt;span class=&#34;o&#34;&gt;))&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;查看&#34;&gt;查看&lt;/h2&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;SHOW SPACES&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;检查分片分布&#34;&gt;检查分片分布&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;如果 &lt;strong&gt;Leader distribution&lt;/strong&gt; 分布不均匀，请执行命令&lt;code&gt;BALANCE LEADER&lt;/code&gt;重新分配。&lt;/p&gt;&lt;/blockquote&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;SHOW HOSTS
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;使用&#34;&gt;使用&lt;/h2&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;USE space_name&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h1 id=&#34;tagedge-type&#34;&gt;Tag/Edge type&lt;/h1&gt;
+&lt;h2 id=&#34;创建-1&#34;&gt;创建&lt;/h2&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;CREATE &lt;span class=&#34;o&#34;&gt;{&lt;/span&gt;TAG &lt;span class=&#34;p&#34;&gt;|&lt;/span&gt; EDGE&lt;span class=&#34;o&#34;&gt;}&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;IF NOT EXISTS&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;{&lt;/span&gt;&amp;lt;tag_name&amp;gt; &lt;span class=&#34;p&#34;&gt;|&lt;/span&gt; &amp;lt;edge_type_name&amp;gt;&lt;span class=&#34;o&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;      &amp;lt;prop_name&amp;gt; &amp;lt;data_type&amp;gt; &lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;NULL &lt;span class=&#34;p&#34;&gt;|&lt;/span&gt; NOT NULL&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;DEFAULT &amp;lt;default_value&amp;gt;&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;COMMENT &lt;span class=&#34;s1&#34;&gt;&amp;#39;&amp;lt;comment&amp;gt;&amp;#39;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;      &lt;span class=&#34;o&#34;&gt;[{&lt;/span&gt;, &amp;lt;prop_name&amp;gt; &amp;lt;data_type&amp;gt; &lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;NULL &lt;span class=&#34;p&#34;&gt;|&lt;/span&gt; NOT NULL&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;DEFAULT &amp;lt;default_value&amp;gt;&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;COMMENT &lt;span class=&#34;s1&#34;&gt;&amp;#39;&amp;lt;comment&amp;gt;&amp;#39;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;]}&lt;/span&gt; ...&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;TTL_DURATION&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &amp;lt;ttl_duration&amp;gt;&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;TTL_COL&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &amp;lt;prop_name&amp;gt;&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;COMMENT&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;&amp;lt;comment&amp;gt;&amp;#39;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# 实例&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;create tag &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; not exists tag1 &lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;name string not null default &lt;span class=&#34;s1&#34;&gt;&amp;#39;default_value&amp;#39;&lt;/span&gt; comment &lt;span class=&#34;s1&#34;&gt;&amp;#39;测试tag1&amp;#39;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;create edge &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; not exists dege1 &lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;start int comment &lt;span class=&#34;s1&#34;&gt;&amp;#39;测试dege1&amp;#39;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;nebula&amp;gt; CREATE TAG player&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;name string, age int&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;nebula&amp;gt; CREATE TAG team&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;name string&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;nebula&amp;gt; CREATE EDGE follow&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;degree int&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;nebula&amp;gt; CREATE EDGE serve&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;start_year int, end_year int&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;插入数据&#34;&gt;插入数据&lt;/h2&gt;
+&lt;h3 id=&#34;点&#34;&gt;点&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;code&gt;vid&lt;/code&gt;是 Vertex ID 的缩写，&lt;code&gt;vid&lt;/code&gt;在一个图空间中是唯一的。&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

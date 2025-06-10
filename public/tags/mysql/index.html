@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Mysql | loveyu233</title>
+<meta name="keywords" content="">
+<meta name="description" content="我的个人博客 - 分享技术与生活">
+<meta name="author" content="loveyu233">
+<link rel="canonical" href="http://localhost:1313/tags/mysql/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.e13ff79a7b90ac30a7f805291f902c75095888118dcb1fccef74850e837f1253.css" integrity="sha256-4T/3mnuQrDCn&#43;AUpH5AsdQlYiBGNyx/M73SFDoN/ElM=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" type="application/rss+xml" href="http://localhost:1313/tags/mysql/index.xml">
+<link rel="alternate" hreflang="zh-cn" href="http://localhost:1313/tags/mysql/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:url" content="http://localhost:1313/tags/mysql/">
+  <meta property="og:site_name" content="loveyu233">
+  <meta property="og:title" content="Mysql">
+  <meta property="og:description" content="我的个人博客 - 分享技术与生活">
+  <meta property="og:locale" content="zh-cn">
+  <meta property="og:type" content="website">
+      <meta property="og:image" content="http://localhost:1313/images/cover.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://localhost:1313/images/cover.png">
+<meta name="twitter:title" content="Mysql">
+<meta name="twitter:description" content="我的个人博客 - 分享技术与生活">
+
+</head>
+
+<body class="list" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="loveyu233 (Alt + H)">loveyu233</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/archives" title="归档">
+                    <span>归档</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/search/" title="搜索">
+                    <span>搜索</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/tags/" title="标签">
+                    <span>标签</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main"> 
+<header class="page-header"><div class="breadcrumbs"><a href="http://localhost:1313/">Home</a>&nbsp;»&nbsp;<a href="http://localhost:1313/tags/">Tags</a></div>
+  <h1>
+    Mysql
+    <a href="/tags/mysql/index.xml" title="RSS" aria-label="RSS">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" height="23">
+        <path d="M4 11a9 9 0 0 1 9 9" />
+        <path d="M4 4a16 16 0 0 1 16 16" />
+        <circle cx="5" cy="19" r="1" />
+      </svg>
+    </a>
+  </h1>
+</header>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">查询mysql连接信息
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>MySQL 连接信息查看完整指南 概述 在MySQL数据库管理中，查看当前连接信息是监控数据库性能、排查问题和管理连接的重要手段。本文档详细介绍了各种查看连接信息的SQL命令及其返回结果的含义。
+常用查看连接信息的SQL命令 1. 基础连接查看命令 查看所有连接 SHOW PROCESSLIST; 显示当前所有连接的基本信息，SQL语句会被截断到前100个字符。
+查看完整连接信息 SHOW FULL PROCESSLIST; 与上面命令功能相同，但显示完整的SQL语句，不会被截断。
+2. 通过系统表查询 基础查询 SELECT * FROM INFORMATION_SCHEMA.PROCESSLIST; 通过系统表获取详细的连接信息，支持WHERE条件过滤。
+查看当前用户连接 SELECT * FROM INFORMATION_SCHEMA.PROCESSLIST WHERE USER = USER(); 查看特定数据库连接 SELECT * FROM INFORMATION_SCHEMA.PROCESSLIST WHERE DB = &#39;数据库名&#39;; 3. 连接统计信息 -- 当前连接数 SHOW STATUS LIKE &#39;Threads_connected&#39;; -- 当前活跃连接数 SHOW STATUS LIKE &#39;Threads_running&#39;; -- 历史最大连接数 SHOW STATUS LIKE &#39;Max_used_connections&#39;; 返回字段详细说明 PROCESSLIST 核心字段 字段名 数据类型 说明 示例值 Id 整数 连接的唯一标识符（线程ID），可用于KILL命令 1, 2, 3… User 字符串 发起连接的MySQL用户名 root, app_user Host 字符串 客户端主机名或IP地址及端口号 localhost:3306, 192.168.1.100:52341 db 字符串 当前连接使用的数据库名，NULL表示未选择数据库 my_database, NULL Command 字符串 当前连接正在执行的命令类型 Query, Sleep, Connect Time 整数 当前状态持续的时间（秒） 0, 30, 120 State 字符串 连接的详细状态信息 Sending data, NULL Info 文本 正在执行的SQL语句，NULL表示无查询 SELECT * FROM users Command 字段常见值 值 含义 说明 Query 正在执行查询 连接正在处理SQL语句 Sleep 连接空闲 等待客户端发送新命令 Connect 正在连接 客户端正在建立连接 Quit 正在断开连接 连接正在关闭 Init DB 切换数据库 正在执行USE database命令 Field List 获取字段列表 获取表结构信息 Statistics 获取统计信息 收集或计算统计数据 State 字段常见值 状态 含义 解释 NULL 或 空 空闲状态 连接未执行任何操作 Sending data 发送数据 正在向客户端发送查询结果 Waiting for table level lock 等待表级锁 查询被表锁阻塞 Copying to tmp table 复制到临时表 创建临时表处理复杂查询 Sorting result 排序结果 正在对查询结果排序 Opening tables 打开表 正在打开和初始化表 Locked 被锁定 连接被某种锁机制阻塞 Statistics 计算统计信息 优化器正在收集表统计信息 INFORMATION_SCHEMA.PROCESSLIST 额外字段 字段名 说明 TIME_MS 状态持续时间的毫秒精度版本 STAGE 查询执行的当前阶段信息 MAX_STAGE 查询执行的最大阶段数 PROGRESS 当前阶段的完成进度（百分比） 连接状态统计说明 重要统计指标 统计项 命令 含义 用途 当前连接数 SHOW STATUS LIKE &#39;Threads_connected&#39; 当前已连接的线程总数 监控当前连接负载 活跃连接数 SHOW STATUS LIKE &#39;Threads_running&#39; 当前正在运行的线程数（非Sleep状态） 监控数据库活跃度 历史最大连接数 SHOW STATUS LIKE &#39;Max_used_connections&#39; 自MySQL启动以来的最大同时连接数 了解连接峰值，规划容量 实际应用示例 性能监控查询 -- 查找长时间运行的查询（超过60秒） SELECT Id, User, Host, DB, Time, State, Info FROM INFORMATION_SCHEMA.PROCESSLIST WHERE COMMAND = &#39;Query&#39; AND TIME &gt; 60 ORDER BY TIME DESC; -- 查找占用CPU的活跃连接 SELECT Id, User, Host, DB, Time, State, LEFT(Info, 50) AS Query_Preview FROM INFORMATION_SCHEMA.PROCESSLIST WHERE COMMAND != &#39;Sleep&#39; ORDER BY TIME DESC; -- 统计各用户的连接数 SELECT User, COUNT(*) AS Connection_Count FROM INFORMATION_SCHEMA.PROCESSLIST GROUP BY User ORDER BY Connection_Count DESC; 问题排查查询 -- 查找被锁定的连接 SELECT * FROM INFORMATION_SCHEMA.PROCESSLIST WHERE State LIKE &#39;%lock%&#39; OR State LIKE &#39;%Lock%&#39;; -- 查找特定数据库的所有连接 SELECT Id, User, Host, Command, Time, State FROM INFORMATION_SCHEMA.PROCESSLIST WHERE DB = &#39;your_database_name&#39;; -- 查找来自特定IP的连接 SELECT * FROM INFORMATION_SCHEMA.PROCESSLIST WHERE Host LIKE &#39;192.168.1.%&#39;; 连接管理操作 -- 终止特定连接（谨慎使用） KILL 123; -- 123是连接ID -- 终止特定用户的所有连接（批量操作，极其谨慎） SELECT CONCAT(&#39;KILL &#39;, Id, &#39;;&#39;) AS kill_command FROM INFORMATION_SCHEMA.PROCESSLIST WHERE User = &#39;problematic_user&#39; AND Command = &#39;Sleep&#39;; 最佳实践建议 1. 定期监控 建议定期检查长时间运行的查询 监控连接数是否接近最大连接限制 观察Sleep状态连接的累积情况 2. 性能优化 Time值较大的Query状态连接需要重点关注 频繁出现的等锁状态需要优化查询或索引 合理设置连接超时参数 3. 安全考虑 定期检查异常的连接来源 监控特权用户的连接活动 及时清理异常或可疑连接 4. 故障排除 结合慢查询日志分析长时间运行的查询 使用EXPLAIN分析有问题的SQL语句 监控锁等待和死锁情况 注意事项 权限要求：查看连接信息需要PROCESS权限 性能影响：频繁执行SHOW PROCESSLIST对性能影响很小 KILL命令：使用KILL命令终止连接时要格外谨慎 连接限制：注意max_connections参数设置，避免连接数耗尽 监控频率：建议结合监控工具定期自动检查连接状态 通过掌握这些连接信息查看和分析技能，可以更好地管理MySQL数据库，及时发现和解决性能问题。
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2025-06-03 15:52:30 +0800 CST'>June 3, 2025</span>&nbsp;·&nbsp;2 min&nbsp;·&nbsp;loveyu</footer>
+  <a class="entry-link" aria-label="post link to 查询mysql连接信息" href="http://localhost:1313/posts/databases/mysql_connection_info_guide/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">sql常用函数
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>SQL常用函数大全 SQL提供了丰富的函数集合，可以用于数据处理、分析和转换。本指南整理了常见的SQL函数类别及其用法示例。
+目录 1. 窗口函数 2. 聚合函数 3. 字符串函数 4. 日期和时间函数 5. 数值函数 6. 条件函数 7. 类型转换函数 8. JSON函数 9. 全文搜索函数 10. 加密和安全函数 11. 系统和元数据函数 12. 常见复合SQL示例 1. 窗口函数 窗口函数允许对结果集中的行进行计算，同时保留每行的独立性。
+基本语法 &lt;窗口函数&gt; OVER ([PARTITION BY &lt;分区列&gt;] [ORDER BY &lt;排序列&gt;] [&lt;窗口子句&gt;]) 排名函数 -- ROW_NUMBER(): 为每行分配唯一序号 SELECT name, score, ROW_NUMBER() OVER (ORDER BY score DESC) AS row_num FROM students; -- RANK(): 相同值获得相同排名，跳过下一个排名 SELECT name, score, RANK() OVER (ORDER BY score DESC) AS rank FROM students; -- DENSE_RANK(): 相同值获得相同排名，不跳过排名 SELECT name, score, DENSE_RANK() OVER (ORDER BY score DESC) AS dense_rank FROM students; -- NTILE(): 将分区数据分成指定数量的组 SELECT name, score, NTILE(4) OVER (ORDER BY score DESC) AS quartile FROM students; 聚合窗口函数 SELECT department, name, salary, AVG(salary) OVER (PARTITION BY department) AS dept_avg, SUM(salary) OVER (PARTITION BY department) AS dept_sum, COUNT(*) OVER (PARTITION BY department) AS dept_count FROM employees; 偏移函数 -- LAG(): 获取前面行的值 SELECT date, sales, LAG(sales) OVER (ORDER BY date) AS prev_day_sales FROM daily_sales; -- LEAD(): 获取后面行的值 SELECT date, sales, LEAD(sales) OVER (ORDER BY date) AS next_day_sales FROM daily_sales; 分析函数 -- FIRST_VALUE(): 窗口中第一个值 SELECT date, product, sales, FIRST_VALUE(sales) OVER (PARTITION BY product ORDER BY date) AS first_sale FROM product_sales; -- LAST_VALUE(): 窗口中最后一个值 SELECT date, product, sales, LAST_VALUE(sales) OVER ( PARTITION BY product ORDER BY date ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING ) AS last_sale FROM product_sales; 窗口子句 -- 计算3天移动平均值 SELECT date, sales, AVG(sales) OVER ( ORDER BY date ROWS BETWEEN 1 PRECEDING AND 1 FOLLOWING ) AS moving_avg FROM daily_sales; 2. 聚合函数 聚合函数对一组值执行计算并返回单个值。
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2025-04-27 14:11:37 +0800 CST'>April 27, 2025</span>&nbsp;·&nbsp;7 min&nbsp;·&nbsp;loveyu</footer>
+  <a class="entry-link" aria-label="post link to sql常用函数" href="http://localhost:1313/posts/databases/sql-functions/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">面试指南
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>go slice slice如何扩容？ 切片数量小于1024个元素那么扩容的时候slice的cap就翻倍,一旦超过1024个元素增长因子就变成零1.25也就是每次增长原来容量的四分之一.
+如果扩容之后还没有触及原来数组的容量,那么切片中的指针指向的位置就还是原数组位置,如果扩容之后超过了原数组的容量,那么go会开辟一块新的内存,把原来的值拷贝过来这种情况丝毫不会影响原数组
+map map 的key为什么是无序的？ map 在扩容后，会发生 key 的搬迁，原来落在同一个 bucket中的 key，搬迁后，有些 key 就要远走高飞了（bucket 序号加上了 2^B）。而遍历的过程，就是按顺序遍历 bucket，同时按顺序遍历 bucket 中的 key。搬迁后，key 的位置发生了重大的变化，有些 key 飞上高枝，有些 key 则原地不动。这样，遍历 map 的结果就不可能按原来的顺序了。
+不对现有的map做增删改操作为什么遍历时key还是无序的？ 当我们在遍历 map 时，并不是固定地从 0 号 bucket 开始遍历，每次都是从一个随机值序号的 bucket 开始遍历，并且是从这个 bucket 的一个随机序号的 cell 开始遍历。这样，即使你是一个写死的 map，仅仅只是遍历它，也不太可能会返回一个固定序列的 key/value 对了。
+在map遍历的时候对这个map做添加操作每次添加相同数量的key后为什么最后的map size都不一样？ 因为range取map的顺序随机，range会再次遍历刚刚新加入map的键值对。
+map的value存储为结构体该怎么修改值 直接取出value修改是无效的，修改方式有二：一拿出value修改value然后替换老的value. map[key] = newValue
+第二不要直接存储结构体而是存储结构体的指针，这样修改就可以获取指针然后进行修改. (*map[key]).name = value
+chan 无缓冲Chan的发送和接受是否同步？ ch := make(chan int) 无缓冲的channel由于没有缓冲发送的和接受需要同步
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-02-17 22:50:21 +0800 CST'>February 17, 2023</span>&nbsp;·&nbsp;2 min&nbsp;·&nbsp;loveyu</footer>
+  <a class="entry-link" aria-label="post link to 面试指南" href="http://localhost:1313/posts/go/interview/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">实战技巧
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Redis SETNX 命令在指定的 key 不存在时，为 key 设置指定的值。
+设置成功，返回 1 。 设置失败，返回 0 。
+可以用在分布式锁中
+SETNX KEY_NAME VALUE redis&gt; EXISTS job # job 不存在 (integer) 0 redis&gt; SETNX job &#34;programmer&#34; # job 设置成功 (integer) 1 redis&gt; SETNX job &#34;code-farmer&#34; # 尝试覆盖 job ，失败 (integer) 0 redis&gt; GET job # 没有被覆盖 &#34;programmer&#34; 分布式锁实现 type RedisLock struct { LockName string LockValue string TTl time.Duration } func NewRedisLock(lockName, lockValue string, tll time.Duration) *RedisLock { return &amp;RedisLock{ LockName: lockName, LockValue: lockValue, TTl: tll, } } func (r *RedisLock) TryLock() bool { result, err := redisClient.SetNX(global.Content, lockPrefix&#43;r.LockName, r.LockValue, r.TTl).Result() if err != nil { log.Println(err) } return result } // 使用lua脚本使多条命令具有原子性 var UnLockLuaScript string = ` if redis.call(&#34;GET&#34;,KEYS[1]) == ARGV[1] then return redis.call(&#34;DEL&#34;,KEYS[1]) else return 0 end` func (r *RedisLock) UnLock() { script := redis.NewScript(global.UnLockLuaScript) script.Run(global.Content, redisClient, []string{lockPrefix &#43; r.LockName}, r.LockValue) } Setbit Setbit 命令用于对 key 所储存的字符串值，设置或清除指定偏移量上的位(bit)。
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2022-12-04 19:38:37 +0800 CST'>December 4, 2022</span>&nbsp;·&nbsp;8 min&nbsp;·&nbsp;loveyu</footer>
+  <a class="entry-link" aria-label="post link to 实战技巧" href="http://localhost:1313/posts/go/%E5%AE%9E%E6%88%98%E6%8A%80%E5%B7%A7/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">mysql日志
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>UndoLog 悔做日志（Undo Log）是数据库事务管理的一个关键组成部分，尤其是在支持事务的存储引擎（如 MySQL 的 InnoDB 存储引擎）中。Undo Log 主要用于记录事务对数据的修改操作的反向操作，以便在事务回滚时撤销这些修改。在 InnoDB 存储引擎中，Undo Log 用于实现事务的原子性（Atomicity）和隔离性（Isolation）。
+功能 事务回滚：当一个事务需要回滚时（例如，事务执行过程中遇到错误或用户手动执行 ROLLBACK 命令），Undo Log 中存储的反向操作会被用来撤销事务对数据的所有更改，从而实现事务的原子性。
+多版本并发控制（MVCC）：InnoDB 存储引擎使用多版本并发控制（MVCC）技术来实现事务的隔离性。在 MVCC 模型中，不同事务对相同数据的修改不会直接覆盖数据，而是在 Undo Log 中生成一个数据的旧版本。这使得在同一时间点，不同事务可以看到数据的不同版本，从而实现事务的隔离性。
+工作流程 当一个事务开始执行时，InnoDB 会为该事务分配一个新的 Undo Log。如果该事务修改了数据，InnoDB 会将修改前的数据存储在 Undo Log 中。
+如果事务正常提交，Undo Log 中的记录会在一段时间后被清理。这个过程通常在下一个检查点（Checkpoint）时发生，因为检查点会确保所有相关的数据更改已经被持久化到磁盘。
+如果事务需要回滚，InnoDB 会使用 Undo Log 中的记录来撤销事务所做的所有更改。这样，数据可以恢复到事务开始前的状态，从而实现事务的原子性。
+在并发事务的情况下，Undo Log 中存储的数据旧版本用于实现多版本并发控制。当一个事务需要读取数据时，InnoDB 会根据该事务的隔离级别和 Undo Log 中的记录来确定应该返回哪个版本的数据。
+BinaryLog binlog 用于记录数据库执行的写入性操作(不包括查询)信息，以二进制的形式保存在磁盘中。由MySQL 的 Server 层实现的，所有引擎都可以使用
+BinLog是逻辑日志，记录的是这个语句的原始逻辑，比如“给 ID=2 这一行的 c 字段加 1 ”。
+binlog 是可以追加写入的。“追加写”是指 binlog 文件写到一定大小后会切换到下一个，并不会覆盖以前的日志。
+使用场景：主从复制和数据恢复
+查看BinLog日志模式: select @@binlog_format
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2022-05-24 19:38:37 +0800 CST'>May 24, 2022</span>&nbsp;·&nbsp;3 min&nbsp;·&nbsp;loveyu</footer>
+  <a class="entry-link" aria-label="post link to mysql日志" href="http://localhost:1313/posts/databases/mysql%E6%97%A5%E5%BF%97/"></a>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2025 <a href="http://localhost:1313/">loveyu233</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

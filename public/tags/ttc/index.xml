@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>TTC on loveyu233</title>
+    <link>http://localhost:1313/tags/ttc/</link>
+    <description>Recent content in TTC on loveyu233</description>
+    <image>
+      <title>loveyu233</title>
+      <url>http://localhost:1313/images/cover.png</url>
+      <link>http://localhost:1313/images/cover.png</link>
+    </image>
+    <generator>Hugo -- 0.147.7</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Fri, 22 Sep 2023 16:54:10 +0800</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/ttc/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>分布式事务</title>
+      <link>http://localhost:1313/posts/go/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/</link>
+      <pubDate>Fri, 22 Sep 2023 16:54:10 +0800</pubDate>
+      <guid>http://localhost:1313/posts/go/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/</guid>
+      <description>&lt;p&gt;来源文章:&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://mp.weixin.qq.com/s/Z-ZY9VYUzNER8iwk80XSxA&#34;&gt;万字长文漫谈分布式事务实现原理&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://mp.weixin.qq.com/s/aTQ6mgVUbUqn69NLmXh_7A&#34;&gt;从零到一搭建 TCC 分布式事务框架&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://learn.microsoft.com/zh-cn/azure/architecture/reference-architectures/saga/saga&#34;&gt;微软SAGA解答&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://cloud.tencent.com/developer/article/1839642&#34;&gt;10分钟说透Saga分布式事务&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;现有实现:&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://dtm.pub/guide/start.html&#34;&gt;DTM&lt;/a&gt;&lt;/p&gt;
+&lt;h1 id=&#34;事务的核心特征acid&#34;&gt;事务的核心特征ACID&lt;/h1&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;h3 id=&#34;atomicity原子性&#34;&gt;Atomicity原子性&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;全部成功或者全部失败&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;h3 id=&#34;consistency一致性&#34;&gt;Consistency一致性&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;宏观角度下的全局数据保持一致&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;h3 id=&#34;isolation隔离性&#34;&gt;Isolation隔离性&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;并发事务不互相干扰&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;h3 id=&#34;durability持久性&#34;&gt;Durability持久性&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;事务提交后，变更永久生效&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h1 id=&#34;什么是分布式事务&#34;&gt;什么是分布式事务&lt;/h1&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;code&gt;对两个或以上独立服务进行调用操作,保证这些操作同时成功或失败,在失败时要做到回滚操作,恢复到失败前的状态&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;例如订单创建操作,分别有账户系统和库存系统&lt;/p&gt;
+&lt;p&gt;在处理一笔来自用户创建订单的请求时，需要执行两步操作：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;从账户系统中，扣减用户的账户余额&lt;/li&gt;
+&lt;li&gt;从库存系统中，扣减商品的剩余库存&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;从技术流程上来讲，两个步骤是相对独立的两个操作，底层涉及到的存储介质也是相互独立的，因此无法基于本地事务的实现方式,所以需要分布式事务解决问题&lt;/p&gt;&lt;/blockquote&gt;
+&lt;h1 id=&#34;事务消息实现方案&#34;&gt;事务消息实现方案&lt;/h1&gt;
+&lt;h2 id=&#34;概念&#34;&gt;概念&lt;/h2&gt;
+&lt;p&gt;偏狭义的分布式事务解决方案是&lt;code&gt;基于消息队列&lt;/code&gt; MessageQueue（后续简称 MQ）实现的事务消息 Transaction Message.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;at least once : &lt;/code&gt; 投递到 MQ 中的消息能至少被下游消费者 consumer 消费到一次.&lt;/p&gt;
+&lt;p&gt;基于此，MQ 组件能够保证消息不会在消费环节丢失，但是无法解决消息的重复性问题. 因此，倘若我们需要追求精确消费一次的目标，则下游的 consumer 还需要&lt;code&gt;基于消息的唯一键执行幂等去重操作&lt;/code&gt;，在 at least once 的基础上过滤掉重复消息，最终达到 &lt;code&gt;exactly once&lt;/code&gt; 的语义.&lt;/p&gt;
+&lt;p&gt;依赖于 MQ 中 at least once 的性质，我们简单认为，只要把一条消息成功投递到 MQ 组件中，它就&lt;code&gt;一定被下游 consumer 端消费端&lt;/code&gt;，至少不会发生消息丢失的问题.&lt;/p&gt;
+&lt;h2 id=&#34;场景&#34;&gt;场景&lt;/h2&gt;
+&lt;p&gt;假如执行一个分布式事务，事务流程中包含需要在服务 A 中执行的动作 I 以及需要在服务 B 中执行的动作 II&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

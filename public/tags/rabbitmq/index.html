@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>RabbitMQ | loveyu233</title>
+<meta name="keywords" content="">
+<meta name="description" content="我的个人博客 - 分享技术与生活">
+<meta name="author" content="loveyu233">
+<link rel="canonical" href="http://localhost:1313/tags/rabbitmq/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.e13ff79a7b90ac30a7f805291f902c75095888118dcb1fccef74850e837f1253.css" integrity="sha256-4T/3mnuQrDCn&#43;AUpH5AsdQlYiBGNyx/M73SFDoN/ElM=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" type="application/rss+xml" href="http://localhost:1313/tags/rabbitmq/index.xml">
+<link rel="alternate" hreflang="zh-cn" href="http://localhost:1313/tags/rabbitmq/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:url" content="http://localhost:1313/tags/rabbitmq/">
+  <meta property="og:site_name" content="loveyu233">
+  <meta property="og:title" content="RabbitMQ">
+  <meta property="og:description" content="我的个人博客 - 分享技术与生活">
+  <meta property="og:locale" content="zh-cn">
+  <meta property="og:type" content="website">
+      <meta property="og:image" content="http://localhost:1313/images/cover.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://localhost:1313/images/cover.png">
+<meta name="twitter:title" content="RabbitMQ">
+<meta name="twitter:description" content="我的个人博客 - 分享技术与生活">
+
+</head>
+
+<body class="list" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="loveyu233 (Alt + H)">loveyu233</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/archives" title="归档">
+                    <span>归档</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/search/" title="搜索">
+                    <span>搜索</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/tags/" title="标签">
+                    <span>标签</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main"> 
+<header class="page-header"><div class="breadcrumbs"><a href="http://localhost:1313/">Home</a>&nbsp;»&nbsp;<a href="http://localhost:1313/tags/">Tags</a></div>
+  <h1>
+    RabbitMQ
+    <a href="/tags/rabbitmq/index.xml" title="RSS" aria-label="RSS">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" height="23">
+        <path d="M4 11a9 9 0 0 1 9 9" />
+        <path d="M4 4a16 16 0 0 1 16 16" />
+        <circle cx="5" cy="19" r="1" />
+      </svg>
+    </a>
+  </h1>
+</header>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Go Rabbitmq
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>RabbitMQ模式 简单模式（Simple Mode）： 简单模式是最基本的模式，也是最简单的消息传递模式。它包括一个生产者将消息发送到一个队列中，然后一个消费者从同一个队列接收消息并进行处理。 工作队列模式（Work Queue Mode）： 工作队列模式也被称为任务队列模式或消息队列模式。它包括一个生产者将任务发送到一个队列中，多个消费者从同一个队列接收任务并进行处理。每个任务只能由一个消费者处理，确保任务的负载均衡。 发布/订阅模式（Publish/Subscribe Mode）： 发布/订阅模式用于将消息广播给多个消费者。生产者将消息发布到交换机（Exchange），然后交换机将消息传递到所有绑定的队列中，每个队列都有自己的消费者来接收和处理消息。 路由模式（Direct Exchange Mode）： 路由模式是基于消息的路由键（Routing Key）进行消息传递的一种模式。生产者将消息发送到交换机，并指定一个特定的路由键，交换机将消息传递给所有与该路由键匹配的队列，每个队列都有自己的消费者来接收和处理消息。 主题模式（Topic Exchange Mode）： 主题模式是路由模式的扩展，它支持使用通配符的路由键进行消息传递。生产者将消息发送到交换机，并指定一个匹配规则的路由键模式，交换机根据匹配规则将消息传递给符合条件的队列，每个队列都有自己的消费者来接收和处理消息。 领域特定语言模式（Distributed Domain-Specific Language Mode）： 领域特定语言模式（也称为流派特定语言模式）是一种用于实现复杂分布式系统的高级模式。它基于领域特定语言（DSL）来定义和描述消息的流动和处理过程，以实现更精确的消息传递和处理策略。 直连模式（Direct） 创建连接和信道。 声明交换机和队列。 将队列绑定到交换机，并指定路由键。 发布消息到交换机，附带指定的路由键。 // 创建连接和信道 conn, err := amqp.Dial(&#34;amqp://guest:guest@localhost:5672/&#34;) ch, err := conn.Channel() // 声明交换机和队列 q, err := ch.QueueDeclare(&#34;my_queue&#34;, false, false, false, false, nil) // 将队列绑定到交换机，并指定路由键 err = ch.QueueBind(q.Name, &#34;my_routing_key&#34;, &#34;my_exchange&#34;, false, nil) // 发布消息到交换机，附带指定的路由键 msg := amqp.Publishing{ Body: []byte(&#34;Hello, RabbitMQ!&#34;), } err = ch.Publish(&#34;my_exchange&#34;, &#34;my_routing_key&#34;, false, false, msg) 主题模式（Topic） 创建连接和信道。 声明交换机和队列。 将队列绑定到交换机，并使用通配符形式的路由键进行匹配。 发布消息到交换机，附带指定的路由键。 // 创建连接和信道 conn, err := amqp.Dial(&#34;amqp://guest:guest@localhost:5672/&#34;) ch, err := conn.Channel() // 声明交换机和队列 q, err := ch.QueueDeclare(&#34;my_queue&#34;, false, false, false, false, nil) // 将队列绑定到交换机，并使用通配符形式的路由键进行匹配 err = ch.QueueBind(q.Name, &#34;my_topic.#&#34;, &#34;my_exchange&#34;, false, nil) // 发布消息到交换机，附带指定的路由键 msg := amqp.Publishing{ Body: []byte(&#34;Hello, RabbitMQ!&#34;), } err = ch.Publish(&#34;my_exchange&#34;, &#34;my_topic.key&#34;, false, false, msg) 发布/订阅模式（Publish/Subscribe） 创建连接和信道。 声明交换机。 声明多个队列。 将队列绑定到交换机。 发布消息到交换机。 // 创建连接和信道 conn, err := amqp.Dial(&#34;amqp://guest:guest@localhost:5672/&#34;) ch, err := conn.Channel() // 声明交换机 err = ch.ExchangeDeclare(&#34;my_exchange&#34;, &#34;fanout&#34;, false, false, false, false, nil) // 声明多个队列 q1, err := ch.QueueDeclare(&#34;queue1&#34;, false, false, false, false, nil) q2, err := ch.QueueDeclare(&#34;queue2&#34;, false, false, false, false, nil) // 将队列绑定到交换机 err = ch.QueueBind(q1.Name, &#34;&#34;, &#34;my_exchange&#34;, false, nil) err = ch.QueueBind(q2.Name, &#34;&#34;, &#34;my_exchange&#34;, false, nil) // 发布消息到交换机 msg := amqp.Publishing{ Body: []byte(&#34;Hello, RabbitMQ!&#34;), } err = ch.Publish(&#34;my_exchange&#34;, &#34;&#34;, false, false, msg) 工作队列模式（Work Queue） 创建连接和信道。 声明队列。 发布消息到队列。 // 创建连接和信道 conn, err := amqp.Dial(&#34;amqp://guest:guest@localhost:5672/&#34;) ch, err := conn.Channel() // 声明队列 q, err := ch.QueueDeclare(&#34;my_queue&#34;, false, false, false, false, nil) // 发布消息到队列 msg := amqp.Publishing{ Body: []byte(&#34;Hello, RabbitMQ!&#34;), } err = ch.Publish(&#34;&#34;, q.Name, false, false, msg) 可选参数 /* x-message-ttl：设置消息的过期时间（Time to Live），单位为毫秒。超过该时间的消息将被自动删除。 x-expires：设置队列的过期时间，单位为毫秒。如果在指定的时间内没有连接使用该队列，队列将被自动删除。 x-max-length：设置队列的最大长度限制。一旦达到该限制，后续的消息将会被拒绝或被丢弃。 x-max-length-bytes：设置队列的最大占用空间限制。一旦达到该限制，后续的消息将会被拒绝或被丢弃。 x-dead-letter-exchange：设置队列的死信交换机，用于处理被拒绝、过期或达到最大重试次数的消息。 x-dead-letter-routing-key：设置队列的死信路由键，用于指定被发送到死信交换机的消息的路由键。 x-overflow：设置队列溢出行为。可以是 drop-head（删除最早的消息）或 reject-publish（拒绝发布新消息）。 */ amqp.Table{} 死信队列代码 设置&#34;x-message-ttl&#34;: &#34;2000&#34;,无效,会导致数据无法发送成功
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-06-23 10:01:17 +0800 CST'>June 23, 2023</span>&nbsp;·&nbsp;4 min&nbsp;·&nbsp;loveyu</footer>
+  <a class="entry-link" aria-label="post link to Go Rabbitmq" href="http://localhost:1313/posts/go/go-rabbitmq/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">springBoot整合rabbitMQ
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>SpringBoot 整合 rabbitMQ mac安装brew install rabbitmq
+application.yml设置 spring: rabbitmq: host: 47.115.50.193 username: admin password: admin 创建交换机，消息队列，并进行绑定 @Configuration public class RabbitMQConfig { private static final String TOPIC_NAME = &#34;top_name&#34;; private static final String QUEUE_NAME = &#34;queue_name&#34;; //交换机 @Bean(&#34;queueEx&#34;) public Exchange queueEx(){ return ExchangeBuilder.topicExchange(TOPIC_NAME).durable(true).build(); } //消息队列 @Bean(&#34;queue&#34;) public Queue queue(){ return QueueBuilder.durable(QUEUE_NAME).build(); } //绑定 @Bean public Binding queueExchange(@Qualifier(&#34;queueEx&#34;) Exchange exchange,@Qualifier(&#34;queue&#34;) Queue queue){ return BindingBuilder.bind(queue).to(exchange).with(&#34;a.#&#34;).noargs(); } } @Autowired private RabbitTemplate rabbitTemplate; 生产者 public void q(){ rabbitTemplate.convertAndSend(&#34;top_name&#34;,&#34;a.qwe&#34;,&#34;rabbitmqboot&#34;); } 消费者 @RabbitListener(queues = &#34;queue_name&#34;) //设置要监听的消息队列 public void listenerq(Message message,Channel channel){ System.out.println(new String(message.getBody())); } 消息可靠投递 Application.yml配置 rabbitmq: publisher-confirm-type: correlated Java代码配置 package com.xiaoyu.config; import org.springframework.amqp.core.ReturnedMessage; import org.springframework.amqp.rabbit.connection.CorrelationData; import org.springframework.amqp.rabbit.core.RabbitTemplate; import org.springframework.beans.factory.annotation.Autowired; import org.springframework.stereotype.Component; import javax.annotation.PostConstruct; @Component public class PubConfirmAndReturn implements RabbitTemplate.ReturnsCallback,RabbitTemplate.ConfirmCallback{ @Autowired RabbitTemplate rabbitTemplate; @PostConstruct public void init(){ rabbitTemplate.setReturnsCallback(this); rabbitTemplate.setConfirmCallback(this); } //confirm确定模式 @Override public void confirm(CorrelationData correlationData, boolean b, String s) { if (b) { System.out.println(&#34;消息发送到exchange成功&#34;); } else { System.out.println(&#34;失败原因：&#34;&#43; s); } } //return退回模式 @Override public void returnedMessage(ReturnedMessage returnedMessage) { System.out.println(&#34;消息送exchange到queue失败，详情为：&#34;); System.out.println(&#34;消息主体 message : &#34;&#43;new String(returnedMessage.getMessage().getBody())); System.out.println(&#34;描述：&#34;&#43; returnedMessage.toString()); System.out.println(&#34;消息使用的交换器 exchange : &#34;&#43; returnedMessage.getExchange()); System.out.println(&#34;消息使用的路由键 routing : &#34;&#43; returnedMessage.getRoutingKey()); } } rabbitmq 整个消息投递的路径为： producer—&gt;rabbitmq broker—&gt;exchange—&gt;queue—&gt;consumer 消息从 producer 到 exchange 则会返回一个 confirmCallback 确认模式。 消息从 exchange–&gt;queue 投递失败则会返回一个 returnCallback退回模式 。
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2019-10-12 11:28:07 +0800 CST'>October 12, 2019</span>&nbsp;·&nbsp;3 min&nbsp;·&nbsp;loveyu</footer>
+  <a class="entry-link" aria-label="post link to springBoot整合rabbitMQ" href="http://localhost:1313/posts/java/springboot%E6%95%B4%E5%90%88rabbitmq/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Java RabbitMQ
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>安装： rpm -Uvh https://download.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+yum install erlang
+yum install socat
+rpm -Uvh https://github.com/rabbitmq/rabbitmq-server/releases/download/v3.8.0/rabbitmq-server-3.8.0-1.el7.noarch.rpm
+rpm –import https://www.rabbitmq.com/rabbitmq-release-signing-key.asc
+yum install rabbitmq-server-3.6.8-1.el7.noarch.rpm
+service rabbitmq-server start
+service rabbitmq-server status
+rabbitmq-service start 开始服务
+Rabbitmq-service stop 停止服务
+rabbitmq-server -detached 后台运行
+hello world简单模式 一对一，一个生产者对应一个消费者。 简单模式不需要创建交换机，但是有交换机，是使用的默认交换机。 生产者 package com.xiaoyu.test1; import com.rabbitmq.client.*; import java.io.IOException; import java.util.concurrent.TimeoutException; public class Pro_HelloWorld { public static void main(String[] args) throws IOException, TimeoutException { //配置连接信息 ConnectionFactory factory = new ConnectionFactory(); factory.setHost(&#34;47.115.50.193&#34;);	//ip factory.setPort(5672);	//端口号 factory.setVirtualHost(&#34;/&#34;);	//虚拟机 factory.setUsername(&#34;admin&#34;);	//账户 factory.setPassword(&#34;admin&#34;);	//密码 //配置管道 Connection connection = factory.newConnection(); Channel channel = connection.createChannel(); //队列创建 channel.queueDeclare(&#34;helloworld&#34;, true, false, false, null); /*	参数： queue：队列名称，如果没有这个队列则创建这个队列，有则不会创建。 durable：是否持久化，当mq重启之后是否还有消息。 exclusive：是否独占，只能有一个消费者监听这队列，当connection关闭时，是否删除队列。 autoDelete：是否自动删除，让没有consumer时，自动删除掉。 arguments：参数。 */ //发送消息 String body = &#34;hell rabbitMQ&#34;; channel.basicPublish(&#34;&#34;, &#34;helloworld&#34;, null, body.getBytes()); /*	参数： exchange：交换机名称，简单模式下交换机会使用默认的 ‘’ ’‘。 routingKey：路由名称，使用默认交换机的话路由名称要和队列名称一致。 props：配置信息。 body：发送的消息数据。 */ //关闭 channel.close(); connection.close(); } } 消费者 package com.xiaoyu.test1; import com.rabbitmq.client.*; import java.io.IOException; import java.util.concurrent.TimeoutException; public class Con_HelloWorld { public static void main(String[] args) throws IOException, TimeoutException { //创建连接工厂 ConnectionFactory factory = new ConnectionFactory(); factory.setHost(&#34;47.115.50.193&#34;); factory.setPort(5672); factory.setVirtualHost(&#34;/&#34;); factory.setUsername(&#34;admin&#34;); factory.setPassword(&#34;admin&#34;); //创建连接 Connection connection = factory.newConnection(); //创建管道 Channel channel = connection.createChannel(); //配置信息 channel.queueDeclare(&#34;hello_world1&#34;, true, false, false, null); //消息接收到时自动执行该方法 Consumer consumer = new DefaultConsumer(channel) { @Override public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException { System.out.println(&#34;consumerTag标识:&#34; &#43; consumerTag); System.out.println(&#34;Exchange管道:&#34; &#43; envelope.getExchange()); System.out.println(&#34;RoutingKey路由key:&#34; &#43; envelope.getRoutingKey()); System.out.println(&#34;properties属性:&#34; &#43; properties); System.out.println(&#34;body消息:&#34; &#43; new String(body)); } }; //设置接受那个管道 channel.basicConsume(&#34;hello_world1&#34;, true, consumer); } } Work queues工作队列模式 一对多，一个生产者多个消费者。 工作模式不需要创建交换机，但是有交换机，是使用的默认交换机。 生产者
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2019-09-24 19:38:37 +0800 CST'>September 24, 2019</span>&nbsp;·&nbsp;4 min&nbsp;·&nbsp;loveyu</footer>
+  <a class="entry-link" aria-label="post link to Java RabbitMQ" href="http://localhost:1313/posts/java/java-rabbitmq/"></a>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2025 <a href="http://localhost:1313/">loveyu233</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

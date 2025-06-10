@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Redis | loveyu233</title>
+<meta name="keywords" content="">
+<meta name="description" content="我的个人博客 - 分享技术与生活">
+<meta name="author" content="loveyu233">
+<link rel="canonical" href="http://localhost:1313/tags/redis/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.e13ff79a7b90ac30a7f805291f902c75095888118dcb1fccef74850e837f1253.css" integrity="sha256-4T/3mnuQrDCn&#43;AUpH5AsdQlYiBGNyx/M73SFDoN/ElM=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" type="application/rss+xml" href="http://localhost:1313/tags/redis/index.xml">
+<link rel="alternate" hreflang="zh-cn" href="http://localhost:1313/tags/redis/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:url" content="http://localhost:1313/tags/redis/">
+  <meta property="og:site_name" content="loveyu233">
+  <meta property="og:title" content="Redis">
+  <meta property="og:description" content="我的个人博客 - 分享技术与生活">
+  <meta property="og:locale" content="zh-cn">
+  <meta property="og:type" content="website">
+      <meta property="og:image" content="http://localhost:1313/images/cover.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://localhost:1313/images/cover.png">
+<meta name="twitter:title" content="Redis">
+<meta name="twitter:description" content="我的个人博客 - 分享技术与生活">
+
+</head>
+
+<body class="list" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="loveyu233 (Alt + H)">loveyu233</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/archives" title="归档">
+                    <span>归档</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/search/" title="搜索">
+                    <span>搜索</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/tags/" title="标签">
+                    <span>标签</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main"> 
+<header class="page-header"><div class="breadcrumbs"><a href="http://localhost:1313/">Home</a>&nbsp;»&nbsp;<a href="http://localhost:1313/tags/">Tags</a></div>
+  <h1>
+    Redis
+    <a href="/tags/redis/index.xml" title="RSS" aria-label="RSS">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" height="23">
+        <path d="M4 11a9 9 0 0 1 9 9" />
+        <path d="M4 4a16 16 0 0 1 16 16" />
+        <circle cx="5" cy="19" r="1" />
+      </svg>
+    </a>
+  </h1>
+</header>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">面试指南
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>go slice slice如何扩容？ 切片数量小于1024个元素那么扩容的时候slice的cap就翻倍,一旦超过1024个元素增长因子就变成零1.25也就是每次增长原来容量的四分之一.
+如果扩容之后还没有触及原来数组的容量,那么切片中的指针指向的位置就还是原数组位置,如果扩容之后超过了原数组的容量,那么go会开辟一块新的内存,把原来的值拷贝过来这种情况丝毫不会影响原数组
+map map 的key为什么是无序的？ map 在扩容后，会发生 key 的搬迁，原来落在同一个 bucket中的 key，搬迁后，有些 key 就要远走高飞了（bucket 序号加上了 2^B）。而遍历的过程，就是按顺序遍历 bucket，同时按顺序遍历 bucket 中的 key。搬迁后，key 的位置发生了重大的变化，有些 key 飞上高枝，有些 key 则原地不动。这样，遍历 map 的结果就不可能按原来的顺序了。
+不对现有的map做增删改操作为什么遍历时key还是无序的？ 当我们在遍历 map 时，并不是固定地从 0 号 bucket 开始遍历，每次都是从一个随机值序号的 bucket 开始遍历，并且是从这个 bucket 的一个随机序号的 cell 开始遍历。这样，即使你是一个写死的 map，仅仅只是遍历它，也不太可能会返回一个固定序列的 key/value 对了。
+在map遍历的时候对这个map做添加操作每次添加相同数量的key后为什么最后的map size都不一样？ 因为range取map的顺序随机，range会再次遍历刚刚新加入map的键值对。
+map的value存储为结构体该怎么修改值 直接取出value修改是无效的，修改方式有二：一拿出value修改value然后替换老的value. map[key] = newValue
+第二不要直接存储结构体而是存储结构体的指针，这样修改就可以获取指针然后进行修改. (*map[key]).name = value
+chan 无缓冲Chan的发送和接受是否同步？ ch := make(chan int) 无缓冲的channel由于没有缓冲发送的和接受需要同步
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-02-17 22:50:21 +0800 CST'>February 17, 2023</span>&nbsp;·&nbsp;2 min&nbsp;·&nbsp;loveyu</footer>
+  <a class="entry-link" aria-label="post link to 面试指南" href="http://localhost:1313/posts/go/interview/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Go Redis项目使用
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>redis实战总结 一：redis存储验证码 相关代码 只展示相关技术点的代码，看完可自己实现
+生成验证码
+func Code() string { rnd := rand.New(rand.NewSource(time.Now().UnixNano())) vcode := fmt.Sprintf(&#34;%06v&#34;, rnd.Int31n(1000000)) return vcode } 存储和读取redis
+client := redis.NewClient(&#34;url&#34;) // key可以为用户手机号、value为Code()生成的验证码；成功保存的返回值为：result:ok err:nil result, err := client.Set(context.TODO(), &#34;key&#34;, &#34;value&#34;, time.Second*60).Result() // result为 key 对应的 value result, err = client.Get(context.TODO(), &#34;key&#34;).Result() 生成jwt/判断jwt
+/*参数结构体为自定义结构体： type JwtClaims struct { tb.TbUser jwt.StandardClaims } 只要包含jwt.StandardClaims即可，其中jwt.StandardClaims的ExpiresAt为设置过期时间 */ func CreateToken(jwtClaims sys.JwtClaims) (string, error) { claims := jwt.NewWithClaims(jwt.SigningMethodHS256, &amp;jwtClaims) token, err := claims.SignedString(&#34;miyao suibian&#34;) return token, err } func ParseToken(token string) (*sys.JwtClaims, error) { claims, err := jwt.ParseWithClaims(token, &amp;sys.JwtClaims{}, func(token *jwt.Token) (interface{}, error) { return &#34;miyao suibian&#34;, nil }) if err != nil { return nil, err } // 返回值强转为自定义结构体的类型，方便取值 return claims.Claims.(*sys.JwtClaims), nil } 二：redis分布式锁 原因 用redis分布式锁的原因：如果用语言自带的锁只能在当前的进程中锁，如果后续服务不再是单体服务而是横向扩展为多个服务同时运行在多个进程中的时候是无法共享锁的，所以需要用到分布式锁，用来在多个进程中共享锁
+原理 redis中有一个命令：setnx key value
+不存在这个key的时候执行该命令返回值为1，当存在key的时候返回值为0
+可以借助这个命令来实现锁：
+当多个线程并发过来的时候，都要先执行setnx命令，返回值为1的即为拿到锁，返回值为0的为没有拿到锁，当拿到锁的线程执行完毕后执行del key 命令删除该key，后续的线程再执行setnx返回值为1即拿到锁。根据这个原理来实现redis分布式锁
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2022-10-23 19:38:37 +0800 CST'>October 23, 2022</span>&nbsp;·&nbsp;4 min&nbsp;·&nbsp;loveyu</footer>
+  <a class="entry-link" aria-label="post link to Go Redis项目使用" href="http://localhost:1313/posts/go/go-redis%E9%A1%B9%E7%9B%AE%E4%BD%BF%E7%94%A8/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Redis雪崩击穿和穿透
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>1. 缓存击穿 什么是缓存击穿 缓存击穿也叫热点key问题，就是一个被高并发访问并且缓存重建业务比较复杂的key突然失效，无数的请求访问会在瞬间给数据库带来巨大的冲击。
+常见解决办法 1. 互斥锁 2. 逻辑过期 解决方案对比 解决办法 优点 缺点 互斥锁 1.没有额外内存消耗；2.保证一致性；3.实现简单 1.线程需要等待，性能受影响；2.可能有死锁风险 逻辑过期 线程无需等待，性能较好 1.不保证一致性；2.有额外内存消耗；3.实现复杂 2.缓存雪崩 什么是缓存雪崩 缓存雪崩是指在同一时段大量的缓存key同时失效或者redis服务宕机，导致大量请求直达数据库，带来巨大压力。
+常见解决办法 给不同的key的TTL添加随机值，防止同一时间失效 利用redis集群提高服务的可用性 给缓存业务添加降级限流策略 给业务添加多级缓存 缓存穿透 什么是缓存穿透 缓存穿透是指客户端请求的数据在缓存中和数据库中都不存在，这样缓存永远不会生效，这些请求都会打到数据库。
+常见解决办法 1. 缓存空对象 2. 布隆过滤器 解决方案对比 解决方案 优点 缺点 缓存空对象 实现简单，维护方便 额外内存消耗，可能造成短期数据不一致 布隆过滤器 内存占用少，没有多余key 实现复杂，存在误判 </p>
+  </div>
+  <footer class="entry-footer"><span title='2022-10-13 19:38:37 +0800 CST'>October 13, 2022</span>&nbsp;·&nbsp;1 min&nbsp;·&nbsp;loveyu</footer>
+  <a class="entry-link" aria-label="post link to Redis雪崩击穿和穿透" href="http://localhost:1313/posts/databases/redis%E9%9B%AA%E5%B4%A9%E5%87%BB%E7%A9%BF%E5%92%8C%E7%A9%BF%E9%80%8F/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Go Redis使用lua脚本
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>lua脚本 return redis.call(&#34;set&#34;, KEYS[1], ARGV[1]) go-redis使用 package main import ( &#34;context&#34; &#34;github.com/go-redis/redis/v8&#34; &#34;io/ioutil&#34; ) func main() { client := redis.NewClient(&amp;redis.Options{ Addr: &#34;127.0.0.1:6379&#34;, }) file, _ := ioutil.ReadFile(&#34;lua.lua&#34;) script := redis.NewScript(string(file)) // 这里你的脚本上有几个key你就在数组里面写几个对应key // 最后一个参数是对应你脚本里面的argv，你脚本里面有几个你就写几个 println(script.Run(context.Background(), client, []string{&#34;name&#34;}, &#34;asd&#34;).String()) } </p>
+  </div>
+  <footer class="entry-footer"><span title='2020-12-04 19:38:37 +0800 CST'>December 4, 2020</span>&nbsp;·&nbsp;1 min&nbsp;·&nbsp;loveyu</footer>
+  <a class="entry-link" aria-label="post link to Go Redis使用lua脚本" href="http://localhost:1313/posts/go/go-redis%E4%BD%BF%E7%94%A8lua%E8%84%9A%E6%9C%AC/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">redis
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Redis数据类型 1. string字符串 分布式锁 setnx key value del key 自增自减 incrby key value decrby key value 2. list双端队列 消息订阅 lpush key value
+rpop key value
+3. hash 购物车 // 新增商品 hset shopcar:uid shopid number // 商品个数添加 hincrby shopcar:uid shopid 1 // 查看用户全部购物车商品总数 hlen shopcar:uid // 全部选择 hgetall shopcar:uid 127.0.0.1:6379&gt; hset shopcar:01 001 1 (integer) 1 127.0.0.1:6379&gt; hset shopcar:01 002 1 (integer) 1 127.0.0.1:6379&gt; hlen shopcar:01 (integer) 2 127.0.0.1:6379&gt; hgetall shopcar:01 1) &#34;001&#34; 2) &#34;1&#34; 3) &#34;002&#34; 4) &#34;1&#34; 127.0.0.1:6379&gt; hincrby shopcar:01 001 1 (integer) 2 127.0.0.1:6379&gt; hincrby shopcar:01 001 -1 (integer) 1 127.0.0.1:6379&gt; hgetall shopcar:01 1) &#34;001&#34; 2) &#34;1&#34; 3) &#34;002&#34; 4) &#34;1&#34; 4. set无序无重复集合 抽奖 // 参与抽奖 sadd key userid // 获取参与人数 scard key // 开始抽奖,number为此次中奖人数 srandmember key number // 抽完奖后还可以继续参与抽奖 spop key number	// 抽完奖就弹出不可以参加下一轮抽奖 127.0.0.1:6379&gt; sadd s 001 (integer) 1 127.0.0.1:6379&gt; sadd s 002 (integer) 1 127.0.0.1:6379&gt; sadd s 003 (integer) 1 127.0.0.1:6379&gt; sadd s 004 (integer) 1 127.0.0.1:6379&gt; scard s (integer) 4 127.0.0.1:6379&gt; srandmember s 2 1) &#34;003&#34; 2) &#34;001&#34; 127.0.0.1:6379&gt; scard s (integer) 4 127.0.0.1:6379&gt; spop s 2 1) &#34;003&#34; 2) &#34;004&#34; 127.0.0.1:6379&gt; scard s (integer) 2 点赞 // 新增点赞 sadd msgid userid // 取消点赞 srem msgid userid // 获取所有点赞的用户id smembers msgid // 点赞统计 scard msgid // 判断用户是否点过赞 sismember msgid userid 127.0.0.1:6379&gt; sadd msg:1 001 (integer) 1 127.0.0.1:6379&gt; sadd msg:1 002 (integer) 1 127.0.0.1:6379&gt; sadd msg:1 003 (integer) 1 127.0.0.1:6379&gt; smembers msg:1 1) &#34;003&#34; 2) &#34;002&#34; 3) &#34;001&#34; 127.0.0.1:6379&gt; smembers msg:1 1) &#34;003&#34; 2) &#34;002&#34; 3) &#34;001&#34; 127.0.0.1:6379&gt; scard msg:1 (integer) 3 127.0.0.1:6379&gt; srem msg:1 002 (integer) 1 127.0.0.1:6379&gt; sismember msg:1 002 (integer) 0 127.0.0.1:6379&gt; sismember msg:1 001 (integer) 1 好友 // 添加好友 sadd uid huid // A和B共同好友,交集 sinter uidA uidB // A没有B有的,差集 sdiff uidA uidB // A和B都有的,并集 sunion uidA uidB 127.0.0.1:6379&gt; sadd uidA 001 002 003 004 (integer) 4 127.0.0.1:6379&gt; sadd uidB 002 003 004 005 (integer) 4 127.0.0.1:6379&gt; sinter uidA uidB 1) &#34;003&#34; 2) &#34;002&#34; 3) &#34;004&#34; 127.0.0.1:6379&gt; sdiff uidA uidB 1) &#34;001&#34; 127.0.0.1:6379&gt; sdiff uidB uidA 1) &#34;005&#34; 127.0.0.1:6379&gt; sunion uidA uidB 1) &#34;001&#34; 2) &#34;005&#34; 3) &#34;002&#34; 4) &#34;004&#34; 5) &#34;003&#34; 5. zset有序无重复集合 排行榜相关 例如: 点赞排行榜,商品热销排行榜,主播打赏排行榜,视频播放量排行榜
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2020-12-04 19:38:37 +0800 CST'>December 4, 2020</span>&nbsp;·&nbsp;10 min&nbsp;·&nbsp;loveyu</footer>
+  <a class="entry-link" aria-label="post link to redis" href="http://localhost:1313/posts/databases/redis/"></a>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2025 <a href="http://localhost:1313/">loveyu233</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

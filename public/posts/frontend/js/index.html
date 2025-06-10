@@ -1,0 +1,1593 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>js常用操作 | loveyu233</title>
+<meta name="keywords" content="js, 前端">
+<meta name="description" content="var let const
+
+声明变量
+
+if else
+
+条件语句
+
+switch case
+
+条件语句
+
+alert confirm prompt
+
+弹框
+
+function
+
+函数
+
+for
+
+循环
+
+while
+
+循环
+
+break
+
+终止循环
+
+continue
+
+跳过循环
+
+onLoad onUnload onFocus onBlur onChange onSubmit onClick onMouseOver onMouseOut
+
+事件太多了随便列举几个
+
+try catch
+
+异常捕获
+
+throw
+
+抛异常
+
+String Number Boolean Null Object Array Symbol BigInt undefined
+
+基本类型
+
+Promise then catch reject resolve all any race allSettled
+
+DOM
+
+window location screen history Navigator
+
+BOM
+
+Node.nodeName   //返回节点名称
+
+Node.nodeType   //返回节点类型的常数值
+
+Node.nodeValue  //返回Text或Comment节点的文本值
+
+Node.textContent  //返回当前节点和它的所有后代节点的文本内容，可读写
+
+Node.baseURI    //返回当前网页的绝对路径
+
+Node.ownerDocument  //返回当前节点所在的顶层文档对象，即document
+
+Node.nextSibling  //返回紧跟在当前节点后面的第一个兄弟节点
+
+Node.previousSibling  //返回当前节点前面的、距离最近的一个兄弟节点
+
+Node.parentNode   //返回当前节点的父节点
+
+Node.parentElement  //返回当前节点的父Element节点
+
+Node.childNodes   //返回当前节点的所有子节点
+
+Node.firstChild  //返回当前节点的第一个子节点
+
+Node.lastChild   //返回当前节点的最后一个子节点
+
+Node.isconnecoted   //返回一个布尔值，表示当前节点是否在文档之中
+
+Node.appendChild(node)   //向节点添加最后一个子节点
+
+Node.hasChildNodes()   //返回布尔值，表示当前节点是否有子节点
+
+Node.cloneNode(true);  // 默认为false(克隆节点), true(克隆节点及其属性，以及后代)
+
+Node.insertBefore(newNode,oldNode)  // 在指定子节点之前插入新的子节点
+
+Node.removeChild(node)   //删除节点，在要删除节点的父节点上操作
+
+Node.replaceChild(newChild,oldChild)  //替换节点
+
+Node.contains(node)  //返回一个布尔值，表示参数节点是否为当前节点的后代节点。
+
+Node.compareDocumentPosition(node)   //返回一个7个比特位的二进制值，表示参数节点和当前节点的关系
+
+Node.isEqualNode(node)  //返回布尔值，用于检查两个节点是否相等。所谓相等的节点，指的是两个节点的类型相同、属性相同、子节点相同。
+
+Node.isSameNode(node)  //返回一个布尔值，表示两个节点是否为同一个节点。
+
+Node.normalize()   //用于清理当前节点内部的所有Text节点。它会去除空的文本节点，并且将毗邻的文本节点合并成一个。
+
+Node.getRootNode()  //返回当前节点所在文档的根节点document，与ownerDocument属性的作用相同。
+
+Node.length   //返回 NodeList 实例包含的节点数量
+
+Node.forEach(fn，this)   //用于遍历 NodeList 的所有成员
+
+Node.item(index) // 接受一个整数值作为参数，表示成员的位置，返回该位置上的成员
+
+Node.keys()  //返回键名的遍历器
+
+Node.values()   //返回键值的遍历器
+
+Node.entries()  //返回的遍历器同时包含键名和键值的信息
+
+//parentNode接口
+
+Node.children  //返回指定节点的所有Element子节点
+
+Node.firstElementChild  //返回当前节点的第一个Element子节点
+
+Node.lastElementChild   //返回当前节点的最后一个Element子节点
+
+Node.childElementCount  //返回当前节点所有Element子节点的数目
+
+Node.append()  //为当前节点追加一个或多个子节点，位置是最后一个元素子节点的后面。
+
+Node.prepend()   //为当前节点追加一个或多个子节点，位置是第一个元素子节点的前面。
+
+//ChildNode接口
+
+Node.remove()  //用于从父节点移除当前节点
+
+Node.before()  //用于在当前节点的前面，插入一个或多个同级节点。两者拥有相同的父节点。
+
+Node.after()   //用于在当前节点的后面，插入一个或多个同级节点，两者拥有相同的父节点。
+
+Node.replaceWith()  //使用参数节点，替换当前节点
+
+
+
+document
+
+//快捷方式属性
+
+document.defaultView //返回document对象所属的window对象
+
+document.doctype   //返回文档类型节点
+
+document.documentElement  //返回当前文档的根节点
+
+document.body   //返回当前文档的&lt;body&gt;节点
+
+document.head   //返回当前文档的&lt;head&gt;节点
+
+document.activeElement  //返回当前文档中获得焦点的那个元素
+
+document.fullscreenElement  //返回当前以全屏状态展示的 DOM 元素
+
+
+
+//节点集合属性
+
+document.links  //返回当前文档的所有a元素
+
+document.forms  //返回页面中所有表单元素
+
+document.images  //返回页面中所有图片元素
+
+document.embeds  //返回网页中所有嵌入对象
+
+document.scripts  //返回当前文档的所有脚本
+
+document.styleSheets  //返回当前网页的所有样式表
+
+
+
+//文档静态信息属性
+
+document.documentURI  //表示当前文档的网址
+
+document.URL  //返回当前文档的网址
+
+document.domain  //返回当前文档的域名
+
+document.lastModified  //返回当前文档最后修改的时间
+
+document.location  //返回location对象，提供当前文档的URL信息
+
+document.referrer  //返回当前文档的访问来源
+
+document.title    //返回当前文档的标题
+
+document.compatMode  //返回浏览器处理文档的模式
+
+document.characterSet  //返回渲染当前文档的字符集，比如UTF-8、ISO-8859-1
+
+
+
+//文档状态属性
+
+document.readyState  //返回当前文档的状态
+
+document.hidden  //返回一个布尔值，表示当前页面是否可见
+
+document.visibilityState  //返回文档的可见状态
+
+
+
+//其他属性
+
+document.cookie   //用来操作Cookie
+
+document.designMode  //控制当前文档是否可编辑，可读写
+
+document.currentScript  //返回当前脚本所在的那个 DOM 节点，即&lt;script&gt;元素的 DOM 节点
+
+document.implementation  //返回一个DOMImplementation对象
+
+
+
+//元素特性相关属性
+
+Element.id  //返回指定元素的id属性，可读写
+
+Element.tagName  //返回指定元素的大写标签名
+
+Element.dir //用于读写当前元素的文字方向
+
+Element.accessKey  //用于读写分配给当前元素的快捷键
+
+Element.draggble //返回一个布尔值，表示当前元素是否可拖动
+
+Element.lang //返回当前元素的语言设置。该属性可读写
+
+Elemnt.tabIndex //返回一个整数，表示当前元素在 Tab 键遍历时的顺序。该属性可读写。
+
+Element.title  //用来读写当前元素的 HTML 属性title
+
+Element.attributes  //返回当前元素节点的所有属性节点
+
+Element.className  //返回当前元素的class属性，可读写
+
+Element.classList  //返回当前元素节点的所有class集合
+
+Element.innerHTML   //返回该元素包含的HTML代码，可读写
+
+Element.outerHTML  //返回指定元素节点的所有HTML代码，包括它自身和包含的的所有子元素，可读写
+
+Element.dataset   //返回元素节点中所有的data-*属性
+
+
+
+//元素状态的相关属性
+
+Element.hidden //返回一个布尔值，表示当前元素的hidden属性，用来控制当前元素是否可见。该属性可读写
+
+Element.contentEditable //返回一个字符串，表示是否设置了contenteditable属性
+
+Element.iscontentEditable //返回一布尔值，表示是否设置了contenteditable属性，只读
+
+
+
+//尺寸属性
+
+Element.clientHeight   //返回元素节点可见部分的高度
+
+Element.clientWidth   //返回元素节点可见部分的宽度
+
+Element.clientLeft   //返回元素节点左边框的宽度
+
+Element.clientTop   //返回元素节点顶部边框的宽度
+
+Element.scrollHeight  //返回元素节点的总高度
+
+Element.scrollWidth  //返回元素节点的总宽度
+
+Element.scrollLeft   //返回元素节点的水平滚动条向右滚动的像素数值,通过设置这个属性可以改变元素的滚动位置
+
+Element.scrollTop   //返回元素节点的垂直滚动向下滚动的像素数值
+
+Element.offsetParent  //返回最靠近当前元素的、并且 CSS 的position属性不等于static的上层元素
+
+Element.offsetHeight   //返回元素的垂直高度(包含border,padding)
+
+Element.offsetWidth    //返回元素的水平宽度(包含border,padding)
+
+Element.offsetLeft    //返回当前元素左上角相对于Element.offsetParent节点的垂直偏移
+
+Element.offsetTop   //返回水平位移
+
+Element.style  //返回元素节点的行内样式
+
+
+
+//节点相关属性
+
+Element.children   //包括当前元素节点的所有子元素
+
+Element.childElementCount   //返回当前元素节点包含的子HTML元素节点的个数
+
+Element.firstElementChild  //返回当前节点的第一个Element子节点
+
+Element.lastElementChild   //返回当前节点的最后一个Element子节点
+
+Element.nextElementSibling  //返回当前元素节点的下一个兄弟HTML元素节点
+
+Element.previousElementSibling  //返回当前元素节点的前一个兄弟HTML节点
+
+
+
+//属性方法
+
+Element.getAttribute()：读取指定属性
+
+Element.getAttributeNames()：返回当前元素的所有属性名
+
+Element.setAttribute()：设置指定属性
+
+Element.hasAttribute()：返回一个布尔值，表示当前元素节点是否有指定的属性
+
+Element.hasAttributes()：当前元素是否有属性
+
+Element.removeAttribute()：移除指定属性
+
+
+
+//查找方法
+
+Element.querySelector()   //接受 CSS 选择器作为参数，返回父元素的第一个匹配的子元素
+
+Element.querySelectorAll() //接受 CSS 选择器作为参数，返回一个NodeList实例，包含所有匹配的子元素
+
+Element.getElementsByTagName()  //返回一个HTMLCollection实例，成员是当前节点的所有匹配指定标签名的子元素节点
+
+Element.getElementsByClassName()  //返回一个HTMLCollection实例，成员是当前元素节点的所有具有指定 class 的子元素节点
+
+Element.closest() //接受一个 CSS 选择器作为参数，返回匹配该选择器的、最接近当前节点的一个祖先节点（包括当前节点本身）
+
+
+
+//事件方法
+
+Element.addEventListener()：添加事件的回调函数
+
+Element.removeEventListener()：移除事件监听函数
+
+Element.dispatchEvent()：触发事件
+
+
+
+//其他
+
+Element.matches() //返回一个布尔值，表示当前元素是否匹配给定的 CSS 选择器
+
+Element.scrollIntoView()   //滚动当前元素，进入浏览器的可见区域
+
+Element.getBoundingClientRect()  //返回一个对象，包含top,left,right,bottom,width,height
+
+Element.getClientRects()   //返回当前元素在页面上形参的所有矩形
+
+
+
+//解析HTML字符串，然后将生成的节点插入DOM树的指定位置
+
+Element.insertAdjacentHTML(where, htmlString);
+
+Element.insertAdjacentHTML(&#39;beforeBegin&#39;, htmlString); // 在该元素前插入
+
+Element.insertAdjacentHTML(&#39;afterBegin&#39;, htmlString); // 在该元素第一个子元素前插入
+
+Element.insertAdjacentHTML(&#39;beforeEnd&#39;, htmlString); // 在该元素最后一个子元素后面插入
+
+Element.insertAdjacentHTML(&#39;afterEnd&#39;, htmlString); // 在该元素后插入
+
+
+
+Element.remove()  //用于将当前元素节点从DOM中移除
+
+Element.focus()   //用于将当前页面的焦点，转移到指定元素上
+
+Element.blur()  //用于将焦点从当前元素移除
+">
+<meta name="author" content="loveyu">
+<link rel="canonical" href="http://localhost:1313/posts/frontend/js/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.e13ff79a7b90ac30a7f805291f902c75095888118dcb1fccef74850e837f1253.css" integrity="sha256-4T/3mnuQrDCn&#43;AUpH5AsdQlYiBGNyx/M73SFDoN/ElM=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="zh-cn" href="http://localhost:1313/posts/frontend/js/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:url" content="http://localhost:1313/posts/frontend/js/">
+  <meta property="og:site_name" content="loveyu233">
+  <meta property="og:title" content="js常用操作">
+  <meta property="og:description" content="var let const 声明变量 if else 条件语句 switch case 条件语句 alert confirm prompt 弹框 function 函数 for 循环 while 循环 break 终止循环 continue 跳过循环 onLoad onUnload onFocus onBlur onChange onSubmit onClick onMouseOver onMouseOut 事件太多了随便列举几个 try catch 异常捕获 throw 抛异常 String Number Boolean Null Object Array Symbol BigInt undefined 基本类型 Promise then catch reject resolve all any race allSettled DOM window location screen history Navigator BOM Node.nodeName //返回节点名称 Node.nodeType //返回节点类型的常数值 Node.nodeValue //返回Text或Comment节点的文本值 Node.textContent //返回当前节点和它的所有后代节点的文本内容，可读写 Node.baseURI //返回当前网页的绝对路径 Node.ownerDocument //返回当前节点所在的顶层文档对象，即document Node.nextSibling //返回紧跟在当前节点后面的第一个兄弟节点 Node.previousSibling //返回当前节点前面的、距离最近的一个兄弟节点 Node.parentNode //返回当前节点的父节点 Node.parentElement //返回当前节点的父Element节点 Node.childNodes //返回当前节点的所有子节点 Node.firstChild //返回当前节点的第一个子节点 Node.lastChild //返回当前节点的最后一个子节点 Node.isconnecoted //返回一个布尔值，表示当前节点是否在文档之中 Node.appendChild(node) //向节点添加最后一个子节点 Node.hasChildNodes() //返回布尔值，表示当前节点是否有子节点 Node.cloneNode(true); // 默认为false(克隆节点), true(克隆节点及其属性，以及后代) Node.insertBefore(newNode,oldNode) // 在指定子节点之前插入新的子节点 Node.removeChild(node) //删除节点，在要删除节点的父节点上操作 Node.replaceChild(newChild,oldChild) //替换节点 Node.contains(node) //返回一个布尔值，表示参数节点是否为当前节点的后代节点。 Node.compareDocumentPosition(node) //返回一个7个比特位的二进制值，表示参数节点和当前节点的关系 Node.isEqualNode(node) //返回布尔值，用于检查两个节点是否相等。所谓相等的节点，指的是两个节点的类型相同、属性相同、子节点相同。 Node.isSameNode(node) //返回一个布尔值，表示两个节点是否为同一个节点。 Node.normalize() //用于清理当前节点内部的所有Text节点。它会去除空的文本节点，并且将毗邻的文本节点合并成一个。 Node.getRootNode() //返回当前节点所在文档的根节点document，与ownerDocument属性的作用相同。 Node.length //返回 NodeList 实例包含的节点数量 Node.forEach(fn，this) //用于遍历 NodeList 的所有成员 Node.item(index) // 接受一个整数值作为参数，表示成员的位置，返回该位置上的成员 Node.keys() //返回键名的遍历器 Node.values() //返回键值的遍历器 Node.entries() //返回的遍历器同时包含键名和键值的信息 //parentNode接口 Node.children //返回指定节点的所有Element子节点 Node.firstElementChild //返回当前节点的第一个Element子节点 Node.lastElementChild //返回当前节点的最后一个Element子节点 Node.childElementCount //返回当前节点所有Element子节点的数目 Node.append() //为当前节点追加一个或多个子节点，位置是最后一个元素子节点的后面。 Node.prepend() //为当前节点追加一个或多个子节点，位置是第一个元素子节点的前面。 //ChildNode接口 Node.remove() //用于从父节点移除当前节点 Node.before() //用于在当前节点的前面，插入一个或多个同级节点。两者拥有相同的父节点。 Node.after() //用于在当前节点的后面，插入一个或多个同级节点，两者拥有相同的父节点。 Node.replaceWith() //使用参数节点，替换当前节点 document //快捷方式属性 document.defaultView //返回document对象所属的window对象 document.doctype //返回文档类型节点 document.documentElement //返回当前文档的根节点 document.body //返回当前文档的&lt;body&gt;节点 document.head //返回当前文档的&lt;head&gt;节点 document.activeElement //返回当前文档中获得焦点的那个元素 document.fullscreenElement //返回当前以全屏状态展示的 DOM 元素 //节点集合属性 document.links //返回当前文档的所有a元素 document.forms //返回页面中所有表单元素 document.images //返回页面中所有图片元素 document.embeds //返回网页中所有嵌入对象 document.scripts //返回当前文档的所有脚本 document.styleSheets //返回当前网页的所有样式表 //文档静态信息属性 document.documentURI //表示当前文档的网址 document.URL //返回当前文档的网址 document.domain //返回当前文档的域名 document.lastModified //返回当前文档最后修改的时间 document.location //返回location对象，提供当前文档的URL信息 document.referrer //返回当前文档的访问来源 document.title //返回当前文档的标题 document.compatMode //返回浏览器处理文档的模式 document.characterSet //返回渲染当前文档的字符集，比如UTF-8、ISO-8859-1 //文档状态属性 document.readyState //返回当前文档的状态 document.hidden //返回一个布尔值，表示当前页面是否可见 document.visibilityState //返回文档的可见状态 //其他属性 document.cookie //用来操作Cookie document.designMode //控制当前文档是否可编辑，可读写 document.currentScript //返回当前脚本所在的那个 DOM 节点，即&lt;script&gt;元素的 DOM 节点 document.implementation //返回一个DOMImplementation对象 //元素特性相关属性 Element.id //返回指定元素的id属性，可读写 Element.tagName //返回指定元素的大写标签名 Element.dir //用于读写当前元素的文字方向 Element.accessKey //用于读写分配给当前元素的快捷键 Element.draggble //返回一个布尔值，表示当前元素是否可拖动 Element.lang //返回当前元素的语言设置。该属性可读写 Elemnt.tabIndex //返回一个整数，表示当前元素在 Tab 键遍历时的顺序。该属性可读写。 Element.title //用来读写当前元素的 HTML 属性title Element.attributes //返回当前元素节点的所有属性节点 Element.className //返回当前元素的class属性，可读写 Element.classList //返回当前元素节点的所有class集合 Element.innerHTML //返回该元素包含的HTML代码，可读写 Element.outerHTML //返回指定元素节点的所有HTML代码，包括它自身和包含的的所有子元素，可读写 Element.dataset //返回元素节点中所有的data-*属性 //元素状态的相关属性 Element.hidden //返回一个布尔值，表示当前元素的hidden属性，用来控制当前元素是否可见。该属性可读写 Element.contentEditable //返回一个字符串，表示是否设置了contenteditable属性 Element.iscontentEditable //返回一布尔值，表示是否设置了contenteditable属性，只读 //尺寸属性 Element.clientHeight //返回元素节点可见部分的高度 Element.clientWidth //返回元素节点可见部分的宽度 Element.clientLeft //返回元素节点左边框的宽度 Element.clientTop //返回元素节点顶部边框的宽度 Element.scrollHeight //返回元素节点的总高度 Element.scrollWidth //返回元素节点的总宽度 Element.scrollLeft //返回元素节点的水平滚动条向右滚动的像素数值,通过设置这个属性可以改变元素的滚动位置 Element.scrollTop //返回元素节点的垂直滚动向下滚动的像素数值 Element.offsetParent //返回最靠近当前元素的、并且 CSS 的position属性不等于static的上层元素 Element.offsetHeight //返回元素的垂直高度(包含border,padding) Element.offsetWidth //返回元素的水平宽度(包含border,padding) Element.offsetLeft //返回当前元素左上角相对于Element.offsetParent节点的垂直偏移 Element.offsetTop //返回水平位移 Element.style //返回元素节点的行内样式 //节点相关属性 Element.children //包括当前元素节点的所有子元素 Element.childElementCount //返回当前元素节点包含的子HTML元素节点的个数 Element.firstElementChild //返回当前节点的第一个Element子节点 Element.lastElementChild //返回当前节点的最后一个Element子节点 Element.nextElementSibling //返回当前元素节点的下一个兄弟HTML元素节点 Element.previousElementSibling //返回当前元素节点的前一个兄弟HTML节点 //属性方法 Element.getAttribute()：读取指定属性 Element.getAttributeNames()：返回当前元素的所有属性名 Element.setAttribute()：设置指定属性 Element.hasAttribute()：返回一个布尔值，表示当前元素节点是否有指定的属性 Element.hasAttributes()：当前元素是否有属性 Element.removeAttribute()：移除指定属性 //查找方法 Element.querySelector() //接受 CSS 选择器作为参数，返回父元素的第一个匹配的子元素 Element.querySelectorAll() //接受 CSS 选择器作为参数，返回一个NodeList实例，包含所有匹配的子元素 Element.getElementsByTagName() //返回一个HTMLCollection实例，成员是当前节点的所有匹配指定标签名的子元素节点 Element.getElementsByClassName() //返回一个HTMLCollection实例，成员是当前元素节点的所有具有指定 class 的子元素节点 Element.closest() //接受一个 CSS 选择器作为参数，返回匹配该选择器的、最接近当前节点的一个祖先节点（包括当前节点本身） //事件方法 Element.addEventListener()：添加事件的回调函数 Element.removeEventListener()：移除事件监听函数 Element.dispatchEvent()：触发事件 //其他 Element.matches() //返回一个布尔值，表示当前元素是否匹配给定的 CSS 选择器 Element.scrollIntoView() //滚动当前元素，进入浏览器的可见区域 Element.getBoundingClientRect() //返回一个对象，包含top,left,right,bottom,width,height Element.getClientRects() //返回当前元素在页面上形参的所有矩形 //解析HTML字符串，然后将生成的节点插入DOM树的指定位置 Element.insertAdjacentHTML(where, htmlString); Element.insertAdjacentHTML(&#39;beforeBegin&#39;, htmlString); // 在该元素前插入 Element.insertAdjacentHTML(&#39;afterBegin&#39;, htmlString); // 在该元素第一个子元素前插入 Element.insertAdjacentHTML(&#39;beforeEnd&#39;, htmlString); // 在该元素最后一个子元素后面插入 Element.insertAdjacentHTML(&#39;afterEnd&#39;, htmlString); // 在该元素后插入 Element.remove() //用于将当前元素节点从DOM中移除 Element.focus() //用于将当前页面的焦点，转移到指定元素上 Element.blur() //用于将焦点从当前元素移除 ">
+  <meta property="og:locale" content="zh-cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2020-12-04T19:38:37+08:00">
+    <meta property="article:modified_time" content="2020-12-04T19:38:37+08:00">
+    <meta property="article:tag" content="Js">
+    <meta property="article:tag" content="前端">
+      <meta property="og:image" content="http://localhost:1313/images/cover.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://localhost:1313/images/cover.png">
+<meta name="twitter:title" content="js常用操作">
+<meta name="twitter:description" content="var let const
+
+声明变量
+
+if else
+
+条件语句
+
+switch case
+
+条件语句
+
+alert confirm prompt
+
+弹框
+
+function
+
+函数
+
+for
+
+循环
+
+while
+
+循环
+
+break
+
+终止循环
+
+continue
+
+跳过循环
+
+onLoad onUnload onFocus onBlur onChange onSubmit onClick onMouseOver onMouseOut
+
+事件太多了随便列举几个
+
+try catch
+
+异常捕获
+
+throw
+
+抛异常
+
+String Number Boolean Null Object Array Symbol BigInt undefined
+
+基本类型
+
+Promise then catch reject resolve all any race allSettled
+
+DOM
+
+window location screen history Navigator
+
+BOM
+
+Node.nodeName   //返回节点名称
+
+Node.nodeType   //返回节点类型的常数值
+
+Node.nodeValue  //返回Text或Comment节点的文本值
+
+Node.textContent  //返回当前节点和它的所有后代节点的文本内容，可读写
+
+Node.baseURI    //返回当前网页的绝对路径
+
+Node.ownerDocument  //返回当前节点所在的顶层文档对象，即document
+
+Node.nextSibling  //返回紧跟在当前节点后面的第一个兄弟节点
+
+Node.previousSibling  //返回当前节点前面的、距离最近的一个兄弟节点
+
+Node.parentNode   //返回当前节点的父节点
+
+Node.parentElement  //返回当前节点的父Element节点
+
+Node.childNodes   //返回当前节点的所有子节点
+
+Node.firstChild  //返回当前节点的第一个子节点
+
+Node.lastChild   //返回当前节点的最后一个子节点
+
+Node.isconnecoted   //返回一个布尔值，表示当前节点是否在文档之中
+
+Node.appendChild(node)   //向节点添加最后一个子节点
+
+Node.hasChildNodes()   //返回布尔值，表示当前节点是否有子节点
+
+Node.cloneNode(true);  // 默认为false(克隆节点), true(克隆节点及其属性，以及后代)
+
+Node.insertBefore(newNode,oldNode)  // 在指定子节点之前插入新的子节点
+
+Node.removeChild(node)   //删除节点，在要删除节点的父节点上操作
+
+Node.replaceChild(newChild,oldChild)  //替换节点
+
+Node.contains(node)  //返回一个布尔值，表示参数节点是否为当前节点的后代节点。
+
+Node.compareDocumentPosition(node)   //返回一个7个比特位的二进制值，表示参数节点和当前节点的关系
+
+Node.isEqualNode(node)  //返回布尔值，用于检查两个节点是否相等。所谓相等的节点，指的是两个节点的类型相同、属性相同、子节点相同。
+
+Node.isSameNode(node)  //返回一个布尔值，表示两个节点是否为同一个节点。
+
+Node.normalize()   //用于清理当前节点内部的所有Text节点。它会去除空的文本节点，并且将毗邻的文本节点合并成一个。
+
+Node.getRootNode()  //返回当前节点所在文档的根节点document，与ownerDocument属性的作用相同。
+
+Node.length   //返回 NodeList 实例包含的节点数量
+
+Node.forEach(fn，this)   //用于遍历 NodeList 的所有成员
+
+Node.item(index) // 接受一个整数值作为参数，表示成员的位置，返回该位置上的成员
+
+Node.keys()  //返回键名的遍历器
+
+Node.values()   //返回键值的遍历器
+
+Node.entries()  //返回的遍历器同时包含键名和键值的信息
+
+//parentNode接口
+
+Node.children  //返回指定节点的所有Element子节点
+
+Node.firstElementChild  //返回当前节点的第一个Element子节点
+
+Node.lastElementChild   //返回当前节点的最后一个Element子节点
+
+Node.childElementCount  //返回当前节点所有Element子节点的数目
+
+Node.append()  //为当前节点追加一个或多个子节点，位置是最后一个元素子节点的后面。
+
+Node.prepend()   //为当前节点追加一个或多个子节点，位置是第一个元素子节点的前面。
+
+//ChildNode接口
+
+Node.remove()  //用于从父节点移除当前节点
+
+Node.before()  //用于在当前节点的前面，插入一个或多个同级节点。两者拥有相同的父节点。
+
+Node.after()   //用于在当前节点的后面，插入一个或多个同级节点，两者拥有相同的父节点。
+
+Node.replaceWith()  //使用参数节点，替换当前节点
+
+
+
+document
+
+//快捷方式属性
+
+document.defaultView //返回document对象所属的window对象
+
+document.doctype   //返回文档类型节点
+
+document.documentElement  //返回当前文档的根节点
+
+document.body   //返回当前文档的&lt;body&gt;节点
+
+document.head   //返回当前文档的&lt;head&gt;节点
+
+document.activeElement  //返回当前文档中获得焦点的那个元素
+
+document.fullscreenElement  //返回当前以全屏状态展示的 DOM 元素
+
+
+
+//节点集合属性
+
+document.links  //返回当前文档的所有a元素
+
+document.forms  //返回页面中所有表单元素
+
+document.images  //返回页面中所有图片元素
+
+document.embeds  //返回网页中所有嵌入对象
+
+document.scripts  //返回当前文档的所有脚本
+
+document.styleSheets  //返回当前网页的所有样式表
+
+
+
+//文档静态信息属性
+
+document.documentURI  //表示当前文档的网址
+
+document.URL  //返回当前文档的网址
+
+document.domain  //返回当前文档的域名
+
+document.lastModified  //返回当前文档最后修改的时间
+
+document.location  //返回location对象，提供当前文档的URL信息
+
+document.referrer  //返回当前文档的访问来源
+
+document.title    //返回当前文档的标题
+
+document.compatMode  //返回浏览器处理文档的模式
+
+document.characterSet  //返回渲染当前文档的字符集，比如UTF-8、ISO-8859-1
+
+
+
+//文档状态属性
+
+document.readyState  //返回当前文档的状态
+
+document.hidden  //返回一个布尔值，表示当前页面是否可见
+
+document.visibilityState  //返回文档的可见状态
+
+
+
+//其他属性
+
+document.cookie   //用来操作Cookie
+
+document.designMode  //控制当前文档是否可编辑，可读写
+
+document.currentScript  //返回当前脚本所在的那个 DOM 节点，即&lt;script&gt;元素的 DOM 节点
+
+document.implementation  //返回一个DOMImplementation对象
+
+
+
+//元素特性相关属性
+
+Element.id  //返回指定元素的id属性，可读写
+
+Element.tagName  //返回指定元素的大写标签名
+
+Element.dir //用于读写当前元素的文字方向
+
+Element.accessKey  //用于读写分配给当前元素的快捷键
+
+Element.draggble //返回一个布尔值，表示当前元素是否可拖动
+
+Element.lang //返回当前元素的语言设置。该属性可读写
+
+Elemnt.tabIndex //返回一个整数，表示当前元素在 Tab 键遍历时的顺序。该属性可读写。
+
+Element.title  //用来读写当前元素的 HTML 属性title
+
+Element.attributes  //返回当前元素节点的所有属性节点
+
+Element.className  //返回当前元素的class属性，可读写
+
+Element.classList  //返回当前元素节点的所有class集合
+
+Element.innerHTML   //返回该元素包含的HTML代码，可读写
+
+Element.outerHTML  //返回指定元素节点的所有HTML代码，包括它自身和包含的的所有子元素，可读写
+
+Element.dataset   //返回元素节点中所有的data-*属性
+
+
+
+//元素状态的相关属性
+
+Element.hidden //返回一个布尔值，表示当前元素的hidden属性，用来控制当前元素是否可见。该属性可读写
+
+Element.contentEditable //返回一个字符串，表示是否设置了contenteditable属性
+
+Element.iscontentEditable //返回一布尔值，表示是否设置了contenteditable属性，只读
+
+
+
+//尺寸属性
+
+Element.clientHeight   //返回元素节点可见部分的高度
+
+Element.clientWidth   //返回元素节点可见部分的宽度
+
+Element.clientLeft   //返回元素节点左边框的宽度
+
+Element.clientTop   //返回元素节点顶部边框的宽度
+
+Element.scrollHeight  //返回元素节点的总高度
+
+Element.scrollWidth  //返回元素节点的总宽度
+
+Element.scrollLeft   //返回元素节点的水平滚动条向右滚动的像素数值,通过设置这个属性可以改变元素的滚动位置
+
+Element.scrollTop   //返回元素节点的垂直滚动向下滚动的像素数值
+
+Element.offsetParent  //返回最靠近当前元素的、并且 CSS 的position属性不等于static的上层元素
+
+Element.offsetHeight   //返回元素的垂直高度(包含border,padding)
+
+Element.offsetWidth    //返回元素的水平宽度(包含border,padding)
+
+Element.offsetLeft    //返回当前元素左上角相对于Element.offsetParent节点的垂直偏移
+
+Element.offsetTop   //返回水平位移
+
+Element.style  //返回元素节点的行内样式
+
+
+
+//节点相关属性
+
+Element.children   //包括当前元素节点的所有子元素
+
+Element.childElementCount   //返回当前元素节点包含的子HTML元素节点的个数
+
+Element.firstElementChild  //返回当前节点的第一个Element子节点
+
+Element.lastElementChild   //返回当前节点的最后一个Element子节点
+
+Element.nextElementSibling  //返回当前元素节点的下一个兄弟HTML元素节点
+
+Element.previousElementSibling  //返回当前元素节点的前一个兄弟HTML节点
+
+
+
+//属性方法
+
+Element.getAttribute()：读取指定属性
+
+Element.getAttributeNames()：返回当前元素的所有属性名
+
+Element.setAttribute()：设置指定属性
+
+Element.hasAttribute()：返回一个布尔值，表示当前元素节点是否有指定的属性
+
+Element.hasAttributes()：当前元素是否有属性
+
+Element.removeAttribute()：移除指定属性
+
+
+
+//查找方法
+
+Element.querySelector()   //接受 CSS 选择器作为参数，返回父元素的第一个匹配的子元素
+
+Element.querySelectorAll() //接受 CSS 选择器作为参数，返回一个NodeList实例，包含所有匹配的子元素
+
+Element.getElementsByTagName()  //返回一个HTMLCollection实例，成员是当前节点的所有匹配指定标签名的子元素节点
+
+Element.getElementsByClassName()  //返回一个HTMLCollection实例，成员是当前元素节点的所有具有指定 class 的子元素节点
+
+Element.closest() //接受一个 CSS 选择器作为参数，返回匹配该选择器的、最接近当前节点的一个祖先节点（包括当前节点本身）
+
+
+
+//事件方法
+
+Element.addEventListener()：添加事件的回调函数
+
+Element.removeEventListener()：移除事件监听函数
+
+Element.dispatchEvent()：触发事件
+
+
+
+//其他
+
+Element.matches() //返回一个布尔值，表示当前元素是否匹配给定的 CSS 选择器
+
+Element.scrollIntoView()   //滚动当前元素，进入浏览器的可见区域
+
+Element.getBoundingClientRect()  //返回一个对象，包含top,left,right,bottom,width,height
+
+Element.getClientRects()   //返回当前元素在页面上形参的所有矩形
+
+
+
+//解析HTML字符串，然后将生成的节点插入DOM树的指定位置
+
+Element.insertAdjacentHTML(where, htmlString);
+
+Element.insertAdjacentHTML(&#39;beforeBegin&#39;, htmlString); // 在该元素前插入
+
+Element.insertAdjacentHTML(&#39;afterBegin&#39;, htmlString); // 在该元素第一个子元素前插入
+
+Element.insertAdjacentHTML(&#39;beforeEnd&#39;, htmlString); // 在该元素最后一个子元素后面插入
+
+Element.insertAdjacentHTML(&#39;afterEnd&#39;, htmlString); // 在该元素后插入
+
+
+
+Element.remove()  //用于将当前元素节点从DOM中移除
+
+Element.focus()   //用于将当前页面的焦点，转移到指定元素上
+
+Element.blur()  //用于将焦点从当前元素移除
+">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "http://localhost:1313/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "frontEnd",
+      "item": "http://localhost:1313/posts/frontend/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "js常用操作",
+      "item": "http://localhost:1313/posts/frontend/js/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "js常用操作",
+  "name": "js常用操作",
+  "description": "var let const 声明变量 if else 条件语句 switch case 条件语句 alert confirm prompt 弹框 function 函数 for 循环 while 循环 break 终止循环 continue 跳过循环 onLoad onUnload onFocus onBlur onChange onSubmit onClick onMouseOver onMouseOut 事件太多了随便列举几个 try catch 异常捕获 throw 抛异常 String Number Boolean Null Object Array Symbol BigInt undefined 基本类型 Promise then catch reject resolve all any race allSettled DOM window location screen history Navigator BOM Node.nodeName //返回节点名称 Node.nodeType //返回节点类型的常数值 Node.nodeValue //返回Text或Comment节点的文本值 Node.textContent //返回当前节点和它的所有后代节点的文本内容，可读写 Node.baseURI //返回当前网页的绝对路径 Node.ownerDocument //返回当前节点所在的顶层文档对象，即document Node.nextSibling //返回紧跟在当前节点后面的第一个兄弟节点 Node.previousSibling //返回当前节点前面的、距离最近的一个兄弟节点 Node.parentNode //返回当前节点的父节点 Node.parentElement //返回当前节点的父Element节点 Node.childNodes //返回当前节点的所有子节点 Node.firstChild //返回当前节点的第一个子节点 Node.lastChild //返回当前节点的最后一个子节点 Node.isconnecoted //返回一个布尔值，表示当前节点是否在文档之中 Node.appendChild(node) //向节点添加最后一个子节点 Node.hasChildNodes() //返回布尔值，表示当前节点是否有子节点 Node.cloneNode(true); // 默认为false(克隆节点), true(克隆节点及其属性，以及后代) Node.insertBefore(newNode,oldNode) // 在指定子节点之前插入新的子节点 Node.removeChild(node) //删除节点，在要删除节点的父节点上操作 Node.replaceChild(newChild,oldChild) //替换节点 Node.contains(node) //返回一个布尔值，表示参数节点是否为当前节点的后代节点。 Node.compareDocumentPosition(node) //返回一个7个比特位的二进制值，表示参数节点和当前节点的关系 Node.isEqualNode(node) //返回布尔值，用于检查两个节点是否相等。所谓相等的节点，指的是两个节点的类型相同、属性相同、子节点相同。 Node.isSameNode(node) //返回一个布尔值，表示两个节点是否为同一个节点。 Node.normalize() //用于清理当前节点内部的所有Text节点。它会去除空的文本节点，并且将毗邻的文本节点合并成一个。 Node.getRootNode() //返回当前节点所在文档的根节点document，与ownerDocument属性的作用相同。 Node.length //返回 NodeList 实例包含的节点数量 Node.forEach(fn，this) //用于遍历 NodeList 的所有成员 Node.item(index) // 接受一个整数值作为参数，表示成员的位置，返回该位置上的成员 Node.keys() //返回键名的遍历器 Node.values() //返回键值的遍历器 Node.entries() //返回的遍历器同时包含键名和键值的信息 //parentNode接口 Node.children //返回指定节点的所有Element子节点 Node.firstElementChild //返回当前节点的第一个Element子节点 Node.lastElementChild //返回当前节点的最后一个Element子节点 Node.childElementCount //返回当前节点所有Element子节点的数目 Node.append() //为当前节点追加一个或多个子节点，位置是最后一个元素子节点的后面。 Node.prepend() //为当前节点追加一个或多个子节点，位置是第一个元素子节点的前面。 //ChildNode接口 Node.remove() //用于从父节点移除当前节点 Node.before() //用于在当前节点的前面，插入一个或多个同级节点。两者拥有相同的父节点。 Node.after() //用于在当前节点的后面，插入一个或多个同级节点，两者拥有相同的父节点。 Node.replaceWith() //使用参数节点，替换当前节点 document //快捷方式属性 document.defaultView //返回document对象所属的window对象 document.doctype //返回文档类型节点 document.documentElement //返回当前文档的根节点 document.body //返回当前文档的\u0026lt;body\u0026gt;节点 document.head //返回当前文档的\u0026lt;head\u0026gt;节点 document.activeElement //返回当前文档中获得焦点的那个元素 document.fullscreenElement //返回当前以全屏状态展示的 DOM 元素 //节点集合属性 document.links //返回当前文档的所有a元素 document.forms //返回页面中所有表单元素 document.images //返回页面中所有图片元素 document.embeds //返回网页中所有嵌入对象 document.scripts //返回当前文档的所有脚本 document.styleSheets //返回当前网页的所有样式表 //文档静态信息属性 document.documentURI //表示当前文档的网址 document.URL //返回当前文档的网址 document.domain //返回当前文档的域名 document.lastModified //返回当前文档最后修改的时间 document.location //返回location对象，提供当前文档的URL信息 document.referrer //返回当前文档的访问来源 document.title //返回当前文档的标题 document.compatMode //返回浏览器处理文档的模式 document.characterSet //返回渲染当前文档的字符集，比如UTF-8、ISO-8859-1 //文档状态属性 document.readyState //返回当前文档的状态 document.hidden //返回一个布尔值，表示当前页面是否可见 document.visibilityState //返回文档的可见状态 //其他属性 document.cookie //用来操作Cookie document.designMode //控制当前文档是否可编辑，可读写 document.currentScript //返回当前脚本所在的那个 DOM 节点，即\u0026lt;script\u0026gt;元素的 DOM 节点 document.implementation //返回一个DOMImplementation对象 //元素特性相关属性 Element.id //返回指定元素的id属性，可读写 Element.tagName //返回指定元素的大写标签名 Element.dir //用于读写当前元素的文字方向 Element.accessKey //用于读写分配给当前元素的快捷键 Element.draggble //返回一个布尔值，表示当前元素是否可拖动 Element.lang //返回当前元素的语言设置。该属性可读写 Elemnt.tabIndex //返回一个整数，表示当前元素在 Tab 键遍历时的顺序。该属性可读写。 Element.title //用来读写当前元素的 HTML 属性title Element.attributes //返回当前元素节点的所有属性节点 Element.className //返回当前元素的class属性，可读写 Element.classList //返回当前元素节点的所有class集合 Element.innerHTML //返回该元素包含的HTML代码，可读写 Element.outerHTML //返回指定元素节点的所有HTML代码，包括它自身和包含的的所有子元素，可读写 Element.dataset //返回元素节点中所有的data-*属性 //元素状态的相关属性 Element.hidden //返回一个布尔值，表示当前元素的hidden属性，用来控制当前元素是否可见。该属性可读写 Element.contentEditable //返回一个字符串，表示是否设置了contenteditable属性 Element.iscontentEditable //返回一布尔值，表示是否设置了contenteditable属性，只读 //尺寸属性 Element.clientHeight //返回元素节点可见部分的高度 Element.clientWidth //返回元素节点可见部分的宽度 Element.clientLeft //返回元素节点左边框的宽度 Element.clientTop //返回元素节点顶部边框的宽度 Element.scrollHeight //返回元素节点的总高度 Element.scrollWidth //返回元素节点的总宽度 Element.scrollLeft //返回元素节点的水平滚动条向右滚动的像素数值,通过设置这个属性可以改变元素的滚动位置 Element.scrollTop //返回元素节点的垂直滚动向下滚动的像素数值 Element.offsetParent //返回最靠近当前元素的、并且 CSS 的position属性不等于static的上层元素 Element.offsetHeight //返回元素的垂直高度(包含border,padding) Element.offsetWidth //返回元素的水平宽度(包含border,padding) Element.offsetLeft //返回当前元素左上角相对于Element.offsetParent节点的垂直偏移 Element.offsetTop //返回水平位移 Element.style //返回元素节点的行内样式 //节点相关属性 Element.children //包括当前元素节点的所有子元素 Element.childElementCount //返回当前元素节点包含的子HTML元素节点的个数 Element.firstElementChild //返回当前节点的第一个Element子节点 Element.lastElementChild //返回当前节点的最后一个Element子节点 Element.nextElementSibling //返回当前元素节点的下一个兄弟HTML元素节点 Element.previousElementSibling //返回当前元素节点的前一个兄弟HTML节点 //属性方法 Element.getAttribute()：读取指定属性 Element.getAttributeNames()：返回当前元素的所有属性名 Element.setAttribute()：设置指定属性 Element.hasAttribute()：返回一个布尔值，表示当前元素节点是否有指定的属性 Element.hasAttributes()：当前元素是否有属性 Element.removeAttribute()：移除指定属性 //查找方法 Element.querySelector() //接受 CSS 选择器作为参数，返回父元素的第一个匹配的子元素 Element.querySelectorAll() //接受 CSS 选择器作为参数，返回一个NodeList实例，包含所有匹配的子元素 Element.getElementsByTagName() //返回一个HTMLCollection实例，成员是当前节点的所有匹配指定标签名的子元素节点 Element.getElementsByClassName() //返回一个HTMLCollection实例，成员是当前元素节点的所有具有指定 class 的子元素节点 Element.closest() //接受一个 CSS 选择器作为参数，返回匹配该选择器的、最接近当前节点的一个祖先节点（包括当前节点本身） //事件方法 Element.addEventListener()：添加事件的回调函数 Element.removeEventListener()：移除事件监听函数 Element.dispatchEvent()：触发事件 //其他 Element.matches() //返回一个布尔值，表示当前元素是否匹配给定的 CSS 选择器 Element.scrollIntoView() //滚动当前元素，进入浏览器的可见区域 Element.getBoundingClientRect() //返回一个对象，包含top,left,right,bottom,width,height Element.getClientRects() //返回当前元素在页面上形参的所有矩形 //解析HTML字符串，然后将生成的节点插入DOM树的指定位置 Element.insertAdjacentHTML(where, htmlString); Element.insertAdjacentHTML(\u0026#39;beforeBegin\u0026#39;, htmlString); // 在该元素前插入 Element.insertAdjacentHTML(\u0026#39;afterBegin\u0026#39;, htmlString); // 在该元素第一个子元素前插入 Element.insertAdjacentHTML(\u0026#39;beforeEnd\u0026#39;, htmlString); // 在该元素最后一个子元素后面插入 Element.insertAdjacentHTML(\u0026#39;afterEnd\u0026#39;, htmlString); // 在该元素后插入 Element.remove() //用于将当前元素节点从DOM中移除 Element.focus() //用于将当前页面的焦点，转移到指定元素上 Element.blur() //用于将焦点从当前元素移除 ",
+  "keywords": [
+    "js", "前端"
+  ],
+  "articleBody": "var let const 声明变量 if else 条件语句 switch case 条件语句 alert confirm prompt 弹框 function 函数 for 循环 while 循环 break 终止循环 continue 跳过循环 onLoad onUnload onFocus onBlur onChange onSubmit onClick onMouseOver onMouseOut 事件太多了随便列举几个 try catch 异常捕获 throw 抛异常 String Number Boolean Null Object Array Symbol BigInt undefined 基本类型 Promise then catch reject resolve all any race allSettled DOM window location screen history Navigator BOM Node.nodeName //返回节点名称 Node.nodeType //返回节点类型的常数值 Node.nodeValue //返回Text或Comment节点的文本值 Node.textContent //返回当前节点和它的所有后代节点的文本内容，可读写 Node.baseURI //返回当前网页的绝对路径 Node.ownerDocument //返回当前节点所在的顶层文档对象，即document Node.nextSibling //返回紧跟在当前节点后面的第一个兄弟节点 Node.previousSibling //返回当前节点前面的、距离最近的一个兄弟节点 Node.parentNode //返回当前节点的父节点 Node.parentElement //返回当前节点的父Element节点 Node.childNodes //返回当前节点的所有子节点 Node.firstChild //返回当前节点的第一个子节点 Node.lastChild //返回当前节点的最后一个子节点 Node.isconnecoted //返回一个布尔值，表示当前节点是否在文档之中 Node.appendChild(node) //向节点添加最后一个子节点 Node.hasChildNodes() //返回布尔值，表示当前节点是否有子节点 Node.cloneNode(true); // 默认为false(克隆节点), true(克隆节点及其属性，以及后代) Node.insertBefore(newNode,oldNode) // 在指定子节点之前插入新的子节点 Node.removeChild(node) //删除节点，在要删除节点的父节点上操作 Node.replaceChild(newChild,oldChild) //替换节点 Node.contains(node) //返回一个布尔值，表示参数节点是否为当前节点的后代节点。 Node.compareDocumentPosition(node) //返回一个7个比特位的二进制值，表示参数节点和当前节点的关系 Node.isEqualNode(node) //返回布尔值，用于检查两个节点是否相等。所谓相等的节点，指的是两个节点的类型相同、属性相同、子节点相同。 Node.isSameNode(node) //返回一个布尔值，表示两个节点是否为同一个节点。 Node.normalize() //用于清理当前节点内部的所有Text节点。它会去除空的文本节点，并且将毗邻的文本节点合并成一个。 Node.getRootNode() //返回当前节点所在文档的根节点document，与ownerDocument属性的作用相同。 Node.length //返回 NodeList 实例包含的节点数量 Node.forEach(fn，this) //用于遍历 NodeList 的所有成员 Node.item(index) // 接受一个整数值作为参数，表示成员的位置，返回该位置上的成员 Node.keys() //返回键名的遍历器 Node.values() //返回键值的遍历器 Node.entries() //返回的遍历器同时包含键名和键值的信息 //parentNode接口 Node.children //返回指定节点的所有Element子节点 Node.firstElementChild //返回当前节点的第一个Element子节点 Node.lastElementChild //返回当前节点的最后一个Element子节点 Node.childElementCount //返回当前节点所有Element子节点的数目 Node.append() //为当前节点追加一个或多个子节点，位置是最后一个元素子节点的后面。 Node.prepend() //为当前节点追加一个或多个子节点，位置是第一个元素子节点的前面。 //ChildNode接口 Node.remove() //用于从父节点移除当前节点 Node.before() //用于在当前节点的前面，插入一个或多个同级节点。两者拥有相同的父节点。 Node.after() //用于在当前节点的后面，插入一个或多个同级节点，两者拥有相同的父节点。 Node.replaceWith() //使用参数节点，替换当前节点 document //快捷方式属性 document.defaultView //返回document对象所属的window对象 document.doctype //返回文档类型节点 document.documentElement //返回当前文档的根节点 document.body //返回当前文档的节点 document.head //返回当前文档的节点 document.activeElement //返回当前文档中获得焦点的那个元素 document.fullscreenElement //返回当前以全屏状态展示的 DOM 元素 //节点集合属性 document.links //返回当前文档的所有a元素 document.forms //返回页面中所有表单元素 document.images //返回页面中所有图片元素 document.embeds //返回网页中所有嵌入对象 document.scripts //返回当前文档的所有脚本 document.styleSheets //返回当前网页的所有样式表 //文档静态信息属性 document.documentURI //表示当前文档的网址 document.URL //返回当前文档的网址 document.domain //返回当前文档的域名 document.lastModified //返回当前文档最后修改的时间 document.location //返回location对象，提供当前文档的URL信息 document.referrer //返回当前文档的访问来源 document.title //返回当前文档的标题 document.compatMode //返回浏览器处理文档的模式 document.characterSet //返回渲染当前文档的字符集，比如UTF-8、ISO-8859-1 //文档状态属性 document.readyState //返回当前文档的状态 document.hidden //返回一个布尔值，表示当前页面是否可见 document.visibilityState //返回文档的可见状态 //其他属性 document.cookie //用来操作Cookie document.designMode //控制当前文档是否可编辑，可读写 document.currentScript //返回当前脚本所在的那个 DOM 节点，即",
+  "wordCount" : "379",
+  "inLanguage": "zh-cn",
+  "image": "http://localhost:1313/images/cover.png","datePublished": "2020-12-04T19:38:37+08:00",
+  "dateModified": "2020-12-04T19:38:37+08:00",
+  "author":[{
+    "@type": "Person",
+    "name": "loveyu"
+  }],
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "http://localhost:1313/posts/frontend/js/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "loveyu233",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "http://localhost:1313/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="loveyu233 (Alt + H)">loveyu233</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/archives" title="归档">
+                    <span>归档</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/search/" title="搜索">
+                    <span>搜索</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/tags/" title="标签">
+                    <span>标签</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="http://localhost:1313/">Home</a>&nbsp;»&nbsp;<a href="http://localhost:1313/posts/">Posts</a>&nbsp;»&nbsp;<a href="http://localhost:1313/posts/frontend/">frontEnd</a></div>
+    <h1 class="post-title entry-hint-parent">
+      js常用操作
+    </h1>
+    <div class="post-meta"><span title='2020-12-04 19:38:37 +0800 CST'>December 4, 2020</span>&nbsp;·&nbsp;2 min&nbsp;·&nbsp;loveyu
+
+</div>
+  </header> 
+
+  <div class="post-content"><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="kd">var</span> <span class="kd">let</span> <span class="kr">const</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">声明变量</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="k">else</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">条件语句</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">switch</span> <span class="k">case</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">条件语句</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">alert</span> <span class="nx">confirm</span> <span class="nx">prompt</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">弹框</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">function</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">函数</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">for</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">循环</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">while</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">循环</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">break</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">终止循环</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">continue</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">跳过循环</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">onLoad</span> <span class="nx">onUnload</span> <span class="nx">onFocus</span> <span class="nx">onBlur</span> <span class="nx">onChange</span> <span class="nx">onSubmit</span> <span class="nx">onClick</span> <span class="nx">onMouseOver</span> <span class="nx">onMouseOut</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">事件太多了随便列举几个</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">try</span> <span class="k">catch</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">异常捕获</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">throw</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">抛异常</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">String</span> <span class="nb">Number</span> <span class="nb">Boolean</span> <span class="nx">Null</span> <span class="nb">Object</span> <span class="nb">Array</span> <span class="nx">Symbol</span> <span class="nx">BigInt</span> <span class="kc">undefined</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">基本类型</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">Promise</span> <span class="nx">then</span> <span class="k">catch</span> <span class="nx">reject</span> <span class="nx">resolve</span> <span class="nx">all</span> <span class="nx">any</span> <span class="nx">race</span> <span class="nx">allSettled</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">DOM</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">window</span> <span class="nx">location</span> <span class="nx">screen</span> <span class="nx">history</span> <span class="nx">Navigator</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">BOM</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">Node</span><span class="p">.</span><span class="nx">nodeName</span>   <span class="c1">//返回节点名称
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Node</span><span class="p">.</span><span class="nx">nodeType</span>   <span class="c1">//返回节点类型的常数值
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Node</span><span class="p">.</span><span class="nx">nodeValue</span>  <span class="c1">//返回Text或Comment节点的文本值
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Node</span><span class="p">.</span><span class="nx">textContent</span>  <span class="c1">//返回当前节点和它的所有后代节点的文本内容，可读写
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Node</span><span class="p">.</span><span class="nx">baseURI</span>    <span class="c1">//返回当前网页的绝对路径
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Node</span><span class="p">.</span><span class="nx">ownerDocument</span>  <span class="c1">//返回当前节点所在的顶层文档对象，即document
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Node</span><span class="p">.</span><span class="nx">nextSibling</span>  <span class="c1">//返回紧跟在当前节点后面的第一个兄弟节点
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Node</span><span class="p">.</span><span class="nx">previousSibling</span>  <span class="c1">//返回当前节点前面的、距离最近的一个兄弟节点
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Node</span><span class="p">.</span><span class="nx">parentNode</span>   <span class="c1">//返回当前节点的父节点
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Node</span><span class="p">.</span><span class="nx">parentElement</span>  <span class="c1">//返回当前节点的父Element节点
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Node</span><span class="p">.</span><span class="nx">childNodes</span>   <span class="c1">//返回当前节点的所有子节点
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Node</span><span class="p">.</span><span class="nx">firstChild</span>  <span class="c1">//返回当前节点的第一个子节点
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Node</span><span class="p">.</span><span class="nx">lastChild</span>   <span class="c1">//返回当前节点的最后一个子节点
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Node</span><span class="p">.</span><span class="nx">isconnecoted</span>   <span class="c1">//返回一个布尔值，表示当前节点是否在文档之中
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Node</span><span class="p">.</span><span class="nx">appendChild</span><span class="p">(</span><span class="nx">node</span><span class="p">)</span>   <span class="c1">//向节点添加最后一个子节点
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Node</span><span class="p">.</span><span class="nx">hasChildNodes</span><span class="p">()</span>   <span class="c1">//返回布尔值，表示当前节点是否有子节点
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Node</span><span class="p">.</span><span class="nx">cloneNode</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>  <span class="c1">// 默认为false(克隆节点), true(克隆节点及其属性，以及后代)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Node</span><span class="p">.</span><span class="nx">insertBefore</span><span class="p">(</span><span class="nx">newNode</span><span class="p">,</span><span class="nx">oldNode</span><span class="p">)</span>  <span class="c1">// 在指定子节点之前插入新的子节点
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Node</span><span class="p">.</span><span class="nx">removeChild</span><span class="p">(</span><span class="nx">node</span><span class="p">)</span>   <span class="c1">//删除节点，在要删除节点的父节点上操作
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Node</span><span class="p">.</span><span class="nx">replaceChild</span><span class="p">(</span><span class="nx">newChild</span><span class="p">,</span><span class="nx">oldChild</span><span class="p">)</span>  <span class="c1">//替换节点
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Node</span><span class="p">.</span><span class="nx">contains</span><span class="p">(</span><span class="nx">node</span><span class="p">)</span>  <span class="c1">//返回一个布尔值，表示参数节点是否为当前节点的后代节点。
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Node</span><span class="p">.</span><span class="nx">compareDocumentPosition</span><span class="p">(</span><span class="nx">node</span><span class="p">)</span>   <span class="c1">//返回一个7个比特位的二进制值，表示参数节点和当前节点的关系
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Node</span><span class="p">.</span><span class="nx">isEqualNode</span><span class="p">(</span><span class="nx">node</span><span class="p">)</span>  <span class="c1">//返回布尔值，用于检查两个节点是否相等。所谓相等的节点，指的是两个节点的类型相同、属性相同、子节点相同。
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Node</span><span class="p">.</span><span class="nx">isSameNode</span><span class="p">(</span><span class="nx">node</span><span class="p">)</span>  <span class="c1">//返回一个布尔值，表示两个节点是否为同一个节点。
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Node</span><span class="p">.</span><span class="nx">normalize</span><span class="p">()</span>   <span class="c1">//用于清理当前节点内部的所有Text节点。它会去除空的文本节点，并且将毗邻的文本节点合并成一个。
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Node</span><span class="p">.</span><span class="nx">getRootNode</span><span class="p">()</span>  <span class="c1">//返回当前节点所在文档的根节点document，与ownerDocument属性的作用相同。
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Node</span><span class="p">.</span><span class="nx">length</span>   <span class="c1">//返回 NodeList 实例包含的节点数量
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Node</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="nx">fn</span><span class="err">，</span><span class="k">this</span><span class="p">)</span>   <span class="c1">//用于遍历 NodeList 的所有成员
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Node</span><span class="p">.</span><span class="nx">item</span><span class="p">(</span><span class="nx">index</span><span class="p">)</span> <span class="c1">// 接受一个整数值作为参数，表示成员的位置，返回该位置上的成员
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Node</span><span class="p">.</span><span class="nx">keys</span><span class="p">()</span>  <span class="c1">//返回键名的遍历器
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Node</span><span class="p">.</span><span class="nx">values</span><span class="p">()</span>   <span class="c1">//返回键值的遍历器
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Node</span><span class="p">.</span><span class="nx">entries</span><span class="p">()</span>  <span class="c1">//返回的遍历器同时包含键名和键值的信息
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="c1">//parentNode接口
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Node</span><span class="p">.</span><span class="nx">children</span>  <span class="c1">//返回指定节点的所有Element子节点
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Node</span><span class="p">.</span><span class="nx">firstElementChild</span>  <span class="c1">//返回当前节点的第一个Element子节点
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Node</span><span class="p">.</span><span class="nx">lastElementChild</span>   <span class="c1">//返回当前节点的最后一个Element子节点
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Node</span><span class="p">.</span><span class="nx">childElementCount</span>  <span class="c1">//返回当前节点所有Element子节点的数目
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Node</span><span class="p">.</span><span class="nx">append</span><span class="p">()</span>  <span class="c1">//为当前节点追加一个或多个子节点，位置是最后一个元素子节点的后面。
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Node</span><span class="p">.</span><span class="nx">prepend</span><span class="p">()</span>   <span class="c1">//为当前节点追加一个或多个子节点，位置是第一个元素子节点的前面。
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="c1">//ChildNode接口
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Node</span><span class="p">.</span><span class="nx">remove</span><span class="p">()</span>  <span class="c1">//用于从父节点移除当前节点
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Node</span><span class="p">.</span><span class="nx">before</span><span class="p">()</span>  <span class="c1">//用于在当前节点的前面，插入一个或多个同级节点。两者拥有相同的父节点。
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Node</span><span class="p">.</span><span class="nx">after</span><span class="p">()</span>   <span class="c1">//用于在当前节点的后面，插入一个或多个同级节点，两者拥有相同的父节点。
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Node</span><span class="p">.</span><span class="nx">replaceWith</span><span class="p">()</span>  <span class="c1">//使用参数节点，替换当前节点
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">document</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">//快捷方式属性
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nb">document</span><span class="p">.</span><span class="nx">defaultView</span> <span class="c1">//返回document对象所属的window对象
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nb">document</span><span class="p">.</span><span class="nx">doctype</span>   <span class="c1">//返回文档类型节点
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nb">document</span><span class="p">.</span><span class="nx">documentElement</span>  <span class="c1">//返回当前文档的根节点
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nb">document</span><span class="p">.</span><span class="nx">body</span>   <span class="c1">//返回当前文档的&lt;body&gt;节点
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nb">document</span><span class="p">.</span><span class="nx">head</span>   <span class="c1">//返回当前文档的&lt;head&gt;节点
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nb">document</span><span class="p">.</span><span class="nx">activeElement</span>  <span class="c1">//返回当前文档中获得焦点的那个元素
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nb">document</span><span class="p">.</span><span class="nx">fullscreenElement</span>  <span class="c1">//返回当前以全屏状态展示的 DOM 元素
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">//节点集合属性
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nb">document</span><span class="p">.</span><span class="nx">links</span>  <span class="c1">//返回当前文档的所有a元素
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nb">document</span><span class="p">.</span><span class="nx">forms</span>  <span class="c1">//返回页面中所有表单元素
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nb">document</span><span class="p">.</span><span class="nx">images</span>  <span class="c1">//返回页面中所有图片元素
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nb">document</span><span class="p">.</span><span class="nx">embeds</span>  <span class="c1">//返回网页中所有嵌入对象
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nb">document</span><span class="p">.</span><span class="nx">scripts</span>  <span class="c1">//返回当前文档的所有脚本
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nb">document</span><span class="p">.</span><span class="nx">styleSheets</span>  <span class="c1">//返回当前网页的所有样式表
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">//文档静态信息属性
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nb">document</span><span class="p">.</span><span class="nx">documentURI</span>  <span class="c1">//表示当前文档的网址
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nb">document</span><span class="p">.</span><span class="nx">URL</span>  <span class="c1">//返回当前文档的网址
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nb">document</span><span class="p">.</span><span class="nx">domain</span>  <span class="c1">//返回当前文档的域名
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nb">document</span><span class="p">.</span><span class="nx">lastModified</span>  <span class="c1">//返回当前文档最后修改的时间
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nb">document</span><span class="p">.</span><span class="nx">location</span>  <span class="c1">//返回location对象，提供当前文档的URL信息
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nb">document</span><span class="p">.</span><span class="nx">referrer</span>  <span class="c1">//返回当前文档的访问来源
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nb">document</span><span class="p">.</span><span class="nx">title</span>    <span class="c1">//返回当前文档的标题
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nb">document</span><span class="p">.</span><span class="nx">compatMode</span>  <span class="c1">//返回浏览器处理文档的模式
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nb">document</span><span class="p">.</span><span class="nx">characterSet</span>  <span class="c1">//返回渲染当前文档的字符集，比如UTF-8、ISO-8859-1
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">//文档状态属性
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nb">document</span><span class="p">.</span><span class="nx">readyState</span>  <span class="c1">//返回当前文档的状态
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nb">document</span><span class="p">.</span><span class="nx">hidden</span>  <span class="c1">//返回一个布尔值，表示当前页面是否可见
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nb">document</span><span class="p">.</span><span class="nx">visibilityState</span>  <span class="c1">//返回文档的可见状态
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">//其他属性
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nb">document</span><span class="p">.</span><span class="nx">cookie</span>   <span class="c1">//用来操作Cookie
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nb">document</span><span class="p">.</span><span class="nx">designMode</span>  <span class="c1">//控制当前文档是否可编辑，可读写
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nb">document</span><span class="p">.</span><span class="nx">currentScript</span>  <span class="c1">//返回当前脚本所在的那个 DOM 节点，即&lt;script&gt;元素的 DOM 节点
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nb">document</span><span class="p">.</span><span class="nx">implementation</span>  <span class="c1">//返回一个DOMImplementation对象
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">//元素特性相关属性
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Element</span><span class="p">.</span><span class="nx">id</span>  <span class="c1">//返回指定元素的id属性，可读写
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Element</span><span class="p">.</span><span class="nx">tagName</span>  <span class="c1">//返回指定元素的大写标签名
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Element</span><span class="p">.</span><span class="nx">dir</span> <span class="c1">//用于读写当前元素的文字方向
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Element</span><span class="p">.</span><span class="nx">accessKey</span>  <span class="c1">//用于读写分配给当前元素的快捷键
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Element</span><span class="p">.</span><span class="nx">draggble</span> <span class="c1">//返回一个布尔值，表示当前元素是否可拖动
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Element</span><span class="p">.</span><span class="nx">lang</span> <span class="c1">//返回当前元素的语言设置。该属性可读写
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Elemnt</span><span class="p">.</span><span class="nx">tabIndex</span> <span class="c1">//返回一个整数，表示当前元素在 Tab 键遍历时的顺序。该属性可读写。
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Element</span><span class="p">.</span><span class="nx">title</span>  <span class="c1">//用来读写当前元素的 HTML 属性title
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Element</span><span class="p">.</span><span class="nx">attributes</span>  <span class="c1">//返回当前元素节点的所有属性节点
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Element</span><span class="p">.</span><span class="nx">className</span>  <span class="c1">//返回当前元素的class属性，可读写
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Element</span><span class="p">.</span><span class="nx">classList</span>  <span class="c1">//返回当前元素节点的所有class集合
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Element</span><span class="p">.</span><span class="nx">innerHTML</span>   <span class="c1">//返回该元素包含的HTML代码，可读写
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Element</span><span class="p">.</span><span class="nx">outerHTML</span>  <span class="c1">//返回指定元素节点的所有HTML代码，包括它自身和包含的的所有子元素，可读写
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Element</span><span class="p">.</span><span class="nx">dataset</span>   <span class="c1">//返回元素节点中所有的data-*属性
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">//元素状态的相关属性
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Element</span><span class="p">.</span><span class="nx">hidden</span> <span class="c1">//返回一个布尔值，表示当前元素的hidden属性，用来控制当前元素是否可见。该属性可读写
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Element</span><span class="p">.</span><span class="nx">contentEditable</span> <span class="c1">//返回一个字符串，表示是否设置了contenteditable属性
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Element</span><span class="p">.</span><span class="nx">iscontentEditable</span> <span class="c1">//返回一布尔值，表示是否设置了contenteditable属性，只读
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">//尺寸属性
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Element</span><span class="p">.</span><span class="nx">clientHeight</span>   <span class="c1">//返回元素节点可见部分的高度
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Element</span><span class="p">.</span><span class="nx">clientWidth</span>   <span class="c1">//返回元素节点可见部分的宽度
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Element</span><span class="p">.</span><span class="nx">clientLeft</span>   <span class="c1">//返回元素节点左边框的宽度
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Element</span><span class="p">.</span><span class="nx">clientTop</span>   <span class="c1">//返回元素节点顶部边框的宽度
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Element</span><span class="p">.</span><span class="nx">scrollHeight</span>  <span class="c1">//返回元素节点的总高度
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Element</span><span class="p">.</span><span class="nx">scrollWidth</span>  <span class="c1">//返回元素节点的总宽度
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Element</span><span class="p">.</span><span class="nx">scrollLeft</span>   <span class="c1">//返回元素节点的水平滚动条向右滚动的像素数值,通过设置这个属性可以改变元素的滚动位置
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Element</span><span class="p">.</span><span class="nx">scrollTop</span>   <span class="c1">//返回元素节点的垂直滚动向下滚动的像素数值
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Element</span><span class="p">.</span><span class="nx">offsetParent</span>  <span class="c1">//返回最靠近当前元素的、并且 CSS 的position属性不等于static的上层元素
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Element</span><span class="p">.</span><span class="nx">offsetHeight</span>   <span class="c1">//返回元素的垂直高度(包含border,padding)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Element</span><span class="p">.</span><span class="nx">offsetWidth</span>    <span class="c1">//返回元素的水平宽度(包含border,padding)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Element</span><span class="p">.</span><span class="nx">offsetLeft</span>    <span class="c1">//返回当前元素左上角相对于Element.offsetParent节点的垂直偏移
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Element</span><span class="p">.</span><span class="nx">offsetTop</span>   <span class="c1">//返回水平位移
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Element</span><span class="p">.</span><span class="nx">style</span>  <span class="c1">//返回元素节点的行内样式
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">//节点相关属性
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Element</span><span class="p">.</span><span class="nx">children</span>   <span class="c1">//包括当前元素节点的所有子元素
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Element</span><span class="p">.</span><span class="nx">childElementCount</span>   <span class="c1">//返回当前元素节点包含的子HTML元素节点的个数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Element</span><span class="p">.</span><span class="nx">firstElementChild</span>  <span class="c1">//返回当前节点的第一个Element子节点
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Element</span><span class="p">.</span><span class="nx">lastElementChild</span>   <span class="c1">//返回当前节点的最后一个Element子节点
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Element</span><span class="p">.</span><span class="nx">nextElementSibling</span>  <span class="c1">//返回当前元素节点的下一个兄弟HTML元素节点
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Element</span><span class="p">.</span><span class="nx">previousElementSibling</span>  <span class="c1">//返回当前元素节点的前一个兄弟HTML节点
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">//属性方法
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Element</span><span class="p">.</span><span class="nx">getAttribute</span><span class="p">()</span><span class="err">：</span><span class="nx">读取指定属性</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">Element</span><span class="p">.</span><span class="nx">getAttributeNames</span><span class="p">()</span><span class="err">：</span><span class="nx">返回当前元素的所有属性名</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">Element</span><span class="p">.</span><span class="nx">setAttribute</span><span class="p">()</span><span class="err">：</span><span class="nx">设置指定属性</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">Element</span><span class="p">.</span><span class="nx">hasAttribute</span><span class="p">()</span><span class="err">：</span><span class="nx">返回一个布尔值</span><span class="err">，</span><span class="nx">表示当前元素节点是否有指定的属性</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">Element</span><span class="p">.</span><span class="nx">hasAttributes</span><span class="p">()</span><span class="err">：</span><span class="nx">当前元素是否有属性</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">Element</span><span class="p">.</span><span class="nx">removeAttribute</span><span class="p">()</span><span class="err">：</span><span class="nx">移除指定属性</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">//查找方法
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Element</span><span class="p">.</span><span class="nx">querySelector</span><span class="p">()</span>   <span class="c1">//接受 CSS 选择器作为参数，返回父元素的第一个匹配的子元素
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Element</span><span class="p">.</span><span class="nx">querySelectorAll</span><span class="p">()</span> <span class="c1">//接受 CSS 选择器作为参数，返回一个NodeList实例，包含所有匹配的子元素
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Element</span><span class="p">.</span><span class="nx">getElementsByTagName</span><span class="p">()</span>  <span class="c1">//返回一个HTMLCollection实例，成员是当前节点的所有匹配指定标签名的子元素节点
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Element</span><span class="p">.</span><span class="nx">getElementsByClassName</span><span class="p">()</span>  <span class="c1">//返回一个HTMLCollection实例，成员是当前元素节点的所有具有指定 class 的子元素节点
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Element</span><span class="p">.</span><span class="nx">closest</span><span class="p">()</span> <span class="c1">//接受一个 CSS 选择器作为参数，返回匹配该选择器的、最接近当前节点的一个祖先节点（包括当前节点本身）
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">//事件方法
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Element</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">()</span><span class="err">：</span><span class="nx">添加事件的回调函数</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">Element</span><span class="p">.</span><span class="nx">removeEventListener</span><span class="p">()</span><span class="err">：</span><span class="nx">移除事件监听函数</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">Element</span><span class="p">.</span><span class="nx">dispatchEvent</span><span class="p">()</span><span class="err">：</span><span class="nx">触发事件</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">//其他
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Element</span><span class="p">.</span><span class="nx">matches</span><span class="p">()</span> <span class="c1">//返回一个布尔值，表示当前元素是否匹配给定的 CSS 选择器
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Element</span><span class="p">.</span><span class="nx">scrollIntoView</span><span class="p">()</span>   <span class="c1">//滚动当前元素，进入浏览器的可见区域
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Element</span><span class="p">.</span><span class="nx">getBoundingClientRect</span><span class="p">()</span>  <span class="c1">//返回一个对象，包含top,left,right,bottom,width,height
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Element</span><span class="p">.</span><span class="nx">getClientRects</span><span class="p">()</span>   <span class="c1">//返回当前元素在页面上形参的所有矩形
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">//解析HTML字符串，然后将生成的节点插入DOM树的指定位置
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Element</span><span class="p">.</span><span class="nx">insertAdjacentHTML</span><span class="p">(</span><span class="nx">where</span><span class="p">,</span> <span class="nx">htmlString</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">Element</span><span class="p">.</span><span class="nx">insertAdjacentHTML</span><span class="p">(</span><span class="s1">&#39;beforeBegin&#39;</span><span class="p">,</span> <span class="nx">htmlString</span><span class="p">);</span> <span class="c1">// 在该元素前插入
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Element</span><span class="p">.</span><span class="nx">insertAdjacentHTML</span><span class="p">(</span><span class="s1">&#39;afterBegin&#39;</span><span class="p">,</span> <span class="nx">htmlString</span><span class="p">);</span> <span class="c1">// 在该元素第一个子元素前插入
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Element</span><span class="p">.</span><span class="nx">insertAdjacentHTML</span><span class="p">(</span><span class="s1">&#39;beforeEnd&#39;</span><span class="p">,</span> <span class="nx">htmlString</span><span class="p">);</span> <span class="c1">// 在该元素最后一个子元素后面插入
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Element</span><span class="p">.</span><span class="nx">insertAdjacentHTML</span><span class="p">(</span><span class="s1">&#39;afterEnd&#39;</span><span class="p">,</span> <span class="nx">htmlString</span><span class="p">);</span> <span class="c1">// 在该元素后插入
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">Element</span><span class="p">.</span><span class="nx">remove</span><span class="p">()</span>  <span class="c1">//用于将当前元素节点从DOM中移除
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Element</span><span class="p">.</span><span class="nx">focus</span><span class="p">()</span>   <span class="c1">//用于将当前页面的焦点，转移到指定元素上
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">Element</span><span class="p">.</span><span class="nx">blur</span><span class="p">()</span>  <span class="c1">//用于将焦点从当前元素移除
+</span></span></span></code></pre></div>
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="http://localhost:1313/tags/js/">Js</a></li>
+      <li><a href="http://localhost:1313/tags/%E5%89%8D%E7%AB%AF/">前端</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="http://localhost:1313/posts/frontend/html/">
+    <span class="title">« </span>
+    <br>
+    <span>html常用标签</span>
+  </a>
+  <a class="next" href="http://localhost:1313/posts/databases/kafka/">
+    <span class="title"> »</span>
+    <br>
+    <span>kafka</span>
+  </a>
+</nav>
+
+
+<ul class="share-buttons">
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share js常用操作 on x"
+            href="https://x.com/intent/tweet/?text=js%e5%b8%b8%e7%94%a8%e6%93%8d%e4%bd%9c&amp;url=http%3a%2f%2flocalhost%3a1313%2fposts%2ffrontend%2fjs%2f&amp;hashtags=js%2c%e5%89%8d%e7%ab%af">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M512 62.554 L 512 449.446 C 512 483.97 483.97 512 449.446 512 L 62.554 512 C 28.03 512 0 483.97 0 449.446 L 0 62.554 C 0 28.03 28.029 0 62.554 0 L 449.446 0 C 483.971 0 512 28.03 512 62.554 Z M 269.951 190.75 L 182.567 75.216 L 56 75.216 L 207.216 272.95 L 63.9 436.783 L 125.266 436.783 L 235.9 310.383 L 332.567 436.783 L 456 436.783 L 298.367 228.367 L 432.367 75.216 L 371.033 75.216 Z M 127.633 110 L 164.101 110 L 383.481 400.065 L 349.5 400.065 Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share js常用操作 on linkedin"
+            href="https://www.linkedin.com/shareArticle?mini=true&amp;url=http%3a%2f%2flocalhost%3a1313%2fposts%2ffrontend%2fjs%2f&amp;title=js%e5%b8%b8%e7%94%a8%e6%93%8d%e4%bd%9c&amp;summary=js%e5%b8%b8%e7%94%a8%e6%93%8d%e4%bd%9c&amp;source=http%3a%2f%2flocalhost%3a1313%2fposts%2ffrontend%2fjs%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-288.985,423.278l0,-225.717l-75.04,0l0,225.717l75.04,0Zm270.539,0l0,-129.439c0,-69.333 -37.018,-101.586 -86.381,-101.586c-39.804,0 -57.634,21.891 -67.617,37.266l0,-31.958l-75.021,0c0.995,21.181 0,225.717 0,225.717l75.02,0l0,-126.056c0,-6.748 0.486,-13.492 2.474,-18.315c5.414,-13.475 17.767,-27.434 38.494,-27.434c27.135,0 38.007,20.707 38.007,51.037l0,120.768l75.024,0Zm-307.552,-334.556c-25.674,0 -42.448,16.879 -42.448,39.002c0,21.658 16.264,39.002 41.455,39.002l0.484,0c26.165,0 42.452,-17.344 42.452,-39.002c-0.485,-22.092 -16.241,-38.954 -41.943,-39.002Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share js常用操作 on reddit"
+            href="https://reddit.com/submit?url=http%3a%2f%2flocalhost%3a1313%2fposts%2ffrontend%2fjs%2f&title=js%e5%b8%b8%e7%94%a8%e6%93%8d%e4%bd%9c">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-3.446,265.638c0,-22.964 -18.616,-41.58 -41.58,-41.58c-11.211,0 -21.361,4.457 -28.841,11.666c-28.424,-20.508 -67.586,-33.757 -111.204,-35.278l18.941,-89.121l61.884,13.157c0.756,15.734 13.642,28.29 29.56,28.29c16.407,0 29.706,-13.299 29.706,-29.701c0,-16.403 -13.299,-29.702 -29.706,-29.702c-11.666,0 -21.657,6.792 -26.515,16.578l-69.105,-14.69c-1.922,-0.418 -3.939,-0.042 -5.585,1.036c-1.658,1.073 -2.811,2.761 -3.224,4.686l-21.152,99.438c-44.258,1.228 -84.046,14.494 -112.837,35.232c-7.468,-7.164 -17.589,-11.591 -28.757,-11.591c-22.965,0 -41.585,18.616 -41.585,41.58c0,16.896 10.095,31.41 24.568,37.918c-0.639,4.135 -0.99,8.328 -0.99,12.576c0,63.977 74.469,115.836 166.33,115.836c91.861,0 166.334,-51.859 166.334,-115.836c0,-4.218 -0.347,-8.387 -0.977,-12.493c14.564,-6.47 24.735,-21.034 24.735,-38.001Zm-119.474,108.193c-20.27,20.241 -59.115,21.816 -70.534,21.816c-11.428,0 -50.277,-1.575 -70.522,-21.82c-3.007,-3.008 -3.007,-7.882 0,-10.889c3.003,-2.999 7.882,-3.003 10.885,0c12.777,12.781 40.11,17.317 59.637,17.317c19.522,0 46.86,-4.536 59.657,-17.321c3.016,-2.999 7.886,-2.995 10.885,0.008c3.008,3.011 3.003,7.882 -0.008,10.889Zm-5.23,-48.781c-16.373,0 -29.701,-13.324 -29.701,-29.698c0,-16.381 13.328,-29.714 29.701,-29.714c16.378,0 29.706,13.333 29.706,29.714c0,16.374 -13.328,29.698 -29.706,29.698Zm-160.386,-29.702c0,-16.381 13.328,-29.71 29.714,-29.71c16.369,0 29.689,13.329 29.689,29.71c0,16.373 -13.32,29.693 -29.689,29.693c-16.386,0 -29.714,-13.32 -29.714,-29.693Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share js常用操作 on facebook"
+            href="https://facebook.com/sharer/sharer.php?u=http%3a%2f%2flocalhost%3a1313%2fposts%2ffrontend%2fjs%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-106.468,0l0,-192.915l66.6,0l12.672,-82.621l-79.272,0l0,-53.617c0,-22.603 11.073,-44.636 46.58,-44.636l36.042,0l0,-70.34c0,0 -32.71,-5.582 -63.982,-5.582c-65.288,0 -107.96,39.569 -107.96,111.204l0,62.971l-72.573,0l0,82.621l72.573,0l0,192.915l-191.104,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share js常用操作 on whatsapp"
+            href="https://api.whatsapp.com/send?text=js%e5%b8%b8%e7%94%a8%e6%93%8d%e4%bd%9c%20-%20http%3a%2f%2flocalhost%3a1313%2fposts%2ffrontend%2fjs%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-58.673,127.703c-33.842,-33.881 -78.847,-52.548 -126.798,-52.568c-98.799,0 -179.21,80.405 -179.249,179.234c-0.013,31.593 8.241,62.428 23.927,89.612l-25.429,92.884l95.021,-24.925c26.181,14.28 55.659,21.807 85.658,21.816l0.074,0c98.789,0 179.206,-80.413 179.247,-179.243c0.018,-47.895 -18.61,-92.93 -52.451,-126.81Zm-126.797,275.782l-0.06,0c-26.734,-0.01 -52.954,-7.193 -75.828,-20.767l-5.441,-3.229l-56.386,14.792l15.05,-54.977l-3.542,-5.637c-14.913,-23.72 -22.791,-51.136 -22.779,-79.287c0.033,-82.142 66.867,-148.971 149.046,-148.971c39.793,0.014 77.199,15.531 105.329,43.692c28.128,28.16 43.609,65.592 43.594,105.4c-0.034,82.149 -66.866,148.983 -148.983,148.984Zm81.721,-111.581c-4.479,-2.242 -26.499,-13.075 -30.604,-14.571c-4.105,-1.495 -7.091,-2.241 -10.077,2.241c-2.986,4.483 -11.569,14.572 -14.182,17.562c-2.612,2.988 -5.225,3.364 -9.703,1.12c-4.479,-2.241 -18.91,-6.97 -36.017,-22.23c-13.314,-11.876 -22.304,-26.542 -24.916,-31.026c-2.612,-4.484 -0.279,-6.908 1.963,-9.14c2.016,-2.007 4.48,-5.232 6.719,-7.847c2.24,-2.615 2.986,-4.484 4.479,-7.472c1.493,-2.99 0.747,-5.604 -0.374,-7.846c-1.119,-2.241 -10.077,-24.288 -13.809,-33.256c-3.635,-8.733 -7.327,-7.55 -10.077,-7.688c-2.609,-0.13 -5.598,-0.158 -8.583,-0.158c-2.986,0 -7.839,1.121 -11.944,5.604c-4.105,4.484 -15.675,15.32 -15.675,37.364c0,22.046 16.048,43.342 18.287,46.332c2.24,2.99 31.582,48.227 76.511,67.627c10.685,4.615 19.028,7.371 25.533,9.434c10.728,3.41 20.492,2.929 28.209,1.775c8.605,-1.285 26.499,-10.833 30.231,-21.295c3.732,-10.464 3.732,-19.431 2.612,-21.298c-1.119,-1.869 -4.105,-2.99 -8.583,-5.232Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share js常用操作 on telegram"
+            href="https://telegram.me/share/url?text=js%e5%b8%b8%e7%94%a8%e6%93%8d%e4%bd%9c&amp;url=http%3a%2f%2flocalhost%3a1313%2fposts%2ffrontend%2fjs%2f">
+            <svg version="1.1" xml:space="preserve" viewBox="2 2 28 28" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M26.49,29.86H5.5a3.37,3.37,0,0,1-2.47-1,3.35,3.35,0,0,1-1-2.47V5.48A3.36,3.36,0,0,1,3,3,3.37,3.37,0,0,1,5.5,2h21A3.38,3.38,0,0,1,29,3a3.36,3.36,0,0,1,1,2.46V26.37a3.35,3.35,0,0,1-1,2.47A3.38,3.38,0,0,1,26.49,29.86Zm-5.38-6.71a.79.79,0,0,0,.85-.66L24.73,9.24a.55.55,0,0,0-.18-.46.62.62,0,0,0-.41-.17q-.08,0-16.53,6.11a.59.59,0,0,0-.41.59.57.57,0,0,0,.43.52l4,1.24,1.61,4.83a.62.62,0,0,0,.63.43.56.56,0,0,0,.4-.17L16.54,20l4.09,3A.9.9,0,0,0,21.11,23.15ZM13.8,20.71l-1.21-4q8.72-5.55,8.78-5.55c.15,0,.23,0,.23.16a.18.18,0,0,1,0,.06s-2.51,2.3-7.52,6.8Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share js常用操作 on ycombinator"
+            href="https://news.ycombinator.com/submitlink?t=js%e5%b8%b8%e7%94%a8%e6%93%8d%e4%bd%9c&u=http%3a%2f%2flocalhost%3a1313%2fposts%2ffrontend%2fjs%2f">
+            <svg version="1.1" xml:space="preserve" width="30px" height="30px" viewBox="0 0 512 512" fill="currentColor"
+                xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape">
+                <path
+                    d="M449.446 0C483.971 0 512 28.03 512 62.554L512 449.446C512 483.97 483.97 512 449.446 512L62.554 512C28.03 512 0 483.97 0 449.446L0 62.554C0 28.03 28.029 0 62.554 0L449.446 0ZM183.8767 87.9921H121.8427L230.6673 292.4508V424.0079H281.3328V292.4508L390.1575 87.9921H328.1233L256 238.2489z" />
+            </svg>
+        </a>
+    </li>
+</ul>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2025 <a href="http://localhost:1313/">loveyu233</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

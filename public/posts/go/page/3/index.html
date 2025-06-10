@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>go | loveyu233</title>
+<meta name="keywords" content="">
+<meta name="description" content="go - loveyu233">
+<meta name="author" content="loveyu233">
+<link rel="canonical" href="http://localhost:1313/posts/go/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.e13ff79a7b90ac30a7f805291f902c75095888118dcb1fccef74850e837f1253.css" integrity="sha256-4T/3mnuQrDCn&#43;AUpH5AsdQlYiBGNyx/M73SFDoN/ElM=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" type="application/rss+xml" href="http://localhost:1313/posts/go/index.xml">
+<link rel="alternate" hreflang="zh-cn" href="http://localhost:1313/posts/go/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:url" content="http://localhost:1313/posts/go/">
+  <meta property="og:site_name" content="loveyu233">
+  <meta property="og:title" content="go">
+  <meta property="og:description" content="我的个人博客 - 分享技术与生活">
+  <meta property="og:locale" content="zh-cn">
+  <meta property="og:type" content="website">
+      <meta property="og:image" content="http://localhost:1313/images/cover.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://localhost:1313/images/cover.png">
+<meta name="twitter:title" content="go">
+<meta name="twitter:description" content="我的个人博客 - 分享技术与生活">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "http://localhost:1313/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "go",
+      "item": "http://localhost:1313/posts/go/"
+    }
+  ]
+}
+</script>
+</head>
+
+<body class="list" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="loveyu233 (Alt + H)">loveyu233</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/archives" title="归档">
+                    <span>归档</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/search/" title="搜索">
+                    <span>搜索</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/tags/" title="标签">
+                    <span>标签</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main"> 
+<header class="page-header"><div class="breadcrumbs"><a href="http://localhost:1313/">Home</a>&nbsp;»&nbsp;<a href="http://localhost:1313/posts/">Posts</a></div>
+  <h1>
+    go
+    <a href="/posts/go/index.xml" title="RSS" aria-label="RSS">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" height="23">
+        <path d="M4 11a9 9 0 0 1 9 9" />
+        <path d="M4 4a16 16 0 0 1 16 16" />
+        <circle cx="5" cy="19" r="1" />
+      </svg>
+    </a>
+  </h1>
+</header>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Go Rabbitmq
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>RabbitMQ模式 简单模式（Simple Mode）： 简单模式是最基本的模式，也是最简单的消息传递模式。它包括一个生产者将消息发送到一个队列中，然后一个消费者从同一个队列接收消息并进行处理。 工作队列模式（Work Queue Mode）： 工作队列模式也被称为任务队列模式或消息队列模式。它包括一个生产者将任务发送到一个队列中，多个消费者从同一个队列接收任务并进行处理。每个任务只能由一个消费者处理，确保任务的负载均衡。 发布/订阅模式（Publish/Subscribe Mode）： 发布/订阅模式用于将消息广播给多个消费者。生产者将消息发布到交换机（Exchange），然后交换机将消息传递到所有绑定的队列中，每个队列都有自己的消费者来接收和处理消息。 路由模式（Direct Exchange Mode）： 路由模式是基于消息的路由键（Routing Key）进行消息传递的一种模式。生产者将消息发送到交换机，并指定一个特定的路由键，交换机将消息传递给所有与该路由键匹配的队列，每个队列都有自己的消费者来接收和处理消息。 主题模式（Topic Exchange Mode）： 主题模式是路由模式的扩展，它支持使用通配符的路由键进行消息传递。生产者将消息发送到交换机，并指定一个匹配规则的路由键模式，交换机根据匹配规则将消息传递给符合条件的队列，每个队列都有自己的消费者来接收和处理消息。 领域特定语言模式（Distributed Domain-Specific Language Mode）： 领域特定语言模式（也称为流派特定语言模式）是一种用于实现复杂分布式系统的高级模式。它基于领域特定语言（DSL）来定义和描述消息的流动和处理过程，以实现更精确的消息传递和处理策略。 直连模式（Direct） 创建连接和信道。 声明交换机和队列。 将队列绑定到交换机，并指定路由键。 发布消息到交换机，附带指定的路由键。 // 创建连接和信道 conn, err := amqp.Dial(&#34;amqp://guest:guest@localhost:5672/&#34;) ch, err := conn.Channel() // 声明交换机和队列 q, err := ch.QueueDeclare(&#34;my_queue&#34;, false, false, false, false, nil) // 将队列绑定到交换机，并指定路由键 err = ch.QueueBind(q.Name, &#34;my_routing_key&#34;, &#34;my_exchange&#34;, false, nil) // 发布消息到交换机，附带指定的路由键 msg := amqp.Publishing{ Body: []byte(&#34;Hello, RabbitMQ!&#34;), } err = ch.Publish(&#34;my_exchange&#34;, &#34;my_routing_key&#34;, false, false, msg) 主题模式（Topic） 创建连接和信道。 声明交换机和队列。 将队列绑定到交换机，并使用通配符形式的路由键进行匹配。 发布消息到交换机，附带指定的路由键。 // 创建连接和信道 conn, err := amqp.Dial(&#34;amqp://guest:guest@localhost:5672/&#34;) ch, err := conn.Channel() // 声明交换机和队列 q, err := ch.QueueDeclare(&#34;my_queue&#34;, false, false, false, false, nil) // 将队列绑定到交换机，并使用通配符形式的路由键进行匹配 err = ch.QueueBind(q.Name, &#34;my_topic.#&#34;, &#34;my_exchange&#34;, false, nil) // 发布消息到交换机，附带指定的路由键 msg := amqp.Publishing{ Body: []byte(&#34;Hello, RabbitMQ!&#34;), } err = ch.Publish(&#34;my_exchange&#34;, &#34;my_topic.key&#34;, false, false, msg) 发布/订阅模式（Publish/Subscribe） 创建连接和信道。 声明交换机。 声明多个队列。 将队列绑定到交换机。 发布消息到交换机。 // 创建连接和信道 conn, err := amqp.Dial(&#34;amqp://guest:guest@localhost:5672/&#34;) ch, err := conn.Channel() // 声明交换机 err = ch.ExchangeDeclare(&#34;my_exchange&#34;, &#34;fanout&#34;, false, false, false, false, nil) // 声明多个队列 q1, err := ch.QueueDeclare(&#34;queue1&#34;, false, false, false, false, nil) q2, err := ch.QueueDeclare(&#34;queue2&#34;, false, false, false, false, nil) // 将队列绑定到交换机 err = ch.QueueBind(q1.Name, &#34;&#34;, &#34;my_exchange&#34;, false, nil) err = ch.QueueBind(q2.Name, &#34;&#34;, &#34;my_exchange&#34;, false, nil) // 发布消息到交换机 msg := amqp.Publishing{ Body: []byte(&#34;Hello, RabbitMQ!&#34;), } err = ch.Publish(&#34;my_exchange&#34;, &#34;&#34;, false, false, msg) 工作队列模式（Work Queue） 创建连接和信道。 声明队列。 发布消息到队列。 // 创建连接和信道 conn, err := amqp.Dial(&#34;amqp://guest:guest@localhost:5672/&#34;) ch, err := conn.Channel() // 声明队列 q, err := ch.QueueDeclare(&#34;my_queue&#34;, false, false, false, false, nil) // 发布消息到队列 msg := amqp.Publishing{ Body: []byte(&#34;Hello, RabbitMQ!&#34;), } err = ch.Publish(&#34;&#34;, q.Name, false, false, msg) 可选参数 /* x-message-ttl：设置消息的过期时间（Time to Live），单位为毫秒。超过该时间的消息将被自动删除。 x-expires：设置队列的过期时间，单位为毫秒。如果在指定的时间内没有连接使用该队列，队列将被自动删除。 x-max-length：设置队列的最大长度限制。一旦达到该限制，后续的消息将会被拒绝或被丢弃。 x-max-length-bytes：设置队列的最大占用空间限制。一旦达到该限制，后续的消息将会被拒绝或被丢弃。 x-dead-letter-exchange：设置队列的死信交换机，用于处理被拒绝、过期或达到最大重试次数的消息。 x-dead-letter-routing-key：设置队列的死信路由键，用于指定被发送到死信交换机的消息的路由键。 x-overflow：设置队列溢出行为。可以是 drop-head（删除最早的消息）或 reject-publish（拒绝发布新消息）。 */ amqp.Table{} 死信队列代码 设置&#34;x-message-ttl&#34;: &#34;2000&#34;,无效,会导致数据无法发送成功
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-06-23 10:01:17 +0800 CST'>June 23, 2023</span>&nbsp;·&nbsp;4 min&nbsp;·&nbsp;loveyu</footer>
+  <a class="entry-link" aria-label="post link to Go Rabbitmq" href="http://localhost:1313/posts/go/go-rabbitmq/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Prometheus_grafana
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>安装prometheus brew install prometheus
+~ &gt; brew install prometheus ==&gt; Downloading https://formulae.brew.sh/api/formula.jws.json ################################################################################### 100.0% ==&gt; Downloading https://formulae.brew.sh/api/cask.jws.json ################################################################################### 100.0% ==&gt; Fetching prometheus ==&gt; Downloading https://mirrors.aliyun.com/homebrew/homebrew-bottles/prometheus-2.44.0.arm ################################################################################### 100.0% ==&gt; Pouring prometheus-2.44.0.arm64_ventura.bottle.tar.gz ==&gt; Caveats When run from `brew services`, `prometheus` is run from `prometheus_brew_services` and uses the flags in: /opt/homebrew/etc/prometheus.args To start prometheus now and restart at login: brew services start prometheus Or, if you don&#39;t want/need a background service you can just run: /opt/homebrew/opt/prometheus/bin/prometheus_brew_services ==&gt; Summary 🍺 /opt/homebrew/Cellar/prometheus/2.44.0: 22 files, 220MB ==&gt; Running `brew cleanup prometheus`... Disable this behaviour by setting HOMEBREW_NO_INSTALL_CLEANUP. Hide these hints with HOMEBREW_NO_ENV_HINTS (see `man brew`). 安装grafana brew install grafana
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-06-21 10:40:58 +0800 CST'>June 21, 2023</span>&nbsp;·&nbsp;2 min&nbsp;·&nbsp;loveyu</footer>
+  <a class="entry-link" aria-label="post link to Prometheus_grafana" href="http://localhost:1313/posts/go/prometheus_grafana/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Go非对称加密使用
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>对称加密 加密和解密使用相同的密钥进行加密
+优点 计算量小,加密速度快,加密效率高
+缺点 密钥一旦泄露那么加密的信息也就不安全了
+非对称加密 需要两个密钥: 公开密钥publicKey,和私有密钥privateKey, 公钥和私钥是一对的,使用公钥加密后的信息之后对应的私钥才可以进行解密
+优点 安全性高
+缺点 加密速度慢,效率不高
+RSA加密过程 随机选择两个不相等的质数p和q。p=61，q=53 计算p和q的乘积n。n=3222 计算n的欧拉函数φ(n) = (p-1)(q-1)。 φ(n) =3120 随机选择一个整数e，使得1&lt; e &lt; φ(n)，且e与φ(n) 互质。e=17 计算e对于φ(n)的模反元素d，即求解e*d&#43; φ(n)*y=1。d=2753, y=-15 将n和e封装成公钥，n和d封装成私钥。公钥=(3233，17)，公钥=(3233，2753) go代码实现加解密 一: 使用ssl生成对应的公钥和私钥pem文件 pem是一种标准格式，它通常包含页眉和页脚
+openssl genrsa -out data/rsa_private_key.pem 1024 openssl rsa -in data/rsa_private_key.pem -pubout -out data/rsa_public_key.pem rsa_private_key.pem
+-----BEGIN RSA PRIVATE KEY----- MIICXgIBAAKBgQC5vgoY3FkQmR&#43;BM76mFHx4odRPu5Qlz4cYXP1jxY0s27kb9WMW eokv3&#43;9cHysh&#43;M3U98NlE1Zr&#43;XUBALAWC1V0uIF6KJJuQ/s4PV1mminoVX5rihlc 1G0aG23o43tWmfpXVkjvs/CmhSFoiIRvoHCKSCyTkaifilmz&#43;3bqQJTQiQIDAQAB AoGBAK06wiwBhcdnJ&#43;zWF57JSHUxaNOb/EVvUW21fFVK76nAmtmqeGmEiuHtlk1y fEXIyB8xnDhuWpGFLExtGczVcTI7PnM5RBcZZetQ7aAK8ABfVP2upOXXw/wNZfll &#43;Dki&#43;bt4/ftDptZHahKbg3QaqRCshNn0J6enEUqZCgQ5WisJAkEA9S/ch1pFQrPO NTMkPlwowDZCJzrSebjGb677r1wlHBbb/hBzIt89Csa6szfV4/dDAa7abYQI1YLI QxbWHE74EwJBAMHvDbx2lxGGhWuM8OBOVVxy3sKDDFdLulaSTxoqAMSVj1p&#43;Nowm hYWk/zbndkTTGJgD2UllTKdIN4cicjKjIHMCQQC6mYtXg68Ufa1hNaPOxerJpkGg g5btxl9XXi/0HMetYgRZjoFht85IJkiu3r6s&#43;WCIpl9cW9ExVZA95uJatwr7AkEA tH8Nxc6KI&#43;GT49m1hs7hW7393gOiRM1SjKh3vt5BALZCSfMWSbLAqvY6Ipui08O1 LCbI4SrLARaRt9AzgTWaSQJABpKExipUBUFNJFB3/KzNJtY6HYLO8S&#43;a&#43;BMiR75p e2aLqEytZuPEF&#43;RhXhxNv0y3YaX1kCqjF4ftmWnUZO2XzA== -----END RSA PRIVATE KEY----- rsa_public_key.pem
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-05-21 16:20:18 +0800 CST'>May 21, 2023</span>&nbsp;·&nbsp;3 min&nbsp;·&nbsp;loveyu</footer>
+  <a class="entry-link" aria-label="post link to Go非对称加密使用" href="http://localhost:1313/posts/go/go%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86%E4%BD%BF%E7%94%A8/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">面试指南
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>go slice slice如何扩容？ 切片数量小于1024个元素那么扩容的时候slice的cap就翻倍,一旦超过1024个元素增长因子就变成零1.25也就是每次增长原来容量的四分之一.
+如果扩容之后还没有触及原来数组的容量,那么切片中的指针指向的位置就还是原数组位置,如果扩容之后超过了原数组的容量,那么go会开辟一块新的内存,把原来的值拷贝过来这种情况丝毫不会影响原数组
+map map 的key为什么是无序的？ map 在扩容后，会发生 key 的搬迁，原来落在同一个 bucket中的 key，搬迁后，有些 key 就要远走高飞了（bucket 序号加上了 2^B）。而遍历的过程，就是按顺序遍历 bucket，同时按顺序遍历 bucket 中的 key。搬迁后，key 的位置发生了重大的变化，有些 key 飞上高枝，有些 key 则原地不动。这样，遍历 map 的结果就不可能按原来的顺序了。
+不对现有的map做增删改操作为什么遍历时key还是无序的？ 当我们在遍历 map 时，并不是固定地从 0 号 bucket 开始遍历，每次都是从一个随机值序号的 bucket 开始遍历，并且是从这个 bucket 的一个随机序号的 cell 开始遍历。这样，即使你是一个写死的 map，仅仅只是遍历它，也不太可能会返回一个固定序列的 key/value 对了。
+在map遍历的时候对这个map做添加操作每次添加相同数量的key后为什么最后的map size都不一样？ 因为range取map的顺序随机，range会再次遍历刚刚新加入map的键值对。
+map的value存储为结构体该怎么修改值 直接取出value修改是无效的，修改方式有二：一拿出value修改value然后替换老的value. map[key] = newValue
+第二不要直接存储结构体而是存储结构体的指针，这样修改就可以获取指针然后进行修改. (*map[key]).name = value
+chan 无缓冲Chan的发送和接受是否同步？ ch := make(chan int) 无缓冲的channel由于没有缓冲发送的和接受需要同步
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-02-17 22:50:21 +0800 CST'>February 17, 2023</span>&nbsp;·&nbsp;2 min&nbsp;·&nbsp;loveyu</footer>
+  <a class="entry-link" aria-label="post link to 面试指南" href="http://localhost:1313/posts/go/interview/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">滑块验证码实现
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>滑块验证码实现 思路：
+随机数生成x，y两个随机数；x，y随机数大小不能超过背景图片的大小，不能小于遮盖图片的大小 uuid生成bgId作为最后背景图的标识 把x，y作为最大坐标值，x，y分别减去遮盖图片的大小作为最小坐标值，通过最大和最小坐标值可以得到一个矩形 在背景图片中裁剪出这个矩形大小的图片，这个图片为滑块图片 把背景图中裁剪的区域填充进遮盖图片，填充后的图片为真正的背景图 分别把滑块图片和背景图进行base64编码 把背景图的bgid以及x轴坐标保存在服务器缓存中，把bgid保存在客户端缓存中 返回给前端滑块图片和背景图片的base64编码以及y轴坐标 用户滑动滑块后前端返回用户滑动后的x轴坐标 后端拿到客户端缓存中的bgId以及前端返回的x轴坐标把这些数据和服务器缓存中的数据做对比，在允许的误差内即为验证通过 用到的第三方库为：
+&#34;github.com/disintegration/imaging&#34; &#34;github.com/google/uuid&#34; func GetRandInt(max int) int { num, _ := rand.Int(rand.Reader, big.NewInt(int64(max-1))) return int(num.Int64()) } func CreateCode() (string, string, int, int) { //生成随机数,用来随机选取图片 nums := GetRandInt(10) //用于生成的图片名称 imageId := uuid.New().String() //获取图片 f, _ := os.Open(&#34;./jigsaw/bg/&#34; &#43; strconv.Itoa(nums) &#43; &#34;.png&#34;) //获取随机x坐标 imageRandX := GetRandInt(480 - 100) if imageRandX &lt; 200 { imageRandX &#43;= 200 } //获取随机y坐标 imageRandY := GetRandInt(240 - 100) if imageRandY &lt; 100 { imageRandY &#43;= 100 } //转化为image对象 m, err := png.Decode(f) if err != nil { panic(err) } //设置截取的最大坐标值和最小坐标值 maxPotion := image.Point{ X: imageRandX, Y: imageRandY, } minPotion := image.Point{ X: imageRandX - 100, Y: imageRandY - 100, } subimg := image.Rectangle{ Max: maxPotion, Min: minPotion, } f, err = os.Create(&#34;./jigsaw/code/&#34; &#43; imageId &#43; &#34;screenshot.jpeg&#34;) defer f.Close() //截取图像 data := imaging.Crop(m, subimg) jpeg.Encode(f, data, nil) //base64编码 buffer := bytes.NewBuffer(nil) jpeg.Encode(buffer, data, nil) maskBase64 := base64.StdEncoding.EncodeToString(buffer.Bytes()) //设置遮罩 bkBase64 := createCodeImg(&#34;./jigsaw/bg/&#34;&#43;strconv.Itoa(nums)&#43;&#34;.png&#34;, minPotion, imageId) return maskBase64, bkBase64, imageRandX, imageRandY } func createCodeImg(path string, minPotion image.Point, imageId string) string { bg, err := os.Open(path) if err != nil { panic(err) } maskFile, err := os.Open(&#34;./jigsaw/mask.png&#34;) if err != nil { panic(err) } bgimg, err := png.Decode(bg) maskimg, err := png.Decode(maskFile) //参数：背景图，遮盖图，坐标，透明度 data := imaging.Overlay(bgimg, maskimg, minPotion, 1.0) f, err := os.Create(&#34;./jigsaw/code/&#34; &#43; imageId &#43; &#34;.jpeg&#34;) defer f.Close() jpeg.Encode(f, data, nil) //base64编码 buffer := bytes.NewBuffer(nil) jpeg.Encode(buffer, data, nil) return base64.StdEncoding.EncodeToString(buffer.Bytes()) } </p>
+  </div>
+  <footer class="entry-footer"><span title='2022-12-04 19:38:37 +0800 CST'>December 4, 2022</span>&nbsp;·&nbsp;2 min&nbsp;·&nbsp;loveyu</footer>
+  <a class="entry-link" aria-label="post link to 滑块验证码实现" href="http://localhost:1313/posts/go/%E6%BB%91%E5%9D%97%E9%AA%8C%E8%AF%81%E7%A0%81%E5%AE%9E%E7%8E%B0/"></a>
+</article>
+<footer class="page-footer">
+  <nav class="pagination">
+    <a class="prev" href="http://localhost:1313/posts/go/page/2/">
+      «&nbsp;&nbsp;2/7
+    </a>
+    <a class="next" href="http://localhost:1313/posts/go/page/4/">&nbsp;4/7&nbsp;»
+    </a>
+  </nav>
+</footer>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2025 <a href="http://localhost:1313/">loveyu233</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Vue2 | loveyu233</title>
+<meta name="keywords" content="">
+<meta name="description" content="我的个人博客 - 分享技术与生活">
+<meta name="author" content="loveyu233">
+<link rel="canonical" href="http://localhost:1313/categories/vue2/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.e13ff79a7b90ac30a7f805291f902c75095888118dcb1fccef74850e837f1253.css" integrity="sha256-4T/3mnuQrDCn&#43;AUpH5AsdQlYiBGNyx/M73SFDoN/ElM=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" type="application/rss+xml" href="http://localhost:1313/categories/vue2/index.xml">
+<link rel="alternate" hreflang="zh-cn" href="http://localhost:1313/categories/vue2/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:url" content="http://localhost:1313/categories/vue2/">
+  <meta property="og:site_name" content="loveyu233">
+  <meta property="og:title" content="Vue2">
+  <meta property="og:description" content="我的个人博客 - 分享技术与生活">
+  <meta property="og:locale" content="zh-cn">
+  <meta property="og:type" content="website">
+      <meta property="og:image" content="http://localhost:1313/images/cover.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://localhost:1313/images/cover.png">
+<meta name="twitter:title" content="Vue2">
+<meta name="twitter:description" content="我的个人博客 - 分享技术与生活">
+
+</head>
+
+<body class="list" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="loveyu233 (Alt + H)">loveyu233</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/archives" title="归档">
+                    <span>归档</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/search/" title="搜索">
+                    <span>搜索</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/tags/" title="标签">
+                    <span>标签</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main"> 
+<header class="page-header"><div class="breadcrumbs"><a href="http://localhost:1313/">Home</a>&nbsp;»&nbsp;<a href="http://localhost:1313/categories/">Categories</a></div>
+  <h1>
+    Vue2
+    <a href="/categories/vue2/index.xml" title="RSS" aria-label="RSS">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" height="23">
+        <path d="M4 11a9 9 0 0 1 9 9" />
+        <path d="M4 4a16 16 0 0 1 16 16" />
+        <circle cx="5" cy="19" r="1" />
+      </svg>
+    </a>
+  </h1>
+</header>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Vue2
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>指令 语法 描述 {{ key }} 插值句法 v-bind:value=“key” / :value=“key” 单向绑定 v-model:value=“key” / v-model=“key” 双向绑定,只能用于有value值的 @keydown / @keyup / @keydown/keyup.键位名称.键位名称 键盘事件 @click.prevent / @click.stop / @click.once / @click.capture / @click.self / @click.passive 默认事件 / 冒泡 / 只执行一次 / 捕获模式 / event.target是当前元素在执行 / 不等待事件处理完 v-if / v-else-if / v-else / v-show v-if 条件不成立则没有这个元素, v-show则是使用display隐藏这个元素 v-for=&#34;(key, value/index) in data&#34; :key=“唯一值” key里面的值必须是唯一的 v-text / v-html / v-once / v-cloak 文本 / 解析html / 只执行一次 / 渲染完毕后删除 ref=“key” 获取 this.#refs.key this.$nextTick(function () { … } 下一次dom更新时执行的回调方法 计算属性 computed: { // 计算的值 info: { // 获取这个值时调用 get() { return ... }, // 设置值时调用,value为设置的值 set(value) { ... } } } // 如果只读不修改的话可以简写为: computed: { info() { return ... } } 监视属性 watch: { name: { // immediate页面打开直接调用一次,用来初始化 immediate: true, handler(newdata, olddata) { console.log(&#34;newData: &#34;, newdata, &#34; oldData: &#34;, olddata) } }, // 监视里面某一个属性可以写: &#34;number.a&#34; 必须加上引号不然格式不对,默认不写引号是因为简写 number: { // 开启深度监视,否则无法直接监视number里面的属性变化 deep: true, handler(newDta, oldData) { console.log(newDta, &#34; &#34;, oldData) } }, // 当只有handler时简写: demo(newData, oldData) { console.log(newData, oldData) // 这里必须是箭头方式的,因为只有箭头的没有this向外招,招到demo,demo的this是vue // 不使用箭头的this就是wind setTimeout(() =&gt; { console.log(&#34;&#34;) }, 1000) } } 表单绑定 &lt;body&gt; &lt;div id=&#34;root&#34;&gt; &lt;form @submit.prevent=&#34;submit&#34;&gt; &lt;!-- v-model.number 把输入转为数字 --&gt; 账号:&lt;input type=&#34;number&#34; v-model.number=&#34;userinfo.phone&#34;&gt;&lt;br&gt;&lt;br&gt; &lt;!-- v-model.trim 去掉前后空格 --&gt; 密码:&lt;input type=&#34;password&#34; v-model.trim=&#34;userinfo.password&#34;&gt;&lt;br&gt;&lt;br&gt; 性别:&lt;input type=&#34;radio&#34; name=&#34;sex&#34; value=&#34;1&#34; v-model=&#34;userinfo.sex&#34;&gt;男 &lt;input type=&#34;radio&#34; name=&#34;sex&#34; value=&#34;0&#34; v-model=&#34;userinfo.sex&#34;&gt;女&lt;br&gt;&lt;br&gt; 爱好:&lt;input type=&#34;checkbox&#34; value=&#34;a&#34; v-model=&#34;userinfo.hobby&#34;&gt;A &lt;input type=&#34;checkbox&#34; value=&#34;b&#34; v-model=&#34;userinfo.hobby&#34;&gt;B &lt;input type=&#34;checkbox&#34; value=&#34;c&#34; v-model=&#34;userinfo.hobby&#34;&gt;C&lt;br&gt;&lt;br&gt; 所属:&lt;select v-model=&#34;userinfo.city&#34;&gt; &lt;option value=&#34;&#34;&gt;选择&lt;/option&gt; &lt;option value=&#34;北京&#34;&gt;北京&lt;/option&gt; &lt;option value=&#34;上海&#34;&gt;上海&lt;/option&gt; &lt;/select&gt;&lt;br&gt;&lt;br&gt; &lt;!-- v-model.lazy 当失去焦点的时候再收集 --&gt; 其他信息:&lt;textarea v-model.lazy=&#34;userinfo.other&#34;&gt;&lt;/textarea&gt;&lt;br&gt;&lt;br&gt; &lt;input type=&#34;checkbox&#34; v-model=&#34;userinfo.agree&#34;&gt;接受阅读协议&lt;a&gt;用户协议 &lt;/a&gt;&lt;br&gt;&lt;br&gt; &lt;button&gt;提交&lt;/button&gt; &lt;/form&gt; &lt;/div&gt; &lt;/body&gt; &lt;script&gt; new Vue({ el: &#34;#root&#34;, data: { userinfo: { phone: &#34;&#34;, password: &#34;&#34;, sex: &#34;&#34;, hobby: [], city: &#34;&#34;, other: &#34;&#34;, agree: false } }, methods: { submit() { console.log(JSON.stringify(this.userinfo)) } } }) &lt;/script&gt; 过滤器 &lt;body&gt; &lt;div id=&#34;root&#34;&gt; &lt;!-- 过滤器只能用在插值语法或者v-bind--&gt; &lt;h1&gt;当前时间戳: {{ time }}&lt;/h1&gt; &lt;h1&gt;计算属性 {{ filterTime }}&lt;/h1&gt; &lt;h1&gt;过滤器无参 {{ time | timePar }}&lt;/h1&gt; &lt;h1&gt;过滤器带参 {{ time | timePar(&#34;YYYY-MM&#34;) }}&lt;/h1&gt; &lt;h1&gt;多个过滤器结合使用 {{ time | timePar | jiequ }}&lt;/h1&gt; &lt;h1&gt;全局过滤器: {{ time | timePar | quanju }}&lt;/h1&gt; &lt;/div&gt; &lt;/body&gt; &lt;script&gt; // 全局过滤器 Vue.filter(&#34;quanju&#34;, function (value) { return value.slice(0, 1) }) new Vue({ el: &#34;#root&#34;, data: { time: 1681548595292 }, computed: { filterTime() { return dayjs(this.time).format(&#34;YYYY-MM-DD HH:mm:ss&#34;) } }, filters: { timePar(value, fomt = &#34;YYYY-MM-DD HH:mm:ss&#34;) { return dayjs(this.time).format(fomt) }, jiequ(value) { return value.slice(0, 4) } } }) &lt;/script&gt; 自定义指令 &lt;body&gt; &lt;div id=&#34;root&#34;&gt; &lt;h1&gt;n: {{ n }}&lt;/h1&gt; &lt;!-- 使用自定义指令,作用就是把n*10后展示--&gt; &lt;h1&gt;n*10: &lt;span v-big=&#34;n&#34;&gt;&lt;/span&gt;&lt;/h1&gt; &lt;!-- 页面打开就获取焦点 --&gt; &lt;input v-fbind:value=&#34;n&#34;&gt; &lt;button @click=&#34;n&#43;&#43;&#34;&gt;n&#43;1&lt;/button&gt; &lt;h1&gt;如果指定名称是多个单词则需要用 &#39; - &#39; 分割,例如: big-number, 创建时: &#39;big-number&#39;(){...}&lt;/h1&gt; &lt;/div&gt; &lt;/body&gt; &lt;script&gt; // 全局指令 Vue.directive(&#39;big1&#39;, function (element, bindalue) { // 内容 }) Vue.directive(&#39;big2&#39;, { bind(element, bindalue) { // 内容 }, inserted(element, bindalue) { // 内容 }, update(element, bindalue) { // 内容 } }) new Vue({ el: &#34;#root&#34;, data: { n: 1, }, directives: { // 精简写法,相当于bind &#43; update big(element, bindalue) { // this 为 wind 不是vm element.innerText = bindalue.value * 10 }, fbind: { // 指令与元素绑定后 bind(element, bindalue) { element.value = bindalue.value }, // 指令所在元素被插入页面后 inserted(element, bindalue) { element.focus() }, // 模版重新解析时调用 update(element, bindalue) { element.value = bindalue.value } } } }) &lt;/script&gt; props 父组件给子组件传值 // 父组件传值: &lt;!-- 直接使用 name=&#34;&#34;传递的是字符串 使用 :age=&#34;&#34; 绑定形式传递的是语法格式--&gt; &lt;HelloWorld name=&#34;张三&#34; :age=&#34;11&#34;&gt;&lt;/HelloWorld&gt; // 子组件接收: // 简写 // props: [&#34;name&#34;, &#34;age&#34;] // 限制传递数据的类型 // props: { // name: String, // age: Number // } // 详细写法 props: { name: { type: String, // 限制类型 required: true, // 是否为必须的值 }, age: { type: Number, default: 100, // 没有这个值的话默认值是多少 } } mixin混入 抽取实例之间相同的数据或方法然后共用
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2022-12-04 19:38:37 +0800 CST'>December 4, 2022</span>&nbsp;·&nbsp;10 min&nbsp;·&nbsp;loveyu</footer>
+  <a class="entry-link" aria-label="post link to Vue2" href="http://localhost:1313/posts/frontend/vue/"></a>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2025 <a href="http://localhost:1313/">loveyu233</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

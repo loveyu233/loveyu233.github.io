@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>go项目初始化 | loveyu233</title>
+<meta name="keywords" content="go">
+<meta name="description" content="服务优雅关闭启动
+
+
+使用signal.NotifyContext接收退出相关信号,获取到ctx
+传递ctx到初始化api中
+初始化api
+先获取到项目api handler
+创建chan空结构体管道
+启动网络监听
+开启goroutine
+
+打印输出
+向chan发送数据
+运行server
+
+
+接收chan信号
+开启goroutine
+
+打印输出
+向chan发送数据
+拦截ctx的done信号
+关闭server
+
+
+接收chan信号
+接收ctx的done信号
+设置content.Timeout三秒关闭
+
+func main() {
+	ctx, cancel := signal.NotifyContext(context.Background(), syscall.SIGHUP, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
+	defer cancel()
+
+	opt.MustInitConfig()
+
+	api.MustStartApi(ctx)
+
+	&lt;-ctx.Done()
+
+	logrus.Warn(&#34;[gateway] service stopped by gctx in 3s...&#34;)
+	&lt;-util.Timeout(3).Done()
+}
+
+func initApp() http.Handler {
+    engine := gin.Default()
+    ....
+    return engine.Handler()
+}
+
+
+func initApp() *fiber.App {
+    engine := fiber.New(fiber.Config{BodyLimit: 200 * 1024 * 1024})
+    ....
+    return engine.Handler()
+}
+
+func MustStartApi(ctx context.Context) {
+	var (
+		err error
+		ln  net.Listener
+        // gin是在go的http上进行包装的框架所以可以直接使用http.Server来接受运行
+		srv = http.Server{
+			Handler: initApp(),
+		}
+        
+        // fiber使用fasthttp所以需要使用fasthttp.Server来接收
+        srv = fasthttp.Server{
+			Handler:   initApp(),
+			TLSConfig: nil,
+		}
+		address = fmt.Sprintf(&#34;%s:%d&#34;, opt.Cfg.Gateway.ListenHost, opt.Cfg.Gateway.ListenPort)
+		ready   = make(chan struct{})
+	)
+
+	if ln, err = net.Listen(&#34;tcp&#34;, address); err != nil {
+		logrus.Fatalf(&#34;[%s] MustStart: listen address: %s err: %v&#34;, opt.Cfg.Gateway.Name, address, err)
+	}
+
+	go func() {
+		logrus.Infof(&#34;[%s] MustStart: service serve at: %s&#34;, opt.Cfg.Gateway.Name, address)
+		ready &lt;- struct{}{}
+		if err = srv.Serve(ln); err != nil {
+			logrus.Fatalf(&#34;[%s] MustStart: service serve err: %v&#34;, opt.Cfg.Gateway.Name, err)
+		}
+	}()
+
+	&lt;-ready
+
+	go func() {
+		ready &lt;- struct{}{}
+		&lt;-ctx.Done()
+		logrus.Infof(&#34;[%s] MustStart: service shutdown by gctx&#34;, opt.Cfg.Gateway.Name)
+		if err = srv.Shutdown(tools.Timeout(3)); err != nil {
+			logrus.Errorf(&#34;[%s] MustStart: service shutdown by gctx with err: %v&#34;, opt.Cfg.Gateway.Name, err)
+		}
+	}()
+
+	&lt;-ready
+}
+项目配置初始化
+
+
+
+必须在init里面进行参数解析">
+<meta name="author" content="loveyu">
+<link rel="canonical" href="http://localhost:1313/posts/go/go%E9%A1%B9%E7%9B%AE%E5%88%9D%E5%A7%8B%E5%8C%96/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.e13ff79a7b90ac30a7f805291f902c75095888118dcb1fccef74850e837f1253.css" integrity="sha256-4T/3mnuQrDCn&#43;AUpH5AsdQlYiBGNyx/M73SFDoN/ElM=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="zh-cn" href="http://localhost:1313/posts/go/go%E9%A1%B9%E7%9B%AE%E5%88%9D%E5%A7%8B%E5%8C%96/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:url" content="http://localhost:1313/posts/go/go%E9%A1%B9%E7%9B%AE%E5%88%9D%E5%A7%8B%E5%8C%96/">
+  <meta property="og:site_name" content="loveyu233">
+  <meta property="og:title" content="go项目初始化">
+  <meta property="og:description" content="服务优雅关闭启动 使用signal.NotifyContext接收退出相关信号,获取到ctx 传递ctx到初始化api中 初始化api 先获取到项目api handler 创建chan空结构体管道 启动网络监听 开启goroutine 打印输出 向chan发送数据 运行server 接收chan信号 开启goroutine 打印输出 向chan发送数据 拦截ctx的done信号 关闭server 接收chan信号 接收ctx的done信号 设置content.Timeout三秒关闭 func main() { ctx, cancel := signal.NotifyContext(context.Background(), syscall.SIGHUP, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT) defer cancel() opt.MustInitConfig() api.MustStartApi(ctx) &lt;-ctx.Done() logrus.Warn(&#34;[gateway] service stopped by gctx in 3s...&#34;) &lt;-util.Timeout(3).Done() } func initApp() http.Handler { engine := gin.Default() .... return engine.Handler() } func initApp() *fiber.App { engine := fiber.New(fiber.Config{BodyLimit: 200 * 1024 * 1024}) .... return engine.Handler() } func MustStartApi(ctx context.Context) { var ( err error ln net.Listener // gin是在go的http上进行包装的框架所以可以直接使用http.Server来接受运行 srv = http.Server{ Handler: initApp(), } // fiber使用fasthttp所以需要使用fasthttp.Server来接收 srv = fasthttp.Server{ Handler: initApp(), TLSConfig: nil, } address = fmt.Sprintf(&#34;%s:%d&#34;, opt.Cfg.Gateway.ListenHost, opt.Cfg.Gateway.ListenPort) ready = make(chan struct{}) ) if ln, err = net.Listen(&#34;tcp&#34;, address); err != nil { logrus.Fatalf(&#34;[%s] MustStart: listen address: %s err: %v&#34;, opt.Cfg.Gateway.Name, address, err) } go func() { logrus.Infof(&#34;[%s] MustStart: service serve at: %s&#34;, opt.Cfg.Gateway.Name, address) ready &lt;- struct{}{} if err = srv.Serve(ln); err != nil { logrus.Fatalf(&#34;[%s] MustStart: service serve err: %v&#34;, opt.Cfg.Gateway.Name, err) } }() &lt;-ready go func() { ready &lt;- struct{}{} &lt;-ctx.Done() logrus.Infof(&#34;[%s] MustStart: service shutdown by gctx&#34;, opt.Cfg.Gateway.Name) if err = srv.Shutdown(tools.Timeout(3)); err != nil { logrus.Errorf(&#34;[%s] MustStart: service shutdown by gctx with err: %v&#34;, opt.Cfg.Gateway.Name, err) } }() &lt;-ready } 项目配置初始化 必须在init里面进行参数解析">
+  <meta property="og:locale" content="zh-cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2023-10-24T19:38:37+08:00">
+    <meta property="article:modified_time" content="2023-10-24T19:38:37+08:00">
+    <meta property="article:tag" content="Go">
+      <meta property="og:image" content="http://localhost:1313/images/cover.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://localhost:1313/images/cover.png">
+<meta name="twitter:title" content="go项目初始化">
+<meta name="twitter:description" content="服务优雅关闭启动
+
+
+使用signal.NotifyContext接收退出相关信号,获取到ctx
+传递ctx到初始化api中
+初始化api
+先获取到项目api handler
+创建chan空结构体管道
+启动网络监听
+开启goroutine
+
+打印输出
+向chan发送数据
+运行server
+
+
+接收chan信号
+开启goroutine
+
+打印输出
+向chan发送数据
+拦截ctx的done信号
+关闭server
+
+
+接收chan信号
+接收ctx的done信号
+设置content.Timeout三秒关闭
+
+func main() {
+	ctx, cancel := signal.NotifyContext(context.Background(), syscall.SIGHUP, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
+	defer cancel()
+
+	opt.MustInitConfig()
+
+	api.MustStartApi(ctx)
+
+	&lt;-ctx.Done()
+
+	logrus.Warn(&#34;[gateway] service stopped by gctx in 3s...&#34;)
+	&lt;-util.Timeout(3).Done()
+}
+
+func initApp() http.Handler {
+    engine := gin.Default()
+    ....
+    return engine.Handler()
+}
+
+
+func initApp() *fiber.App {
+    engine := fiber.New(fiber.Config{BodyLimit: 200 * 1024 * 1024})
+    ....
+    return engine.Handler()
+}
+
+func MustStartApi(ctx context.Context) {
+	var (
+		err error
+		ln  net.Listener
+        // gin是在go的http上进行包装的框架所以可以直接使用http.Server来接受运行
+		srv = http.Server{
+			Handler: initApp(),
+		}
+        
+        // fiber使用fasthttp所以需要使用fasthttp.Server来接收
+        srv = fasthttp.Server{
+			Handler:   initApp(),
+			TLSConfig: nil,
+		}
+		address = fmt.Sprintf(&#34;%s:%d&#34;, opt.Cfg.Gateway.ListenHost, opt.Cfg.Gateway.ListenPort)
+		ready   = make(chan struct{})
+	)
+
+	if ln, err = net.Listen(&#34;tcp&#34;, address); err != nil {
+		logrus.Fatalf(&#34;[%s] MustStart: listen address: %s err: %v&#34;, opt.Cfg.Gateway.Name, address, err)
+	}
+
+	go func() {
+		logrus.Infof(&#34;[%s] MustStart: service serve at: %s&#34;, opt.Cfg.Gateway.Name, address)
+		ready &lt;- struct{}{}
+		if err = srv.Serve(ln); err != nil {
+			logrus.Fatalf(&#34;[%s] MustStart: service serve err: %v&#34;, opt.Cfg.Gateway.Name, err)
+		}
+	}()
+
+	&lt;-ready
+
+	go func() {
+		ready &lt;- struct{}{}
+		&lt;-ctx.Done()
+		logrus.Infof(&#34;[%s] MustStart: service shutdown by gctx&#34;, opt.Cfg.Gateway.Name)
+		if err = srv.Shutdown(tools.Timeout(3)); err != nil {
+			logrus.Errorf(&#34;[%s] MustStart: service shutdown by gctx with err: %v&#34;, opt.Cfg.Gateway.Name, err)
+		}
+	}()
+
+	&lt;-ready
+}
+项目配置初始化
+
+
+
+必须在init里面进行参数解析">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "http://localhost:1313/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "go",
+      "item": "http://localhost:1313/posts/go/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "go项目初始化",
+      "item": "http://localhost:1313/posts/go/go%E9%A1%B9%E7%9B%AE%E5%88%9D%E5%A7%8B%E5%8C%96/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "go项目初始化",
+  "name": "go项目初始化",
+  "description": "服务优雅关闭启动 使用signal.NotifyContext接收退出相关信号,获取到ctx 传递ctx到初始化api中 初始化api 先获取到项目api handler 创建chan空结构体管道 启动网络监听 开启goroutine 打印输出 向chan发送数据 运行server 接收chan信号 开启goroutine 打印输出 向chan发送数据 拦截ctx的done信号 关闭server 接收chan信号 接收ctx的done信号 设置content.Timeout三秒关闭 func main() { ctx, cancel := signal.NotifyContext(context.Background(), syscall.SIGHUP, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT) defer cancel() opt.MustInitConfig() api.MustStartApi(ctx) \u0026lt;-ctx.Done() logrus.Warn(\u0026#34;[gateway] service stopped by gctx in 3s...\u0026#34;) \u0026lt;-util.Timeout(3).Done() } func initApp() http.Handler { engine := gin.Default() .... return engine.Handler() } func initApp() *fiber.App { engine := fiber.New(fiber.Config{BodyLimit: 200 * 1024 * 1024}) .... return engine.Handler() } func MustStartApi(ctx context.Context) { var ( err error ln net.Listener // gin是在go的http上进行包装的框架所以可以直接使用http.Server来接受运行 srv = http.Server{ Handler: initApp(), } // fiber使用fasthttp所以需要使用fasthttp.Server来接收 srv = fasthttp.Server{ Handler: initApp(), TLSConfig: nil, } address = fmt.Sprintf(\u0026#34;%s:%d\u0026#34;, opt.Cfg.Gateway.ListenHost, opt.Cfg.Gateway.ListenPort) ready = make(chan struct{}) ) if ln, err = net.Listen(\u0026#34;tcp\u0026#34;, address); err != nil { logrus.Fatalf(\u0026#34;[%s] MustStart: listen address: %s err: %v\u0026#34;, opt.Cfg.Gateway.Name, address, err) } go func() { logrus.Infof(\u0026#34;[%s] MustStart: service serve at: %s\u0026#34;, opt.Cfg.Gateway.Name, address) ready \u0026lt;- struct{}{} if err = srv.Serve(ln); err != nil { logrus.Fatalf(\u0026#34;[%s] MustStart: service serve err: %v\u0026#34;, opt.Cfg.Gateway.Name, err) } }() \u0026lt;-ready go func() { ready \u0026lt;- struct{}{} \u0026lt;-ctx.Done() logrus.Infof(\u0026#34;[%s] MustStart: service shutdown by gctx\u0026#34;, opt.Cfg.Gateway.Name) if err = srv.Shutdown(tools.Timeout(3)); err != nil { logrus.Errorf(\u0026#34;[%s] MustStart: service shutdown by gctx with err: %v\u0026#34;, opt.Cfg.Gateway.Name, err) } }() \u0026lt;-ready } 项目配置初始化 必须在init里面进行参数解析\n",
+  "keywords": [
+    "go"
+  ],
+  "articleBody": "服务优雅关闭启动 使用signal.NotifyContext接收退出相关信号,获取到ctx 传递ctx到初始化api中 初始化api 先获取到项目api handler 创建chan空结构体管道 启动网络监听 开启goroutine 打印输出 向chan发送数据 运行server 接收chan信号 开启goroutine 打印输出 向chan发送数据 拦截ctx的done信号 关闭server 接收chan信号 接收ctx的done信号 设置content.Timeout三秒关闭 func main() { ctx, cancel := signal.NotifyContext(context.Background(), syscall.SIGHUP, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT) defer cancel() opt.MustInitConfig() api.MustStartApi(ctx) \u003c-ctx.Done() logrus.Warn(\"[gateway] service stopped by gctx in 3s...\") \u003c-util.Timeout(3).Done() } func initApp() http.Handler { engine := gin.Default() .... return engine.Handler() } func initApp() *fiber.App { engine := fiber.New(fiber.Config{BodyLimit: 200 * 1024 * 1024}) .... return engine.Handler() } func MustStartApi(ctx context.Context) { var ( err error ln net.Listener // gin是在go的http上进行包装的框架所以可以直接使用http.Server来接受运行 srv = http.Server{ Handler: initApp(), } // fiber使用fasthttp所以需要使用fasthttp.Server来接收 srv = fasthttp.Server{ Handler: initApp(), TLSConfig: nil, } address = fmt.Sprintf(\"%s:%d\", opt.Cfg.Gateway.ListenHost, opt.Cfg.Gateway.ListenPort) ready = make(chan struct{}) ) if ln, err = net.Listen(\"tcp\", address); err != nil { logrus.Fatalf(\"[%s] MustStart: listen address: %s err: %v\", opt.Cfg.Gateway.Name, address, err) } go func() { logrus.Infof(\"[%s] MustStart: service serve at: %s\", opt.Cfg.Gateway.Name, address) ready \u003c- struct{}{} if err = srv.Serve(ln); err != nil { logrus.Fatalf(\"[%s] MustStart: service serve err: %v\", opt.Cfg.Gateway.Name, err) } }() \u003c-ready go func() { ready \u003c- struct{}{} \u003c-ctx.Done() logrus.Infof(\"[%s] MustStart: service shutdown by gctx\", opt.Cfg.Gateway.Name) if err = srv.Shutdown(tools.Timeout(3)); err != nil { logrus.Errorf(\"[%s] MustStart: service shutdown by gctx with err: %v\", opt.Cfg.Gateway.Name, err) } }() \u003c-ready } 项目配置初始化 必须在init里面进行参数解析\nflag.StringVar(\u0026configFile, \"c\", \"etc/config.json\", \"\") flag.IntVar(\u0026Debug, \"debug\", 0, \"\") 时区设置\ntime.Local = time.FixedZone(\"CST\", 8*3600) common.GMT = time.FixedZone(\"GMT\", 0) 在初始化函数里面设置日志等级\nlogrus.SetLevel type config struct { Project string `mapstructure:\"project\"` Redis redis `mapstructure:\"redis\"` ES es `mapstructure:\"es\"` Mysql mysql `mapstructure:\"mysql\"` User service `mapstructure:\"user\"` } var ( configFile string Cfg = new(config) Debug int ) func init() { time.Local = time.FixedZone(\"CST\", 8*3600) common.GMT = time.FixedZone(\"GMT\", 0) flag.StringVar(\u0026configFile, \"c\", \"etc/config.json\", \"\") flag.IntVar(\u0026Debug, \"debug\", 0, \"\") } func MustInitConfig() { flag.Parse() var ( err error ) viper.SetConfigType(\"json\") viper.SetConfigFile(configFile) if err = viper.ReadInConfig(); err != nil { logrus.Panicf(\"read in config file err: %v\", err) } if err = viper.Unmarshal(Cfg); err != nil { logrus.Panicf(\"unmarshal config file err: %v\", err) } switch Debug { case 1: logrus.SetLevel(logrus.DebugLevel) case 9999: logrus.SetLevel(logrus.TraceLevel) logrus.SetReportCaller(true) logrus.SetFormatter(\u0026logrus.TextFormatter{ ForceColors: true, CallerPrettyfier: func(frame *runtime.Frame) (string, string) { file := path.Base(frame.File) return \"\", \" \" + file + \":\" + strconv.Itoa(frame.Line) }, }) } logrus.Infof(\"read in config detail: %+v\", *Cfg) } label标签 数据包装\ntype PrivilegeTimeType string const ( PrivilegeTimeTypeInf PrivilegeTimeType = \"inf\" PrivilegeTimeTypeRange PrivilegeTimeType = \"range\" ) func (pt PrivilegeTimeType) Label() string { switch pt { case PrivilegeTimeTypeInf: return \"无限制\" case PrivilegeTimeTypeRange: return \"时间区间\" default: return \"未知\" } } type PrivilegeType int const ( PrivilegeTypeRead PrivilegeType = 1 \u003c\u003c (iota + 1) PrivilegeTypeWrite PrivilegeTypeOwn PrivilegeTypeCharge ) var ( AllPrivilegeTypes = []PrivilegeType{ PrivilegeTypeRead, PrivilegeTypeWrite, PrivilegeTypeOwn, } AllPrivilegeTimeTypes = []PrivilegeTimeType{ PrivilegeTimeTypeInf, PrivilegeTimeTypeRange, } ) func (pt PrivilegeType) Label() string { switch pt { case PrivilegeTypeRead: return \"只读\" case PrivilegeTypeWrite: return \"读写\" case PrivilegeTypeOwn: return \"创建者\" default: return \"未知\" } } type ReadablePrivilege struct { Value PrivilegeType `json:\"value\"` Label string `json:\"label\"` } model 在model里面的只写公用的,例如user的go文件里面账号密码登录这样的结构体就不要写而是在登录的handler里面单独声明出来 结构体的方法只写公用的,其他例如获取用户信息之类的可以放到control的user里面去写 例如用户的token获取,权限相关例如用户是否有相关权限这类的公用方法可以写到model的user中 handler 每个handler里面单独声明出需要的结构体而不是把这些结构体放到model或者其他地方 需要使用的变量提前使用vars声明出来 错误的返回放到msg而不是data 只有在这个handler里面用到的数据库查询就直接在handler里面写就可以不要放到model或者其他地方 如果需要用循环处理且循环里面内容特别多的可以吧这些内容单独拿出来作为一个函数放到handler文件里面,然后在循环调用这个函数 数据库数据初始化 在model里面写一个init的go文件配置需要初始化的数据 声明一个大的MustInit供main函数调用 在MustInit里面调用每一个需要初始化的model 如果有默认必须得数据库信息则存放到对应的model里面 在MustInit同级写初始化函数 先AutoMigrate创建出数据库表 查询出当前表有多少条数据 判断数据库存在的数据条数和需要的默认数据条数是否相同 如果不相同则循环默认数据进行创建 记得判断错误类型是否为已存在, if !strings.Contains(err.Error(), \"SQLSTATE 23505\") {} 如果是pgsql要把序列重置为当前的数据库数据条数 SELECT setval('users_id_seq', (SELECT MAX(id) FROM users)) 如果有需要的数据库函数可以写好调用进行创建 func MustInit(db *gorm.DB) { mustInitRoles(db) mustInitUsers(db) mustInitFunctions(db) .... } func mustInitUsers(db *gorm.DB) { .... } .... func mustInitFunctions(db *gorm.DB) { var ( err error sql = `CREATE FUNCTION array_intersect(anyarray, anyarray) RETURNS anyarray language sql as $FUNCTION$ SELECT ARRAY( SELECT UNNEST($1) INTERSECT SELECT UNNEST($2) ); $FUNCTION$;` ) if err = db.Exec(sql).Error; err != nil { if !strings.Contains(err.Error(), \"SQLSTATE 42723\") { panic(err) } } } ",
+  "wordCount" : "562",
+  "inLanguage": "zh-cn",
+  "image": "http://localhost:1313/images/cover.png","datePublished": "2023-10-24T19:38:37+08:00",
+  "dateModified": "2023-10-24T19:38:37+08:00",
+  "author":[{
+    "@type": "Person",
+    "name": "loveyu"
+  }],
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "http://localhost:1313/posts/go/go%E9%A1%B9%E7%9B%AE%E5%88%9D%E5%A7%8B%E5%8C%96/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "loveyu233",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "http://localhost:1313/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="loveyu233 (Alt + H)">loveyu233</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/archives" title="归档">
+                    <span>归档</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/search/" title="搜索">
+                    <span>搜索</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/tags/" title="标签">
+                    <span>标签</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="http://localhost:1313/">Home</a>&nbsp;»&nbsp;<a href="http://localhost:1313/posts/">Posts</a>&nbsp;»&nbsp;<a href="http://localhost:1313/posts/go/">go</a></div>
+    <h1 class="post-title entry-hint-parent">
+      go项目初始化
+    </h1>
+    <div class="post-meta"><span title='2023-10-24 19:38:37 +0800 CST'>October 24, 2023</span>&nbsp;·&nbsp;3 min&nbsp;·&nbsp;loveyu
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#%e6%9c%8d%e5%8a%a1%e4%bc%98%e9%9b%85%e5%85%b3%e9%97%ad%e5%90%af%e5%8a%a8" aria-label="服务优雅关闭启动">服务优雅关闭启动</a></li>
+                <li>
+                    <a href="#%e9%a1%b9%e7%9b%ae%e9%85%8d%e7%bd%ae%e5%88%9d%e5%a7%8b%e5%8c%96" aria-label="项目配置初始化">项目配置初始化</a></li>
+                <li>
+                    <a href="#label%e6%a0%87%e7%ad%be" aria-label="label标签">label标签</a></li>
+                <li>
+                    <a href="#model" aria-label="model">model</a></li>
+                <li>
+                    <a href="#handler" aria-label="handler">handler</a></li>
+                <li>
+                    <a href="#%e6%95%b0%e6%8d%ae%e5%ba%93%e6%95%b0%e6%8d%ae%e5%88%9d%e5%a7%8b%e5%8c%96" aria-label="数据库数据初始化">数据库数据初始化</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><h1 id="服务优雅关闭启动">服务优雅关闭启动<a hidden class="anchor" aria-hidden="true" href="#服务优雅关闭启动">#</a></h1>
+<blockquote>
+<ol>
+<li>使用<code>signal.NotifyContext</code>接收退出相关信号,获取到ctx</li>
+<li>传递ctx到初始化api中</li>
+<li>初始化api</li>
+<li>先获取到项目api handler</li>
+<li>创建chan空结构体管道</li>
+<li>启动网络监听</li>
+<li>开启goroutine
+<ol>
+<li>打印输出</li>
+<li>向chan发送数据</li>
+<li>运行server</li>
+</ol>
+</li>
+<li>接收chan信号</li>
+<li>开启goroutine
+<ol>
+<li>打印输出</li>
+<li>向chan发送数据</li>
+<li>拦截ctx的done信号</li>
+<li>关闭server</li>
+</ol>
+</li>
+<li>接收chan信号</li>
+<li>接收ctx的done信号</li>
+<li>设置content.Timeout三秒关闭</li>
+</ol></blockquote>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">ctx</span><span class="p">,</span> <span class="nx">cancel</span> <span class="o">:=</span> <span class="nx">signal</span><span class="p">.</span><span class="nf">NotifyContext</span><span class="p">(</span><span class="nx">context</span><span class="p">.</span><span class="nf">Background</span><span class="p">(),</span> <span class="nx">syscall</span><span class="p">.</span><span class="nx">SIGHUP</span><span class="p">,</span> <span class="nx">syscall</span><span class="p">.</span><span class="nx">SIGINT</span><span class="p">,</span> <span class="nx">syscall</span><span class="p">.</span><span class="nx">SIGTERM</span><span class="p">,</span> <span class="nx">syscall</span><span class="p">.</span><span class="nx">SIGQUIT</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="k">defer</span> <span class="nf">cancel</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="nx">opt</span><span class="p">.</span><span class="nf">MustInitConfig</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="nx">api</span><span class="p">.</span><span class="nf">MustStartApi</span><span class="p">(</span><span class="nx">ctx</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="o">&lt;-</span><span class="nx">ctx</span><span class="p">.</span><span class="nf">Done</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="nx">logrus</span><span class="p">.</span><span class="nf">Warn</span><span class="p">(</span><span class="s">&#34;[gateway] service stopped by gctx in 3s...&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="o">&lt;-</span><span class="nx">util</span><span class="p">.</span><span class="nf">Timeout</span><span class="p">(</span><span class="mi">3</span><span class="p">).</span><span class="nf">Done</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">initApp</span><span class="p">()</span> <span class="nx">http</span><span class="p">.</span><span class="nx">Handler</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">engine</span> <span class="o">:=</span> <span class="nx">gin</span><span class="p">.</span><span class="nf">Default</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="o">...</span><span class="p">.</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nx">engine</span><span class="p">.</span><span class="nf">Handler</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">initApp</span><span class="p">()</span> <span class="o">*</span><span class="nx">fiber</span><span class="p">.</span><span class="nx">App</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">engine</span> <span class="o">:=</span> <span class="nx">fiber</span><span class="p">.</span><span class="nf">New</span><span class="p">(</span><span class="nx">fiber</span><span class="p">.</span><span class="nx">Config</span><span class="p">{</span><span class="nx">BodyLimit</span><span class="p">:</span> <span class="mi">200</span> <span class="o">*</span> <span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span><span class="p">})</span>
+</span></span><span class="line"><span class="cl">    <span class="o">...</span><span class="p">.</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nx">engine</span><span class="p">.</span><span class="nf">Handler</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">MustStartApi</span><span class="p">(</span><span class="nx">ctx</span> <span class="nx">context</span><span class="p">.</span><span class="nx">Context</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="kd">var</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">err</span> <span class="kt">error</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">ln</span>  <span class="nx">net</span><span class="p">.</span><span class="nx">Listener</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// gin是在go的http上进行包装的框架所以可以直接使用http.Server来接受运行</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">srv</span> <span class="p">=</span> <span class="nx">http</span><span class="p">.</span><span class="nx">Server</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">Handler</span><span class="p">:</span> <span class="nf">initApp</span><span class="p">(),</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">        
+</span></span><span class="line"><span class="cl">        <span class="c1">// fiber使用fasthttp所以需要使用fasthttp.Server来接收</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">srv</span> <span class="p">=</span> <span class="nx">fasthttp</span><span class="p">.</span><span class="nx">Server</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">Handler</span><span class="p">:</span>   <span class="nf">initApp</span><span class="p">(),</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">TLSConfig</span><span class="p">:</span> <span class="kc">nil</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">address</span> <span class="p">=</span> <span class="nx">fmt</span><span class="p">.</span><span class="nf">Sprintf</span><span class="p">(</span><span class="s">&#34;%s:%d&#34;</span><span class="p">,</span> <span class="nx">opt</span><span class="p">.</span><span class="nx">Cfg</span><span class="p">.</span><span class="nx">Gateway</span><span class="p">.</span><span class="nx">ListenHost</span><span class="p">,</span> <span class="nx">opt</span><span class="p">.</span><span class="nx">Cfg</span><span class="p">.</span><span class="nx">Gateway</span><span class="p">.</span><span class="nx">ListenPort</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">ready</span>   <span class="p">=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kd">struct</span><span class="p">{})</span>
+</span></span><span class="line"><span class="cl">	<span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">ln</span><span class="p">,</span> <span class="nx">err</span> <span class="p">=</span> <span class="nx">net</span><span class="p">.</span><span class="nf">Listen</span><span class="p">(</span><span class="s">&#34;tcp&#34;</span><span class="p">,</span> <span class="nx">address</span><span class="p">);</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">logrus</span><span class="p">.</span><span class="nf">Fatalf</span><span class="p">(</span><span class="s">&#34;[%s] MustStart: listen address: %s err: %v&#34;</span><span class="p">,</span> <span class="nx">opt</span><span class="p">.</span><span class="nx">Cfg</span><span class="p">.</span><span class="nx">Gateway</span><span class="p">.</span><span class="nx">Name</span><span class="p">,</span> <span class="nx">address</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">logrus</span><span class="p">.</span><span class="nf">Infof</span><span class="p">(</span><span class="s">&#34;[%s] MustStart: service serve at: %s&#34;</span><span class="p">,</span> <span class="nx">opt</span><span class="p">.</span><span class="nx">Cfg</span><span class="p">.</span><span class="nx">Gateway</span><span class="p">.</span><span class="nx">Name</span><span class="p">,</span> <span class="nx">address</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">ready</span> <span class="o">&lt;-</span> <span class="kd">struct</span><span class="p">{}{}</span>
+</span></span><span class="line"><span class="cl">		<span class="k">if</span> <span class="nx">err</span> <span class="p">=</span> <span class="nx">srv</span><span class="p">.</span><span class="nf">Serve</span><span class="p">(</span><span class="nx">ln</span><span class="p">);</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">logrus</span><span class="p">.</span><span class="nf">Fatalf</span><span class="p">(</span><span class="s">&#34;[%s] MustStart: service serve err: %v&#34;</span><span class="p">,</span> <span class="nx">opt</span><span class="p">.</span><span class="nx">Cfg</span><span class="p">.</span><span class="nx">Gateway</span><span class="p">.</span><span class="nx">Name</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="o">&lt;-</span><span class="nx">ready</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">ready</span> <span class="o">&lt;-</span> <span class="kd">struct</span><span class="p">{}{}</span>
+</span></span><span class="line"><span class="cl">		<span class="o">&lt;-</span><span class="nx">ctx</span><span class="p">.</span><span class="nf">Done</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">logrus</span><span class="p">.</span><span class="nf">Infof</span><span class="p">(</span><span class="s">&#34;[%s] MustStart: service shutdown by gctx&#34;</span><span class="p">,</span> <span class="nx">opt</span><span class="p">.</span><span class="nx">Cfg</span><span class="p">.</span><span class="nx">Gateway</span><span class="p">.</span><span class="nx">Name</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="k">if</span> <span class="nx">err</span> <span class="p">=</span> <span class="nx">srv</span><span class="p">.</span><span class="nf">Shutdown</span><span class="p">(</span><span class="nx">tools</span><span class="p">.</span><span class="nf">Timeout</span><span class="p">(</span><span class="mi">3</span><span class="p">));</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">logrus</span><span class="p">.</span><span class="nf">Errorf</span><span class="p">(</span><span class="s">&#34;[%s] MustStart: service shutdown by gctx with err: %v&#34;</span><span class="p">,</span> <span class="nx">opt</span><span class="p">.</span><span class="nx">Cfg</span><span class="p">.</span><span class="nx">Gateway</span><span class="p">.</span><span class="nx">Name</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="o">&lt;-</span><span class="nx">ready</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><h1 id="项目配置初始化">项目配置初始化<a hidden class="anchor" aria-hidden="true" href="#项目配置初始化">#</a></h1>
+<blockquote>
+<ol>
+<li>
+<p>必须在<code>init</code>里面进行参数解析</p>
+</li>
+<li>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">flag</span><span class="p">.</span><span class="nf">StringVar</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">configFile</span><span class="p">,</span> <span class="s">&#34;c&#34;</span><span class="p">,</span> <span class="s">&#34;etc/config.json&#34;</span><span class="p">,</span> <span class="s">&#34;&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nx">flag</span><span class="p">.</span><span class="nf">IntVar</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">Debug</span><span class="p">,</span> <span class="s">&#34;debug&#34;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="s">&#34;&#34;</span><span class="p">)</span>
+</span></span></code></pre></div></li>
+<li>
+<p>时区设置</p>
+</li>
+<li>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">time</span><span class="p">.</span><span class="nx">Local</span> <span class="p">=</span> <span class="nx">time</span><span class="p">.</span><span class="nf">FixedZone</span><span class="p">(</span><span class="s">&#34;CST&#34;</span><span class="p">,</span> <span class="mi">8</span><span class="o">*</span><span class="mi">3600</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">common</span><span class="p">.</span><span class="nx">GMT</span> <span class="p">=</span> <span class="nx">time</span><span class="p">.</span><span class="nf">FixedZone</span><span class="p">(</span><span class="s">&#34;GMT&#34;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+</span></span></code></pre></div></li>
+<li>
+<p>在初始化函数里面设置日志等级</p>
+</li>
+<li>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">logrus</span><span class="p">.</span><span class="nx">SetLevel</span>
+</span></span></code></pre></div></li>
+</ol></blockquote>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">config</span> <span class="kd">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">Project</span>        <span class="kt">string</span>     <span class="s">`mapstructure:&#34;project&#34;`</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">Redis</span>          <span class="nx">redis</span>      <span class="s">`mapstructure:&#34;redis&#34;`</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">ES</span>             <span class="nx">es</span>         <span class="s">`mapstructure:&#34;es&#34;`</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">Mysql</span>          <span class="nx">mysql</span>      <span class="s">`mapstructure:&#34;mysql&#34;`</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">User</span>           <span class="nx">service</span>    <span class="s">`mapstructure:&#34;user&#34;`</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">var</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">configFile</span> <span class="kt">string</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">Cfg</span>        <span class="p">=</span> <span class="nb">new</span><span class="p">(</span><span class="nx">config</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">Debug</span>      <span class="kt">int</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">init</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">time</span><span class="p">.</span><span class="nx">Local</span> <span class="p">=</span> <span class="nx">time</span><span class="p">.</span><span class="nf">FixedZone</span><span class="p">(</span><span class="s">&#34;CST&#34;</span><span class="p">,</span> <span class="mi">8</span><span class="o">*</span><span class="mi">3600</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">common</span><span class="p">.</span><span class="nx">GMT</span> <span class="p">=</span> <span class="nx">time</span><span class="p">.</span><span class="nf">FixedZone</span><span class="p">(</span><span class="s">&#34;GMT&#34;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">flag</span><span class="p">.</span><span class="nf">StringVar</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">configFile</span><span class="p">,</span> <span class="s">&#34;c&#34;</span><span class="p">,</span> <span class="s">&#34;etc/config.json&#34;</span><span class="p">,</span> <span class="s">&#34;&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">flag</span><span class="p">.</span><span class="nf">IntVar</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">Debug</span><span class="p">,</span> <span class="s">&#34;debug&#34;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="s">&#34;&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">MustInitConfig</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">flag</span><span class="p">.</span><span class="nf">Parse</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="kd">var</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">err</span> <span class="kt">error</span>
+</span></span><span class="line"><span class="cl">	<span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="nx">viper</span><span class="p">.</span><span class="nf">SetConfigType</span><span class="p">(</span><span class="s">&#34;json&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">viper</span><span class="p">.</span><span class="nf">SetConfigFile</span><span class="p">(</span><span class="nx">configFile</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">err</span> <span class="p">=</span> <span class="nx">viper</span><span class="p">.</span><span class="nf">ReadInConfig</span><span class="p">();</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">logrus</span><span class="p">.</span><span class="nf">Panicf</span><span class="p">(</span><span class="s">&#34;read in config file err: %v&#34;</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">err</span> <span class="p">=</span> <span class="nx">viper</span><span class="p">.</span><span class="nf">Unmarshal</span><span class="p">(</span><span class="nx">Cfg</span><span class="p">);</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">logrus</span><span class="p">.</span><span class="nf">Panicf</span><span class="p">(</span><span class="s">&#34;unmarshal config file err: %v&#34;</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="k">switch</span> <span class="nx">Debug</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="k">case</span> <span class="mi">1</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">logrus</span><span class="p">.</span><span class="nf">SetLevel</span><span class="p">(</span><span class="nx">logrus</span><span class="p">.</span><span class="nx">DebugLevel</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="k">case</span> <span class="mi">9999</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">logrus</span><span class="p">.</span><span class="nf">SetLevel</span><span class="p">(</span><span class="nx">logrus</span><span class="p">.</span><span class="nx">TraceLevel</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">logrus</span><span class="p">.</span><span class="nf">SetReportCaller</span><span class="p">(</span><span class="kc">true</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">logrus</span><span class="p">.</span><span class="nf">SetFormatter</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">logrus</span><span class="p">.</span><span class="nx">TextFormatter</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">ForceColors</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">CallerPrettyfier</span><span class="p">:</span> <span class="kd">func</span><span class="p">(</span><span class="nx">frame</span> <span class="o">*</span><span class="nx">runtime</span><span class="p">.</span><span class="nx">Frame</span><span class="p">)</span> <span class="p">(</span><span class="kt">string</span><span class="p">,</span> <span class="kt">string</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">				<span class="nx">file</span> <span class="o">:=</span> <span class="nx">path</span><span class="p">.</span><span class="nf">Base</span><span class="p">(</span><span class="nx">frame</span><span class="p">.</span><span class="nx">File</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">				<span class="k">return</span> <span class="s">&#34;&#34;</span><span class="p">,</span> <span class="s">&#34; &#34;</span> <span class="o">+</span> <span class="nx">file</span> <span class="o">+</span> <span class="s">&#34;:&#34;</span> <span class="o">+</span> <span class="nx">strconv</span><span class="p">.</span><span class="nf">Itoa</span><span class="p">(</span><span class="nx">frame</span><span class="p">.</span><span class="nx">Line</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">			<span class="p">},</span>
+</span></span><span class="line"><span class="cl">		<span class="p">})</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="nx">logrus</span><span class="p">.</span><span class="nf">Infof</span><span class="p">(</span><span class="s">&#34;read in config detail: %+v&#34;</span><span class="p">,</span> <span class="o">*</span><span class="nx">Cfg</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><h1 id="label标签">label标签<a hidden class="anchor" aria-hidden="true" href="#label标签">#</a></h1>
+<blockquote>
+<p>数据包装</p></blockquote>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">PrivilegeTimeType</span> <span class="kt">string</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">const</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">PrivilegeTimeTypeInf</span>   <span class="nx">PrivilegeTimeType</span> <span class="p">=</span> <span class="s">&#34;inf&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">PrivilegeTimeTypeRange</span> <span class="nx">PrivilegeTimeType</span> <span class="p">=</span> <span class="s">&#34;range&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">pt</span> <span class="nx">PrivilegeTimeType</span><span class="p">)</span> <span class="nf">Label</span><span class="p">()</span> <span class="kt">string</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="k">switch</span> <span class="nx">pt</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="k">case</span> <span class="nx">PrivilegeTimeTypeInf</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">		<span class="k">return</span> <span class="s">&#34;无限制&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="k">case</span> <span class="nx">PrivilegeTimeTypeRange</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">		<span class="k">return</span> <span class="s">&#34;时间区间&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="k">default</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">		<span class="k">return</span> <span class="s">&#34;未知&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">PrivilegeType</span> <span class="kt">int</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">const</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">PrivilegeTypeRead</span> <span class="nx">PrivilegeType</span> <span class="p">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="kc">iota</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">PrivilegeTypeWrite</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">PrivilegeTypeOwn</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">PrivilegeTypeCharge</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">var</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">AllPrivilegeTypes</span> <span class="p">=</span> <span class="p">[]</span><span class="nx">PrivilegeType</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">PrivilegeTypeRead</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">PrivilegeTypeWrite</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">PrivilegeTypeOwn</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">AllPrivilegeTimeTypes</span> <span class="p">=</span> <span class="p">[]</span><span class="nx">PrivilegeTimeType</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">PrivilegeTimeTypeInf</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">PrivilegeTimeTypeRange</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">pt</span> <span class="nx">PrivilegeType</span><span class="p">)</span> <span class="nf">Label</span><span class="p">()</span> <span class="kt">string</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="k">switch</span> <span class="nx">pt</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="k">case</span> <span class="nx">PrivilegeTypeRead</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">		<span class="k">return</span> <span class="s">&#34;只读&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="k">case</span> <span class="nx">PrivilegeTypeWrite</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">		<span class="k">return</span> <span class="s">&#34;读写&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="k">case</span> <span class="nx">PrivilegeTypeOwn</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">		<span class="k">return</span> <span class="s">&#34;创建者&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="k">default</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">		<span class="k">return</span> <span class="s">&#34;未知&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">ReadablePrivilege</span> <span class="kd">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">Value</span> <span class="nx">PrivilegeType</span> <span class="s">`json:&#34;value&#34;`</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">Label</span> <span class="kt">string</span>        <span class="s">`json:&#34;label&#34;`</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><h1 id="model">model<a hidden class="anchor" aria-hidden="true" href="#model">#</a></h1>
+<blockquote>
+<ol>
+<li>在model里面的<code>只写公用的</code>,例如user的go文件里面账号密码登录这样的结构体就不要写而是在登录的handler里面单独声明出来</li>
+<li>结构体的方法<code>只写公用的</code>,其他例如获取用户信息之类的可以放到control的user里面去写</li>
+<li>例如用户的token获取,权限相关例如用户是否有相关权限这类的公用方法可以写到model的user中</li>
+</ol></blockquote>
+<h1 id="handler">handler<a hidden class="anchor" aria-hidden="true" href="#handler">#</a></h1>
+<blockquote>
+<ol>
+<li>每个handler里面<code>单独声明出需要的结构体</code>而不是把这些结构体放到model或者其他地方</li>
+<li>需要使用的变量提前使用vars声明出来</li>
+<li>错误的返回放到msg而不是data</li>
+<li>只有在这个handler里面用到的数据库查询就直接在handler里面写就可以不要放到model或者其他地方</li>
+<li>如果需要用循环处理且循环里面内容特别多的可以吧这些内容单独拿出来作为一个函数放到handler文件里面,然后在循环调用这个函数</li>
+</ol></blockquote>
+<h1 id="数据库数据初始化">数据库数据初始化<a hidden class="anchor" aria-hidden="true" href="#数据库数据初始化">#</a></h1>
+<blockquote>
+<ol>
+<li>在model里面写一个init的go文件配置需要初始化的数据</li>
+<li>声明一个大的<code>MustInit</code>供<code>main</code>函数调用</li>
+<li>在<code>MustInit</code>里面调用每一个需要初始化的<code>model</code></li>
+<li>如果有默认必须得数据库信息则存放到对应的model里面</li>
+<li>在<code>MustInit</code>同级写初始化函数</li>
+<li>先<code>AutoMigrate</code>创建出数据库表</li>
+<li>查询出当前表有多少条数据</li>
+<li>判断数据库存在的数据条数和需要的默认数据条数是否相同</li>
+<li>如果不相同则循环默认数据进行创建
+<ol>
+<li>记得判断错误类型是否为已存在, <code>if !strings.Contains(err.Error(), &quot;SQLSTATE 23505&quot;) {}</code></li>
+</ol>
+</li>
+<li>如果是pgsql要把序列重置为当前的数据库数据条数
+<ol>
+<li><code>SELECT setval('users_id_seq', (SELECT MAX(id) FROM users))</code></li>
+</ol>
+</li>
+<li>如果有需要的数据库函数可以写好调用进行创建</li>
+</ol></blockquote>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">MustInit</span><span class="p">(</span><span class="nx">db</span> <span class="o">*</span><span class="nx">gorm</span><span class="p">.</span><span class="nx">DB</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">mustInitRoles</span><span class="p">(</span><span class="nx">db</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">mustInitUsers</span><span class="p">(</span><span class="nx">db</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">mustInitFunctions</span><span class="p">(</span><span class="nx">db</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="o">...</span><span class="p">.</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">mustInitUsers</span><span class="p">(</span><span class="nx">db</span> <span class="o">*</span><span class="nx">gorm</span><span class="p">.</span><span class="nx">DB</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="o">...</span><span class="p">.</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">...</span><span class="p">.</span>
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">mustInitFunctions</span><span class="p">(</span><span class="nx">db</span> <span class="o">*</span><span class="nx">gorm</span><span class="p">.</span><span class="nx">DB</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="kd">var</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">err</span> <span class="kt">error</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">sql</span> <span class="p">=</span> <span class="s">`CREATE FUNCTION array_intersect(anyarray, anyarray)
+</span></span></span><span class="line"><span class="cl"><span class="s">  RETURNS anyarray
+</span></span></span><span class="line"><span class="cl"><span class="s">  language sql
+</span></span></span><span class="line"><span class="cl"><span class="s">as $FUNCTION$
+</span></span></span><span class="line"><span class="cl"><span class="s">    SELECT ARRAY(
+</span></span></span><span class="line"><span class="cl"><span class="s">        SELECT UNNEST($1)
+</span></span></span><span class="line"><span class="cl"><span class="s">        INTERSECT
+</span></span></span><span class="line"><span class="cl"><span class="s">        SELECT UNNEST($2)
+</span></span></span><span class="line"><span class="cl"><span class="s">    );
+</span></span></span><span class="line"><span class="cl"><span class="s">$FUNCTION$;`</span>
+</span></span><span class="line"><span class="cl">	<span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">err</span> <span class="p">=</span> <span class="nx">db</span><span class="p">.</span><span class="nf">Exec</span><span class="p">(</span><span class="nx">sql</span><span class="p">).</span><span class="nx">Error</span><span class="p">;</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="k">if</span> <span class="p">!</span><span class="nx">strings</span><span class="p">.</span><span class="nf">Contains</span><span class="p">(</span><span class="nx">err</span><span class="p">.</span><span class="nf">Error</span><span class="p">(),</span> <span class="s">&#34;SQLSTATE 42723&#34;</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="nb">panic</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div>
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="http://localhost:1313/tags/go/">Go</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="http://localhost:1313/posts/go/ants%E7%9A%84cas%E7%AE%80%E6%98%93%E5%AE%9E%E7%8E%B0/">
+    <span class="title">« </span>
+    <br>
+    <span>ants的CAS简易实现</span>
+  </a>
+  <a class="next" href="http://localhost:1313/posts/go/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/">
+    <span class="title"> »</span>
+    <br>
+    <span>分布式事务</span>
+  </a>
+</nav>
+
+
+<ul class="share-buttons">
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share go项目初始化 on x"
+            href="https://x.com/intent/tweet/?text=go%e9%a1%b9%e7%9b%ae%e5%88%9d%e5%a7%8b%e5%8c%96&amp;url=http%3a%2f%2flocalhost%3a1313%2fposts%2fgo%2fgo%25E9%25A1%25B9%25E7%259B%25AE%25E5%2588%259D%25E5%25A7%258B%25E5%258C%2596%2f&amp;hashtags=go">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M512 62.554 L 512 449.446 C 512 483.97 483.97 512 449.446 512 L 62.554 512 C 28.03 512 0 483.97 0 449.446 L 0 62.554 C 0 28.03 28.029 0 62.554 0 L 449.446 0 C 483.971 0 512 28.03 512 62.554 Z M 269.951 190.75 L 182.567 75.216 L 56 75.216 L 207.216 272.95 L 63.9 436.783 L 125.266 436.783 L 235.9 310.383 L 332.567 436.783 L 456 436.783 L 298.367 228.367 L 432.367 75.216 L 371.033 75.216 Z M 127.633 110 L 164.101 110 L 383.481 400.065 L 349.5 400.065 Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share go项目初始化 on linkedin"
+            href="https://www.linkedin.com/shareArticle?mini=true&amp;url=http%3a%2f%2flocalhost%3a1313%2fposts%2fgo%2fgo%25E9%25A1%25B9%25E7%259B%25AE%25E5%2588%259D%25E5%25A7%258B%25E5%258C%2596%2f&amp;title=go%e9%a1%b9%e7%9b%ae%e5%88%9d%e5%a7%8b%e5%8c%96&amp;summary=go%e9%a1%b9%e7%9b%ae%e5%88%9d%e5%a7%8b%e5%8c%96&amp;source=http%3a%2f%2flocalhost%3a1313%2fposts%2fgo%2fgo%25E9%25A1%25B9%25E7%259B%25AE%25E5%2588%259D%25E5%25A7%258B%25E5%258C%2596%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-288.985,423.278l0,-225.717l-75.04,0l0,225.717l75.04,0Zm270.539,0l0,-129.439c0,-69.333 -37.018,-101.586 -86.381,-101.586c-39.804,0 -57.634,21.891 -67.617,37.266l0,-31.958l-75.021,0c0.995,21.181 0,225.717 0,225.717l75.02,0l0,-126.056c0,-6.748 0.486,-13.492 2.474,-18.315c5.414,-13.475 17.767,-27.434 38.494,-27.434c27.135,0 38.007,20.707 38.007,51.037l0,120.768l75.024,0Zm-307.552,-334.556c-25.674,0 -42.448,16.879 -42.448,39.002c0,21.658 16.264,39.002 41.455,39.002l0.484,0c26.165,0 42.452,-17.344 42.452,-39.002c-0.485,-22.092 -16.241,-38.954 -41.943,-39.002Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share go项目初始化 on reddit"
+            href="https://reddit.com/submit?url=http%3a%2f%2flocalhost%3a1313%2fposts%2fgo%2fgo%25E9%25A1%25B9%25E7%259B%25AE%25E5%2588%259D%25E5%25A7%258B%25E5%258C%2596%2f&title=go%e9%a1%b9%e7%9b%ae%e5%88%9d%e5%a7%8b%e5%8c%96">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-3.446,265.638c0,-22.964 -18.616,-41.58 -41.58,-41.58c-11.211,0 -21.361,4.457 -28.841,11.666c-28.424,-20.508 -67.586,-33.757 -111.204,-35.278l18.941,-89.121l61.884,13.157c0.756,15.734 13.642,28.29 29.56,28.29c16.407,0 29.706,-13.299 29.706,-29.701c0,-16.403 -13.299,-29.702 -29.706,-29.702c-11.666,0 -21.657,6.792 -26.515,16.578l-69.105,-14.69c-1.922,-0.418 -3.939,-0.042 -5.585,1.036c-1.658,1.073 -2.811,2.761 -3.224,4.686l-21.152,99.438c-44.258,1.228 -84.046,14.494 -112.837,35.232c-7.468,-7.164 -17.589,-11.591 -28.757,-11.591c-22.965,0 -41.585,18.616 -41.585,41.58c0,16.896 10.095,31.41 24.568,37.918c-0.639,4.135 -0.99,8.328 -0.99,12.576c0,63.977 74.469,115.836 166.33,115.836c91.861,0 166.334,-51.859 166.334,-115.836c0,-4.218 -0.347,-8.387 -0.977,-12.493c14.564,-6.47 24.735,-21.034 24.735,-38.001Zm-119.474,108.193c-20.27,20.241 -59.115,21.816 -70.534,21.816c-11.428,0 -50.277,-1.575 -70.522,-21.82c-3.007,-3.008 -3.007,-7.882 0,-10.889c3.003,-2.999 7.882,-3.003 10.885,0c12.777,12.781 40.11,17.317 59.637,17.317c19.522,0 46.86,-4.536 59.657,-17.321c3.016,-2.999 7.886,-2.995 10.885,0.008c3.008,3.011 3.003,7.882 -0.008,10.889Zm-5.23,-48.781c-16.373,0 -29.701,-13.324 -29.701,-29.698c0,-16.381 13.328,-29.714 29.701,-29.714c16.378,0 29.706,13.333 29.706,29.714c0,16.374 -13.328,29.698 -29.706,29.698Zm-160.386,-29.702c0,-16.381 13.328,-29.71 29.714,-29.71c16.369,0 29.689,13.329 29.689,29.71c0,16.373 -13.32,29.693 -29.689,29.693c-16.386,0 -29.714,-13.32 -29.714,-29.693Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share go项目初始化 on facebook"
+            href="https://facebook.com/sharer/sharer.php?u=http%3a%2f%2flocalhost%3a1313%2fposts%2fgo%2fgo%25E9%25A1%25B9%25E7%259B%25AE%25E5%2588%259D%25E5%25A7%258B%25E5%258C%2596%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-106.468,0l0,-192.915l66.6,0l12.672,-82.621l-79.272,0l0,-53.617c0,-22.603 11.073,-44.636 46.58,-44.636l36.042,0l0,-70.34c0,0 -32.71,-5.582 -63.982,-5.582c-65.288,0 -107.96,39.569 -107.96,111.204l0,62.971l-72.573,0l0,82.621l72.573,0l0,192.915l-191.104,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share go项目初始化 on whatsapp"
+            href="https://api.whatsapp.com/send?text=go%e9%a1%b9%e7%9b%ae%e5%88%9d%e5%a7%8b%e5%8c%96%20-%20http%3a%2f%2flocalhost%3a1313%2fposts%2fgo%2fgo%25E9%25A1%25B9%25E7%259B%25AE%25E5%2588%259D%25E5%25A7%258B%25E5%258C%2596%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-58.673,127.703c-33.842,-33.881 -78.847,-52.548 -126.798,-52.568c-98.799,0 -179.21,80.405 -179.249,179.234c-0.013,31.593 8.241,62.428 23.927,89.612l-25.429,92.884l95.021,-24.925c26.181,14.28 55.659,21.807 85.658,21.816l0.074,0c98.789,0 179.206,-80.413 179.247,-179.243c0.018,-47.895 -18.61,-92.93 -52.451,-126.81Zm-126.797,275.782l-0.06,0c-26.734,-0.01 -52.954,-7.193 -75.828,-20.767l-5.441,-3.229l-56.386,14.792l15.05,-54.977l-3.542,-5.637c-14.913,-23.72 -22.791,-51.136 -22.779,-79.287c0.033,-82.142 66.867,-148.971 149.046,-148.971c39.793,0.014 77.199,15.531 105.329,43.692c28.128,28.16 43.609,65.592 43.594,105.4c-0.034,82.149 -66.866,148.983 -148.983,148.984Zm81.721,-111.581c-4.479,-2.242 -26.499,-13.075 -30.604,-14.571c-4.105,-1.495 -7.091,-2.241 -10.077,2.241c-2.986,4.483 -11.569,14.572 -14.182,17.562c-2.612,2.988 -5.225,3.364 -9.703,1.12c-4.479,-2.241 -18.91,-6.97 -36.017,-22.23c-13.314,-11.876 -22.304,-26.542 -24.916,-31.026c-2.612,-4.484 -0.279,-6.908 1.963,-9.14c2.016,-2.007 4.48,-5.232 6.719,-7.847c2.24,-2.615 2.986,-4.484 4.479,-7.472c1.493,-2.99 0.747,-5.604 -0.374,-7.846c-1.119,-2.241 -10.077,-24.288 -13.809,-33.256c-3.635,-8.733 -7.327,-7.55 -10.077,-7.688c-2.609,-0.13 -5.598,-0.158 -8.583,-0.158c-2.986,0 -7.839,1.121 -11.944,5.604c-4.105,4.484 -15.675,15.32 -15.675,37.364c0,22.046 16.048,43.342 18.287,46.332c2.24,2.99 31.582,48.227 76.511,67.627c10.685,4.615 19.028,7.371 25.533,9.434c10.728,3.41 20.492,2.929 28.209,1.775c8.605,-1.285 26.499,-10.833 30.231,-21.295c3.732,-10.464 3.732,-19.431 2.612,-21.298c-1.119,-1.869 -4.105,-2.99 -8.583,-5.232Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share go项目初始化 on telegram"
+            href="https://telegram.me/share/url?text=go%e9%a1%b9%e7%9b%ae%e5%88%9d%e5%a7%8b%e5%8c%96&amp;url=http%3a%2f%2flocalhost%3a1313%2fposts%2fgo%2fgo%25E9%25A1%25B9%25E7%259B%25AE%25E5%2588%259D%25E5%25A7%258B%25E5%258C%2596%2f">
+            <svg version="1.1" xml:space="preserve" viewBox="2 2 28 28" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M26.49,29.86H5.5a3.37,3.37,0,0,1-2.47-1,3.35,3.35,0,0,1-1-2.47V5.48A3.36,3.36,0,0,1,3,3,3.37,3.37,0,0,1,5.5,2h21A3.38,3.38,0,0,1,29,3a3.36,3.36,0,0,1,1,2.46V26.37a3.35,3.35,0,0,1-1,2.47A3.38,3.38,0,0,1,26.49,29.86Zm-5.38-6.71a.79.79,0,0,0,.85-.66L24.73,9.24a.55.55,0,0,0-.18-.46.62.62,0,0,0-.41-.17q-.08,0-16.53,6.11a.59.59,0,0,0-.41.59.57.57,0,0,0,.43.52l4,1.24,1.61,4.83a.62.62,0,0,0,.63.43.56.56,0,0,0,.4-.17L16.54,20l4.09,3A.9.9,0,0,0,21.11,23.15ZM13.8,20.71l-1.21-4q8.72-5.55,8.78-5.55c.15,0,.23,0,.23.16a.18.18,0,0,1,0,.06s-2.51,2.3-7.52,6.8Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share go项目初始化 on ycombinator"
+            href="https://news.ycombinator.com/submitlink?t=go%e9%a1%b9%e7%9b%ae%e5%88%9d%e5%a7%8b%e5%8c%96&u=http%3a%2f%2flocalhost%3a1313%2fposts%2fgo%2fgo%25E9%25A1%25B9%25E7%259B%25AE%25E5%2588%259D%25E5%25A7%258B%25E5%258C%2596%2f">
+            <svg version="1.1" xml:space="preserve" width="30px" height="30px" viewBox="0 0 512 512" fill="currentColor"
+                xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape">
+                <path
+                    d="M449.446 0C483.971 0 512 28.03 512 62.554L512 449.446C512 483.97 483.97 512 449.446 512L62.554 512C28.03 512 0 483.97 0 449.446L0 62.554C0 28.03 28.029 0 62.554 0L449.446 0ZM183.8767 87.9921H121.8427L230.6673 292.4508V424.0079H281.3328V292.4508L390.1575 87.9921H328.1233L256 238.2489z" />
+            </svg>
+        </a>
+    </li>
+</ul>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2025 <a href="http://localhost:1313/">loveyu233</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

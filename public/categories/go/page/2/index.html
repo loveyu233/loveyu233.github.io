@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Go | loveyu233</title>
+<meta name="keywords" content="">
+<meta name="description" content="我的个人博客 - 分享技术与生活">
+<meta name="author" content="loveyu233">
+<link rel="canonical" href="http://localhost:1313/categories/go/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.e13ff79a7b90ac30a7f805291f902c75095888118dcb1fccef74850e837f1253.css" integrity="sha256-4T/3mnuQrDCn&#43;AUpH5AsdQlYiBGNyx/M73SFDoN/ElM=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" type="application/rss+xml" href="http://localhost:1313/categories/go/index.xml">
+<link rel="alternate" hreflang="zh-cn" href="http://localhost:1313/categories/go/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:url" content="http://localhost:1313/categories/go/">
+  <meta property="og:site_name" content="loveyu233">
+  <meta property="og:title" content="Go">
+  <meta property="og:description" content="我的个人博客 - 分享技术与生活">
+  <meta property="og:locale" content="zh-cn">
+  <meta property="og:type" content="website">
+      <meta property="og:image" content="http://localhost:1313/images/cover.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://localhost:1313/images/cover.png">
+<meta name="twitter:title" content="Go">
+<meta name="twitter:description" content="我的个人博客 - 分享技术与生活">
+
+</head>
+
+<body class="list" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="loveyu233 (Alt + H)">loveyu233</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/archives" title="归档">
+                    <span>归档</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/search/" title="搜索">
+                    <span>搜索</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/tags/" title="标签">
+                    <span>标签</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main"> 
+<header class="page-header"><div class="breadcrumbs"><a href="http://localhost:1313/">Home</a>&nbsp;»&nbsp;<a href="http://localhost:1313/categories/">Categories</a></div>
+  <h1>
+    Go
+    <a href="/categories/go/index.xml" title="RSS" aria-label="RSS">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" height="23">
+        <path d="M4 11a9 9 0 0 1 9 9" />
+        <path d="M4 4a16 16 0 0 1 16 16" />
+        <circle cx="5" cy="19" r="1" />
+      </svg>
+    </a>
+  </h1>
+</header>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">go项目初始化
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>服务优雅关闭启动 使用signal.NotifyContext接收退出相关信号,获取到ctx 传递ctx到初始化api中 初始化api 先获取到项目api handler 创建chan空结构体管道 启动网络监听 开启goroutine 打印输出 向chan发送数据 运行server 接收chan信号 开启goroutine 打印输出 向chan发送数据 拦截ctx的done信号 关闭server 接收chan信号 接收ctx的done信号 设置content.Timeout三秒关闭 func main() { ctx, cancel := signal.NotifyContext(context.Background(), syscall.SIGHUP, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT) defer cancel() opt.MustInitConfig() api.MustStartApi(ctx) &lt;-ctx.Done() logrus.Warn(&#34;[gateway] service stopped by gctx in 3s...&#34;) &lt;-util.Timeout(3).Done() } func initApp() http.Handler { engine := gin.Default() .... return engine.Handler() } func initApp() *fiber.App { engine := fiber.New(fiber.Config{BodyLimit: 200 * 1024 * 1024}) .... return engine.Handler() } func MustStartApi(ctx context.Context) { var ( err error ln net.Listener // gin是在go的http上进行包装的框架所以可以直接使用http.Server来接受运行 srv = http.Server{ Handler: initApp(), } // fiber使用fasthttp所以需要使用fasthttp.Server来接收 srv = fasthttp.Server{ Handler: initApp(), TLSConfig: nil, } address = fmt.Sprintf(&#34;%s:%d&#34;, opt.Cfg.Gateway.ListenHost, opt.Cfg.Gateway.ListenPort) ready = make(chan struct{}) ) if ln, err = net.Listen(&#34;tcp&#34;, address); err != nil { logrus.Fatalf(&#34;[%s] MustStart: listen address: %s err: %v&#34;, opt.Cfg.Gateway.Name, address, err) } go func() { logrus.Infof(&#34;[%s] MustStart: service serve at: %s&#34;, opt.Cfg.Gateway.Name, address) ready &lt;- struct{}{} if err = srv.Serve(ln); err != nil { logrus.Fatalf(&#34;[%s] MustStart: service serve err: %v&#34;, opt.Cfg.Gateway.Name, err) } }() &lt;-ready go func() { ready &lt;- struct{}{} &lt;-ctx.Done() logrus.Infof(&#34;[%s] MustStart: service shutdown by gctx&#34;, opt.Cfg.Gateway.Name) if err = srv.Shutdown(tools.Timeout(3)); err != nil { logrus.Errorf(&#34;[%s] MustStart: service shutdown by gctx with err: %v&#34;, opt.Cfg.Gateway.Name, err) } }() &lt;-ready } 项目配置初始化 必须在init里面进行参数解析
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-10-24 19:38:37 +0800 CST'>October 24, 2023</span>&nbsp;·&nbsp;3 min&nbsp;·&nbsp;loveyu</footer>
+  <a class="entry-link" aria-label="post link to go项目初始化" href="http://localhost:1313/posts/go/go%E9%A1%B9%E7%9B%AE%E5%88%9D%E5%A7%8B%E5%8C%96/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">分布式事务
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>来源文章:
+万字长文漫谈分布式事务实现原理
+从零到一搭建 TCC 分布式事务框架
+微软SAGA解答
+10分钟说透Saga分布式事务
+现有实现:
+DTM
+事务的核心特征ACID Atomicity原子性 全部成功或者全部失败 Consistency一致性 宏观角度下的全局数据保持一致 Isolation隔离性 并发事务不互相干扰 Durability持久性 事务提交后，变更永久生效 什么是分布式事务 对两个或以上独立服务进行调用操作,保证这些操作同时成功或失败,在失败时要做到回滚操作,恢复到失败前的状态
+例如订单创建操作,分别有账户系统和库存系统
+在处理一笔来自用户创建订单的请求时，需要执行两步操作：
+从账户系统中，扣减用户的账户余额 从库存系统中，扣减商品的剩余库存 从技术流程上来讲，两个步骤是相对独立的两个操作，底层涉及到的存储介质也是相互独立的，因此无法基于本地事务的实现方式,所以需要分布式事务解决问题
+事务消息实现方案 概念 偏狭义的分布式事务解决方案是基于消息队列 MessageQueue（后续简称 MQ）实现的事务消息 Transaction Message.
+at least once : 投递到 MQ 中的消息能至少被下游消费者 consumer 消费到一次.
+基于此，MQ 组件能够保证消息不会在消费环节丢失，但是无法解决消息的重复性问题. 因此，倘若我们需要追求精确消费一次的目标，则下游的 consumer 还需要基于消息的唯一键执行幂等去重操作，在 at least once 的基础上过滤掉重复消息，最终达到 exactly once 的语义.
+依赖于 MQ 中 at least once 的性质，我们简单认为，只要把一条消息成功投递到 MQ 组件中，它就一定被下游 consumer 端消费端，至少不会发生消息丢失的问题.
+场景 假如执行一个分布式事务，事务流程中包含需要在服务 A 中执行的动作 I 以及需要在服务 B 中执行的动作 II
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-09-22 16:54:10 +0800 CST'>September 22, 2023</span>&nbsp;·&nbsp;5 min&nbsp;·&nbsp;loveyu</footer>
+  <a class="entry-link" aria-label="post link to 分布式事务" href="http://localhost:1313/posts/go/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Go学习路线
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Golang学习路线 基础 基础语法 刘丹冰老师教学视频：8小时golang转职之路
+Mysql 索引事务 周瑜老师 b 站解说视频：mysql 技术原理解析
+Gorm入门 李文周老师技术博客：gorm 框架入门篇
+李文周老师技术博客：gorm 框架操作教程
+推荐书籍：MySQL技术内幕-InnoDB存储引擎(第2版) 姜承尧 著
+Redis 官方指令文档
+指令文档中文版
+redigo：golang redis 开源SDK
+技术博客：golang 分布式锁 1-3章
+b 站解说视频：golang 分布式锁 p1-p4
+MQ 技术博客：基于 redis 实现 mq
+kafka/rocketmq/rabbitmq至少了解其中之一的架构及原理
+nsq 开源地址,【进阶】基于 golang 实现的 mq 组件 nsq
+WEB Gin 李文周老师技术博客：gin 介绍及使用
+标准库 技术博客：net/http 底层实现原理
+b 站解说视频：net/http 底层实现原理
+io多路复用,epoll 技术博客：golang io 与 epoll
+b 站解说视频：golang io 与 epoll
+Gin实现原理 技术博客：gin 框架实现原理
+b 站解说视频：gin 框架实现原理
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-08-27 17:44:56 +0800 CST'>August 27, 2023</span>&nbsp;·&nbsp;2 min&nbsp;·&nbsp;loveyu</footer>
+  <a class="entry-link" aria-label="post link to Go学习路线" href="http://localhost:1313/posts/go/golang%E5%AD%A6%E4%B9%A0%E8%B7%AF%E7%BA%BF/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">gitlab-ci使用
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>GItlab预定义变量 before_script: - export SYSTEM_VERSION=$CI_COMMIT_REF_NAME - export CI_PIPELINE_ID=$CI_PIPELINE_ID - export CI_COMMIT_SHA=$CI_COMMIT_SHA - export CI_PROJECT_ID=$CI_PROJECT_ID - export CI_PROJECT_NAME=$CI_PROJECT_NAME - export CI_JOB_ID=$CI_JOB_ID - export CI_RUNNER_DESCRIPTION=$CI_RUNNER_DESCRIPTION - export CI_RUNNER_TAGS=$CI_RUNNER_TAGS - export CI_COMMIT_MESSAGE=$CI_COMMIT_MESSAGE - export CI_PIPELINE_SOURCE=$CI_PIPELINE_SOURCE stages: - build job: stage: build script: - echo &#34;当前提交的分支或标签名称 $SYSTEM_VERSION&#34; - echo &#34;当前流水线的唯一ID $CI_PIPELINE_ID&#34; - echo &#34;当前提交的 SHA 标识 $CI_COMMIT_SHA&#34; - echo &#34;当前项目的唯一 ID $CI_PROJECT_ID&#34; - echo &#34;当前项目的名称 $CI_PROJECT_NAME&#34; - echo &#34;当前作业的唯一 ID $CI_JOB_ID&#34; - echo &#34;运行作业的 GitLab Runner 的描述 $CI_RUNNER_DESCRIPTION&#34; - echo &#34;运行作业的 GitLab Runner 的标签 $CI_RUNNER_TAGS&#34; - echo &#34;当前提交的提交信息 $CI_COMMIT_MESSAGE&#34; - echo &#34;触发流水线的来源 $CI_PIPELINE_SOURCE&#34; 执行k8s命令 项目设置&gt;变量&gt;添加变量 key为KUBECONFIGvalue为k8s配置文件,minikube的在~/.minikube/
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-08-15 11:18:37 +0800 CST'>August 15, 2023</span>&nbsp;·&nbsp;4 min&nbsp;·&nbsp;loveyu</footer>
+  <a class="entry-link" aria-label="post link to gitlab-ci使用" href="http://localhost:1313/posts/other/gitlab-ci%E4%BD%BF%E7%94%A8/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">gitlab-ci配置
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Dockerfile报错 FROM golang:1.20.6-alpine3.18 AS build WORKDIR /app COPY . . ENV GOPROXY=https://goproxy.cn RUN go mod tidy &amp;&amp; go build main.go FROM alpine:3.18 WORKDIR /app COPY --from=build /app/main . EXPOSE 9999 CMD [&#34;./main&#34;] 当使用多阶段构建时且每个阶段的alpine版本不同会产生错误:&#34;xxx no such file or directory&#34;
+这里的&#34;no such file or directory&#34; 是指/lib64/ld-linux-x86-64.so.2找不到而不是main文件找不到
+原因是go的net包关于域名解析有两种选项:
+使用纯Go解析器直接发送DNS请求给/etc/resolv.conf文件中的服务器 使用基于CGo的解析器调用C库程序，例如getaddrinfo和getnameinfo 默认使用纯Go解析器，因为对于调用一个阻塞的DNS请求，Go仅需要消耗一个goroutine，而C程序需要消耗一个操作系统线程。但当CGo可用时（CGO_ENABLE=1），则会使用基于CGo的解析器，除非有如下情况：
+系统不允许程序直接发起DNS请求（OS X） LOCALDOMAIN 环境变量存在，即使值为空 RES_OPTIONS 或者 HOSTALIASES 环境变量不为空 ASR_CONFIG 环境变量不为空（仅OpenBSD） Go解析器没有实现 /etc/resolv.conf 或 /etc/nsswitch.conf 中指定的特性 名称以 .local 结尾，或是一个 mDNS 名称 但有些镜像默认是用cgo所以会导致找不到文件
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-08-14 11:18:37 +0800 CST'>August 14, 2023</span>&nbsp;·&nbsp;7 min&nbsp;·&nbsp;loveyu</footer>
+  <a class="entry-link" aria-label="post link to gitlab-ci配置" href="http://localhost:1313/posts/other/gitlab-ci%E9%85%8D%E7%BD%AE/"></a>
+</article>
+<footer class="page-footer">
+  <nav class="pagination">
+    <a class="prev" href="http://localhost:1313/categories/go/">
+      «&nbsp;&nbsp;1/8
+    </a>
+    <a class="next" href="http://localhost:1313/categories/go/page/3/">&nbsp;3/8&nbsp;»
+    </a>
+  </nav>
+</footer>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2025 <a href="http://localhost:1313/">loveyu233</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

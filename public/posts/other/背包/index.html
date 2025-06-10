@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>背包 | loveyu233</title>
+<meta name="keywords" content="背包, 01背包, 完全背包, 算法">
+<meta name="description" content="背包
+灵神哔哩哔哩视频
+分类
+
+01背包: 有n个物品,第i个物品的体积为w[i]价值为v[i],每种物品只能选一次,求体积不超过cap的最大价值和
+完全背包:有n种物品,第i种物品的体积为w[i]价值为v[i],每种物品可以选无数次,求体积不超过cap的最大价值和
+01背包dp
+
+求价值和
+dfs(i,c) = max(dfs(i-1,c), dfs(i-1,c-w[i])&#43;v[i])
+求方案数
+dfs(i,c) = dfs(i-1,c) &#43; dfs(i-1,c-w[i])
+这叫加法原理，如果事件 A 和事件 B 是互斥的（即不能同时发生，不选 nums[i] 的同时，又选了 nums[i]），那么发生事件 A 或事件 B 的总数等于事件 A 的数量加上事件 B 的数量
+在转为dp是将i&#43;1可以避免下标为负数的情况
+先背包/先物品
+
+如果是求组合就是外层for物品,内层for背包
+如果是求排列就是外层for背包,内层for物品
+正序/倒序
+
+如果使用的是二维数组则无所谓正序和倒序因为本次的循环不会给上次循环的结果覆盖掉
+这里的正序和倒序指的是内层for循环,而外层for循环都是正序(0 - n-1)的情况
+如果使用一维数组则要考虑:
+
+转移来源是否会被覆盖
+结果是否已经计算出来
+
+正序遍历会导致 0-1 背包状态被覆盖，而完全背包则是正确的（转移来源被计算出来，且不存在被覆盖的问题如果dp[i]依赖超过两个数据源则不适用,例如求LCS(最长公共子序列)和递增子序列(LS)以及最长递增子序列(LIS)）
+逆序遍历对于 0-1 背包是正确的（转移来源是上一行的，早就被计算出来了且没有被覆盖），而完全背包则不行（转移来源没有被计算出来）。
+具体推到看下边的优化到一维数组
+优化到一维数组
+常规情况
+01背包的情况(目标和题目):
+dp[i&#43;1][c] = dp[i][c] &#43; dp[i][c-w[i]]
+改进为一维数组:
+dp[c] = dp[c] &#43; dp[c-w[i]]
+因为是求组合所以先遍历物品再遍历背包且是正序的情况下,当w[i]=2时:
+i  : 1 2 3 5 6 7 9
+i&#43;1: 1 2 4 7 到这个位置因为是一维数组所以新数据4吧源数据的3给覆盖了,继续变量得到的就是10而不是应该得到的9
+改为逆序遍历
+i  : 1 2 3  5 6  7   9
+i&#43;1:     4  7 9  12  15
+
+完全背包的情况(零钱兑换题目):
+dp[i&#43;1][c] = min(dp[i][c],dp[i&#43;1][c-w[i]]&#43;v[i])  看min的第二个参数是dp[i&#43;1]而01背包的情况下是dp[i],也就是说完全背包的i位置就是通过计算后的结果得到的,所以不存在覆盖后计算错误,完全背包要的就是这个计算后覆盖的数据,所以完全背包和01背包刚好相反,01背包需要逆序而完全背包需要正序
+
+dp[c] = min(dp[c], dp[c-w[i]]&#43;v[i])
+其他情况
+最长公共子序列题目:
+						
+dp[i][j]需要考虑两种情况:
+					  当s[i]==t[j]的时候  dp[i][j] = dp[i-1][j-1]&#43;1
+					  当s[i]!=t[j]的时候  dp[i][j] = max(dp[i-1][j], dp[i][j-1])
+
+dp[i][j]需要依赖三个方向的数据: dp[i][j-1]: 左边   dp[i-1][j]: 上边   dp[i-1][j-1]: 左上
+常规情况下可以使用正序和逆序来得到正确结果但这里是三个方向的数据所以必须使用临时变量来记录左上的状态
+
+先把dp公式改为一维:dp[j]依赖于: dp[j-1]: 左边   dp[j]: 上边   dp[j-1]: 左上
+在实际使用中为防止下标为负数所以会加上一个最大的减数确保下标最小为0例如这里则加上1
+dp[j&#43;1] ==&gt; dp[j]:左边 dp[j&#43;1]:上边  dp[j]:左上
+根据公式: 
+相同时: dp[j&#43;1] = dp[j] &#43; 1
+不同时: dp[j&#43;1] = max(dp[j&#43;1], dp[j])
+
+所以为什么是记录左上而不是别的:
+因为在计算到dp[j]的时候dp[j-1]肯定已经计算完了且放到了dp[j-1]的位置上了,那么对应的上一行数据也就是j的左上数据肯定就已经被覆盖了,所以需要一个临时变量来给记录一下
+pre必须在每次i循环的时候都重新给初始化为 pre := dp[0], 因为从二维变成一维每次i遍历的时候都是新的开始所以要重置
+
+func longestCommonSubsequence(text1 string, text2 string) int {
+	n, m := len(text1), len(text2)
+	dp := make([]int, m&#43;1)
+	for i := 0; i &lt; n; i&#43;&#43; {
+		pre := dp[0]
+		for j := 0; j &lt; m; j&#43;&#43; {
+			tmp := dp[j&#43;1]
+			if text1[i] == text2[j] {
+				dp[j&#43;1] = pre &#43; 1
+			} else {
+				dp[j&#43;1] = max(dp[j&#43;1], dp[j])
+			}
+			pre = tmp
+		}
+	}
+	return dp[m]
+}
+模版
+for i := 0; i &lt; n; i&#43;&#43; {
+    // pre都是等于dp[0],用来保存左上的状态
+    pre := dp[0]
+    // 是否需要对i为0的情况进行初始化
+    // dp[0] = i&#43;1  (例如583题目)
+    for j := 0; j &lt; m; j&#43;&#43; {
+        // tmp都是等于dp[j&#43;1]
+        tmp := dp[j&#43;1]
+        if text1[i] == text2[j] {
+            dp[j&#43;1] = pre
+        } else {
+            // 这里的dp[j&#43;1]不能替换为pre,因为pre是左上的状态,这里的dp[j&#43;1]是上边的状态
+            dp[j&#43;1] = max(dp[j&#43;1], dp[j])
+        }
+        pre = tmp
+    }
+}
+方案数例子
+
+给你一个非负整数数组 nums 和一个整数 target 。">
+<meta name="author" content="loveyu">
+<link rel="canonical" href="http://localhost:1313/posts/other/%E8%83%8C%E5%8C%85/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.e13ff79a7b90ac30a7f805291f902c75095888118dcb1fccef74850e837f1253.css" integrity="sha256-4T/3mnuQrDCn&#43;AUpH5AsdQlYiBGNyx/M73SFDoN/ElM=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="zh-cn" href="http://localhost:1313/posts/other/%E8%83%8C%E5%8C%85/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:url" content="http://localhost:1313/posts/other/%E8%83%8C%E5%8C%85/">
+  <meta property="og:site_name" content="loveyu233">
+  <meta property="og:title" content="背包">
+  <meta property="og:description" content="背包 灵神哔哩哔哩视频
+分类 01背包: 有n个物品,第i个物品的体积为w[i]价值为v[i],每种物品只能选一次,求体积不超过cap的最大价值和 完全背包:有n种物品,第i种物品的体积为w[i]价值为v[i],每种物品可以选无数次,求体积不超过cap的最大价值和 01背包dp 求价值和 dfs(i,c) = max(dfs(i-1,c), dfs(i-1,c-w[i])&#43;v[i])
+求方案数 dfs(i,c) = dfs(i-1,c) &#43; dfs(i-1,c-w[i])
+这叫加法原理，如果事件 A 和事件 B 是互斥的（即不能同时发生，不选 nums[i] 的同时，又选了 nums[i]），那么发生事件 A 或事件 B 的总数等于事件 A 的数量加上事件 B 的数量
+在转为dp是将i&#43;1可以避免下标为负数的情况
+先背包/先物品 如果是求组合就是外层for物品,内层for背包
+如果是求排列就是外层for背包,内层for物品
+正序/倒序 如果使用的是二维数组则无所谓正序和倒序因为本次的循环不会给上次循环的结果覆盖掉 这里的正序和倒序指的是内层for循环,而外层for循环都是正序(0 - n-1)的情况
+如果使用一维数组则要考虑:
+转移来源是否会被覆盖 结果是否已经计算出来 正序遍历会导致 0-1 背包状态被覆盖，而完全背包则是正确的（转移来源被计算出来，且不存在被覆盖的问题如果dp[i]依赖超过两个数据源则不适用,例如求LCS(最长公共子序列)和递增子序列(LS)以及最长递增子序列(LIS)）
+逆序遍历对于 0-1 背包是正确的（转移来源是上一行的，早就被计算出来了且没有被覆盖），而完全背包则不行（转移来源没有被计算出来）。
+具体推到看下边的优化到一维数组
+优化到一维数组 常规情况 01背包的情况(目标和题目): dp[i&#43;1][c] = dp[i][c] &#43; dp[i][c-w[i]] 改进为一维数组: dp[c] = dp[c] &#43; dp[c-w[i]] 因为是求组合所以先遍历物品再遍历背包且是正序的情况下,当w[i]=2时: i : 1 2 3 5 6 7 9 i&#43;1: 1 2 4 7 到这个位置因为是一维数组所以新数据4吧源数据的3给覆盖了,继续变量得到的就是10而不是应该得到的9 改为逆序遍历 i : 1 2 3 5 6 7 9 i&#43;1: 4 7 9 12 15 完全背包的情况(零钱兑换题目): dp[i&#43;1][c] = min(dp[i][c],dp[i&#43;1][c-w[i]]&#43;v[i]) 看min的第二个参数是dp[i&#43;1]而01背包的情况下是dp[i],也就是说完全背包的i位置就是通过计算后的结果得到的,所以不存在覆盖后计算错误,完全背包要的就是这个计算后覆盖的数据,所以完全背包和01背包刚好相反,01背包需要逆序而完全背包需要正序 dp[c] = min(dp[c], dp[c-w[i]]&#43;v[i]) 其他情况 最长公共子序列题目: dp[i][j]需要考虑两种情况: 当s[i]==t[j]的时候 dp[i][j] = dp[i-1][j-1]&#43;1 当s[i]!=t[j]的时候 dp[i][j] = max(dp[i-1][j], dp[i][j-1]) dp[i][j]需要依赖三个方向的数据: dp[i][j-1]: 左边 dp[i-1][j]: 上边 dp[i-1][j-1]: 左上 常规情况下可以使用正序和逆序来得到正确结果但这里是三个方向的数据所以必须使用临时变量来记录左上的状态 先把dp公式改为一维:dp[j]依赖于: dp[j-1]: 左边 dp[j]: 上边 dp[j-1]: 左上 在实际使用中为防止下标为负数所以会加上一个最大的减数确保下标最小为0例如这里则加上1 dp[j&#43;1] ==&gt; dp[j]:左边 dp[j&#43;1]:上边 dp[j]:左上 根据公式: 相同时: dp[j&#43;1] = dp[j] &#43; 1 不同时: dp[j&#43;1] = max(dp[j&#43;1], dp[j]) 所以为什么是记录左上而不是别的: 因为在计算到dp[j]的时候dp[j-1]肯定已经计算完了且放到了dp[j-1]的位置上了,那么对应的上一行数据也就是j的左上数据肯定就已经被覆盖了,所以需要一个临时变量来给记录一下 pre必须在每次i循环的时候都重新给初始化为 pre := dp[0], 因为从二维变成一维每次i遍历的时候都是新的开始所以要重置 func longestCommonSubsequence(text1 string, text2 string) int { n, m := len(text1), len(text2) dp := make([]int, m&#43;1) for i := 0; i &lt; n; i&#43;&#43; { pre := dp[0] for j := 0; j &lt; m; j&#43;&#43; { tmp := dp[j&#43;1] if text1[i] == text2[j] { dp[j&#43;1] = pre &#43; 1 } else { dp[j&#43;1] = max(dp[j&#43;1], dp[j]) } pre = tmp } } return dp[m] } 模版 for i := 0; i &lt; n; i&#43;&#43; { // pre都是等于dp[0],用来保存左上的状态 pre := dp[0] // 是否需要对i为0的情况进行初始化 // dp[0] = i&#43;1 (例如583题目) for j := 0; j &lt; m; j&#43;&#43; { // tmp都是等于dp[j&#43;1] tmp := dp[j&#43;1] if text1[i] == text2[j] { dp[j&#43;1] = pre } else { // 这里的dp[j&#43;1]不能替换为pre,因为pre是左上的状态,这里的dp[j&#43;1]是上边的状态 dp[j&#43;1] = max(dp[j&#43;1], dp[j]) } pre = tmp } } 方案数例子 给你一个非负整数数组 nums 和一个整数 target 。">
+  <meta property="og:locale" content="zh-cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2024-09-03T17:54:25+08:00">
+    <meta property="article:modified_time" content="2024-09-03T17:54:25+08:00">
+    <meta property="article:tag" content="背包">
+    <meta property="article:tag" content="01背包">
+    <meta property="article:tag" content="完全背包">
+    <meta property="article:tag" content="算法">
+      <meta property="og:image" content="http://localhost:1313/images/cover.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://localhost:1313/images/cover.png">
+<meta name="twitter:title" content="背包">
+<meta name="twitter:description" content="背包
+灵神哔哩哔哩视频
+分类
+
+01背包: 有n个物品,第i个物品的体积为w[i]价值为v[i],每种物品只能选一次,求体积不超过cap的最大价值和
+完全背包:有n种物品,第i种物品的体积为w[i]价值为v[i],每种物品可以选无数次,求体积不超过cap的最大价值和
+01背包dp
+
+求价值和
+dfs(i,c) = max(dfs(i-1,c), dfs(i-1,c-w[i])&#43;v[i])
+求方案数
+dfs(i,c) = dfs(i-1,c) &#43; dfs(i-1,c-w[i])
+这叫加法原理，如果事件 A 和事件 B 是互斥的（即不能同时发生，不选 nums[i] 的同时，又选了 nums[i]），那么发生事件 A 或事件 B 的总数等于事件 A 的数量加上事件 B 的数量
+在转为dp是将i&#43;1可以避免下标为负数的情况
+先背包/先物品
+
+如果是求组合就是外层for物品,内层for背包
+如果是求排列就是外层for背包,内层for物品
+正序/倒序
+
+如果使用的是二维数组则无所谓正序和倒序因为本次的循环不会给上次循环的结果覆盖掉
+这里的正序和倒序指的是内层for循环,而外层for循环都是正序(0 - n-1)的情况
+如果使用一维数组则要考虑:
+
+转移来源是否会被覆盖
+结果是否已经计算出来
+
+正序遍历会导致 0-1 背包状态被覆盖，而完全背包则是正确的（转移来源被计算出来，且不存在被覆盖的问题如果dp[i]依赖超过两个数据源则不适用,例如求LCS(最长公共子序列)和递增子序列(LS)以及最长递增子序列(LIS)）
+逆序遍历对于 0-1 背包是正确的（转移来源是上一行的，早就被计算出来了且没有被覆盖），而完全背包则不行（转移来源没有被计算出来）。
+具体推到看下边的优化到一维数组
+优化到一维数组
+常规情况
+01背包的情况(目标和题目):
+dp[i&#43;1][c] = dp[i][c] &#43; dp[i][c-w[i]]
+改进为一维数组:
+dp[c] = dp[c] &#43; dp[c-w[i]]
+因为是求组合所以先遍历物品再遍历背包且是正序的情况下,当w[i]=2时:
+i  : 1 2 3 5 6 7 9
+i&#43;1: 1 2 4 7 到这个位置因为是一维数组所以新数据4吧源数据的3给覆盖了,继续变量得到的就是10而不是应该得到的9
+改为逆序遍历
+i  : 1 2 3  5 6  7   9
+i&#43;1:     4  7 9  12  15
+
+完全背包的情况(零钱兑换题目):
+dp[i&#43;1][c] = min(dp[i][c],dp[i&#43;1][c-w[i]]&#43;v[i])  看min的第二个参数是dp[i&#43;1]而01背包的情况下是dp[i],也就是说完全背包的i位置就是通过计算后的结果得到的,所以不存在覆盖后计算错误,完全背包要的就是这个计算后覆盖的数据,所以完全背包和01背包刚好相反,01背包需要逆序而完全背包需要正序
+
+dp[c] = min(dp[c], dp[c-w[i]]&#43;v[i])
+其他情况
+最长公共子序列题目:
+						
+dp[i][j]需要考虑两种情况:
+					  当s[i]==t[j]的时候  dp[i][j] = dp[i-1][j-1]&#43;1
+					  当s[i]!=t[j]的时候  dp[i][j] = max(dp[i-1][j], dp[i][j-1])
+
+dp[i][j]需要依赖三个方向的数据: dp[i][j-1]: 左边   dp[i-1][j]: 上边   dp[i-1][j-1]: 左上
+常规情况下可以使用正序和逆序来得到正确结果但这里是三个方向的数据所以必须使用临时变量来记录左上的状态
+
+先把dp公式改为一维:dp[j]依赖于: dp[j-1]: 左边   dp[j]: 上边   dp[j-1]: 左上
+在实际使用中为防止下标为负数所以会加上一个最大的减数确保下标最小为0例如这里则加上1
+dp[j&#43;1] ==&gt; dp[j]:左边 dp[j&#43;1]:上边  dp[j]:左上
+根据公式: 
+相同时: dp[j&#43;1] = dp[j] &#43; 1
+不同时: dp[j&#43;1] = max(dp[j&#43;1], dp[j])
+
+所以为什么是记录左上而不是别的:
+因为在计算到dp[j]的时候dp[j-1]肯定已经计算完了且放到了dp[j-1]的位置上了,那么对应的上一行数据也就是j的左上数据肯定就已经被覆盖了,所以需要一个临时变量来给记录一下
+pre必须在每次i循环的时候都重新给初始化为 pre := dp[0], 因为从二维变成一维每次i遍历的时候都是新的开始所以要重置
+
+func longestCommonSubsequence(text1 string, text2 string) int {
+	n, m := len(text1), len(text2)
+	dp := make([]int, m&#43;1)
+	for i := 0; i &lt; n; i&#43;&#43; {
+		pre := dp[0]
+		for j := 0; j &lt; m; j&#43;&#43; {
+			tmp := dp[j&#43;1]
+			if text1[i] == text2[j] {
+				dp[j&#43;1] = pre &#43; 1
+			} else {
+				dp[j&#43;1] = max(dp[j&#43;1], dp[j])
+			}
+			pre = tmp
+		}
+	}
+	return dp[m]
+}
+模版
+for i := 0; i &lt; n; i&#43;&#43; {
+    // pre都是等于dp[0],用来保存左上的状态
+    pre := dp[0]
+    // 是否需要对i为0的情况进行初始化
+    // dp[0] = i&#43;1  (例如583题目)
+    for j := 0; j &lt; m; j&#43;&#43; {
+        // tmp都是等于dp[j&#43;1]
+        tmp := dp[j&#43;1]
+        if text1[i] == text2[j] {
+            dp[j&#43;1] = pre
+        } else {
+            // 这里的dp[j&#43;1]不能替换为pre,因为pre是左上的状态,这里的dp[j&#43;1]是上边的状态
+            dp[j&#43;1] = max(dp[j&#43;1], dp[j])
+        }
+        pre = tmp
+    }
+}
+方案数例子
+
+给你一个非负整数数组 nums 和一个整数 target 。">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "http://localhost:1313/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "other",
+      "item": "http://localhost:1313/posts/other/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "背包",
+      "item": "http://localhost:1313/posts/other/%E8%83%8C%E5%8C%85/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "背包",
+  "name": "背包",
+  "description": "背包 灵神哔哩哔哩视频\n分类 01背包: 有n个物品,第i个物品的体积为w[i]价值为v[i],每种物品只能选一次,求体积不超过cap的最大价值和 完全背包:有n种物品,第i种物品的体积为w[i]价值为v[i],每种物品可以选无数次,求体积不超过cap的最大价值和 01背包dp 求价值和 dfs(i,c) = max(dfs(i-1,c), dfs(i-1,c-w[i])+v[i])\n求方案数 dfs(i,c) = dfs(i-1,c) + dfs(i-1,c-w[i])\n这叫加法原理，如果事件 A 和事件 B 是互斥的（即不能同时发生，不选 nums[i] 的同时，又选了 nums[i]），那么发生事件 A 或事件 B 的总数等于事件 A 的数量加上事件 B 的数量\n在转为dp是将i+1可以避免下标为负数的情况\n先背包/先物品 如果是求组合就是外层for物品,内层for背包\n如果是求排列就是外层for背包,内层for物品\n正序/倒序 如果使用的是二维数组则无所谓正序和倒序因为本次的循环不会给上次循环的结果覆盖掉 这里的正序和倒序指的是内层for循环,而外层for循环都是正序(0 - n-1)的情况\n如果使用一维数组则要考虑:\n转移来源是否会被覆盖 结果是否已经计算出来 正序遍历会导致 0-1 背包状态被覆盖，而完全背包则是正确的（转移来源被计算出来，且不存在被覆盖的问题如果dp[i]依赖超过两个数据源则不适用,例如求LCS(最长公共子序列)和递增子序列(LS)以及最长递增子序列(LIS)）\n逆序遍历对于 0-1 背包是正确的（转移来源是上一行的，早就被计算出来了且没有被覆盖），而完全背包则不行（转移来源没有被计算出来）。\n具体推到看下边的优化到一维数组\n优化到一维数组 常规情况 01背包的情况(目标和题目): dp[i+1][c] = dp[i][c] + dp[i][c-w[i]] 改进为一维数组: dp[c] = dp[c] + dp[c-w[i]] 因为是求组合所以先遍历物品再遍历背包且是正序的情况下,当w[i]=2时: i : 1 2 3 5 6 7 9 i+1: 1 2 4 7 到这个位置因为是一维数组所以新数据4吧源数据的3给覆盖了,继续变量得到的就是10而不是应该得到的9 改为逆序遍历 i : 1 2 3 5 6 7 9 i+1: 4 7 9 12 15 完全背包的情况(零钱兑换题目): dp[i+1][c] = min(dp[i][c],dp[i+1][c-w[i]]+v[i]) 看min的第二个参数是dp[i+1]而01背包的情况下是dp[i],也就是说完全背包的i位置就是通过计算后的结果得到的,所以不存在覆盖后计算错误,完全背包要的就是这个计算后覆盖的数据,所以完全背包和01背包刚好相反,01背包需要逆序而完全背包需要正序 dp[c] = min(dp[c], dp[c-w[i]]+v[i]) 其他情况 最长公共子序列题目: dp[i][j]需要考虑两种情况: 当s[i]==t[j]的时候 dp[i][j] = dp[i-1][j-1]+1 当s[i]!=t[j]的时候 dp[i][j] = max(dp[i-1][j], dp[i][j-1]) dp[i][j]需要依赖三个方向的数据: dp[i][j-1]: 左边 dp[i-1][j]: 上边 dp[i-1][j-1]: 左上 常规情况下可以使用正序和逆序来得到正确结果但这里是三个方向的数据所以必须使用临时变量来记录左上的状态 先把dp公式改为一维:dp[j]依赖于: dp[j-1]: 左边 dp[j]: 上边 dp[j-1]: 左上 在实际使用中为防止下标为负数所以会加上一个最大的减数确保下标最小为0例如这里则加上1 dp[j+1] ==\u0026gt; dp[j]:左边 dp[j+1]:上边 dp[j]:左上 根据公式: 相同时: dp[j+1] = dp[j] + 1 不同时: dp[j+1] = max(dp[j+1], dp[j]) 所以为什么是记录左上而不是别的: 因为在计算到dp[j]的时候dp[j-1]肯定已经计算完了且放到了dp[j-1]的位置上了,那么对应的上一行数据也就是j的左上数据肯定就已经被覆盖了,所以需要一个临时变量来给记录一下 pre必须在每次i循环的时候都重新给初始化为 pre := dp[0], 因为从二维变成一维每次i遍历的时候都是新的开始所以要重置 func longestCommonSubsequence(text1 string, text2 string) int { n, m := len(text1), len(text2) dp := make([]int, m+1) for i := 0; i \u0026lt; n; i++ { pre := dp[0] for j := 0; j \u0026lt; m; j++ { tmp := dp[j+1] if text1[i] == text2[j] { dp[j+1] = pre + 1 } else { dp[j+1] = max(dp[j+1], dp[j]) } pre = tmp } } return dp[m] } 模版 for i := 0; i \u0026lt; n; i++ { // pre都是等于dp[0],用来保存左上的状态 pre := dp[0] // 是否需要对i为0的情况进行初始化 // dp[0] = i+1 (例如583题目) for j := 0; j \u0026lt; m; j++ { // tmp都是等于dp[j+1] tmp := dp[j+1] if text1[i] == text2[j] { dp[j+1] = pre } else { // 这里的dp[j+1]不能替换为pre,因为pre是左上的状态,这里的dp[j+1]是上边的状态 dp[j+1] = max(dp[j+1], dp[j]) } pre = tmp } } 方案数例子 给你一个非负整数数组 nums 和一个整数 target 。\n",
+  "keywords": [
+    "背包", "01背包", "完全背包", "算法"
+  ],
+  "articleBody": "背包 灵神哔哩哔哩视频\n分类 01背包: 有n个物品,第i个物品的体积为w[i]价值为v[i],每种物品只能选一次,求体积不超过cap的最大价值和 完全背包:有n种物品,第i种物品的体积为w[i]价值为v[i],每种物品可以选无数次,求体积不超过cap的最大价值和 01背包dp 求价值和 dfs(i,c) = max(dfs(i-1,c), dfs(i-1,c-w[i])+v[i])\n求方案数 dfs(i,c) = dfs(i-1,c) + dfs(i-1,c-w[i])\n这叫加法原理，如果事件 A 和事件 B 是互斥的（即不能同时发生，不选 nums[i] 的同时，又选了 nums[i]），那么发生事件 A 或事件 B 的总数等于事件 A 的数量加上事件 B 的数量\n在转为dp是将i+1可以避免下标为负数的情况\n先背包/先物品 如果是求组合就是外层for物品,内层for背包\n如果是求排列就是外层for背包,内层for物品\n正序/倒序 如果使用的是二维数组则无所谓正序和倒序因为本次的循环不会给上次循环的结果覆盖掉 这里的正序和倒序指的是内层for循环,而外层for循环都是正序(0 - n-1)的情况\n如果使用一维数组则要考虑:\n转移来源是否会被覆盖 结果是否已经计算出来 正序遍历会导致 0-1 背包状态被覆盖，而完全背包则是正确的（转移来源被计算出来，且不存在被覆盖的问题如果dp[i]依赖超过两个数据源则不适用,例如求LCS(最长公共子序列)和递增子序列(LS)以及最长递增子序列(LIS)）\n逆序遍历对于 0-1 背包是正确的（转移来源是上一行的，早就被计算出来了且没有被覆盖），而完全背包则不行（转移来源没有被计算出来）。\n具体推到看下边的优化到一维数组\n优化到一维数组 常规情况 01背包的情况(目标和题目): dp[i+1][c] = dp[i][c] + dp[i][c-w[i]] 改进为一维数组: dp[c] = dp[c] + dp[c-w[i]] 因为是求组合所以先遍历物品再遍历背包且是正序的情况下,当w[i]=2时: i : 1 2 3 5 6 7 9 i+1: 1 2 4 7 到这个位置因为是一维数组所以新数据4吧源数据的3给覆盖了,继续变量得到的就是10而不是应该得到的9 改为逆序遍历 i : 1 2 3 5 6 7 9 i+1: 4 7 9 12 15 完全背包的情况(零钱兑换题目): dp[i+1][c] = min(dp[i][c],dp[i+1][c-w[i]]+v[i]) 看min的第二个参数是dp[i+1]而01背包的情况下是dp[i],也就是说完全背包的i位置就是通过计算后的结果得到的,所以不存在覆盖后计算错误,完全背包要的就是这个计算后覆盖的数据,所以完全背包和01背包刚好相反,01背包需要逆序而完全背包需要正序 dp[c] = min(dp[c], dp[c-w[i]]+v[i]) 其他情况 最长公共子序列题目: dp[i][j]需要考虑两种情况: 当s[i]==t[j]的时候 dp[i][j] = dp[i-1][j-1]+1 当s[i]!=t[j]的时候 dp[i][j] = max(dp[i-1][j], dp[i][j-1]) dp[i][j]需要依赖三个方向的数据: dp[i][j-1]: 左边 dp[i-1][j]: 上边 dp[i-1][j-1]: 左上 常规情况下可以使用正序和逆序来得到正确结果但这里是三个方向的数据所以必须使用临时变量来记录左上的状态 先把dp公式改为一维:dp[j]依赖于: dp[j-1]: 左边 dp[j]: 上边 dp[j-1]: 左上 在实际使用中为防止下标为负数所以会加上一个最大的减数确保下标最小为0例如这里则加上1 dp[j+1] ==\u003e dp[j]:左边 dp[j+1]:上边 dp[j]:左上 根据公式: 相同时: dp[j+1] = dp[j] + 1 不同时: dp[j+1] = max(dp[j+1], dp[j]) 所以为什么是记录左上而不是别的: 因为在计算到dp[j]的时候dp[j-1]肯定已经计算完了且放到了dp[j-1]的位置上了,那么对应的上一行数据也就是j的左上数据肯定就已经被覆盖了,所以需要一个临时变量来给记录一下 pre必须在每次i循环的时候都重新给初始化为 pre := dp[0], 因为从二维变成一维每次i遍历的时候都是新的开始所以要重置 func longestCommonSubsequence(text1 string, text2 string) int { n, m := len(text1), len(text2) dp := make([]int, m+1) for i := 0; i \u003c n; i++ { pre := dp[0] for j := 0; j \u003c m; j++ { tmp := dp[j+1] if text1[i] == text2[j] { dp[j+1] = pre + 1 } else { dp[j+1] = max(dp[j+1], dp[j]) } pre = tmp } } return dp[m] } 模版 for i := 0; i \u003c n; i++ { // pre都是等于dp[0],用来保存左上的状态 pre := dp[0] // 是否需要对i为0的情况进行初始化 // dp[0] = i+1 (例如583题目) for j := 0; j \u003c m; j++ { // tmp都是等于dp[j+1] tmp := dp[j+1] if text1[i] == text2[j] { dp[j+1] = pre } else { // 这里的dp[j+1]不能替换为pre,因为pre是左上的状态,这里的dp[j+1]是上边的状态 dp[j+1] = max(dp[j+1], dp[j]) } pre = tmp } } 方案数例子 给你一个非负整数数组 nums 和一个整数 target 。\n向数组中的每个整数前添加 '+' 或 '-' ，然后串联起所有整数，可以构造一个 表达式 ：\n例如，nums = [2, 1] ，可以在 2 之前添加 '+' ，在 1 之前添加 '-' ，然后串联起来得到表达式 \"+2-1\" 返回可以通过上述方法构造的、运算结果等于 target 的不同 表达式 的数目。题解\n等于 func findTargetSumWays1(nums []int, target int) int { var dfs func(i, cap int) int cache := make(map[string]int) dfs = func(i, cap int) int { if i \u003c 0 { if cap == 0 { return 1 } return 0 } s := fmt.Sprintf(\"%d--%d\", i, cap) if _, ok := cache[s]; ok { return cache[s] } if cap \u003c nums[i] { return dfs(i-1, cap) } cache[s] = dfs(i-1, cap) + dfs(i-1, cap-nums[i]) return cache[s] } return dfs(len(nums)-1, target) } // 对应的dp dp := make([]int, target+1) dp[0] = 1 for _, v := range nums { for i := target; i \u003e= v; i-- { dp[i] += dp[i-v] } } return dp[target] 最多 不需要判断cap == 0,直接返回1. 因为有判断cap \u003c nums[i]所以cap肯定不会超过target\nfunc findTargetSumWays1(nums []int, target int) int { var dfs func(i, cap int) int cache := make(map[string]int) dfs = func(i, cap int) int { if i \u003c 0 { return 1 } s := fmt.Sprintf(\"%d--%d\", i, cap) if _, ok := cache[s]; ok { return cache[s] } if cap \u003c nums[i] { return dfs(i-1, cap) } cache[s] = dfs(i-1, cap) + dfs(i-1, cap-nums[i]) return cache[s] } return dfs(len(nums)-1, target) } // 对应dp dp := make([]int, target+1) for i := range dp { dp[i] = 1 } for _, v := range nums { for i := target; i \u003e= v; i-- { dp[i] += dp[i-v] } } return dp[target] 最少 需要判断cap \u003c= 0的情况下才返回1; 不需要进行cap \u003c nums[i]判断因为是最少需要的结果是\u003e=target的\nfunc findTargetSumWays1(nums []int, target int) int { var dfs func(i, cap int) int cache := make(map[string]int) dfs = func(i, cap int) int { if i \u003c 0 { if cap \u003c= 0 { return 1 } return 0 } s := fmt.Sprintf(\"%d--%d\", i, cap) if _, ok := cache[s]; ok { return cache[s] } cache[s] = dfs(i-1, cap) + dfs(i-1, cap-nums[i]) return cache[s] } return dfs(len(nums)-1, target) } // 对应dp dp := make([]int, target+1) dp[0] = 1 for _, v := range nums { for i := target; i \u003e= 0; i-- { dp[i] += dp[max(i-v, 0)] } } return dp[target] ",
+  "wordCount" : "650",
+  "inLanguage": "zh-cn",
+  "image": "http://localhost:1313/images/cover.png","datePublished": "2024-09-03T17:54:25+08:00",
+  "dateModified": "2024-09-03T17:54:25+08:00",
+  "author":[{
+    "@type": "Person",
+    "name": "loveyu"
+  }],
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "http://localhost:1313/posts/other/%E8%83%8C%E5%8C%85/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "loveyu233",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "http://localhost:1313/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="loveyu233 (Alt + H)">loveyu233</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/archives" title="归档">
+                    <span>归档</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/search/" title="搜索">
+                    <span>搜索</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/tags/" title="标签">
+                    <span>标签</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="http://localhost:1313/">Home</a>&nbsp;»&nbsp;<a href="http://localhost:1313/posts/">Posts</a>&nbsp;»&nbsp;<a href="http://localhost:1313/posts/other/">other</a></div>
+    <h1 class="post-title entry-hint-parent">
+      背包
+    </h1>
+    <div class="post-meta"><span title='2024-09-03 17:54:25 +0800 CST'>September 3, 2024</span>&nbsp;·&nbsp;4 min&nbsp;·&nbsp;loveyu
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#%e8%83%8c%e5%8c%85" aria-label="背包">背包</a><ul>
+                        
+                <li>
+                    <a href="#%e5%88%86%e7%b1%bb" aria-label="分类">分类</a><ul>
+                        <ul>
+                        
+                <li>
+                    <a href="#01%e8%83%8c%e5%8c%85-%e6%9c%89n%e4%b8%aa%e7%89%a9%e5%93%81%e7%ac%aci%e4%b8%aa%e7%89%a9%e5%93%81%e7%9a%84%e4%bd%93%e7%a7%af%e4%b8%bawi%e4%bb%b7%e5%80%bc%e4%b8%bavi%e6%af%8f%e7%a7%8d%e7%89%a9%e5%93%81%e5%8f%aa%e8%83%bd%e9%80%89%e4%b8%80%e6%ac%a1%e6%b1%82%e4%bd%93%e7%a7%af%e4%b8%8d%e8%b6%85%e8%bf%87cap%e7%9a%84%e6%9c%80%e5%a4%a7%e4%bb%b7%e5%80%bc%e5%92%8c" aria-label="01背包: 有n个物品,第i个物品的体积为w[i]价值为v[i],每种物品只能选一次,求体积不超过cap的最大价值和">01背包: 有n个物品,第i个物品的体积为w[i]价值为v[i],每种物品只能选一次,求体积不超过cap的最大价值和</a></li>
+                <li>
+                    <a href="#%e5%ae%8c%e5%85%a8%e8%83%8c%e5%8c%85%e6%9c%89n%e7%a7%8d%e7%89%a9%e5%93%81%e7%ac%aci%e7%a7%8d%e7%89%a9%e5%93%81%e7%9a%84%e4%bd%93%e7%a7%af%e4%b8%bawi%e4%bb%b7%e5%80%bc%e4%b8%bavi%e6%af%8f%e7%a7%8d%e7%89%a9%e5%93%81%e5%8f%af%e4%bb%a5%e9%80%89%e6%97%a0%e6%95%b0%e6%ac%a1%e6%b1%82%e4%bd%93%e7%a7%af%e4%b8%8d%e8%b6%85%e8%bf%87cap%e7%9a%84%e6%9c%80%e5%a4%a7%e4%bb%b7%e5%80%bc%e5%92%8c" aria-label="完全背包:有n种物品,第i种物品的体积为w[i]价值为v[i],每种物品可以选无数次,求体积不超过cap的最大价值和">完全背包:有n种物品,第i种物品的体积为w[i]价值为v[i],每种物品可以选无数次,求体积不超过cap的最大价值和</a></li></ul>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#01%e8%83%8c%e5%8c%85dp" aria-label="01背包dp">01背包dp</a><ul>
+                        
+                <li>
+                    <a href="#%e6%b1%82%e4%bb%b7%e5%80%bc%e5%92%8c" aria-label="求价值和">求价值和</a></li>
+                <li>
+                    <a href="#%e6%b1%82%e6%96%b9%e6%a1%88%e6%95%b0" aria-label="求方案数">求方案数</a></li></ul>
+                </li>
+                <li>
+                    <a href="#%e5%85%88%e8%83%8c%e5%8c%85%e5%85%88%e7%89%a9%e5%93%81" aria-label="先背包/先物品">先背包/先物品</a></li>
+                <li>
+                    <a href="#%e6%ad%a3%e5%ba%8f%e5%80%92%e5%ba%8f" aria-label="正序/倒序">正序/倒序</a><ul>
+                        
+                <li>
+                    <a href="#%e5%a6%82%e6%9e%9c%e4%bd%bf%e7%94%a8%e7%9a%84%e6%98%af%e4%ba%8c%e7%bb%b4%e6%95%b0%e7%bb%84%e5%88%99%e6%97%a0%e6%89%80%e8%b0%93%e6%ad%a3%e5%ba%8f%e5%92%8c%e5%80%92%e5%ba%8f%e5%9b%a0%e4%b8%ba%e6%9c%ac%e6%ac%a1%e7%9a%84%e5%be%aa%e7%8e%af%e4%b8%8d%e4%bc%9a%e7%bb%99%e4%b8%8a%e6%ac%a1%e5%be%aa%e7%8e%af%e7%9a%84%e7%bb%93%e6%9e%9c%e8%a6%86%e7%9b%96%e6%8e%89" aria-label="如果使用的是二维数组则无所谓正序和倒序因为本次的循环不会给上次循环的结果覆盖掉">如果使用的是二维数组则无所谓正序和倒序因为本次的循环不会给上次循环的结果覆盖掉</a></li></ul>
+                </li>
+                <li>
+                    <a href="#%e4%bc%98%e5%8c%96%e5%88%b0%e4%b8%80%e7%bb%b4%e6%95%b0%e7%bb%84" aria-label="优化到一维数组">优化到一维数组</a><ul>
+                        
+                <li>
+                    <a href="#%e5%b8%b8%e8%a7%84%e6%83%85%e5%86%b5" aria-label="常规情况">常规情况</a></li>
+                <li>
+                    <a href="#%e5%85%b6%e4%bb%96%e6%83%85%e5%86%b5" aria-label="其他情况">其他情况</a></li>
+                <li>
+                    <a href="#%e6%a8%a1%e7%89%88" aria-label="模版">模版</a></li></ul>
+                </li></ul>
+                </li>
+                <li>
+                    <a href="#%e6%96%b9%e6%a1%88%e6%95%b0%e4%be%8b%e5%ad%90" aria-label="方案数例子">方案数例子</a><ul>
+                        
+                <li>
+                    <a href="#%e7%ad%89%e4%ba%8e" aria-label="等于">等于</a></li>
+                <li>
+                    <a href="#%e6%9c%80%e5%a4%9a" aria-label="最多">最多</a></li>
+                <li>
+                    <a href="#%e6%9c%80%e5%b0%91" aria-label="最少">最少</a>
+                </li>
+            </ul>
+            </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><h1 id="背包">背包<a hidden class="anchor" aria-hidden="true" href="#背包">#</a></h1>
+<p><a href="https://www.bilibili.com/video/BV16Y411v7Y6/?spm_id_from=333.788&amp;vd_source=c82892ceed4b858d308c45829c725d98">灵神哔哩哔哩视频</a></p>
+<h2 id="分类">分类<a hidden class="anchor" aria-hidden="true" href="#分类">#</a></h2>
+<blockquote>
+<h4 id="01背包-有n个物品第i个物品的体积为wi价值为vi每种物品只能选一次求体积不超过cap的最大价值和"><code>01背包:</code> 有<code>n个</code>物品,第i个物品的体积为w[i]价值为v[i],每种物品<code>只能选一次</code>,求体积不超过cap的最大价值和<a hidden class="anchor" aria-hidden="true" href="#01背包-有n个物品第i个物品的体积为wi价值为vi每种物品只能选一次求体积不超过cap的最大价值和">#</a></h4>
+<h4 id="完全背包有n种物品第i种物品的体积为wi价值为vi每种物品可以选无数次求体积不超过cap的最大价值和"><code>完全背包:</code>有<code>n种</code>物品,第i种物品的体积为w[i]价值为v[i],每种物品<code>可以选无数次</code>,求体积不超过cap的最大价值和<a hidden class="anchor" aria-hidden="true" href="#完全背包有n种物品第i种物品的体积为wi价值为vi每种物品可以选无数次求体积不超过cap的最大价值和">#</a></h4></blockquote>
+<h2 id="01背包dp">01背包dp<a hidden class="anchor" aria-hidden="true" href="#01背包dp">#</a></h2>
+<blockquote>
+<h3 id="求价值和">求价值和<a hidden class="anchor" aria-hidden="true" href="#求价值和">#</a></h3>
+<p><code>dfs(i,c) = max(dfs(i-1,c), dfs(i-1,c-w[i])+v[i])</code></p>
+<h3 id="求方案数">求方案数<a hidden class="anchor" aria-hidden="true" href="#求方案数">#</a></h3>
+<p><code>dfs(i,c) = dfs(i-1,c) + dfs(i-1,c-w[i])</code></p>
+<p>这叫加法原理，如果事件 A 和事件 B 是互斥的（即不能同时发生，不选 nums[i] 的同时，又选了 nums[i]），那么发生事件 A 或事件 B 的总数等于事件 A 的数量加上事件 B 的数量</p>
+<p>在转为dp是将i+1可以避免下标为负数的情况</p></blockquote>
+<h2 id="先背包先物品">先背包/先物品<a hidden class="anchor" aria-hidden="true" href="#先背包先物品">#</a></h2>
+<blockquote>
+<p>如果是<code>求组合</code>就是外层for物品,内层for背包</p>
+<p>如果是<code>求排列</code>就是外层for背包,内层for物品</p></blockquote>
+<h2 id="正序倒序">正序/倒序<a hidden class="anchor" aria-hidden="true" href="#正序倒序">#</a></h2>
+<blockquote>
+<h3 id="如果使用的是二维数组则无所谓正序和倒序因为本次的循环不会给上次循环的结果覆盖掉"><code>如果使用的是二维数组则无所谓正序和倒序因为本次的循环不会给上次循环的结果覆盖掉</code><a hidden class="anchor" aria-hidden="true" href="#如果使用的是二维数组则无所谓正序和倒序因为本次的循环不会给上次循环的结果覆盖掉">#</a></h3>
+<p>这里的正序和倒序<code>指的是内层for循环</code>,<code>而外层for循环都是正序(0 - n-1)的情况</code></p>
+<p>如果使用一维数组则要考虑:</p>
+<ol>
+<li>转移来源是否会被覆盖</li>
+<li>结果是否已经计算出来</li>
+</ol>
+<p>正序遍历会导致 0-1 背包状态被覆盖，而完全背包则是正确的（转移来源被计算出来，且不存在被覆盖的问题<code>如果dp[i]依赖超过两个数据源则不适用,例如求LCS(最长公共子序列)和递增子序列(LS)以及最长递增子序列(LIS)</code>）</p>
+<p>逆序遍历对于 0-1 背包是正确的（转移来源是上一行的，早就被计算出来了且没有被覆盖），而完全背包则不行（转移来源没有被计算出来）。</p>
+<p><code>具体推到看下边的优化到一维数组</code></p></blockquote>
+<h2 id="优化到一维数组">优化到一维数组<a hidden class="anchor" aria-hidden="true" href="#优化到一维数组">#</a></h2>
+<h3 id="常规情况">常规情况<a hidden class="anchor" aria-hidden="true" href="#常规情况">#</a></h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="mo">01</span><span class="nx">背包的情况</span><span class="p">(</span><span class="nx">目标和题目</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl"><span class="nx">dp</span><span class="p">[</span><span class="nx">i</span><span class="o">+</span><span class="mi">1</span><span class="p">][</span><span class="nx">c</span><span class="p">]</span> <span class="p">=</span> <span class="nx">dp</span><span class="p">[</span><span class="nx">i</span><span class="p">][</span><span class="nx">c</span><span class="p">]</span> <span class="o">+</span> <span class="nx">dp</span><span class="p">[</span><span class="nx">i</span><span class="p">][</span><span class="nx">c</span><span class="o">-</span><span class="nx">w</span><span class="p">[</span><span class="nx">i</span><span class="p">]]</span>
+</span></span><span class="line"><span class="cl"><span class="nx">改进为一维数组</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl"><span class="nx">dp</span><span class="p">[</span><span class="nx">c</span><span class="p">]</span> <span class="p">=</span> <span class="nx">dp</span><span class="p">[</span><span class="nx">c</span><span class="p">]</span> <span class="o">+</span> <span class="nx">dp</span><span class="p">[</span><span class="nx">c</span><span class="o">-</span><span class="nx">w</span><span class="p">[</span><span class="nx">i</span><span class="p">]]</span>
+</span></span><span class="line"><span class="cl"><span class="nx">因为是求组合所以先遍历物品再遍历背包且是正序的情况下</span><span class="p">,</span><span class="nx">当w</span><span class="p">[</span><span class="nx">i</span><span class="p">]=</span><span class="mi">2</span><span class="nx">时</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl"><span class="nx">i</span>  <span class="p">:</span> <span class="mi">1</span> <span class="mi">2</span> <span class="mi">3</span> <span class="mi">5</span> <span class="mi">6</span> <span class="mi">7</span> <span class="mi">9</span>
+</span></span><span class="line"><span class="cl"><span class="nx">i</span><span class="o">+</span><span class="mi">1</span><span class="p">:</span> <span class="mi">1</span> <span class="mi">2</span> <span class="mi">4</span> <span class="mi">7</span> <span class="nx">到这个位置因为是一维数组所以新数据4吧源数据的3给覆盖了</span><span class="p">,</span><span class="nx">继续变量得到的就是10而不是应该得到的9</span>
+</span></span><span class="line"><span class="cl"><span class="nx">改为逆序遍历</span>
+</span></span><span class="line"><span class="cl"><span class="nx">i</span>  <span class="p">:</span> <span class="mi">1</span> <span class="mi">2</span> <span class="mi">3</span>  <span class="mi">5</span> <span class="mi">6</span>  <span class="mi">7</span>   <span class="mi">9</span>
+</span></span><span class="line"><span class="cl"><span class="nx">i</span><span class="o">+</span><span class="mi">1</span><span class="p">:</span>     <span class="mi">4</span>  <span class="mi">7</span> <span class="mi">9</span>  <span class="mi">12</span>  <span class="mi">15</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">完全背包的情况</span><span class="p">(</span><span class="nx">零钱兑换题目</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl"><span class="nx">dp</span><span class="p">[</span><span class="nx">i</span><span class="o">+</span><span class="mi">1</span><span class="p">][</span><span class="nx">c</span><span class="p">]</span> <span class="p">=</span> <span class="nb">min</span><span class="p">(</span><span class="nx">dp</span><span class="p">[</span><span class="nx">i</span><span class="p">][</span><span class="nx">c</span><span class="p">],</span><span class="nx">dp</span><span class="p">[</span><span class="nx">i</span><span class="o">+</span><span class="mi">1</span><span class="p">][</span><span class="nx">c</span><span class="o">-</span><span class="nx">w</span><span class="p">[</span><span class="nx">i</span><span class="p">]]</span><span class="o">+</span><span class="nx">v</span><span class="p">[</span><span class="nx">i</span><span class="p">])</span>  <span class="nx">看min的第二个参数是dp</span><span class="p">[</span><span class="nx">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="nx">而01背包的情况下是dp</span><span class="p">[</span><span class="nx">i</span><span class="p">],</span><span class="nx">也就是说完全背包的i位置就是通过计算后的结果得到的</span><span class="p">,</span><span class="nx">所以不存在覆盖后计算错误</span><span class="p">,</span><span class="nx">完全背包要的就是这个计算后覆盖的数据</span><span class="p">,</span><span class="nx">所以完全背包和01背包刚好相反</span><span class="p">,</span><span class="mo">01</span><span class="nx">背包需要逆序而完全背包需要正序</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">dp</span><span class="p">[</span><span class="nx">c</span><span class="p">]</span> <span class="p">=</span> <span class="nb">min</span><span class="p">(</span><span class="nx">dp</span><span class="p">[</span><span class="nx">c</span><span class="p">],</span> <span class="nx">dp</span><span class="p">[</span><span class="nx">c</span><span class="o">-</span><span class="nx">w</span><span class="p">[</span><span class="nx">i</span><span class="p">]]</span><span class="o">+</span><span class="nx">v</span><span class="p">[</span><span class="nx">i</span><span class="p">])</span>
+</span></span></code></pre></div><h3 id="其他情况">其他情况<a hidden class="anchor" aria-hidden="true" href="#其他情况">#</a></h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">最长公共子序列题目</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">						
+</span></span><span class="line"><span class="cl"><span class="nx">dp</span><span class="p">[</span><span class="nx">i</span><span class="p">][</span><span class="nx">j</span><span class="p">]</span><span class="nx">需要考虑两种情况</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">					  <span class="nx">当s</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span><span class="o">==</span><span class="nx">t</span><span class="p">[</span><span class="nx">j</span><span class="p">]</span><span class="nx">的时候</span>  <span class="nx">dp</span><span class="p">[</span><span class="nx">i</span><span class="p">][</span><span class="nx">j</span><span class="p">]</span> <span class="p">=</span> <span class="nx">dp</span><span class="p">[</span><span class="nx">i</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="nx">j</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span>
+</span></span><span class="line"><span class="cl">					  <span class="nx">当s</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span><span class="o">!=</span><span class="nx">t</span><span class="p">[</span><span class="nx">j</span><span class="p">]</span><span class="nx">的时候</span>  <span class="nx">dp</span><span class="p">[</span><span class="nx">i</span><span class="p">][</span><span class="nx">j</span><span class="p">]</span> <span class="p">=</span> <span class="nb">max</span><span class="p">(</span><span class="nx">dp</span><span class="p">[</span><span class="nx">i</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="nx">j</span><span class="p">],</span> <span class="nx">dp</span><span class="p">[</span><span class="nx">i</span><span class="p">][</span><span class="nx">j</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">dp</span><span class="p">[</span><span class="nx">i</span><span class="p">][</span><span class="nx">j</span><span class="p">]</span><span class="nx">需要依赖三个方向的数据</span><span class="p">:</span> <span class="nx">dp</span><span class="p">[</span><span class="nx">i</span><span class="p">][</span><span class="nx">j</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span> <span class="nx">左边</span>   <span class="nx">dp</span><span class="p">[</span><span class="nx">i</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="nx">j</span><span class="p">]:</span> <span class="nx">上边</span>   <span class="nx">dp</span><span class="p">[</span><span class="nx">i</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="nx">j</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span> <span class="nx">左上</span>
+</span></span><span class="line"><span class="cl"><span class="nx">常规情况下可以使用正序和逆序来得到正确结果但这里是三个方向的数据所以必须使用临时变量来记录左上的状态</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">先把dp公式改为一维</span><span class="p">:</span><span class="nx">dp</span><span class="p">[</span><span class="nx">j</span><span class="p">]</span><span class="nx">依赖于</span><span class="p">:</span> <span class="nx">dp</span><span class="p">[</span><span class="nx">j</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span> <span class="nx">左边</span>   <span class="nx">dp</span><span class="p">[</span><span class="nx">j</span><span class="p">]:</span> <span class="nx">上边</span>   <span class="nx">dp</span><span class="p">[</span><span class="nx">j</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span> <span class="nx">左上</span>
+</span></span><span class="line"><span class="cl"><span class="nx">在实际使用中为防止下标为负数所以会加上一个最大的减数确保下标最小为0例如这里则加上1</span>
+</span></span><span class="line"><span class="cl"><span class="nx">dp</span><span class="p">[</span><span class="nx">j</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span><span class="p">&gt;</span> <span class="nx">dp</span><span class="p">[</span><span class="nx">j</span><span class="p">]:</span><span class="nx">左边</span> <span class="nx">dp</span><span class="p">[</span><span class="nx">j</span><span class="o">+</span><span class="mi">1</span><span class="p">]:</span><span class="nx">上边</span>  <span class="nx">dp</span><span class="p">[</span><span class="nx">j</span><span class="p">]:</span><span class="nx">左上</span>
+</span></span><span class="line"><span class="cl"><span class="nx">根据公式</span><span class="p">:</span> 
+</span></span><span class="line"><span class="cl"><span class="nx">相同时</span><span class="p">:</span> <span class="nx">dp</span><span class="p">[</span><span class="nx">j</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="p">=</span> <span class="nx">dp</span><span class="p">[</span><span class="nx">j</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="cl"><span class="nx">不同时</span><span class="p">:</span> <span class="nx">dp</span><span class="p">[</span><span class="nx">j</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="p">=</span> <span class="nb">max</span><span class="p">(</span><span class="nx">dp</span><span class="p">[</span><span class="nx">j</span><span class="o">+</span><span class="mi">1</span><span class="p">],</span> <span class="nx">dp</span><span class="p">[</span><span class="nx">j</span><span class="p">])</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">所以为什么是记录左上而不是别的</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl"><span class="nx">因为在计算到dp</span><span class="p">[</span><span class="nx">j</span><span class="p">]</span><span class="nx">的时候dp</span><span class="p">[</span><span class="nx">j</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="nx">肯定已经计算完了且放到了dp</span><span class="p">[</span><span class="nx">j</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="nx">的位置上了</span><span class="p">,</span><span class="nx">那么对应的上一行数据也就是j的左上数据肯定就已经被覆盖了</span><span class="p">,</span><span class="nx">所以需要一个临时变量来给记录一下</span>
+</span></span><span class="line"><span class="cl"><span class="nx">pre必须在每次i循环的时候都重新给初始化为</span> <span class="nx">pre</span> <span class="o">:=</span> <span class="nx">dp</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nx">因为从二维变成一维每次i遍历的时候都是新的开始所以要重置</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">longestCommonSubsequence</span><span class="p">(</span><span class="nx">text1</span> <span class="kt">string</span><span class="p">,</span> <span class="nx">text2</span> <span class="kt">string</span><span class="p">)</span> <span class="kt">int</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">n</span><span class="p">,</span> <span class="nx">m</span> <span class="o">:=</span> <span class="nb">len</span><span class="p">(</span><span class="nx">text1</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="nx">text2</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">dp</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">([]</span><span class="kt">int</span><span class="p">,</span> <span class="nx">m</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="nx">n</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">pre</span> <span class="o">:=</span> <span class="nx">dp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">		<span class="k">for</span> <span class="nx">j</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">j</span> <span class="p">&lt;</span> <span class="nx">m</span><span class="p">;</span> <span class="nx">j</span><span class="o">++</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">tmp</span> <span class="o">:=</span> <span class="nx">dp</span><span class="p">[</span><span class="nx">j</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">			<span class="k">if</span> <span class="nx">text1</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">==</span> <span class="nx">text2</span><span class="p">[</span><span class="nx">j</span><span class="p">]</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">				<span class="nx">dp</span><span class="p">[</span><span class="nx">j</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="p">=</span> <span class="nx">pre</span> <span class="o">+</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="cl">			<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">				<span class="nx">dp</span><span class="p">[</span><span class="nx">j</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="p">=</span> <span class="nb">max</span><span class="p">(</span><span class="nx">dp</span><span class="p">[</span><span class="nx">j</span><span class="o">+</span><span class="mi">1</span><span class="p">],</span> <span class="nx">dp</span><span class="p">[</span><span class="nx">j</span><span class="p">])</span>
+</span></span><span class="line"><span class="cl">			<span class="p">}</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">pre</span> <span class="p">=</span> <span class="nx">tmp</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="k">return</span> <span class="nx">dp</span><span class="p">[</span><span class="nx">m</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><h3 id="模版">模版<a hidden class="anchor" aria-hidden="true" href="#模版">#</a></h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="nx">n</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// pre都是等于dp[0],用来保存左上的状态</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">pre</span> <span class="o">:=</span> <span class="nx">dp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 是否需要对i为0的情况进行初始化</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// dp[0] = i+1  (例如583题目)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="nx">j</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">j</span> <span class="p">&lt;</span> <span class="nx">m</span><span class="p">;</span> <span class="nx">j</span><span class="o">++</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// tmp都是等于dp[j+1]</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">tmp</span> <span class="o">:=</span> <span class="nx">dp</span><span class="p">[</span><span class="nx">j</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="nx">text1</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">==</span> <span class="nx">text2</span><span class="p">[</span><span class="nx">j</span><span class="p">]</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">dp</span><span class="p">[</span><span class="nx">j</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="p">=</span> <span class="nx">pre</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="c1">// 这里的dp[j+1]不能替换为pre,因为pre是左上的状态,这里的dp[j+1]是上边的状态</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">dp</span><span class="p">[</span><span class="nx">j</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="p">=</span> <span class="nb">max</span><span class="p">(</span><span class="nx">dp</span><span class="p">[</span><span class="nx">j</span><span class="o">+</span><span class="mi">1</span><span class="p">],</span> <span class="nx">dp</span><span class="p">[</span><span class="nx">j</span><span class="p">])</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">pre</span> <span class="p">=</span> <span class="nx">tmp</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><h1 id="方案数例子">方案数例子<a hidden class="anchor" aria-hidden="true" href="#方案数例子">#</a></h1>
+<blockquote>
+<p>给你一个非负整数数组 <code>nums</code> 和一个整数 <code>target</code> 。</p>
+<p>向数组中的每个整数前添加 <code>'+'</code> 或 <code>'-'</code> ，然后串联起所有整数，可以构造一个 <strong>表达式</strong> ：</p>
+<ul>
+<li>例如，<code>nums = [2, 1]</code> ，可以在 <code>2</code> 之前添加 <code>'+'</code> ，在 <code>1</code> 之前添加 <code>'-'</code> ，然后串联起来得到表达式 <code>&quot;+2-1&quot;</code></li>
+</ul>
+<p>返回可以通过上述方法构造的、运算结果等于 <code>target</code> 的不同 <strong>表达式</strong> 的数目。<a href="https://leetcode.cn/problems/target-sum/solutions/2119041/jiao-ni-yi-bu-bu-si-kao-dong-tai-gui-hua-s1cx/">题解</a></p></blockquote>
+<h2 id="等于">等于<a hidden class="anchor" aria-hidden="true" href="#等于">#</a></h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">findTargetSumWays1</span><span class="p">(</span><span class="nx">nums</span> <span class="p">[]</span><span class="kt">int</span><span class="p">,</span> <span class="nx">target</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">int</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="kd">var</span> <span class="nx">dfs</span> <span class="kd">func</span><span class="p">(</span><span class="nx">i</span><span class="p">,</span> <span class="nx">cap</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">int</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">cache</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="kt">int</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">dfs</span> <span class="p">=</span> <span class="kd">func</span><span class="p">(</span><span class="nx">i</span><span class="p">,</span> <span class="nx">cap</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">int</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="k">if</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="mi">0</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="k">if</span> <span class="nx">cap</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">				<span class="k">return</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="cl">			<span class="p">}</span>
+</span></span><span class="line"><span class="cl">			<span class="k">return</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">s</span> <span class="o">:=</span> <span class="nx">fmt</span><span class="p">.</span><span class="nf">Sprintf</span><span class="p">(</span><span class="s">&#34;%d--%d&#34;</span><span class="p">,</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">cap</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="k">if</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">ok</span> <span class="o">:=</span> <span class="nx">cache</span><span class="p">[</span><span class="nx">s</span><span class="p">];</span> <span class="nx">ok</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="k">return</span> <span class="nx">cache</span><span class="p">[</span><span class="nx">s</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">		<span class="k">if</span> <span class="nx">cap</span> <span class="p">&lt;</span> <span class="nx">nums</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="k">return</span> <span class="nf">dfs</span><span class="p">(</span><span class="nx">i</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="nx">cap</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">cache</span><span class="p">[</span><span class="nx">s</span><span class="p">]</span> <span class="p">=</span> <span class="nf">dfs</span><span class="p">(</span><span class="nx">i</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="nx">cap</span><span class="p">)</span> <span class="o">+</span> <span class="nf">dfs</span><span class="p">(</span><span class="nx">i</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="nx">cap</span><span class="o">-</span><span class="nx">nums</span><span class="p">[</span><span class="nx">i</span><span class="p">])</span>
+</span></span><span class="line"><span class="cl">		<span class="k">return</span> <span class="nx">cache</span><span class="p">[</span><span class="nx">s</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="k">return</span> <span class="nf">dfs</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="nx">nums</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="nx">target</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 对应的dp</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">dp</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">([]</span><span class="kt">int</span><span class="p">,</span> <span class="nx">target</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">dp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="p">=</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="cl">	<span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">v</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">nums</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="nx">target</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&gt;=</span> <span class="nx">v</span><span class="p">;</span> <span class="nx">i</span><span class="o">--</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">dp</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">+=</span> <span class="nx">dp</span><span class="p">[</span><span class="nx">i</span><span class="o">-</span><span class="nx">v</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="k">return</span> <span class="nx">dp</span><span class="p">[</span><span class="nx">target</span><span class="p">]</span>
+</span></span></code></pre></div><h2 id="最多">最多<a hidden class="anchor" aria-hidden="true" href="#最多">#</a></h2>
+<blockquote>
+<p>不需要判断<code>cap == 0</code>,直接返回1. 因为有判断<code>cap &lt; nums[i]</code>所以<code>cap肯定不会超过target</code></p></blockquote>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">findTargetSumWays1</span><span class="p">(</span><span class="nx">nums</span> <span class="p">[]</span><span class="kt">int</span><span class="p">,</span> <span class="nx">target</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">int</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="kd">var</span> <span class="nx">dfs</span> <span class="kd">func</span><span class="p">(</span><span class="nx">i</span><span class="p">,</span> <span class="nx">cap</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">int</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">cache</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="kt">int</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">dfs</span> <span class="p">=</span> <span class="kd">func</span><span class="p">(</span><span class="nx">i</span><span class="p">,</span> <span class="nx">cap</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">int</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="k">if</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="mi">0</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="k">return</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">s</span> <span class="o">:=</span> <span class="nx">fmt</span><span class="p">.</span><span class="nf">Sprintf</span><span class="p">(</span><span class="s">&#34;%d--%d&#34;</span><span class="p">,</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">cap</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="k">if</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">ok</span> <span class="o">:=</span> <span class="nx">cache</span><span class="p">[</span><span class="nx">s</span><span class="p">];</span> <span class="nx">ok</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="k">return</span> <span class="nx">cache</span><span class="p">[</span><span class="nx">s</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">		<span class="k">if</span> <span class="nx">cap</span> <span class="p">&lt;</span> <span class="nx">nums</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="k">return</span> <span class="nf">dfs</span><span class="p">(</span><span class="nx">i</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="nx">cap</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">cache</span><span class="p">[</span><span class="nx">s</span><span class="p">]</span> <span class="p">=</span> <span class="nf">dfs</span><span class="p">(</span><span class="nx">i</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="nx">cap</span><span class="p">)</span> <span class="o">+</span> <span class="nf">dfs</span><span class="p">(</span><span class="nx">i</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="nx">cap</span><span class="o">-</span><span class="nx">nums</span><span class="p">[</span><span class="nx">i</span><span class="p">])</span>
+</span></span><span class="line"><span class="cl">		<span class="k">return</span> <span class="nx">cache</span><span class="p">[</span><span class="nx">s</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="k">return</span> <span class="nf">dfs</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="nx">nums</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="nx">target</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 对应dp</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">dp</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">([]</span><span class="kt">int</span><span class="p">,</span> <span class="nx">target</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">dp</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">dp</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="p">=</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">v</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">nums</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="nx">target</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&gt;=</span> <span class="nx">v</span><span class="p">;</span> <span class="nx">i</span><span class="o">--</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">dp</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">+=</span> <span class="nx">dp</span><span class="p">[</span><span class="nx">i</span><span class="o">-</span><span class="nx">v</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="k">return</span> <span class="nx">dp</span><span class="p">[</span><span class="nx">target</span><span class="p">]</span>
+</span></span></code></pre></div><h2 id="最少">最少<a hidden class="anchor" aria-hidden="true" href="#最少">#</a></h2>
+<blockquote>
+<p>需要判断cap &lt;= 0的情况下才返回1; 不需要进行<code>cap &lt; nums[i]</code>判断因为是最少需要的结果是&gt;=target的</p></blockquote>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">findTargetSumWays1</span><span class="p">(</span><span class="nx">nums</span> <span class="p">[]</span><span class="kt">int</span><span class="p">,</span> <span class="nx">target</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">int</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="kd">var</span> <span class="nx">dfs</span> <span class="kd">func</span><span class="p">(</span><span class="nx">i</span><span class="p">,</span> <span class="nx">cap</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">int</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">cache</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="kt">int</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">dfs</span> <span class="p">=</span> <span class="kd">func</span><span class="p">(</span><span class="nx">i</span><span class="p">,</span> <span class="nx">cap</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">int</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="k">if</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="mi">0</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="k">if</span> <span class="nx">cap</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">				<span class="k">return</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="cl">			<span class="p">}</span>
+</span></span><span class="line"><span class="cl">			<span class="k">return</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">s</span> <span class="o">:=</span> <span class="nx">fmt</span><span class="p">.</span><span class="nf">Sprintf</span><span class="p">(</span><span class="s">&#34;%d--%d&#34;</span><span class="p">,</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">cap</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="k">if</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">ok</span> <span class="o">:=</span> <span class="nx">cache</span><span class="p">[</span><span class="nx">s</span><span class="p">];</span> <span class="nx">ok</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="k">return</span> <span class="nx">cache</span><span class="p">[</span><span class="nx">s</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">cache</span><span class="p">[</span><span class="nx">s</span><span class="p">]</span> <span class="p">=</span> <span class="nf">dfs</span><span class="p">(</span><span class="nx">i</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="nx">cap</span><span class="p">)</span> <span class="o">+</span> <span class="nf">dfs</span><span class="p">(</span><span class="nx">i</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="nx">cap</span><span class="o">-</span><span class="nx">nums</span><span class="p">[</span><span class="nx">i</span><span class="p">])</span>
+</span></span><span class="line"><span class="cl">		<span class="k">return</span> <span class="nx">cache</span><span class="p">[</span><span class="nx">s</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="k">return</span> <span class="nf">dfs</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="nx">nums</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="nx">target</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 对应dp</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">dp</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">([]</span><span class="kt">int</span><span class="p">,</span> <span class="nx">target</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">dp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="p">=</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="cl">	<span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">v</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">nums</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="nx">target</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span><span class="o">--</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">dp</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">+=</span> <span class="nx">dp</span><span class="p">[</span><span class="nb">max</span><span class="p">(</span><span class="nx">i</span><span class="o">-</span><span class="nx">v</span><span class="p">,</span> <span class="mi">0</span><span class="p">)]</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="k">return</span> <span class="nx">dp</span><span class="p">[</span><span class="nx">target</span><span class="p">]</span>
+</span></span></code></pre></div>
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="http://localhost:1313/tags/%E8%83%8C%E5%8C%85/">背包</a></li>
+      <li><a href="http://localhost:1313/tags/01%E8%83%8C%E5%8C%85/">01背包</a></li>
+      <li><a href="http://localhost:1313/tags/%E5%AE%8C%E5%85%A8%E8%83%8C%E5%8C%85/">完全背包</a></li>
+      <li><a href="http://localhost:1313/tags/%E7%AE%97%E6%B3%95/">算法</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="http://localhost:1313/posts/databases/pgsql_demo/">
+    <span class="title">« </span>
+    <br>
+    <span>pg常用操作</span>
+  </a>
+  <a class="next" href="http://localhost:1313/posts/other/%E4%BD%8D%E8%BF%90%E7%AE%97/">
+    <span class="title"> »</span>
+    <br>
+    <span>位运算</span>
+  </a>
+</nav>
+
+
+<ul class="share-buttons">
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share 背包 on x"
+            href="https://x.com/intent/tweet/?text=%e8%83%8c%e5%8c%85&amp;url=http%3a%2f%2flocalhost%3a1313%2fposts%2fother%2f%25E8%2583%258C%25E5%258C%2585%2f&amp;hashtags=%e8%83%8c%e5%8c%85%2c01%e8%83%8c%e5%8c%85%2c%e5%ae%8c%e5%85%a8%e8%83%8c%e5%8c%85%2c%e7%ae%97%e6%b3%95">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M512 62.554 L 512 449.446 C 512 483.97 483.97 512 449.446 512 L 62.554 512 C 28.03 512 0 483.97 0 449.446 L 0 62.554 C 0 28.03 28.029 0 62.554 0 L 449.446 0 C 483.971 0 512 28.03 512 62.554 Z M 269.951 190.75 L 182.567 75.216 L 56 75.216 L 207.216 272.95 L 63.9 436.783 L 125.266 436.783 L 235.9 310.383 L 332.567 436.783 L 456 436.783 L 298.367 228.367 L 432.367 75.216 L 371.033 75.216 Z M 127.633 110 L 164.101 110 L 383.481 400.065 L 349.5 400.065 Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share 背包 on linkedin"
+            href="https://www.linkedin.com/shareArticle?mini=true&amp;url=http%3a%2f%2flocalhost%3a1313%2fposts%2fother%2f%25E8%2583%258C%25E5%258C%2585%2f&amp;title=%e8%83%8c%e5%8c%85&amp;summary=%e8%83%8c%e5%8c%85&amp;source=http%3a%2f%2flocalhost%3a1313%2fposts%2fother%2f%25E8%2583%258C%25E5%258C%2585%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-288.985,423.278l0,-225.717l-75.04,0l0,225.717l75.04,0Zm270.539,0l0,-129.439c0,-69.333 -37.018,-101.586 -86.381,-101.586c-39.804,0 -57.634,21.891 -67.617,37.266l0,-31.958l-75.021,0c0.995,21.181 0,225.717 0,225.717l75.02,0l0,-126.056c0,-6.748 0.486,-13.492 2.474,-18.315c5.414,-13.475 17.767,-27.434 38.494,-27.434c27.135,0 38.007,20.707 38.007,51.037l0,120.768l75.024,0Zm-307.552,-334.556c-25.674,0 -42.448,16.879 -42.448,39.002c0,21.658 16.264,39.002 41.455,39.002l0.484,0c26.165,0 42.452,-17.344 42.452,-39.002c-0.485,-22.092 -16.241,-38.954 -41.943,-39.002Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share 背包 on reddit"
+            href="https://reddit.com/submit?url=http%3a%2f%2flocalhost%3a1313%2fposts%2fother%2f%25E8%2583%258C%25E5%258C%2585%2f&title=%e8%83%8c%e5%8c%85">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-3.446,265.638c0,-22.964 -18.616,-41.58 -41.58,-41.58c-11.211,0 -21.361,4.457 -28.841,11.666c-28.424,-20.508 -67.586,-33.757 -111.204,-35.278l18.941,-89.121l61.884,13.157c0.756,15.734 13.642,28.29 29.56,28.29c16.407,0 29.706,-13.299 29.706,-29.701c0,-16.403 -13.299,-29.702 -29.706,-29.702c-11.666,0 -21.657,6.792 -26.515,16.578l-69.105,-14.69c-1.922,-0.418 -3.939,-0.042 -5.585,1.036c-1.658,1.073 -2.811,2.761 -3.224,4.686l-21.152,99.438c-44.258,1.228 -84.046,14.494 -112.837,35.232c-7.468,-7.164 -17.589,-11.591 -28.757,-11.591c-22.965,0 -41.585,18.616 -41.585,41.58c0,16.896 10.095,31.41 24.568,37.918c-0.639,4.135 -0.99,8.328 -0.99,12.576c0,63.977 74.469,115.836 166.33,115.836c91.861,0 166.334,-51.859 166.334,-115.836c0,-4.218 -0.347,-8.387 -0.977,-12.493c14.564,-6.47 24.735,-21.034 24.735,-38.001Zm-119.474,108.193c-20.27,20.241 -59.115,21.816 -70.534,21.816c-11.428,0 -50.277,-1.575 -70.522,-21.82c-3.007,-3.008 -3.007,-7.882 0,-10.889c3.003,-2.999 7.882,-3.003 10.885,0c12.777,12.781 40.11,17.317 59.637,17.317c19.522,0 46.86,-4.536 59.657,-17.321c3.016,-2.999 7.886,-2.995 10.885,0.008c3.008,3.011 3.003,7.882 -0.008,10.889Zm-5.23,-48.781c-16.373,0 -29.701,-13.324 -29.701,-29.698c0,-16.381 13.328,-29.714 29.701,-29.714c16.378,0 29.706,13.333 29.706,29.714c0,16.374 -13.328,29.698 -29.706,29.698Zm-160.386,-29.702c0,-16.381 13.328,-29.71 29.714,-29.71c16.369,0 29.689,13.329 29.689,29.71c0,16.373 -13.32,29.693 -29.689,29.693c-16.386,0 -29.714,-13.32 -29.714,-29.693Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share 背包 on facebook"
+            href="https://facebook.com/sharer/sharer.php?u=http%3a%2f%2flocalhost%3a1313%2fposts%2fother%2f%25E8%2583%258C%25E5%258C%2585%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-106.468,0l0,-192.915l66.6,0l12.672,-82.621l-79.272,0l0,-53.617c0,-22.603 11.073,-44.636 46.58,-44.636l36.042,0l0,-70.34c0,0 -32.71,-5.582 -63.982,-5.582c-65.288,0 -107.96,39.569 -107.96,111.204l0,62.971l-72.573,0l0,82.621l72.573,0l0,192.915l-191.104,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share 背包 on whatsapp"
+            href="https://api.whatsapp.com/send?text=%e8%83%8c%e5%8c%85%20-%20http%3a%2f%2flocalhost%3a1313%2fposts%2fother%2f%25E8%2583%258C%25E5%258C%2585%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-58.673,127.703c-33.842,-33.881 -78.847,-52.548 -126.798,-52.568c-98.799,0 -179.21,80.405 -179.249,179.234c-0.013,31.593 8.241,62.428 23.927,89.612l-25.429,92.884l95.021,-24.925c26.181,14.28 55.659,21.807 85.658,21.816l0.074,0c98.789,0 179.206,-80.413 179.247,-179.243c0.018,-47.895 -18.61,-92.93 -52.451,-126.81Zm-126.797,275.782l-0.06,0c-26.734,-0.01 -52.954,-7.193 -75.828,-20.767l-5.441,-3.229l-56.386,14.792l15.05,-54.977l-3.542,-5.637c-14.913,-23.72 -22.791,-51.136 -22.779,-79.287c0.033,-82.142 66.867,-148.971 149.046,-148.971c39.793,0.014 77.199,15.531 105.329,43.692c28.128,28.16 43.609,65.592 43.594,105.4c-0.034,82.149 -66.866,148.983 -148.983,148.984Zm81.721,-111.581c-4.479,-2.242 -26.499,-13.075 -30.604,-14.571c-4.105,-1.495 -7.091,-2.241 -10.077,2.241c-2.986,4.483 -11.569,14.572 -14.182,17.562c-2.612,2.988 -5.225,3.364 -9.703,1.12c-4.479,-2.241 -18.91,-6.97 -36.017,-22.23c-13.314,-11.876 -22.304,-26.542 -24.916,-31.026c-2.612,-4.484 -0.279,-6.908 1.963,-9.14c2.016,-2.007 4.48,-5.232 6.719,-7.847c2.24,-2.615 2.986,-4.484 4.479,-7.472c1.493,-2.99 0.747,-5.604 -0.374,-7.846c-1.119,-2.241 -10.077,-24.288 -13.809,-33.256c-3.635,-8.733 -7.327,-7.55 -10.077,-7.688c-2.609,-0.13 -5.598,-0.158 -8.583,-0.158c-2.986,0 -7.839,1.121 -11.944,5.604c-4.105,4.484 -15.675,15.32 -15.675,37.364c0,22.046 16.048,43.342 18.287,46.332c2.24,2.99 31.582,48.227 76.511,67.627c10.685,4.615 19.028,7.371 25.533,9.434c10.728,3.41 20.492,2.929 28.209,1.775c8.605,-1.285 26.499,-10.833 30.231,-21.295c3.732,-10.464 3.732,-19.431 2.612,-21.298c-1.119,-1.869 -4.105,-2.99 -8.583,-5.232Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share 背包 on telegram"
+            href="https://telegram.me/share/url?text=%e8%83%8c%e5%8c%85&amp;url=http%3a%2f%2flocalhost%3a1313%2fposts%2fother%2f%25E8%2583%258C%25E5%258C%2585%2f">
+            <svg version="1.1" xml:space="preserve" viewBox="2 2 28 28" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M26.49,29.86H5.5a3.37,3.37,0,0,1-2.47-1,3.35,3.35,0,0,1-1-2.47V5.48A3.36,3.36,0,0,1,3,3,3.37,3.37,0,0,1,5.5,2h21A3.38,3.38,0,0,1,29,3a3.36,3.36,0,0,1,1,2.46V26.37a3.35,3.35,0,0,1-1,2.47A3.38,3.38,0,0,1,26.49,29.86Zm-5.38-6.71a.79.79,0,0,0,.85-.66L24.73,9.24a.55.55,0,0,0-.18-.46.62.62,0,0,0-.41-.17q-.08,0-16.53,6.11a.59.59,0,0,0-.41.59.57.57,0,0,0,.43.52l4,1.24,1.61,4.83a.62.62,0,0,0,.63.43.56.56,0,0,0,.4-.17L16.54,20l4.09,3A.9.9,0,0,0,21.11,23.15ZM13.8,20.71l-1.21-4q8.72-5.55,8.78-5.55c.15,0,.23,0,.23.16a.18.18,0,0,1,0,.06s-2.51,2.3-7.52,6.8Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share 背包 on ycombinator"
+            href="https://news.ycombinator.com/submitlink?t=%e8%83%8c%e5%8c%85&u=http%3a%2f%2flocalhost%3a1313%2fposts%2fother%2f%25E8%2583%258C%25E5%258C%2585%2f">
+            <svg version="1.1" xml:space="preserve" width="30px" height="30px" viewBox="0 0 512 512" fill="currentColor"
+                xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape">
+                <path
+                    d="M449.446 0C483.971 0 512 28.03 512 62.554L512 449.446C512 483.97 483.97 512 449.446 512L62.554 512C28.03 512 0 483.97 0 449.446L0 62.554C0 28.03 28.029 0 62.554 0L449.446 0ZM183.8767 87.9921H121.8427L230.6673 292.4508V424.0079H281.3328V292.4508L390.1575 87.9921H328.1233L256 238.2489z" />
+            </svg>
+        </a>
+    </li>
+</ul>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2025 <a href="http://localhost:1313/">loveyu233</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Gitlab on loveyu233</title>
+    <link>http://localhost:1313/tags/gitlab/</link>
+    <description>Recent content in Gitlab on loveyu233</description>
+    <image>
+      <title>loveyu233</title>
+      <url>http://localhost:1313/images/cover.png</url>
+      <link>http://localhost:1313/images/cover.png</link>
+    </image>
+    <generator>Hugo -- 0.147.7</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Wed, 20 Mar 2024 19:38:37 +0800</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/gitlab/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>go项目上传调用</title>
+      <link>http://localhost:1313/posts/go/go%E9%A1%B9%E7%9B%AE%E4%B8%8A%E4%BC%A0%E8%B0%83%E7%94%A8/</link>
+      <pubDate>Wed, 20 Mar 2024 19:38:37 +0800</pubDate>
+      <guid>http://localhost:1313/posts/go/go%E9%A1%B9%E7%9B%AE%E4%B8%8A%E4%BC%A0%E8%B0%83%E7%94%A8/</guid>
+      <description>&lt;h2 id=&#34;gitlabgithub创建仓库&#34;&gt;gitlab/github创建仓库&lt;/h2&gt;
+&lt;h2 id=&#34;创建目录&#34;&gt;创建目录&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;创建的目录名称要和gitlab/github创建的仓库名称一致&lt;/p&gt;&lt;/blockquote&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;mkdir 仓库名称
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;初始化项目&#34;&gt;初始化项目&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;h3 id=&#34;如果是gitlab默认用户名有大小写无论大小写统一全部按照小写-zhangsan--zhangsan&#34;&gt;如果是gitlab默认用户名有大小写,无论大小写统一全部按照小写 ZhangSan &amp;ndash;&amp;gt; zhangsan&lt;/h3&gt;
+&lt;h3 id=&#34;初始化的项目名必须格式正确不能只写一个项目名称必须添加上远程仓库地址和用户名群组名&#34;&gt;&lt;code&gt;初始化的项目名必须格式正确&lt;/code&gt;，不能只写一个项目名称，必须添加上远程仓库地址和用户名/群组名&lt;/h3&gt;&lt;/blockquote&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;go mod init gitlab地址或github.com/用户名或群组名/仓库名
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# 例如&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;go mod init 123.123.123.123/zhangsan/common-go
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;go mod init github.com/zhangsan/common-go
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;创建go文件&#34;&gt;创建go文件&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;h3 id=&#34;对外的函数记得大写&#34;&gt;对外的函数记得&lt;code&gt;大写&lt;/code&gt;&lt;/h3&gt;&lt;/blockquote&gt;
+&lt;h2 id=&#34;上传&#34;&gt;上传&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;h3 id=&#34;标签必须是v开头且是三组例如v100-v123-v222&#34;&gt;标签必须是&lt;code&gt;v开头且是三组,例如v1.0.0 v1.2.3 v2.2.2&lt;/code&gt;&lt;/h3&gt;
+&lt;/li&gt;
+&lt;/ol&gt;&lt;/blockquote&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;git init --initial-branch&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;main
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;git remote add origin ssh://git@123.123.123/zhangsan/common-go.git
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;git add .
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;git common -m &lt;span class=&#34;s2&#34;&gt;&amp;#34;init&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;git push -u origin main
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;git tag v1.0.0
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;git push --tags
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;调用&#34;&gt;调用&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;h3 id=&#34;第一次调用某个函数尽量用gitlab或github地址用户名或群组名仓库名要调用的包名--例如-123123123zhangsancommon-goredis&#34;&gt;第一次调用某个函数尽量用:&lt;code&gt;gitlab或github地址/用户名或群组名/仓库名/要调用的包名&lt;/code&gt;  例如: &lt;code&gt;123.123.123/zhangsan/common-go/redis&lt;/code&gt;&lt;/h3&gt;
+&lt;h3 id=&#34;如果在goland的项目中直接import-123123123zhangsancommon-go-然后鼠标悬浮上边点击同步依赖会报错-but-does-not-contain-package&#34;&gt;如果在goland的项目中直接&lt;code&gt;import &amp;quot;123.123.123/zhangsan/common-go&amp;quot;&lt;/code&gt; 然后鼠标悬浮上边点击同步依赖会&lt;code&gt;报错 but does not contain package&lt;/code&gt;&lt;/h3&gt;
+&lt;h3 id=&#34;需要import-123123123zhangsancommon-goredis-然后再鼠标点击同步依赖就没问题了&#34;&gt;需要&lt;code&gt;import &amp;quot;123.123.123/zhangsan/common-go/redis&amp;quot;&lt;/code&gt; 然后再鼠标点击同步依赖就没问题了&lt;/h3&gt;&lt;/blockquote&gt;
+&lt;h2 id=&#34;仓库更新&#34;&gt;仓库更新&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;h3 id=&#34;正常更新代码然后提交远程仓库然后打tag注意格式&#34;&gt;正常更新代码，然后提交远程仓库，然后打tag（注意格式）&lt;/h3&gt;
+&lt;h3 id=&#34;如果调用方想要使用最新的则使用go-get-123123123zhangsancommon-golatest即可&#34;&gt;如果调用方想要使用最新的则使用&lt;code&gt;go get 123.123.123/zhangsan/common-go@latest&lt;/code&gt;即可&lt;/h3&gt;&lt;/blockquote&gt;</description>
+    </item>
+    <item>
+      <title>gitlab-ci使用</title>
+      <link>http://localhost:1313/posts/other/gitlab-ci%E4%BD%BF%E7%94%A8/</link>
+      <pubDate>Tue, 15 Aug 2023 11:18:37 +0800</pubDate>
+      <guid>http://localhost:1313/posts/other/gitlab-ci%E4%BD%BF%E7%94%A8/</guid>
+      <description>&lt;h1 id=&#34;gitlab预定义变量&#34;&gt;GItlab预定义变量&lt;/h1&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-yml&#34; data-lang=&#34;yml&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nt&#34;&gt;before_script&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;- &lt;span class=&#34;l&#34;&gt;export SYSTEM_VERSION=$CI_COMMIT_REF_NAME&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;- &lt;span class=&#34;l&#34;&gt;export CI_PIPELINE_ID=$CI_PIPELINE_ID&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;- &lt;span class=&#34;l&#34;&gt;export CI_COMMIT_SHA=$CI_COMMIT_SHA&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;- &lt;span class=&#34;l&#34;&gt;export CI_PROJECT_ID=$CI_PROJECT_ID&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;- &lt;span class=&#34;l&#34;&gt;export CI_PROJECT_NAME=$CI_PROJECT_NAME&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;- &lt;span class=&#34;l&#34;&gt;export CI_JOB_ID=$CI_JOB_ID&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;- &lt;span class=&#34;l&#34;&gt;export CI_RUNNER_DESCRIPTION=$CI_RUNNER_DESCRIPTION&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;- &lt;span class=&#34;l&#34;&gt;export CI_RUNNER_TAGS=$CI_RUNNER_TAGS&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;- &lt;span class=&#34;l&#34;&gt;export CI_COMMIT_MESSAGE=$CI_COMMIT_MESSAGE&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;- &lt;span class=&#34;l&#34;&gt;export CI_PIPELINE_SOURCE=$CI_PIPELINE_SOURCE&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;stages&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;- &lt;span class=&#34;l&#34;&gt;build&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;job&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;stage&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;l&#34;&gt;build&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;script&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;- &lt;span class=&#34;l&#34;&gt;echo &amp;#34;当前提交的分支或标签名称 $SYSTEM_VERSION&amp;#34;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;- &lt;span class=&#34;l&#34;&gt;echo &amp;#34;当前流水线的唯一ID $CI_PIPELINE_ID&amp;#34;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;- &lt;span class=&#34;l&#34;&gt;echo &amp;#34;当前提交的 SHA 标识 $CI_COMMIT_SHA&amp;#34;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;- &lt;span class=&#34;l&#34;&gt;echo &amp;#34;当前项目的唯一 ID $CI_PROJECT_ID&amp;#34;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;- &lt;span class=&#34;l&#34;&gt;echo &amp;#34;当前项目的名称 $CI_PROJECT_NAME&amp;#34;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;- &lt;span class=&#34;l&#34;&gt;echo &amp;#34;当前作业的唯一 ID $CI_JOB_ID&amp;#34;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;- &lt;span class=&#34;l&#34;&gt;echo &amp;#34;运行作业的 GitLab Runner 的描述 $CI_RUNNER_DESCRIPTION&amp;#34;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;- &lt;span class=&#34;l&#34;&gt;echo &amp;#34;运行作业的 GitLab Runner 的标签 $CI_RUNNER_TAGS&amp;#34;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;- &lt;span class=&#34;l&#34;&gt;echo &amp;#34;当前提交的提交信息 $CI_COMMIT_MESSAGE&amp;#34;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;- &lt;span class=&#34;l&#34;&gt;echo &amp;#34;触发流水线的来源 $CI_PIPELINE_SOURCE&amp;#34;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h1 id=&#34;执行k8s命令&#34;&gt;执行k8s命令&lt;/h1&gt;
+&lt;blockquote&gt;
+&lt;p&gt;项目&lt;code&gt;设置&lt;/code&gt;&amp;gt;&lt;code&gt;变量&lt;/code&gt;&amp;gt;&lt;code&gt;添加变量&lt;/code&gt; key为&lt;code&gt;KUBECONFIG&lt;/code&gt;value为&lt;code&gt;k8s配置文件,minikube的在~/.minikube/&lt;/code&gt;&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>gitlab-ci配置</title>
+      <link>http://localhost:1313/posts/other/gitlab-ci%E9%85%8D%E7%BD%AE/</link>
+      <pubDate>Mon, 14 Aug 2023 11:18:37 +0800</pubDate>
+      <guid>http://localhost:1313/posts/other/gitlab-ci%E9%85%8D%E7%BD%AE/</guid>
+      <description>&lt;h1 id=&#34;dockerfile报错&#34;&gt;Dockerfile报错&lt;/h1&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-yml&#34; data-lang=&#34;yml&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;l&#34;&gt;FROM golang:1.20.6-alpine3.18 AS build&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;l&#34;&gt;WORKDIR /app&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;l&#34;&gt;COPY . .&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;l&#34;&gt;ENV GOPROXY=https://goproxy.cn&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;l&#34;&gt;RUN go mod tidy &amp;amp;&amp;amp; go build main.go&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;l&#34;&gt;FROM alpine:3.18&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;l&#34;&gt;WORKDIR /app&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;l&#34;&gt;COPY --from=build /app/main .&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;l&#34;&gt;EXPOSE 9999&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;l&#34;&gt;CMD [&amp;#34;./main&amp;#34;]&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;blockquote&gt;
+&lt;p&gt;当使用多阶段构建时且每个阶段的alpine版本不同会产生错误:&lt;code&gt;&amp;quot;xxx no such file or directory&amp;quot;&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;这里的&lt;code&gt;&amp;quot;no such file or directory&amp;quot;&lt;/code&gt; 是指&lt;code&gt;/lib64/ld-linux-x86-64.so.2&lt;/code&gt;找不到而不是&lt;code&gt;main&lt;/code&gt;文件找不到&lt;/p&gt;
+&lt;p&gt;原因是go的&lt;code&gt;net&lt;/code&gt;包关于域名解析有两种选项:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;使用纯Go解析器直接发送DNS请求给/etc/resolv.conf文件中的服务器&lt;/li&gt;
+&lt;li&gt;使用基于CGo的解析器调用C库程序，例如getaddrinfo和getnameinfo&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;默认使用纯Go解析器，因为对于调用一个阻塞的DNS请求，Go仅需要消耗一个goroutine，而C程序需要消耗一个操作系统线程。但当CGo可用时（CGO_ENABLE=1），则会使用基于CGo的解析器，除非有如下情况：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;系统不允许程序直接发起DNS请求（OS X）&lt;/li&gt;
+&lt;li&gt;LOCALDOMAIN 环境变量存在，即使值为空&lt;/li&gt;
+&lt;li&gt;RES_OPTIONS 或者 HOSTALIASES 环境变量不为空&lt;/li&gt;
+&lt;li&gt;ASR_CONFIG 环境变量不为空（仅OpenBSD）&lt;/li&gt;
+&lt;li&gt;Go解析器没有实现 /etc/resolv.conf 或 /etc/nsswitch.conf 中指定的特性&lt;/li&gt;
+&lt;li&gt;名称以 .local 结尾，或是一个 mDNS 名称&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;但有些镜像默认是用cgo所以会导致找不到文件&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

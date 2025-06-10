@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Binding on loveyu233</title>
+    <link>http://localhost:1313/tags/binding/</link>
+    <description>Recent content in Binding on loveyu233</description>
+    <image>
+      <title>loveyu233</title>
+      <url>http://localhost:1313/images/cover.png</url>
+      <link>http://localhost:1313/images/cover.png</link>
+    </image>
+    <generator>Hugo -- 0.147.7</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Tue, 03 Jun 2025 15:30:30 +0800</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/binding/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Gin框架binding标签完整指南</title>
+      <link>http://localhost:1313/posts/go/gin-binding-tags/</link>
+      <pubDate>Tue, 03 Jun 2025 15:30:30 +0800</pubDate>
+      <guid>http://localhost:1313/posts/go/gin-binding-tags/</guid>
+      <description>&lt;h1 id=&#34;gin框架binding标签完整指南&#34;&gt;Gin框架binding标签完整指南&lt;/h1&gt;
+&lt;h2 id=&#34;基础绑定标签&#34;&gt;基础绑定标签&lt;/h2&gt;
+&lt;p&gt;Gin框架支持多种请求参数绑定方式，可以通过以下标签指定：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;kd&#34;&gt;type&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;LoginForm&lt;/span&gt; &lt;span class=&#34;kd&#34;&gt;struct&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;nx&#34;&gt;User&lt;/span&gt;     &lt;span class=&#34;kt&#34;&gt;string&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;`form:&amp;#34;user&amp;#34; json:&amp;#34;user&amp;#34; binding:&amp;#34;required&amp;#34;`&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;nx&#34;&gt;Password&lt;/span&gt; &lt;span class=&#34;kt&#34;&gt;string&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;`form:&amp;#34;password&amp;#34; json:&amp;#34;password&amp;#34; binding:&amp;#34;required&amp;#34;`&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;主要的绑定标签有：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;binding:&amp;quot;required&amp;quot;&lt;/code&gt; - 字段为必填项&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;binding:&amp;quot;-&amp;quot;&lt;/code&gt; - 忽略该字段的绑定和验证&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;binding:&amp;quot;omitempty&amp;quot;&lt;/code&gt; - 如果字段为空，则跳过后续验证规则&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;绑定来源&#34;&gt;绑定来源&lt;/h2&gt;
+&lt;p&gt;Gin框架支持从不同位置绑定数据：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;form&lt;/code&gt; - 表单参数（multipart/form-data或application/x-www-form-urlencoded）&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;json&lt;/code&gt; - JSON格式请求体（application/json）&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;xml&lt;/code&gt; - XML格式请求体（application/xml）&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;yaml&lt;/code&gt; - YAML格式请求体&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;query&lt;/code&gt; - URL查询参数&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;uri&lt;/code&gt; - URL路径参数&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;header&lt;/code&gt; - HTTP请求头&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;binding&lt;/code&gt; - 通用绑定标签，指定验证规则&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;完整验证规则列表&#34;&gt;完整验证规则列表&lt;/h2&gt;
+&lt;p&gt;以下是binding标签支持的全部验证规则：&lt;/p&gt;
+&lt;h3 id=&#34;通用验证规则&#34;&gt;通用验证规则&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;// 字符串验证&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;`binding:&amp;#34;required&amp;#34;`&lt;/span&gt;              &lt;span class=&#34;c1&#34;&gt;// 必填字段&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;`binding:&amp;#34;omitempty&amp;#34;`&lt;/span&gt;             &lt;span class=&#34;c1&#34;&gt;// 如果为空则跳过后续验证&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;`binding:&amp;#34;len=10&amp;#34;`&lt;/span&gt;                &lt;span class=&#34;c1&#34;&gt;// 长度必须为10&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;`binding:&amp;#34;min=1&amp;#34;`&lt;/span&gt;                 &lt;span class=&#34;c1&#34;&gt;// 最小长度为1&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;`binding:&amp;#34;max=10&amp;#34;`&lt;/span&gt;                &lt;span class=&#34;c1&#34;&gt;// 最大长度为10&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;`binding:&amp;#34;eq=10&amp;#34;`&lt;/span&gt;                 &lt;span class=&#34;c1&#34;&gt;// 长度等于10&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;`binding:&amp;#34;ne=10&amp;#34;`&lt;/span&gt;                 &lt;span class=&#34;c1&#34;&gt;// 长度不等于10&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;`binding:&amp;#34;gt=10&amp;#34;`&lt;/span&gt;                 &lt;span class=&#34;c1&#34;&gt;// 长度大于10&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;`binding:&amp;#34;gte=10&amp;#34;`&lt;/span&gt;                &lt;span class=&#34;c1&#34;&gt;// 长度大于等于10&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;`binding:&amp;#34;lt=10&amp;#34;`&lt;/span&gt;                 &lt;span class=&#34;c1&#34;&gt;// 长度小于10&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;`binding:&amp;#34;lte=10&amp;#34;`&lt;/span&gt;                &lt;span class=&#34;c1&#34;&gt;// 长度小于等于10&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;// 数值范围验证&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;`binding:&amp;#34;eq=10&amp;#34;`&lt;/span&gt;                 &lt;span class=&#34;c1&#34;&gt;// 等于10&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;`binding:&amp;#34;ne=10&amp;#34;`&lt;/span&gt;                 &lt;span class=&#34;c1&#34;&gt;// 不等于10&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;`binding:&amp;#34;gt=10&amp;#34;`&lt;/span&gt;                 &lt;span class=&#34;c1&#34;&gt;// 大于10&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;`binding:&amp;#34;gte=10&amp;#34;`&lt;/span&gt;                &lt;span class=&#34;c1&#34;&gt;// 大于等于10&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;`binding:&amp;#34;lt=10&amp;#34;`&lt;/span&gt;                 &lt;span class=&#34;c1&#34;&gt;// 小于10&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;`binding:&amp;#34;lte=10&amp;#34;`&lt;/span&gt;                &lt;span class=&#34;c1&#34;&gt;// 小于等于10&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;`binding:&amp;#34;oneof=5 10 15&amp;#34;`&lt;/span&gt;         &lt;span class=&#34;c1&#34;&gt;// 只能是5、10或15中的一个&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;// 字符串格式验证&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;`binding:&amp;#34;contains=abc&amp;#34;`&lt;/span&gt;          &lt;span class=&#34;c1&#34;&gt;// 包含子字符串abc&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;`binding:&amp;#34;containsany=abc&amp;#34;`&lt;/span&gt;       &lt;span class=&#34;c1&#34;&gt;// 包含abc中的任意字符&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;`binding:&amp;#34;containsrune=☺&amp;#34;`&lt;/span&gt;        &lt;span class=&#34;c1&#34;&gt;// 包含特定的rune字符&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;`binding:&amp;#34;excludes=abc&amp;#34;`&lt;/span&gt;          &lt;span class=&#34;c1&#34;&gt;// 不包含子字符串abc&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;`binding:&amp;#34;excludesall=abc&amp;#34;`&lt;/span&gt;       &lt;span class=&#34;c1&#34;&gt;// 不包含abc中的任意字符&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;`binding:&amp;#34;excludesrune=☺&amp;#34;`&lt;/span&gt;        &lt;span class=&#34;c1&#34;&gt;// 不包含特定的rune字符&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;`binding:&amp;#34;startswith=abc&amp;#34;`&lt;/span&gt;        &lt;span class=&#34;c1&#34;&gt;// 以abc开头&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;`binding:&amp;#34;endswith=abc&amp;#34;`&lt;/span&gt;          &lt;span class=&#34;c1&#34;&gt;// 以abc结尾&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;// 特殊格式验证&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;`binding:&amp;#34;email&amp;#34;`&lt;/span&gt;                 &lt;span class=&#34;c1&#34;&gt;// 必须是有效的电子邮件地址&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;`binding:&amp;#34;url&amp;#34;`&lt;/span&gt;                   &lt;span class=&#34;c1&#34;&gt;// 必须是有效的URL&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;`binding:&amp;#34;uri&amp;#34;`&lt;/span&gt;                   &lt;span class=&#34;c1&#34;&gt;// 必须是有效的URI&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;`binding:&amp;#34;base64&amp;#34;`&lt;/span&gt;                &lt;span class=&#34;c1&#34;&gt;// 必须是有效的base64字符串&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;`binding:&amp;#34;iso3166_1_alpha2&amp;#34;`&lt;/span&gt;      &lt;span class=&#34;c1&#34;&gt;// 必须是有效的ISO 3166-1 alpha-2国家代码&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;`binding:&amp;#34;iso3166_1_alpha3&amp;#34;`&lt;/span&gt;      &lt;span class=&#34;c1&#34;&gt;// 必须是有效的ISO 3166-1 alpha-3国家代码&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;`binding:&amp;#34;iso3166_1_alpha_numeric&amp;#34;`&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;// 必须是有效的ISO 3166-1数字国家代码&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;`binding:&amp;#34;isbn10&amp;#34;`&lt;/span&gt;                &lt;span class=&#34;c1&#34;&gt;// 必须是有效的ISBN-10&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;`binding:&amp;#34;isbn13&amp;#34;`&lt;/span&gt;                &lt;span class=&#34;c1&#34;&gt;// 必须是有效的ISBN-13&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;`binding:&amp;#34;uuid&amp;#34;`&lt;/span&gt;                  &lt;span class=&#34;c1&#34;&gt;// 必须是有效的UUID&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;`binding:&amp;#34;uuid3&amp;#34;`&lt;/span&gt;                 &lt;span class=&#34;c1&#34;&gt;// 必须是有效的UUID版本3&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;`binding:&amp;#34;uuid4&amp;#34;`&lt;/span&gt;                 &lt;span class=&#34;c1&#34;&gt;// 必须是有效的UUID版本4&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;`binding:&amp;#34;uuid5&amp;#34;`&lt;/span&gt;                 &lt;span class=&#34;c1&#34;&gt;// 必须是有效的UUID版本5&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;`binding:&amp;#34;alpha&amp;#34;`&lt;/span&gt;                 &lt;span class=&#34;c1&#34;&gt;// 只能包含字母&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;`binding:&amp;#34;alphanum&amp;#34;`&lt;/span&gt;              &lt;span class=&#34;c1&#34;&gt;// 只能包含字母和数字&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;`binding:&amp;#34;alphaunicode&amp;#34;`&lt;/span&gt;          &lt;span class=&#34;c1&#34;&gt;// 只能包含unicode字母&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;`binding:&amp;#34;alphanumunicode&amp;#34;`&lt;/span&gt;       &lt;span class=&#34;c1&#34;&gt;// 只能包含unicode字母和数字&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;`binding:&amp;#34;numeric&amp;#34;`&lt;/span&gt;               &lt;span class=&#34;c1&#34;&gt;// 只能包含数字&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;`binding:&amp;#34;number&amp;#34;`&lt;/span&gt;                &lt;span class=&#34;c1&#34;&gt;// 必须是有效的数字&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;`binding:&amp;#34;hexadecimal&amp;#34;`&lt;/span&gt;           &lt;span class=&#34;c1&#34;&gt;// 必须是有效的十六进制&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;`binding:&amp;#34;hexcolor&amp;#34;`&lt;/span&gt;              &lt;span class=&#34;c1&#34;&gt;// 必须是有效的十六进制颜色码&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;`binding:&amp;#34;rgb&amp;#34;`&lt;/span&gt;                   &lt;span class=&#34;c1&#34;&gt;// 必须是有效的RGB颜色&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;`binding:&amp;#34;rgba&amp;#34;`&lt;/span&gt;                  &lt;span class=&#34;c1&#34;&gt;// 必须是有效的RGBA颜色&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;`binding:&amp;#34;hsl&amp;#34;`&lt;/span&gt;                   &lt;span class=&#34;c1&#34;&gt;// 必须是有效的HSL颜色&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;`binding:&amp;#34;hsla&amp;#34;`&lt;/span&gt;                  &lt;span class=&#34;c1&#34;&gt;// 必须是有效的HSLA颜色&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;`binding:&amp;#34;e164&amp;#34;`&lt;/span&gt;                  &lt;span class=&#34;c1&#34;&gt;// 必须是有效的E.164电话号码&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;`binding:&amp;#34;phone&amp;#34;`&lt;/span&gt;                 &lt;span class=&#34;c1&#34;&gt;// 必须是有效的电话号码&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;`binding:&amp;#34;phonenumber&amp;#34;`&lt;/span&gt;           &lt;span class=&#34;c1&#34;&gt;// 必须是有效的电话号码(别名for `phone`)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;`binding:&amp;#34;datetime=2006-01-02&amp;#34;`&lt;/span&gt;   &lt;span class=&#34;c1&#34;&gt;// 必须匹配指定的日期时间格式&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;// 网络相关验证&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;`binding:&amp;#34;ip&amp;#34;`&lt;/span&gt;                    &lt;span class=&#34;c1&#34;&gt;// 必须是有效的IP地址&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;`binding:&amp;#34;ipv4&amp;#34;`&lt;/span&gt;                  &lt;span class=&#34;c1&#34;&gt;// 必须是有效的IPv4地址&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;`binding:&amp;#34;ipv6&amp;#34;`&lt;/span&gt;                  &lt;span class=&#34;c1&#34;&gt;// 必须是有效的IPv6地址&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;`binding:&amp;#34;tcp_addr&amp;#34;`&lt;/span&gt;              &lt;span class=&#34;c1&#34;&gt;// 必须是有效的TCP地址&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;`binding:&amp;#34;tcp4_addr&amp;#34;`&lt;/span&gt;             &lt;span class=&#34;c1&#34;&gt;// 必须是有效的TCPv4地址&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;`binding:&amp;#34;tcp6_addr&amp;#34;`&lt;/span&gt;             &lt;span class=&#34;c1&#34;&gt;// 必须是有效的TCPv6地址&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;`binding:&amp;#34;udp_addr&amp;#34;`&lt;/span&gt;              &lt;span class=&#34;c1&#34;&gt;// 必须是有效的UDP地址&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;`binding:&amp;#34;udp4_addr&amp;#34;`&lt;/span&gt;             &lt;span class=&#34;c1&#34;&gt;// 必须是有效的UDPv4地址&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;`binding:&amp;#34;udp6_addr&amp;#34;`&lt;/span&gt;             &lt;span class=&#34;c1&#34;&gt;// 必须是有效的UDPv6地址&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;`binding:&amp;#34;ip_addr&amp;#34;`&lt;/span&gt;               &lt;span class=&#34;c1&#34;&gt;// 必须是有效的IP地址&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;`binding:&amp;#34;ip4_addr&amp;#34;`&lt;/span&gt;              &lt;span class=&#34;c1&#34;&gt;// 必须是有效的IPv4地址&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;`binding:&amp;#34;ip6_addr&amp;#34;`&lt;/span&gt;              &lt;span class=&#34;c1&#34;&gt;// 必须是有效的IPv6地址&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;`binding:&amp;#34;unix_addr&amp;#34;`&lt;/span&gt;             &lt;span class=&#34;c1&#34;&gt;// 必须是有效的Unix地址&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;`binding:&amp;#34;mac&amp;#34;`&lt;/span&gt;                   &lt;span class=&#34;c1&#34;&gt;// 必须是有效的MAC地址&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;// 文件和路径验证&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;`binding:&amp;#34;file&amp;#34;`&lt;/span&gt;                  &lt;span class=&#34;c1&#34;&gt;// 必须是有效的文件路径&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;`binding:&amp;#34;dirpath&amp;#34;`&lt;/span&gt;               &lt;span class=&#34;c1&#34;&gt;// 必须是有效的目录路径&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;`binding:&amp;#34;filepath&amp;#34;`&lt;/span&gt;              &lt;span class=&#34;c1&#34;&gt;// 必须是有效的文件或目录路径&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;// 切片和数组验证&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;`binding:&amp;#34;dive&amp;#34;`&lt;/span&gt;                  &lt;span class=&#34;c1&#34;&gt;// 验证切片/数组/map的每个元素&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;`binding:&amp;#34;unique&amp;#34;`&lt;/span&gt;                &lt;span class=&#34;c1&#34;&gt;// 切片/数组中的所有元素必须唯一&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s&#34;&gt;`binding:&amp;#34;dive,required&amp;#34;`&lt;/span&gt;         &lt;span class=&#34;c1&#34;&gt;// 切片中的每个元素都是必需的&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;组合验证规则&#34;&gt;组合验证规则&lt;/h3&gt;
+&lt;p&gt;可以通过逗号连接多个验证规则：&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

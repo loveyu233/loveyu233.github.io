@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>databases | loveyu233</title>
+<meta name="keywords" content="">
+<meta name="description" content="databases - loveyu233">
+<meta name="author" content="loveyu233">
+<link rel="canonical" href="http://localhost:1313/posts/databases/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.e13ff79a7b90ac30a7f805291f902c75095888118dcb1fccef74850e837f1253.css" integrity="sha256-4T/3mnuQrDCn&#43;AUpH5AsdQlYiBGNyx/M73SFDoN/ElM=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" type="application/rss+xml" href="http://localhost:1313/posts/databases/index.xml">
+<link rel="alternate" hreflang="zh-cn" href="http://localhost:1313/posts/databases/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:url" content="http://localhost:1313/posts/databases/">
+  <meta property="og:site_name" content="loveyu233">
+  <meta property="og:title" content="databases">
+  <meta property="og:description" content="我的个人博客 - 分享技术与生活">
+  <meta property="og:locale" content="zh-cn">
+  <meta property="og:type" content="website">
+      <meta property="og:image" content="http://localhost:1313/images/cover.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://localhost:1313/images/cover.png">
+<meta name="twitter:title" content="databases">
+<meta name="twitter:description" content="我的个人博客 - 分享技术与生活">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "http://localhost:1313/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "databases",
+      "item": "http://localhost:1313/posts/databases/"
+    }
+  ]
+}
+</script>
+</head>
+
+<body class="list" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="loveyu233 (Alt + H)">loveyu233</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/archives" title="归档">
+                    <span>归档</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/search/" title="搜索">
+                    <span>搜索</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/tags/" title="标签">
+                    <span>标签</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main"> 
+<header class="page-header"><div class="breadcrumbs"><a href="http://localhost:1313/">Home</a>&nbsp;»&nbsp;<a href="http://localhost:1313/posts/">Posts</a></div>
+  <h1>
+    databases
+    <a href="/posts/databases/index.xml" title="RSS" aria-label="RSS">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" height="23">
+        <path d="M4 11a9 9 0 0 1 9 9" />
+        <path d="M4 4a16 16 0 0 1 16 16" />
+        <circle cx="5" cy="19" r="1" />
+      </svg>
+    </a>
+  </h1>
+</header>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">ES接口
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>ES及接口 v1.0.0
+Base URLs:
+测试环境: http://127.0.0.1:9200 索引 PUT 创建索引 PUT /test1
+返回示例
+200 Response
+{ &#34;acknowledged&#34;: true, &#34;shards_acknowledged&#34;: true, &#34;index&#34;: &#34;string&#34; } 返回结果 状态码 状态码含义 说明 数据模型 200 OK 成功 Inline 返回数据结构 状态码 200
+名称 类型 必选 约束 中文名 说明 » acknowledged boolean true none 响应结果 none » shards_acknowledged boolean true none 分片结果 none » index string true none 索引名称 none DELETE 删除索引 DELETE /test1
+返回示例
+200 Response
+{} 返回结果 状态码 状态码含义 说明 数据模型 200 OK 成功 Inline 返回数据结构 GET 查询索引 GET /test
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-08-11 11:18:37 +0800 CST'>August 11, 2023</span>&nbsp;·&nbsp;6 min&nbsp;·&nbsp;loveyu</footer>
+  <a class="entry-link" aria-label="post link to ES接口" href="http://localhost:1313/posts/databases/es%E5%8F%8A%E6%8E%A5%E5%8F%A3/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Gorm
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>一对多 gorm:“column:a;unique”
+unique: 唯一约束
+gorm:“foreignKey:C;references:A”
+foreignKey: 设置外键
+references: 重写引用
+引用的字段必须是唯一约束,不然使用AutoMigrate 创建表会报错, 这里的引用意思是查询Stu时会查询出Demo中C和A相同的数据
+D []Demo 不会创建为表字段,不用设置gorm:&#34;-&#34;
+在查询时必须使用Preload(&#34;外键字段名称,这里为D&#34;) 加载,不然查询出的结果中没有该数据
+如果有多重引用例如Demo中的E则Preload(&#34;D.E&#34;)
+opt.DB.Model(project). Preload(&#34;Lists&#34;). Preload(&#34;Lists.HTTPS&#34;).Preload(&#34;Lists.GRPCS&#34;). Where(&#34;id = ?&#34;, 1).Take(project) type Stu struct { A string `json:&#34;a,omitempty&#34; gorm:&#34;column:a;unique&#34;` B string `json:&#34;b,omitempty&#34; gorm:&#34;column:b&#34;` D []Demo `json:&#34;d,omitempty&#34; gorm:&#34;foreignKey:C;references:A&#34;` } type Demo struct { C string `json:&#34;c,omitempty&#34; gorm:&#34;column:c&#34;` D string `json:&#34;d,omitempty&#34; gorm:&#34;column:d&#34;` } 多态关联 gorm:&#34;polymorphic:Owner;polymorphicValue:master&#34; 使用polymorphicValue更改多态类型的值,这里指定为master则Type字段的值就为master
+type Comment struct { ID uint `json:&#34;id,omitempty&#34; gorm:&#34;column:id;unique&#34;` Body string `json:&#34;body,omitempty&#34; gorm:&#34;column:body&#34;` CommentableID uint `json:&#34;commentable_id,omitempty&#34; gorm:&#34;column:commentable_id&#34;` CommentableType string `json:&#34;commentable_type,omitempty&#34; gorm:&#34;column:commentable_type&#34;` Commentable interface{} `json:&#34;commentable,omitempty&#34; gorm:&#34;-&#34;` } type Post struct { ID uint `json:&#34;id,omitempty&#34; gorm:&#34;column:id;unique&#34;` Title string `json:&#34;title,omitempty&#34; gorm:&#34;column:title&#34;` Comments []*Comment `gorm:&#34;polymorphic:Commentable;&#34; json:&#34;comments,omitempty&#34;` } type Video struct { ID uint `json:&#34;id,omitempty&#34; gorm:&#34;column:id;unique&#34;` Title string `json:&#34;title,omitempty&#34; gorm:&#34;column:title&#34;` Comments []*Comment `gorm:&#34;polymorphic:Commentable;&#34; json:&#34;comments,omitempty&#34;` } ============== 创建数据 ================== opt.DB.AutoMigrate(&amp;Comment{}, &amp;Post{}, &amp;Video{}) post := &amp;Post{ Title: &#34;帖子1&#34;, } c := &amp;Comment{ Body: &#34;评论2&#34;, } post.Comments = append(post.Comments, c) opt.DB.Create(post) ============== 添加数据 ================== post := new(Post) opt.DB.Preload(&#34;Comments&#34;).Where(&#34;id = ?&#34;, 1).Find(post) for i := range post.Comments { t.Log(post.Comments[i]) } post.Comments = append(post.Comments, &amp;Comment{Body: &#34;新的评论&#34;}) opt.DB.Save(post) Save和Create区别 Create:只能用于创建新的数据
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-07-21 11:18:37 +0800 CST'>July 21, 2023</span>&nbsp;·&nbsp;2 min&nbsp;·&nbsp;loveyu</footer>
+  <a class="entry-link" aria-label="post link to Gorm" href="http://localhost:1313/posts/databases/gorm/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">pgsql
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>命令行 -- 登录 psql -U username -d dbname -h hostname -- 查看用户权限 \du -- 查看有哪些库 \l -- 切换库 \c dbname -- 查看当前库有哪些表 \dt 用户管理 登录权限（LOGIN）：允许角色登录到数据库。 超级用户权限（SUPERUSER）：赋予角色超级用户权限，使其可以执行任何操作，包括修改系统表。 创建数据库权限（CREATEDB）：允许角色创建新的数据库。 创建角色权限（CREATEROLE）：允许角色创建新的数据库角色。 创建临时表权限（TEMPORARY）：允许角色创建临时表。 连接限制（CONNECTION LIMIT）：限制角色同时连接到数据库的最大数量。 继承权限（INHERIT）：允许角色继承其他角色的权限。 授权权限（GRANT）：允许角色授权给其他角色权限。 修改其他角色权限（ALTER ANY ROLE）：允许角色修改其他角色的属性。 删除其他角色权限（DROP ANY ROLE）：允许角色删除其他角色。 超时限制（PASSWORD EXPIRY）：设置角色密码的过期时间。 加密方式（ENCRYPTED）：指定角色密码是否加密存储。
+-- 创建用户 create role 用户名 with superuser login password &#39;密码&#39;; -- 删除用户 drop role 用户名; -- 修改用户密码 alter role 用户名 with password &#39;新密码&#39;; REVOKE privilege_name ON object_name FROM username; 如： # 撤销数据库权限 revoke all privileges on database mydata from jinjin; # 撤销表权限 revoke all privileges on all tables in schema public from jinjin; 时区管理 -- 显示当前数据库使用的时区 show time zone ; -- 查看当前时间 select now(); -- 查看可以设置的时区有哪些 select * from pg_timezone_names; -- 设置当前时区为PRC set timezone = &#39;PRC&#39;; -- 设置全部用户的时区 alter role all set timezone = &#39;PRC&#39;; 序列 CREATE SEQUENCE my_sequence START 1 序列从 1 开始 INCREMENT BY 1 每次递增 1 MINVALUE 1 序列的最小值是 1 MAXVALUE 10000 序列的最大值是 10000 CYCLE; 当序列到达最大值后，循环回到最小值 -- 创建了一个名为 user_id_seq 的简单序列，未指定起始值或者增量等属性，默认情况下会从 1 开始，每次增加 1。 create sequence user_id_seq; -- 将 user_id_seq 序列的所有权修改为 pgsql 用户。只有序列的所有者（或超级用户）可以修改序列的属性。 alter sequence user_id_seq owner to pgsql; -- 指定了 user_id_seq 序列由 users.id 列拥有。这通常用于确保序列与特定表的列相关联，以便自动管理默认值。 alter sequence user_id_seq owned by users.id; -- 将 users 表的 id 列设置默认值为 user_id_seq 序列的下一个值。这意味着每次插入新行时，如果不提供 id 列的值，则会自动使用序列生成的下一个值。 alter table users alter column id set default nextval(&#39;user_id_seq&#39;::regclass); -- 向 users 表中插入一行数据，设置 username 列的值为 &#39;a&#39;。由于 id 列已经设置为序列 user_id_seq 的默认值，它会自动为 id 列生成一个递增的唯一值。 select setval(&#39;user_id_seq&#39;,(select max(id) from users)); 错误码 SQLSTATE 23505 SQLSTATE 23505: 发生在尝试向数据库中插入一条记录时，违反了表中的唯一约束。例如，如果尝试插入一个已经在表中存在的唯一键值，就会触发 SQLSTATE 23505 错误。
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2022-11-24 19:38:37 +0800 CST'>November 24, 2022</span>&nbsp;·&nbsp;5 min&nbsp;·&nbsp;loveyu</footer>
+  <a class="entry-link" aria-label="post link to pgsql" href="http://localhost:1313/posts/databases/pgsql/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Redis雪崩击穿和穿透
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>1. 缓存击穿 什么是缓存击穿 缓存击穿也叫热点key问题，就是一个被高并发访问并且缓存重建业务比较复杂的key突然失效，无数的请求访问会在瞬间给数据库带来巨大的冲击。
+常见解决办法 1. 互斥锁 2. 逻辑过期 解决方案对比 解决办法 优点 缺点 互斥锁 1.没有额外内存消耗；2.保证一致性；3.实现简单 1.线程需要等待，性能受影响；2.可能有死锁风险 逻辑过期 线程无需等待，性能较好 1.不保证一致性；2.有额外内存消耗；3.实现复杂 2.缓存雪崩 什么是缓存雪崩 缓存雪崩是指在同一时段大量的缓存key同时失效或者redis服务宕机，导致大量请求直达数据库，带来巨大压力。
+常见解决办法 给不同的key的TTL添加随机值，防止同一时间失效 利用redis集群提高服务的可用性 给缓存业务添加降级限流策略 给业务添加多级缓存 缓存穿透 什么是缓存穿透 缓存穿透是指客户端请求的数据在缓存中和数据库中都不存在，这样缓存永远不会生效，这些请求都会打到数据库。
+常见解决办法 1. 缓存空对象 2. 布隆过滤器 解决方案对比 解决方案 优点 缺点 缓存空对象 实现简单，维护方便 额外内存消耗，可能造成短期数据不一致 布隆过滤器 内存占用少，没有多余key 实现复杂，存在误判 </p>
+  </div>
+  <footer class="entry-footer"><span title='2022-10-13 19:38:37 +0800 CST'>October 13, 2022</span>&nbsp;·&nbsp;1 min&nbsp;·&nbsp;loveyu</footer>
+  <a class="entry-link" aria-label="post link to Redis雪崩击穿和穿透" href="http://localhost:1313/posts/databases/redis%E9%9B%AA%E5%B4%A9%E5%87%BB%E7%A9%BF%E5%92%8C%E7%A9%BF%E9%80%8F/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">mysql日志
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>UndoLog 悔做日志（Undo Log）是数据库事务管理的一个关键组成部分，尤其是在支持事务的存储引擎（如 MySQL 的 InnoDB 存储引擎）中。Undo Log 主要用于记录事务对数据的修改操作的反向操作，以便在事务回滚时撤销这些修改。在 InnoDB 存储引擎中，Undo Log 用于实现事务的原子性（Atomicity）和隔离性（Isolation）。
+功能 事务回滚：当一个事务需要回滚时（例如，事务执行过程中遇到错误或用户手动执行 ROLLBACK 命令），Undo Log 中存储的反向操作会被用来撤销事务对数据的所有更改，从而实现事务的原子性。
+多版本并发控制（MVCC）：InnoDB 存储引擎使用多版本并发控制（MVCC）技术来实现事务的隔离性。在 MVCC 模型中，不同事务对相同数据的修改不会直接覆盖数据，而是在 Undo Log 中生成一个数据的旧版本。这使得在同一时间点，不同事务可以看到数据的不同版本，从而实现事务的隔离性。
+工作流程 当一个事务开始执行时，InnoDB 会为该事务分配一个新的 Undo Log。如果该事务修改了数据，InnoDB 会将修改前的数据存储在 Undo Log 中。
+如果事务正常提交，Undo Log 中的记录会在一段时间后被清理。这个过程通常在下一个检查点（Checkpoint）时发生，因为检查点会确保所有相关的数据更改已经被持久化到磁盘。
+如果事务需要回滚，InnoDB 会使用 Undo Log 中的记录来撤销事务所做的所有更改。这样，数据可以恢复到事务开始前的状态，从而实现事务的原子性。
+在并发事务的情况下，Undo Log 中存储的数据旧版本用于实现多版本并发控制。当一个事务需要读取数据时，InnoDB 会根据该事务的隔离级别和 Undo Log 中的记录来确定应该返回哪个版本的数据。
+BinaryLog binlog 用于记录数据库执行的写入性操作(不包括查询)信息，以二进制的形式保存在磁盘中。由MySQL 的 Server 层实现的，所有引擎都可以使用
+BinLog是逻辑日志，记录的是这个语句的原始逻辑，比如“给 ID=2 这一行的 c 字段加 1 ”。
+binlog 是可以追加写入的。“追加写”是指 binlog 文件写到一定大小后会切换到下一个，并不会覆盖以前的日志。
+使用场景：主从复制和数据恢复
+查看BinLog日志模式: select @@binlog_format
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2022-05-24 19:38:37 +0800 CST'>May 24, 2022</span>&nbsp;·&nbsp;3 min&nbsp;·&nbsp;loveyu</footer>
+  <a class="entry-link" aria-label="post link to mysql日志" href="http://localhost:1313/posts/databases/mysql%E6%97%A5%E5%BF%97/"></a>
+</article>
+<footer class="page-footer">
+  <nav class="pagination">
+    <a class="prev" href="http://localhost:1313/posts/databases/">
+      «&nbsp;&nbsp;1/3
+    </a>
+    <a class="next" href="http://localhost:1313/posts/databases/page/3/">&nbsp;3/3&nbsp;»
+    </a>
+  </nav>
+</footer>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2025 <a href="http://localhost:1313/">loveyu233</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

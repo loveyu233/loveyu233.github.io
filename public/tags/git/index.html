@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Git | loveyu233</title>
+<meta name="keywords" content="">
+<meta name="description" content="我的个人博客 - 分享技术与生活">
+<meta name="author" content="loveyu233">
+<link rel="canonical" href="http://localhost:1313/tags/git/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.e13ff79a7b90ac30a7f805291f902c75095888118dcb1fccef74850e837f1253.css" integrity="sha256-4T/3mnuQrDCn&#43;AUpH5AsdQlYiBGNyx/M73SFDoN/ElM=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" type="application/rss+xml" href="http://localhost:1313/tags/git/index.xml">
+<link rel="alternate" hreflang="zh-cn" href="http://localhost:1313/tags/git/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:url" content="http://localhost:1313/tags/git/">
+  <meta property="og:site_name" content="loveyu233">
+  <meta property="og:title" content="Git">
+  <meta property="og:description" content="我的个人博客 - 分享技术与生活">
+  <meta property="og:locale" content="zh-cn">
+  <meta property="og:type" content="website">
+      <meta property="og:image" content="http://localhost:1313/images/cover.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://localhost:1313/images/cover.png">
+<meta name="twitter:title" content="Git">
+<meta name="twitter:description" content="我的个人博客 - 分享技术与生活">
+
+</head>
+
+<body class="list" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="loveyu233 (Alt + H)">loveyu233</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/archives" title="归档">
+                    <span>归档</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/search/" title="搜索">
+                    <span>搜索</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/tags/" title="标签">
+                    <span>标签</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main"> 
+<header class="page-header"><div class="breadcrumbs"><a href="http://localhost:1313/">Home</a>&nbsp;»&nbsp;<a href="http://localhost:1313/tags/">Tags</a></div>
+  <h1>
+    Git
+    <a href="/tags/git/index.xml" title="RSS" aria-label="RSS">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" height="23">
+        <path d="M4 11a9 9 0 0 1 9 9" />
+        <path d="M4 4a16 16 0 0 1 16 16" />
+        <circle cx="5" cy="19" r="1" />
+      </svg>
+    </a>
+  </h1>
+</header>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">git新姿势
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>原文: https://www.modb.pro/db/642278
+先来一张 git 常用命令速查表。
+相信大家在使用 git 的使用过程中，都会遇到一些小问题阻碍你继续下一步，我先说几个，看看你有没有遇到过：
+正在写功能但要切分支改 bug; 提交信息手快写错了单词或少提交了代码; 不该提交的东西提交了并推送到远程； 多个提交重复了…😖。 如果有，那你可以跟着我一起看一下，看看我是怎么解决这些问题的。
+或者你会说，我只是简简单单、规规矩矩的git add、git commit、git push，一切都很顺利，那么恭喜你，你很棒！虽然没有遇到啥问题，只是简单的add、commit、push，但你不想提高效率增加摸鱼时间吗？🐟如果想，那就请你随我一起看看，我平时一些使用 git 的技巧。如果能从中得到一两点对你有所帮助的，那么花这 10 分钟时间也就算是赚到了；如果没有，那对不起浪费你10分钟时间了，你可以给我来点你的技巧，让我也学习学习。
+从何说起 我也不太好定位我这篇算是 git 使用指南还是说 git 常见问题记录，所以有点难开头，既然这样，那我就以一个正常的 git 使用（拉代码、提交、推代码）为引导线说起。开始之前先说一下 git 别名配置，因为我有很多简写的操作，怕各位小伙伴看不懂。
+配置别名 相信大家都有这种感觉，git 命令这么多怎么会记得住，没错第一次记不住很正常，但如果每天敲一遍，一个月下来就是肌肉记忆了，忘都忘不掉。同时我们也可以为常用的命令设置别名，这样不仅好记，而且便于理解。
+比如我会设置 cherry-pick 为 cp，这样感觉就很形象，copy 一条 git 提交记录。
+别名配置就是一条命令git config --global alias.a b，这里 --global 表示修改对全局生效，如果不加，只对当前仓库起作用，a和b指对应的别名和 git 命令，以下是我的一些别名配置：
+# 配置别名 将commit简写为ci 提交git commit可简写为git ci git config --global alias.ci commit git config --global alias.br branch # 很强大的历史记录 建议试试 git config --global alias.lg &#34;log --color --graph --pretty=format:&#39;%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)&lt;%an&gt;%Creset&#39; --abbrev-commit&#34; 复制代码 这篇文章比较用的多的，像：ci代替commit、br代替branch、co代替checkout等。
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2025-01-07 09:01:12 +0800 CST'>January 7, 2025</span>&nbsp;·&nbsp;5 min&nbsp;·&nbsp;loveyu</footer>
+  <a class="entry-link" aria-label="post link to git新姿势" href="http://localhost:1313/posts/other/gits/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">git项目使用
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>代码合并前 git add xxx 添加到暂存区
+git commit -m ‘xxx’ 添加到本地仓库，必须添加对应的描述信息：[feat, fix, chore, refactory, update]
+feat：表示新增功能（feature）。当你添加新功能或实现一个新的需求时，使用该状态。 fix：表示修复问题（bug fix）。当你修复代码中的错误、缺陷或漏洞时，使用该状态。 chore：表示杂项任务（chore）。当你进行一些琐碎的、非功能性的变更或工作时，比如构建过程的改进、库/依赖项的更新等，使用该状态。 refactor：表示重构代码（refactor）。当你对现有代码进行重构或优化，而不引入新功能或修复问题时，使用该状态。重构旨在改进代码结构、可读性或性能，而不会改变其行为。 update：表示更新内容。当你对现有文档、配置文件、资源文件或其他非代码文件进行更新时，使用该状态。 xxx: add xxxx, add xxx
+git commit -m &#39;feat: add new grpc method: ListUser&#39; git commit -m &#39;fix: #9119 (用户列表没有用户状态)&#39; git commit -m &#39;chore: .gitlab-ci.yml use new builder tag&#39; git commit -m &#39;refactory: grpc method ListUser&#39; git commit -m &#39;update: grpc method ListUser add cache&#39;
+git push origin HEAD:dev-xxx 这个 Git 命令 git push origin HEAD:dev-xxx 表示将当前分支的最新提交推送到名为 dev-xxx 的远程分支。
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-07-11 11:18:37 +0800 CST'>July 11, 2023</span>&nbsp;·&nbsp;7 min&nbsp;·&nbsp;loveyu</footer>
+  <a class="entry-link" aria-label="post link to git项目使用" href="http://localhost:1313/posts/other/git%E9%A1%B9%E7%9B%AE%E4%BD%BF%E7%94%A8/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">git
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>git init：在当前目录初始化一个新的 Git 仓库。 git clone &lt;repository&gt;：克隆远程代码仓库到本地。 git add &lt;file(s)&gt;：将文件添加到暂存区，准备提交。 git commit -m &#34;&lt;message&gt;&#34;：提交暂存区的改动，并添加一条提交信息。 git status：显示工作区和暂存区的状态。 git diff：显示当前未暂存的改动。 git diff --staged：显示已暂存但未提交的改动。 git log：显示提交记录。 git branch：显示分支列表。 git branch &lt;branch-name&gt;：创建一个新分支。 git checkout &lt;branch-name&gt;：切换到指定分支。 git checkout -b &lt;branch-name&gt;：创建并切换到一个新分支。 git merge &lt;branch-name&gt;：将指定分支合并到当前分支。 git remote add &lt;remote-name&gt; &lt;repository-url&gt;：添加一个远程代码仓库。 git push &lt;remote-name&gt; &lt;branch-name&gt;：将本地分支推送到远程仓库。 git pull &lt;remote-name&gt; &lt;branch-name&gt;：从远程仓库拉取最新的改动。 git fetch &lt;remote-name&gt;：从远程仓库获取最新的改动，但不合并到当前分支。 git reset &lt;commit&gt;：撤销提交，并将代码回滚到指定的提交。 git revert &lt;commit&gt;：撤销指定的提交，并创建一个新的提交来记录撤销操作。 git reset 和 git revert 是 Git 中用于撤销提交的两个命令，它们有以下区别：
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2020-08-04 19:38:37 +0800 CST'>August 4, 2020</span>&nbsp;·&nbsp;3 min&nbsp;·&nbsp;loveyu</footer>
+  <a class="entry-link" aria-label="post link to git" href="http://localhost:1313/posts/other/git/"></a>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2025 <a href="http://localhost:1313/">loveyu233</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

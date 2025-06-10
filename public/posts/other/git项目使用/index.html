@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>git项目使用 | loveyu233</title>
+<meta name="keywords" content="go, git">
+<meta name="description" content="代码合并前
+git add xxx
+
+添加到暂存区
+git commit -m &lsquo;xxx&rsquo;
+
+添加到本地仓库，必须添加对应的描述信息：[feat, fix, chore, refactory, update]
+
+feat：表示新增功能（feature）。当你添加新功能或实现一个新的需求时，使用该状态。
+fix：表示修复问题（bug fix）。当你修复代码中的错误、缺陷或漏洞时，使用该状态。
+chore：表示杂项任务（chore）。当你进行一些琐碎的、非功能性的变更或工作时，比如构建过程的改进、库/依赖项的更新等，使用该状态。
+refactor：表示重构代码（refactor）。当你对现有代码进行重构或优化，而不引入新功能或修复问题时，使用该状态。重构旨在改进代码结构、可读性或性能，而不会改变其行为。
+update：表示更新内容。当你对现有文档、配置文件、资源文件或其他非代码文件进行更新时，使用该状态。
+
+ xxx: add xxxx, add xxx
+git commit -m &#39;feat: add new grpc method: ListUser&#39; 
+git commit -m &#39;fix: #9119 (用户列表没有用户状态)&#39; 
+git commit -m &#39;chore: .gitlab-ci.yml use new builder tag&#39; 
+git commit -m &#39;refactory: grpc method ListUser&#39; 
+git commit -m &#39;update: grpc method ListUser add cache&#39;
+git push origin HEAD:dev-xxx
+
+这个 Git 命令 git push origin HEAD:dev-xxx 表示将当前分支的最新提交推送到名为 dev-xxx 的远程分支。">
+<meta name="author" content="loveyu">
+<link rel="canonical" href="http://localhost:1313/posts/other/git%E9%A1%B9%E7%9B%AE%E4%BD%BF%E7%94%A8/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.e13ff79a7b90ac30a7f805291f902c75095888118dcb1fccef74850e837f1253.css" integrity="sha256-4T/3mnuQrDCn&#43;AUpH5AsdQlYiBGNyx/M73SFDoN/ElM=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="zh-cn" href="http://localhost:1313/posts/other/git%E9%A1%B9%E7%9B%AE%E4%BD%BF%E7%94%A8/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:url" content="http://localhost:1313/posts/other/git%E9%A1%B9%E7%9B%AE%E4%BD%BF%E7%94%A8/">
+  <meta property="og:site_name" content="loveyu233">
+  <meta property="og:title" content="git项目使用">
+  <meta property="og:description" content="代码合并前 git add xxx 添加到暂存区
+git commit -m ‘xxx’ 添加到本地仓库，必须添加对应的描述信息：[feat, fix, chore, refactory, update]
+feat：表示新增功能（feature）。当你添加新功能或实现一个新的需求时，使用该状态。 fix：表示修复问题（bug fix）。当你修复代码中的错误、缺陷或漏洞时，使用该状态。 chore：表示杂项任务（chore）。当你进行一些琐碎的、非功能性的变更或工作时，比如构建过程的改进、库/依赖项的更新等，使用该状态。 refactor：表示重构代码（refactor）。当你对现有代码进行重构或优化，而不引入新功能或修复问题时，使用该状态。重构旨在改进代码结构、可读性或性能，而不会改变其行为。 update：表示更新内容。当你对现有文档、配置文件、资源文件或其他非代码文件进行更新时，使用该状态。 xxx: add xxxx, add xxx
+git commit -m &#39;feat: add new grpc method: ListUser&#39; git commit -m &#39;fix: #9119 (用户列表没有用户状态)&#39; git commit -m &#39;chore: .gitlab-ci.yml use new builder tag&#39; git commit -m &#39;refactory: grpc method ListUser&#39; git commit -m &#39;update: grpc method ListUser add cache&#39;
+git push origin HEAD:dev-xxx 这个 Git 命令 git push origin HEAD:dev-xxx 表示将当前分支的最新提交推送到名为 dev-xxx 的远程分支。">
+  <meta property="og:locale" content="zh-cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2023-07-11T11:18:37+08:00">
+    <meta property="article:modified_time" content="2023-07-11T11:18:37+08:00">
+    <meta property="article:tag" content="Go">
+    <meta property="article:tag" content="Git">
+      <meta property="og:image" content="http://localhost:1313/images/cover.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://localhost:1313/images/cover.png">
+<meta name="twitter:title" content="git项目使用">
+<meta name="twitter:description" content="代码合并前
+git add xxx
+
+添加到暂存区
+git commit -m &lsquo;xxx&rsquo;
+
+添加到本地仓库，必须添加对应的描述信息：[feat, fix, chore, refactory, update]
+
+feat：表示新增功能（feature）。当你添加新功能或实现一个新的需求时，使用该状态。
+fix：表示修复问题（bug fix）。当你修复代码中的错误、缺陷或漏洞时，使用该状态。
+chore：表示杂项任务（chore）。当你进行一些琐碎的、非功能性的变更或工作时，比如构建过程的改进、库/依赖项的更新等，使用该状态。
+refactor：表示重构代码（refactor）。当你对现有代码进行重构或优化，而不引入新功能或修复问题时，使用该状态。重构旨在改进代码结构、可读性或性能，而不会改变其行为。
+update：表示更新内容。当你对现有文档、配置文件、资源文件或其他非代码文件进行更新时，使用该状态。
+
+ xxx: add xxxx, add xxx
+git commit -m &#39;feat: add new grpc method: ListUser&#39; 
+git commit -m &#39;fix: #9119 (用户列表没有用户状态)&#39; 
+git commit -m &#39;chore: .gitlab-ci.yml use new builder tag&#39; 
+git commit -m &#39;refactory: grpc method ListUser&#39; 
+git commit -m &#39;update: grpc method ListUser add cache&#39;
+git push origin HEAD:dev-xxx
+
+这个 Git 命令 git push origin HEAD:dev-xxx 表示将当前分支的最新提交推送到名为 dev-xxx 的远程分支。">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "http://localhost:1313/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "other",
+      "item": "http://localhost:1313/posts/other/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "git项目使用",
+      "item": "http://localhost:1313/posts/other/git%E9%A1%B9%E7%9B%AE%E4%BD%BF%E7%94%A8/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "git项目使用",
+  "name": "git项目使用",
+  "description": "代码合并前 git add xxx 添加到暂存区\ngit commit -m \u0026lsquo;xxx\u0026rsquo; 添加到本地仓库，必须添加对应的描述信息：[feat, fix, chore, refactory, update]\nfeat：表示新增功能（feature）。当你添加新功能或实现一个新的需求时，使用该状态。 fix：表示修复问题（bug fix）。当你修复代码中的错误、缺陷或漏洞时，使用该状态。 chore：表示杂项任务（chore）。当你进行一些琐碎的、非功能性的变更或工作时，比如构建过程的改进、库/依赖项的更新等，使用该状态。 refactor：表示重构代码（refactor）。当你对现有代码进行重构或优化，而不引入新功能或修复问题时，使用该状态。重构旨在改进代码结构、可读性或性能，而不会改变其行为。 update：表示更新内容。当你对现有文档、配置文件、资源文件或其他非代码文件进行更新时，使用该状态。 xxx: add xxxx, add xxx\ngit commit -m 'feat: add new grpc method: ListUser' git commit -m 'fix: #9119 (用户列表没有用户状态)' git commit -m 'chore: .gitlab-ci.yml use new builder tag' git commit -m 'refactory: grpc method ListUser' git commit -m 'update: grpc method ListUser add cache'\ngit push origin HEAD:dev-xxx 这个 Git 命令 git push origin HEAD:dev-xxx 表示将当前分支的最新提交推送到名为 dev-xxx 的远程分支。\n",
+  "keywords": [
+    "go", "git"
+  ],
+  "articleBody": "代码合并前 git add xxx 添加到暂存区\ngit commit -m ‘xxx’ 添加到本地仓库，必须添加对应的描述信息：[feat, fix, chore, refactory, update]\nfeat：表示新增功能（feature）。当你添加新功能或实现一个新的需求时，使用该状态。 fix：表示修复问题（bug fix）。当你修复代码中的错误、缺陷或漏洞时，使用该状态。 chore：表示杂项任务（chore）。当你进行一些琐碎的、非功能性的变更或工作时，比如构建过程的改进、库/依赖项的更新等，使用该状态。 refactor：表示重构代码（refactor）。当你对现有代码进行重构或优化，而不引入新功能或修复问题时，使用该状态。重构旨在改进代码结构、可读性或性能，而不会改变其行为。 update：表示更新内容。当你对现有文档、配置文件、资源文件或其他非代码文件进行更新时，使用该状态。 xxx: add xxxx, add xxx\ngit commit -m 'feat: add new grpc method: ListUser' git commit -m 'fix: #9119 (用户列表没有用户状态)' git commit -m 'chore: .gitlab-ci.yml use new builder tag' git commit -m 'refactory: grpc method ListUser' git commit -m 'update: grpc method ListUser add cache'\ngit push origin HEAD:dev-xxx 这个 Git 命令 git push origin HEAD:dev-xxx 表示将当前分支的最新提交推送到名为 dev-xxx 的远程分支。\ngit push: 这是 Git 命令的一部分，用于将本地的提交推送到远程仓库。 origin: 这是远程仓库的名称，通常默认为 origin。它是你与远程仓库建立连接时设置的别名。 HEAD: 这是一个特殊的指针，指向当前所在分支的最新提交。 dev-xxx: 这是远程分支的名称，dev-xxx 是一个示例，你可以根据需要替换为实际的远程分支名称。 在 gitlab 上发起合并请求 打开 GitLab 网站并登录到你的账号。 导航到你想要发起合并请求的项目页面。 在项目页面上方的菜单栏中，点击 “Merge Requests”（合并请求）选项卡。 在 “Merge Requests” 页面上，点击 “New merge request”（新建合并请求）按钮。 在弹出的页面中，选择源分支（通常是你自己的分支）和目标分支（通常是主分支或其他稳定的分支）。 输入合并请求的标题和描述，提供清晰的说明，使其他人能够理解你的合并请求意图和改动内容。 确认设置并点击 “Submit merge request”（提交合并请求）按钮。 如果需要修改代码,在修改代码后执行:\ngit rebase -i HEAD~2 这个 Git 命令 git rebase -i HEAD~2 表示要进行交互式的变基操作（interactive rebase），将当前分支最近的两个提交合并或编辑。\ngit rebase: 这是 Git 命令的一部分，用于将提交应用于一个新的基准（base）。 -i：这是 rebase 命令的选项之一，表示进行交互式的变基操作。 HEAD~2：这是相对于当前提交的引用。HEAD 表示当前提交，~2 表示向后回溯两个提交。所以 HEAD~2 表示当前分支最近的两个提交。 通过执行这个命令，Git 会打开一个编辑器，并列出最近的两个提交。你可以在编辑器中指定需要进行的操作，如合并提交、编辑提交信息等。\ngit push origin HEAD:dev-xxx -f -f 强制推送\n再次发送合并请求\n代码合并后 例如合并到dev分支后\ngit branch -D dev-xxx -D 强制删除之前的分支\ngit fetch origin dev 这个 Git 命令 git fetch origin dev 表示从远程仓库 origin 中下载名为 dev 的分支的最新提交和引用（包括分支、标签等），并将其存储在本地仓库中。\ngit fetch: 这是 Git 命令的一部分，用于从远程仓库中获取最新的变动。 origin: 这是远程仓库的名称，通常默认为 origin。它是你与远程仓库建立连接时设置的别名。 dev: 这是要获取的分支的名称，dev 是一个示例，你可以根据需要替换为实际的分支名称。 通过执行这个命令，Git 会向远程仓库 origin 发送请求，检查该仓库中名为 dev 的分支是否有新的提交。如果有新的提交，Git 将把它们下载到本地仓库，但不会自动合并或更新任何分支。\n使用 git fetch 可以保持本地仓库与远程仓库同步，同时获取最新的代码变动，但并不会对本地分支进行修改。\ngit checkout -b dev-xxx origin/dev 这个 Git 命令 git checkout -b dev-xxx origin/dev 表示创建一个名为 dev-xxx 的本地分支，并切换到该分支上，同时将远程仓库 origin 中的 dev 分支作为起点。\ngit checkout: 这是 Git 命令的一部分，用于切换到不同的分支或提交。 -b dev-xxx: 这部分表示创建一个名为 dev-xxx 的新分支。如果该分支已经存在，则会产生失败。 origin/dev: 这是要基于的远程分支的全名。通过指定 origin 作为远程仓库，可以从远程仓库中拉取最新的引用。 执行此命令后，Git 将会在本地仓库中创建名为 dev-xxx 的新分支，并将工作区切换到该分支上。该新分支的起点将被设置为远程仓库 origin 中的 dev 分支的最新提交。这样，你就可以在 dev-xxx 分支上进行开发和修改，而不会影响到其他分支。\n请注意，在切换到新分支之前，请确保当前分支中的修改已经提交或保存，以免数据丢失。\nhotfix热修复 热修复（Hotfix）是指在软件或应用程序中解决紧急问题或漏洞的过程。热修复通常是针对生产环境中出现的紧急问题而进行的，目的是尽快修复问题并将补丁部署到生产环境，以减少对用户的影响。\ngit fetch origin –tags git fetch origin --tags 这个 Git 命令用于从远程仓库 origin 下载所有标签（tags）的最新状态。\ngit fetch: 这是 Git 命令的一部分，用于从远程仓库中获取最新的变动。 origin: 这是远程仓库的名称，通常默认为 origin。它是你与远程仓库建立连接时设置的别名。 --tags: 这个选项表示下载远程仓库中的所有标签，而不仅仅是分支。 通过执行这个命令，Git 将会向远程仓库 origin 发送请求，检查是否有新的标签被创建或已有标签有更新。如果有新的标签或更新的标签，Git 将把它们下载到本地仓库。\n通过执行 git fetch origin --tags，你可以将本地仓库与远程仓库的标签保持同步。这对于获取最新的标记版本、查看发布信息或跟踪特定的提交非常有用。\ngit checkout -b hotfix-v1.3.4 tags/v1.3.4 git checkout -b hotfix-v1.3.4 tags/v1.3.4 是一个 Git 命令，用于基于特定标签创建一个名为 hotfix-v1.3.4 的新分支。\ngit checkout: 这是 Git 命令的一部分，用于切换到不同的分支或提交。 -b hotfix-v1.3.4: 这部分表示创建一个名为 hotfix-v1.3.4 的新分支。如果该分支已经存在，则会产生失败。 tags/v1.3.4: 这是要基于的特定标签的全名。通过指定 tags/ 前缀后跟标签名称，可以在该标签的位置创建一个新分支。 执行此命令后，Git 将会在当前提交的位置创建一个名为 hotfix-v1.3.4 的新分支，并将工作区切换到该分支上。该新分支的起点将被设置为标签 v1.3.4 所指向的提交。这样，你就可以在 hotfix-v1.3.4 分支上进行修复工作，而不会影响到其他分支。\n请确保你输入的标签名称和分支名称正确无误，并且相应的标签已存在。\n修改代码 git push origin HEAD:hotfix-v1.3.4 git push origin HEAD:hotfix-v1.3.4 这个 Git 命令用于将当前分支的提交推送到远程仓库 origin 的 hotfix-v1.3.4 分支上。\ngit push: 这是 Git 命令的一部分，用于将本地提交推送到远程仓库。 origin: 这是远程仓库的名称，通常默认为 origin。它是你与远程仓库建立连接时设置的别名。 HEAD: 这是一个指向当前分支最新提交的引用。它表示将当前分支的最新提交推送到远程仓库。 hotfix-v1.3.4: 这是远程仓库中的目标分支，你想要将当前分支的提交推送到这个分支上。 执行此命令后，Git 将会把当前分支最新的提交推送到远程仓库 origin 的 hotfix-v1.3.4 分支上。如果该分支不存在，则会在远程仓库中创建一个新的分支。如果该分支已存在，则会覆盖远程分支上的提交。\n请确保你在执行此命令之前已经完成了必要的提交并检查了你要推送的目标分支。\n过滤大文件 一旦提交（commit）了大文件, rebase 也无法从 git 中剔出提交\ngit filter repo git项目迁移 新建git仓库 mkdir test cd test git init touch README.md git add README.md git commit -m “first commit” git remote add origin https://gitee.com/debby-echo/test.git git push -u origin “master”\ngit迁移现有项目到其他项目 export file=xxx git clone http://xxxyinhao/$file.git cd $file git remote rename origin old-origin git remote add origin http://xxx/frontend/$file.git git push -u origin –all git push -u origin –tags cd ../\nexport file=xxx：这是一个 Shell 命令，将一个名为 file 的环境变量设置为 xxx。 git clone http://xxxyinhao/$file.git：使用 Git 克隆命令从远程仓库克隆一个代码库。URL http://xxxyinhao/$file.git 中的 $file 将被先前设置的环境变量所替代。 cd $file：进入刚刚克隆的代码库的根目录。 git remote rename origin old-origin：将默认远程仓库的名称 origin 重命名为 old-origin。这样做是为了方便后续添加新的远程仓库。 git remote add origin http://xxx/frontend/$file.git：添加一个新的远程仓库，并将它命名为 origin。URL http://xxx/frontend/$file.git 是你要推送到的新远程仓库的地址。 git push -u origin --all：推送本地所有分支到新的远程仓库 origin。选项 -u 用于将本地分支与远程分支关联起来。 git push -u origin --tags：推送本地所有标签到新的远程仓库 origin。 git修改当前项目的git地址 git remote set-url origin http://xxx/frontend/xxx.git\ngitignore .gitignore可以忽略你不想上传的文件，比如doc,target,classes等等\n只需要在.git同目录下新增.gitignore文件，然后添加不需要上次的目录即可\nadd后添加了.gitignore解决办法 如果已经add 清除记录的所有文件管理信息，注意行末的点表示当前目录，一定要写\ngit rm -r --cached . 添加该仓库的所有文件，注意行末的点表示当前目录，一定要写\ngit add . 提交注释\ngit commit -m \".....\" 推送到仓库\ngit push -u origin master\n已经push 删除mydir目录\ngit rm -r --cached mydir 删除mydir目录下的hello.txt文件\ngit rm -r --cached mydir/hello.txt git commit -m \"删除说明\" 推送\ngit push\n用-r参数删除目录, git rm –cached hello.txt 删除的是仓库中的文件，且本地工作区的文件会保留且不再与远程仓库发生跟踪关系，如果本地仓库中的文件也要删除则用git rm hello.txt\ngit update-index --assume-unchanged .\\components.d.ts\ntag git tag -a v1.0 -m “版本介绍” 创建新的tag并添加描述信息\ngit tag 查看所有的标签\ngit tag -l “v1.*” 模糊匹配\n为早期的提交打标签 git log –pretty=oneline 查看id后边需要使用\n如果遇到中文乱码解决办法 git config –global i18n.commitencoding utf-8 –该命令表示：提交命令的时候使用utf-8编码集提交\ngit config –global i18n.logoutputencoding utf-8 –该命令表示：日志输出时使用utf-8编码集显示\nset LESSCHARSET=utf-8 –设置LESS字符集为utf-8\ngit tag -a v1.0 -m “版本介绍” dele264 指定提交id打标签\ngit tag -d 删除本地的tag\ngit push origin –delete 删除远程仓库的tag\n示例 ~/desktop/git \u003e mkdir gittest ~/desktop/git \u003e cd gittest ~/desktop/git/gittest \u003e git init Initialized empty Git repository in C:/Users/user/Desktop/git/gittest/.git/ ~/desktop/git/gittest master \u003e git branch -M main ~/desktop/git/gittest main \u003e git remote add origin https://github.com/loveyu233/gittest.git ~/desktop/git/gittest main \u003e git checkout -b dev-t Switched to a new branch 'dev-t' ~/desktop/git/gittest dev-t \u003e vim readmd ~/desktop/git/gittest dev-t ?1 \u003e git add . warning: in the working copy of 'readmd', LF will be replaced by CRLF the next time Git touches it ~/desktop/git/gittest dev-t +1 \u003e git commit -m \"update: readme\" [dev-t (root-commit) 73fe335] update: readme 1 file changed, 1 insertion(+) create mode 100644 readmd ~/desktop/git/gittest dev-t \u003e git push origin HEAD:dev-t fatal: unable to access 'https://github.com/loveyu233/gittest.git/': Recv failure: Connection was reset ~/desktop/git/gittest dev-t \u003e git commit -m \"update: readme\" On branch dev-t nothing to commit, working tree clean ~/desktop/git/gittest dev-t \u003e git push origin HEAD:dev-t Enumerating objects: 3, done. Counting objects: 100% (3/3), done. Writing objects: 100% (3/3), 216 bytes | 216.00 KiB/s, done. Total 3 (delta 0), reused 0 (delta 0), pack-reused 0 To https://github.com/loveyu233/gittest.git * [new branch] HEAD -\u003e dev-t ~/desktop/git/gittest dev-t \u003e vim readmd ~/desktop/git/gittest dev-t !1 \u003e git add . warning: in the working copy of 'readmd', LF will be replaced by CRLF the next time Git touches it ~/desktop/git/gittest dev-t +1 \u003e git commit -m \"update: readme1\" [dev-t adecc28] update: readme1 1 file changed, 1 insertion(+), 1 deletion(-) ~/desktop/git/gittest dev-t \u003e git push origin HEAD:dev-t fatal: unable to access 'https://github.com/loveyu233/gittest.git/': Failed to connect to github.com port 443 after 21089 ms: Couldn't connect to server ~/desktop/git/gittest dev-t \u003e git push origin HEAD:dev-t Enumerating objects: 5, done. Counting objects: 100% (5/5), done. Writing objects: 100% (3/3), 249 bytes | 249.00 KiB/s, done. Total 3 (delta 0), reused 0 (delta 0), pack-reused 0 To https://github.com/loveyu233/gittest.git 73fe335..adecc28 HEAD -\u003e dev-t ~/desktop/git/gittest dev-t \u003e git branch -D dev-t error: Cannot delete branch 'dev-t' checked out at 'C:/Users/user/Desktop/git/gittest' ~/desktop/git/gittest dev-t \u003e git checkout main error: pathspec 'main' did not match any file(s) known to git ~/desktop/git/gittest dev-t \u003e git fetch origin main remote: Enumerating objects: 1, done. remote: Counting objects: 100% (1/1), done. remote: Total 1 (delta 0), reused 0 (delta 0), pack-reused 0 Unpacking objects: 100% (1/1), 625 bytes | 208.00 KiB/s, done. From https://github.com/loveyu233/gittest * branch main -\u003e FETCH_HEAD * [new branch] main -\u003e origin/main ~/desktop/git/gittest dev-t \u003e git checkout main Switched to a new branch 'main' branch 'main' set up to track 'origin/main'. ~/desktop/git/gittest main \u003e git branch -D dev-t Deleted branch dev-t (was adecc28). ~/desktop/git/gittest main \u003e git checkout -b dev-t2 origin/main Switched to a new branch 'dev-t2' branch 'dev-t2' set up to track 'origin/main'. ~/desktop/git/gittest dev-t2:main \u003e vim readmd ~/desktop/git/gittest dev-t2:main !1 \u003e git add . warning: in the working copy of 'readmd', LF will be replaced by CRLF the next time Git touches it ~/desktop/git/gittest dev-t2:main +1 \u003e git commit -m \"update: readmet2\" [dev-t2 9f5b39d] update: readmet2 1 file changed, 1 insertion(+), 1 deletion(-) ~/desktop/git/gittest dev-t2:main \u003e1 \u003e git push origin HEAD:dev-t2 Enumerating objects: 5, done. Counting objects: 100% (5/5), done. Writing objects: 100% (3/3), 277 bytes | 277.00 KiB/s, done. Total 3 (delta 0), reused 0 (delta 0), pack-reused 0 remote: remote: Create a pull request for 'dev-t2' on GitHub by visiting: remote: https://github.com/loveyu233/gittest/pull/new/dev-t2 remote: To https://github.com/loveyu233/gittest.git * [new branch] HEAD -\u003e dev-t2 ~/desktop/git/gittest dev-t2:main \u003e1 \u003e git status On branch dev-t2 Your branch is ahead of 'origin/main' by 1 commit. (use \"git push\" to publish your local commits) nothing to commit, working tree clean ~/desktop/git/gittest dev-t2:main \u003e1 \u003e vim readmd ~/desktop/git/gittest dev-t2:main \u003e1 !1 \u003e git add . warning: in the working copy of 'readmd', LF will be replaced by CRLF the next time Git touches it ~/desktop/git/gittest dev-t2:main \u003e1 +1 \u003e git commit -m \"update: readmet2abc\" [dev-t2 93eb93f] update: readmet2abc 1 file changed, 2 insertions(+), 1 deletion(-) ~/desktop/git/gittest dev-t2:main \u003e2 \u003e git push origin HEAD:dev-t2 ~/desktop/git/gittest dev-t2:main \u003e2 \u003e git rebase -i HEAD~2 Successfully rebased and updated refs/heads/dev-t2. ~/desktop/git/gittest dev-t2:main \u003e2 \u003e git push origin HEAD:dev-t2 -f fatal: unable to access 'https://github.com/loveyu233/gittest.git/': Recv failure: Connection was reset ~/desktop/git/gittest dev-t2:main \u003e2 \u003e git push origin HEAD:dev-t2 -f Enumerating objects: 5, done. Counting objects: 100% (5/5), done. Delta compression using up to 12 threads Compressing objects: 100% (2/2), done. Writing objects: 100% (3/3), 291 bytes | 291.00 KiB/s, done. Total 3 (delta 0), reused 0 (delta 0), pack-reused 0 To https://github.com/loveyu233/gittest.git 9f5b39d..93eb93f HEAD -\u003e dev-t2 ~/desktop/git/gittest dev-t2:main \u003e2 \u003e git tag ~/desktop/git/gittest dev-t2:main \u003e2 \u003e git tag -a v1.0 -m \"msg\" ~/desktop/git/gittest dev-t2:main \u003e2 \u003e git push origin v1.0 Enumerating objects: 1, done. Counting objects: 100% (1/1), done. Writing objects: 100% (1/1), 155 bytes | 155.00 KiB/s, done. Total 1 (delta 0), reused 0 (delta 0), pack-reused 0 To https://github.com/loveyu233/gittest.git * [new tag] v1.0 -\u003e v1.0 ~/desktop/git/gittest dev-t2:main \u003e2 \u003e git tag ~/desktop/git/gittest dev-t2:main \u003e2 \u003e git log --pretty=oneline ~/desktop/git/gittest dev-t2:main \u003e2 \u003e git tag -a v1.1 -m \"新内容\" 93eb93 ~/desktop/git/gittest dev-t2:main \u003e2 \u003e git tag -d v1.0 Deleted tag 'v1.0' (was 32d1adc) ~/desktop/git/gittest dev-t2:main \u003e2 \u003e git push origin --delete tag fatal: tag shorthand without ~/desktop/git/gittest dev-t2:main \u003e2 \u003e git push origin --delete v1.0 To https://github.com/loveyu233/gittest.git - [deleted] v1.0 ~/desktop/git/gittest dev-t2:main \u003e2 \u003e git push origin v1.1 Enumerating objects: 1, done. Counting objects: 100% (1/1), done. Writing objects: 100% (1/1), 171 bytes | 171.00 KiB/s, done. Total 1 (delta 0), reused 0 (delta 0), pack-reused 0 To https://github.com/loveyu233/gittest.git * [new tag] v1.1 -\u003e v1.1 ",
+  "wordCount" : "1483",
+  "inLanguage": "zh-cn",
+  "image": "http://localhost:1313/images/cover.png","datePublished": "2023-07-11T11:18:37+08:00",
+  "dateModified": "2023-07-11T11:18:37+08:00",
+  "author":[{
+    "@type": "Person",
+    "name": "loveyu"
+  }],
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "http://localhost:1313/posts/other/git%E9%A1%B9%E7%9B%AE%E4%BD%BF%E7%94%A8/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "loveyu233",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "http://localhost:1313/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="loveyu233 (Alt + H)">loveyu233</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/archives" title="归档">
+                    <span>归档</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/search/" title="搜索">
+                    <span>搜索</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/tags/" title="标签">
+                    <span>标签</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="http://localhost:1313/">Home</a>&nbsp;»&nbsp;<a href="http://localhost:1313/posts/">Posts</a>&nbsp;»&nbsp;<a href="http://localhost:1313/posts/other/">other</a></div>
+    <h1 class="post-title entry-hint-parent">
+      git项目使用
+    </h1>
+    <div class="post-meta"><span title='2023-07-11 11:18:37 +0800 CST'>July 11, 2023</span>&nbsp;·&nbsp;7 min&nbsp;·&nbsp;loveyu
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#%e4%bb%a3%e7%a0%81%e5%90%88%e5%b9%b6%e5%89%8d" aria-label="代码合并前">代码合并前</a><ul>
+                        
+                <li>
+                    <a href="#git-add-xxx" aria-label="git add xxx">git add xxx</a></li>
+                <li>
+                    <a href="#git-commit--m-xxx" aria-label="git commit -m &lsquo;xxx&rsquo;">git commit -m &lsquo;xxx&rsquo;</a></li>
+                <li>
+                    <a href="#git-push-origin-headdev-xxx" aria-label="git push origin HEAD:dev-xxx">git push origin HEAD:dev-xxx</a></li>
+                <li>
+                    <a href="#%e5%9c%a8-gitlab-%e4%b8%8a%e5%8f%91%e8%b5%b7%e5%90%88%e5%b9%b6%e8%af%b7%e6%b1%82" aria-label="在 gitlab 上发起合并请求">在 gitlab 上发起合并请求</a><ul>
+                        
+                <li>
+                    <a href="#git-rebase--i-head2" aria-label="git rebase -i HEAD~2">git rebase -i HEAD~2</a></li>
+                <li>
+                    <a href="#git-push-origin-headdev-xxx--f" aria-label="git push origin HEAD:dev-xxx -f">git push origin HEAD:dev-xxx -f</a></li></ul>
+                </li></ul>
+                </li>
+                <li>
+                    <a href="#%e4%bb%a3%e7%a0%81%e5%90%88%e5%b9%b6%e5%90%8e" aria-label="代码合并后">代码合并后</a><ul>
+                        
+                <li>
+                    <a href="#git-branch--d-dev-xxx" aria-label="git branch -D dev-xxx">git branch -D dev-xxx</a></li>
+                <li>
+                    <a href="#git-fetch-origin-dev" aria-label="git fetch origin dev">git fetch origin dev</a></li>
+                <li>
+                    <a href="#git-checkout--b-dev-xxx-origindev" aria-label="git checkout -b dev-xxx origin/dev">git checkout -b dev-xxx origin/dev</a></li></ul>
+                </li>
+                <li>
+                    <a href="#hotfix%e7%83%ad%e4%bf%ae%e5%a4%8d" aria-label="hotfix热修复">hotfix热修复</a><ul>
+                        
+                <li>
+                    <a href="#git-fetch-origin-tags" aria-label="git fetch origin &ndash;tags">git fetch origin &ndash;tags</a></li>
+                <li>
+                    <a href="#git-checkout--b-hotfix-v134-tagsv134" aria-label="git checkout -b hotfix-v1.3.4 tags/v1.3.4">git checkout -b hotfix-v1.3.4 tags/v1.3.4</a></li>
+                <li>
+                    <a href="#%e4%bf%ae%e6%94%b9%e4%bb%a3%e7%a0%81" aria-label="修改代码">修改代码</a><ul>
+                        
+                <li>
+                    <a href="#git-push-origin-headhotfix-v134" aria-label="git push origin HEAD:hotfix-v1.3.4">git push origin HEAD:hotfix-v1.3.4</a></li></ul>
+                </li></ul>
+                </li>
+                <li>
+                    <a href="#%e8%bf%87%e6%bb%a4%e5%a4%a7%e6%96%87%e4%bb%b6" aria-label="过滤大文件">过滤大文件</a><ul>
+                        
+                <li>
+                    <a href="#git-filter-repo" aria-label="git filter repo">git filter repo</a></li></ul>
+                </li>
+                <li>
+                    <a href="#git%e9%a1%b9%e7%9b%ae%e8%bf%81%e7%a7%bb" aria-label="git项目迁移">git项目迁移</a><ul>
+                        
+                <li>
+                    <a href="#%e6%96%b0%e5%bb%bagit%e4%bb%93%e5%ba%93" aria-label="新建git仓库">新建git仓库</a></li>
+                <li>
+                    <a href="#git%e8%bf%81%e7%a7%bb%e7%8e%b0%e6%9c%89%e9%a1%b9%e7%9b%ae%e5%88%b0%e5%85%b6%e4%bb%96%e9%a1%b9%e7%9b%ae" aria-label="git迁移现有项目到其他项目">git迁移现有项目到其他项目</a></li>
+                <li>
+                    <a href="#git%e4%bf%ae%e6%94%b9%e5%bd%93%e5%89%8d%e9%a1%b9%e7%9b%ae%e7%9a%84git%e5%9c%b0%e5%9d%80" aria-label="git修改当前项目的git地址">git修改当前项目的git地址</a></li></ul>
+                </li>
+                <li>
+                    <a href="#gitignore" aria-label="gitignore">gitignore</a><ul>
+                        
+                <li>
+                    <a href="#add%e5%90%8e%e6%b7%bb%e5%8a%a0%e4%ba%86gitignore%e8%a7%a3%e5%86%b3%e5%8a%9e%e6%b3%95" aria-label="add后添加了.gitignore解决办法">add后添加了.gitignore解决办法</a><ul>
+                        
+                <li>
+                    <a href="#%e5%a6%82%e6%9e%9c%e5%b7%b2%e7%bb%8fadd" aria-label="如果已经add">如果已经add</a></li>
+                <li>
+                    <a href="#%e5%b7%b2%e7%bb%8fpush" aria-label="已经push">已经push</a></li></ul>
+                </li></ul>
+                </li>
+                <li>
+                    <a href="#tag" aria-label="tag">tag</a><ul>
+                        
+                <li>
+                    <a href="#git-tag--a-v10--m-%e7%89%88%e6%9c%ac%e4%bb%8b%e7%bb%8d" aria-label="git tag -a v1.0 -m &ldquo;版本介绍&rdquo;">git tag -a v1.0 -m &ldquo;版本介绍&rdquo;</a></li>
+                <li>
+                    <a href="#git-tag" aria-label="git tag">git tag</a></li>
+                <li>
+                    <a href="#git-tag--l-v1" aria-label="git tag -l &ldquo;v1.*&rdquo;">git tag -l &ldquo;v1.*&rdquo;</a></li>
+                <li>
+                    <a href="#%e4%b8%ba%e6%97%a9%e6%9c%9f%e7%9a%84%e6%8f%90%e4%ba%a4%e6%89%93%e6%a0%87%e7%ad%be" aria-label="为早期的提交打标签">为早期的提交打标签</a><ul>
+                        
+                <li>
+                    <a href="#git-log-prettyoneline" aria-label="git log &ndash;pretty=oneline">git log &ndash;pretty=oneline</a></li>
+                <li>
+                    <a href="#%e5%a6%82%e6%9e%9c%e9%81%87%e5%88%b0%e4%b8%ad%e6%96%87%e4%b9%b1%e7%a0%81%e8%a7%a3%e5%86%b3%e5%8a%9e%e6%b3%95" aria-label="如果遇到中文乱码解决办法">如果遇到中文乱码解决办法</a></li>
+                <li>
+                    <a href="#git-tag--a-v10--m-%e7%89%88%e6%9c%ac%e4%bb%8b%e7%bb%8d-dele264" aria-label="git tag -a v1.0 -m &ldquo;版本介绍&rdquo; dele264">git tag -a v1.0 -m &ldquo;版本介绍&rdquo; dele264</a></li></ul>
+                </li>
+                <li>
+                    <a href="#git-tag--d" aria-label="git tag -d ">git tag -d </a></li>
+                <li>
+                    <a href="#git-push-origin-delete" aria-label="git push origin &ndash;delete ">git push origin &ndash;delete </a></li></ul>
+                </li>
+                <li>
+                    <a href="#%e7%a4%ba%e4%be%8b" aria-label="示例">示例</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><h1 id="代码合并前">代码合并前<a hidden class="anchor" aria-hidden="true" href="#代码合并前">#</a></h1>
+<h2 id="git-add-xxx">git add xxx<a hidden class="anchor" aria-hidden="true" href="#git-add-xxx">#</a></h2>
+<blockquote>
+<p>添加到暂存区</p></blockquote>
+<h2 id="git-commit--m-xxx">git commit -m &lsquo;xxx&rsquo;<a hidden class="anchor" aria-hidden="true" href="#git-commit--m-xxx">#</a></h2>
+<blockquote>
+<p>添加到本地仓库，必须添加对应的描述信息：<code>[feat, fix, chore, refactory, update]</code></p>
+<ol>
+<li>feat：表示新增功能（feature）。当你添加新功能或实现一个新的需求时，使用该状态。</li>
+<li>fix：表示修复问题（bug fix）。当你修复代码中的错误、缺陷或漏洞时，使用该状态。</li>
+<li>chore：表示杂项任务（chore）。当你进行一些琐碎的、非功能性的变更或工作时，比如构建过程的改进、库/依赖项的更新等，使用该状态。</li>
+<li>refactor：表示重构代码（refactor）。当你对现有代码进行重构或优化，而不引入新功能或修复问题时，使用该状态。重构旨在改进代码结构、可读性或性能，而不会改变其行为。</li>
+<li>update：表示更新内容。当你对现有文档、配置文件、资源文件或其他非代码文件进行更新时，使用该状态。</li>
+</ol>
+<p><code> xxx: add xxxx, add xxx</code></p>
+<p><code>git commit -m 'feat: add new grpc method: ListUser' </code></p>
+<p><code>git commit -m 'fix: #9119 (用户列表没有用户状态)' </code></p>
+<p><code>git commit -m 'chore: .gitlab-ci.yml use new builder tag' </code></p>
+<p><code>git commit -m 'refactory: grpc method ListUser' </code></p>
+<p><code>git commit -m 'update: grpc method ListUser add cache'</code></p></blockquote>
+<h2 id="git-push-origin-headdev-xxx">git push origin HEAD:dev-xxx<a hidden class="anchor" aria-hidden="true" href="#git-push-origin-headdev-xxx">#</a></h2>
+<blockquote>
+<p>这个 Git 命令 <code>git push origin HEAD:dev-xxx</code> 表示将当前分支的最新提交推送到名为 <code>dev-xxx</code> 的远程分支。</p>
+<ul>
+<li><code>git push</code>: 这是 Git 命令的一部分，用于将本地的提交推送到远程仓库。</li>
+<li><code>origin</code>: 这是远程仓库的名称，通常默认为 <code>origin</code>。它是你与远程仓库建立连接时设置的别名。</li>
+<li><code>HEAD</code>: 这是一个特殊的指针，指向当前所在分支的最新提交。</li>
+<li><code>dev-xxx</code>: 这是远程分支的名称，<code>dev-xxx</code> 是一个示例，你可以根据需要替换为实际的远程分支名称。</li>
+</ul></blockquote>
+<h2 id="在-gitlab-上发起合并请求">在 gitlab 上发起合并请求<a hidden class="anchor" aria-hidden="true" href="#在-gitlab-上发起合并请求">#</a></h2>
+<blockquote>
+<ol>
+<li>打开 GitLab 网站并登录到你的账号。</li>
+<li>导航到你想要发起合并请求的项目页面。</li>
+<li>在项目页面上方的菜单栏中，点击 &ldquo;Merge Requests&rdquo;（合并请求）选项卡。</li>
+<li>在 &ldquo;Merge Requests&rdquo; 页面上，点击 &ldquo;New merge request&rdquo;（新建合并请求）按钮。</li>
+<li>在弹出的页面中，选择源分支（通常是你自己的分支）和目标分支（通常是主分支或其他稳定的分支）。</li>
+<li>输入合并请求的标题和描述，提供清晰的说明，使其他人能够理解你的合并请求意图和改动内容。</li>
+<li>确认设置并点击 &ldquo;Submit merge request&rdquo;（提交合并请求）按钮。</li>
+</ol></blockquote>
+<p>如果需要修改代码,在修改代码后执行:</p>
+<h3 id="git-rebase--i-head2">git rebase -i HEAD~2<a hidden class="anchor" aria-hidden="true" href="#git-rebase--i-head2">#</a></h3>
+<blockquote>
+<p>这个 Git 命令 <code>git rebase -i HEAD~2</code> 表示要进行交互式的变基操作（interactive rebase），将当前分支最近的两个提交合并或编辑。</p>
+<ul>
+<li><code>git rebase</code>: 这是 Git 命令的一部分，用于将提交应用于一个新的基准（base）。</li>
+<li><code>-i</code>：这是 rebase 命令的选项之一，表示进行交互式的变基操作。</li>
+<li><code>HEAD~2</code>：这是相对于当前提交的引用。<code>HEAD</code> 表示当前提交，<code>~2</code> 表示向后回溯两个提交。所以 <code>HEAD~2</code> 表示当前分支最近的两个提交。</li>
+</ul>
+<p>通过执行这个命令，Git 会打开一个编辑器，并列出最近的两个提交。你可以在编辑器中指定需要进行的操作，如合并提交、编辑提交信息等。</p></blockquote>
+<h3 id="git-push-origin-headdev-xxx--f">git push origin HEAD:dev-xxx -f<a hidden class="anchor" aria-hidden="true" href="#git-push-origin-headdev-xxx--f">#</a></h3>
+<blockquote>
+<p><code>-f</code> 强制推送</p></blockquote>
+<p>再次发送合并请求</p>
+<h1 id="代码合并后">代码合并后<a hidden class="anchor" aria-hidden="true" href="#代码合并后">#</a></h1>
+<blockquote>
+<p>例如合并到dev分支后</p></blockquote>
+<h2 id="git-branch--d-dev-xxx">git branch -D dev-xxx<a hidden class="anchor" aria-hidden="true" href="#git-branch--d-dev-xxx">#</a></h2>
+<blockquote>
+<p><code>-D</code> 强制删除之前的分支</p></blockquote>
+<h2 id="git-fetch-origin-dev">git fetch origin dev<a hidden class="anchor" aria-hidden="true" href="#git-fetch-origin-dev">#</a></h2>
+<blockquote>
+<p>这个 Git 命令 <code>git fetch origin dev</code> 表示从远程仓库 <code>origin</code> 中下载名为 <code>dev</code> 的分支的最新提交和引用（包括分支、标签等），并将其存储在本地仓库中。</p>
+<ul>
+<li><code>git fetch</code>: 这是 Git 命令的一部分，用于从远程仓库中获取最新的变动。</li>
+<li><code>origin</code>: 这是远程仓库的名称，通常默认为 <code>origin</code>。它是你与远程仓库建立连接时设置的别名。</li>
+<li><code>dev</code>: 这是要获取的分支的名称，<code>dev</code> 是一个示例，你可以根据需要替换为实际的分支名称。</li>
+</ul>
+<p>通过执行这个命令，Git 会向远程仓库 <code>origin</code> 发送请求，检查该仓库中名为 <code>dev</code> 的分支是否有新的提交。如果有新的提交，Git 将把它们下载到本地仓库，但不会自动合并或更新任何分支。</p>
+<p>使用 <code>git fetch</code> 可以保持本地仓库与远程仓库同步，同时获取最新的代码变动，但并不会对本地分支进行修改。</p></blockquote>
+<h2 id="git-checkout--b-dev-xxx-origindev">git checkout -b dev-xxx origin/dev<a hidden class="anchor" aria-hidden="true" href="#git-checkout--b-dev-xxx-origindev">#</a></h2>
+<blockquote>
+<p>这个 Git 命令 <code>git checkout -b dev-xxx origin/dev</code> 表示创建一个名为 <code>dev-xxx</code> 的本地分支，并切换到该分支上，同时将远程仓库 <code>origin</code> 中的 <code>dev</code> 分支作为起点。</p>
+<ul>
+<li><code>git checkout</code>: 这是 Git 命令的一部分，用于切换到不同的分支或提交。</li>
+<li><code>-b dev-xxx</code>: 这部分表示创建一个名为 <code>dev-xxx</code> 的新分支。如果该分支已经存在，则会产生失败。</li>
+<li><code>origin/dev</code>: 这是要基于的远程分支的全名。通过指定 <code>origin</code> 作为远程仓库，可以从远程仓库中拉取最新的引用。</li>
+</ul>
+<p>执行此命令后，Git 将会在本地仓库中创建名为 <code>dev-xxx</code> 的新分支，并将工作区切换到该分支上。该新分支的起点将被设置为远程仓库 <code>origin</code> 中的 <code>dev</code> 分支的最新提交。这样，你就可以在 <code>dev-xxx</code> 分支上进行开发和修改，而不会影响到其他分支。</p>
+<p>请注意，在切换到新分支之前，请确保当前分支中的修改已经提交或保存，以免数据丢失。</p></blockquote>
+<h1 id="hotfix热修复">hotfix热修复<a hidden class="anchor" aria-hidden="true" href="#hotfix热修复">#</a></h1>
+<blockquote>
+<p><code>热修复（Hotfix）</code>是指在软件或应用程序中解决紧急问题或漏洞的过程。热修复通常是针对生产环境中出现的紧急问题而进行的，目的是尽快修复问题并将补丁部署到生产环境，以减少对用户的影响。</p></blockquote>
+<h2 id="git-fetch-origin-tags">git fetch origin &ndash;tags<a hidden class="anchor" aria-hidden="true" href="#git-fetch-origin-tags">#</a></h2>
+<blockquote>
+<p><code>git fetch origin --tags</code> 这个 Git 命令用于从远程仓库 <code>origin</code> 下载所有标签（tags）的最新状态。</p>
+<ul>
+<li><code>git fetch</code>: 这是 Git 命令的一部分，用于从远程仓库中获取最新的变动。</li>
+<li><code>origin</code>: 这是远程仓库的名称，通常默认为 <code>origin</code>。它是你与远程仓库建立连接时设置的别名。</li>
+<li><code>--tags</code>: 这个选项表示下载远程仓库中的所有标签，而不仅仅是分支。</li>
+</ul>
+<p>通过执行这个命令，Git 将会向远程仓库 <code>origin</code> 发送请求，检查是否有新的标签被创建或已有标签有更新。如果有新的标签或更新的标签，Git 将把它们下载到本地仓库。</p>
+<p>通过执行 <code>git fetch origin --tags</code>，你可以将本地仓库与远程仓库的标签保持同步。这对于获取最新的标记版本、查看发布信息或跟踪特定的提交非常有用。</p></blockquote>
+<h2 id="git-checkout--b-hotfix-v134-tagsv134">git checkout -b hotfix-v1.3.4 tags/v1.3.4<a hidden class="anchor" aria-hidden="true" href="#git-checkout--b-hotfix-v134-tagsv134">#</a></h2>
+<blockquote>
+<p><code>git checkout -b hotfix-v1.3.4 tags/v1.3.4</code> 是一个 Git 命令，用于基于特定标签创建一个名为 <code>hotfix-v1.3.4</code> 的新分支。</p>
+<ul>
+<li><code>git checkout</code>: 这是 Git 命令的一部分，用于切换到不同的分支或提交。</li>
+<li><code>-b hotfix-v1.3.4</code>: 这部分表示创建一个名为 <code>hotfix-v1.3.4</code> 的新分支。如果该分支已经存在，则会产生失败。</li>
+<li><code>tags/v1.3.4</code>: 这是要基于的特定标签的全名。通过指定 <code>tags/</code> 前缀后跟标签名称，可以在该标签的位置创建一个新分支。</li>
+</ul>
+<p>执行此命令后，Git 将会在当前提交的位置创建一个名为 <code>hotfix-v1.3.4</code> 的新分支，并将工作区切换到该分支上。该新分支的起点将被设置为标签 <code>v1.3.4</code> 所指向的提交。这样，你就可以在 <code>hotfix-v1.3.4</code> 分支上进行修复工作，而不会影响到其他分支。</p>
+<p>请确保你输入的标签名称和分支名称正确无误，并且相应的标签已存在。</p></blockquote>
+<h2 id="修改代码">修改代码<a hidden class="anchor" aria-hidden="true" href="#修改代码">#</a></h2>
+<h3 id="git-push-origin-headhotfix-v134">git push origin HEAD:hotfix-v1.3.4<a hidden class="anchor" aria-hidden="true" href="#git-push-origin-headhotfix-v134">#</a></h3>
+<blockquote>
+<p><code>git push origin HEAD:hotfix-v1.3.4</code> 这个 Git 命令用于将当前分支的提交推送到远程仓库 <code>origin</code> 的 <code>hotfix-v1.3.4</code> 分支上。</p>
+<ul>
+<li><code>git push</code>: 这是 Git 命令的一部分，用于将本地提交推送到远程仓库。</li>
+<li><code>origin</code>: 这是远程仓库的名称，通常默认为 <code>origin</code>。它是你与远程仓库建立连接时设置的别名。</li>
+<li><code>HEAD</code>: 这是一个指向当前分支最新提交的引用。它表示将当前分支的最新提交推送到远程仓库。</li>
+<li><code>hotfix-v1.3.4</code>: 这是远程仓库中的目标分支，你想要将当前分支的提交推送到这个分支上。</li>
+</ul>
+<p>执行此命令后，Git 将会把当前分支最新的提交推送到远程仓库 <code>origin</code> 的 <code>hotfix-v1.3.4</code> 分支上。如果该分支不存在，则会在远程仓库中创建一个新的分支。如果该分支已存在，则会覆盖远程分支上的提交。</p>
+<p>请确保你在执行此命令之前已经完成了必要的提交并检查了你要推送的目标分支。</p></blockquote>
+<h1 id="过滤大文件">过滤大文件<a hidden class="anchor" aria-hidden="true" href="#过滤大文件">#</a></h1>
+<blockquote>
+<p>一旦提交（commit）了大文件, rebase 也无法从 git 中剔出提交</p></blockquote>
+<h2 id="git-filter-repo">git filter repo<a hidden class="anchor" aria-hidden="true" href="#git-filter-repo">#</a></h2>
+<blockquote>
+</blockquote>
+<h1 id="git项目迁移">git项目迁移<a hidden class="anchor" aria-hidden="true" href="#git项目迁移">#</a></h1>
+<h2 id="新建git仓库">新建git仓库<a hidden class="anchor" aria-hidden="true" href="#新建git仓库">#</a></h2>
+<blockquote>
+<p>mkdir test
+cd test
+git init
+touch README.md
+git add README.md
+git commit -m &ldquo;first commit&rdquo;
+git remote add origin <a href="https://gitee.com/debby-echo/test.git">https://gitee.com/debby-echo/test.git</a>
+git push -u origin &ldquo;master&rdquo;</p></blockquote>
+<h2 id="git迁移现有项目到其他项目">git迁移现有项目到其他项目<a hidden class="anchor" aria-hidden="true" href="#git迁移现有项目到其他项目">#</a></h2>
+<blockquote>
+<p>export file=xxx
+git clone http://xxxyinhao/$file.git
+cd $file
+git remote rename origin old-origin
+git remote add origin http://xxx/frontend/$file.git
+git push -u origin &ndash;all
+git push -u origin &ndash;tags
+cd ../</p>
+<ol>
+<li><code>export file=xxx</code>：这是一个 Shell 命令，将一个名为 <code>file</code> 的环境变量设置为 <code>xxx</code>。</li>
+<li><code>git clone http://xxxyinhao/$file.git</code>：使用 Git 克隆命令从远程仓库克隆一个代码库。URL <code>http://xxxyinhao/$file.git</code> 中的 <code>$file</code> 将被先前设置的环境变量所替代。</li>
+<li><code>cd $file</code>：进入刚刚克隆的代码库的根目录。</li>
+<li><code>git remote rename origin old-origin</code>：将默认远程仓库的名称 <code>origin</code> 重命名为 <code>old-origin</code>。这样做是为了方便后续添加新的远程仓库。</li>
+<li><code>git remote add origin http://xxx/frontend/$file.git</code>：添加一个新的远程仓库，并将它命名为 <code>origin</code>。URL <code>http://xxx/frontend/$file.git</code> 是你要推送到的新远程仓库的地址。</li>
+<li><code>git push -u origin --all</code>：推送本地所有分支到新的远程仓库 <code>origin</code>。选项 <code>-u</code> 用于将本地分支与远程分支关联起来。</li>
+<li><code>git push -u origin --tags</code>：推送本地所有标签到新的远程仓库 <code>origin</code>。</li>
+</ol></blockquote>
+<h2 id="git修改当前项目的git地址">git修改当前项目的git地址<a hidden class="anchor" aria-hidden="true" href="#git修改当前项目的git地址">#</a></h2>
+<blockquote>
+<p>git remote set-url origin http://xxx/frontend/xxx.git</p></blockquote>
+<h1 id="gitignore">gitignore<a hidden class="anchor" aria-hidden="true" href="#gitignore">#</a></h1>
+<blockquote>
+<p>.gitignore可以忽略你不想上传的文件，比如doc,target,classes等等</p>
+<p>只需要在.git同目录下新增.gitignore文件，然后添加不需要上次的目录即可</p></blockquote>
+<h2 id="add后添加了gitignore解决办法">add后添加了.gitignore解决办法<a hidden class="anchor" aria-hidden="true" href="#add后添加了gitignore解决办法">#</a></h2>
+<h3 id="如果已经add">如果已经add<a hidden class="anchor" aria-hidden="true" href="#如果已经add">#</a></h3>
+<blockquote>
+<p>清除记录的所有文件管理信息，注意行末的点表示当前目录，一定要写</p>
+<p><code>git rm -r --cached . </code></p>
+<p>添加该仓库的所有文件，注意行末的点表示当前目录，一定要写</p>
+<p><code>git add . </code></p>
+<p>提交注释</p>
+<p><code>git commit -m &quot;.....&quot; </code></p>
+<p>推送到仓库</p>
+<p><code>git push -u origin master</code></p></blockquote>
+<h3 id="已经push">已经push<a hidden class="anchor" aria-hidden="true" href="#已经push">#</a></h3>
+<blockquote>
+<p>删除mydir目录</p>
+<p><code>git rm -r --cached mydir </code></p>
+<p>删除mydir目录下的hello.txt文件</p>
+<p><code>git rm -r --cached mydir/hello.txt </code></p>
+<p><code>git commit -m &quot;删除说明&quot;  </code></p>
+<p>推送</p>
+<p><code>git push</code></p></blockquote>
+<blockquote>
+<p>用-r参数删除目录, git rm &ndash;cached hello.txt 删除的是仓库中的文件，且本地工作区的文件会保留且不再与远程仓库发生跟踪关系，如果本地仓库中的文件也要删除则用git rm hello.txt</p>
+<p><code>git update-index --assume-unchanged  .\components.d.ts</code></p></blockquote>
+<h1 id="tag">tag<a hidden class="anchor" aria-hidden="true" href="#tag">#</a></h1>
+<h2 id="git-tag--a-v10--m-版本介绍">git tag -a v1.0 -m &ldquo;版本介绍&rdquo;<a hidden class="anchor" aria-hidden="true" href="#git-tag--a-v10--m-版本介绍">#</a></h2>
+<blockquote>
+<p>创建新的tag并添加描述信息</p></blockquote>
+<h2 id="git-tag">git tag<a hidden class="anchor" aria-hidden="true" href="#git-tag">#</a></h2>
+<blockquote>
+<p>查看所有的标签</p></blockquote>
+<h2 id="git-tag--l-v1">git tag -l &ldquo;v1.*&rdquo;<a hidden class="anchor" aria-hidden="true" href="#git-tag--l-v1">#</a></h2>
+<blockquote>
+<p>模糊匹配</p></blockquote>
+<h2 id="为早期的提交打标签">为早期的提交打标签<a hidden class="anchor" aria-hidden="true" href="#为早期的提交打标签">#</a></h2>
+<h3 id="git-log-prettyoneline">git log &ndash;pretty=oneline<a hidden class="anchor" aria-hidden="true" href="#git-log-prettyoneline">#</a></h3>
+<blockquote>
+<p>查看id后边需要使用</p></blockquote>
+<h3 id="如果遇到中文乱码解决办法">如果遇到中文乱码解决办法<a hidden class="anchor" aria-hidden="true" href="#如果遇到中文乱码解决办法">#</a></h3>
+<blockquote>
+<p>git config &ndash;global i18n.commitencoding utf-8  &ndash;该命令表示：提交命令的时候使用utf-8编码集提交</p>
+<p>git config &ndash;global i18n.logoutputencoding utf-8 &ndash;该命令表示：日志输出时使用utf-8编码集显示</p>
+<p>set LESSCHARSET=utf-8  &ndash;设置LESS字符集为utf-8</p></blockquote>
+<h3 id="git-tag--a-v10--m-版本介绍-dele264">git tag -a v1.0 -m &ldquo;版本介绍&rdquo; dele264<a hidden class="anchor" aria-hidden="true" href="#git-tag--a-v10--m-版本介绍-dele264">#</a></h3>
+<blockquote>
+<p>指定提交id打标签</p></blockquote>
+<h2 id="git-tag--d">git tag -d <tagname><a hidden class="anchor" aria-hidden="true" href="#git-tag--d">#</a></h2>
+<blockquote>
+<p>删除本地的tag</p></blockquote>
+<h2 id="git-push-origin-delete">git push origin &ndash;delete <tagname><a hidden class="anchor" aria-hidden="true" href="#git-push-origin-delete">#</a></h2>
+<blockquote>
+<p>删除远程仓库的tag</p></blockquote>
+<h1 id="示例">示例<a hidden class="anchor" aria-hidden="true" href="#示例">#</a></h1>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">~/desktop/git &gt; mkdir gittest                                                                  
+</span></span><span class="line"><span class="cl">~/desktop/git &gt; <span class="nb">cd</span> gittest                                                                    
+</span></span><span class="line"><span class="cl">~/desktop/git/gittest &gt; git init                                                               
+</span></span><span class="line"><span class="cl">Initialized empty Git repository in C:/Users/user/Desktop/git/gittest/.git/
+</span></span><span class="line"><span class="cl">~/desktop/git/gittest master &gt; git branch -M main                                               
+</span></span><span class="line"><span class="cl">~/desktop/git/gittest main &gt; git remote add origin https://github.com/loveyu233/gittest.git     
+</span></span><span class="line"><span class="cl">~/desktop/git/gittest main &gt; git checkout -b dev-t                     
+</span></span><span class="line"><span class="cl">Switched to a new branch <span class="s1">&#39;dev-t&#39;</span>
+</span></span><span class="line"><span class="cl">~/desktop/git/gittest dev-t &gt; vim readmd                                                      
+</span></span><span class="line"><span class="cl">~/desktop/git/gittest dev-t ?1 &gt; git add .                                                     
+</span></span><span class="line"><span class="cl">warning: in the working copy of <span class="s1">&#39;readmd&#39;</span>, LF will be replaced by CRLF the next <span class="nb">time</span> Git touches it
+</span></span><span class="line"><span class="cl">~/desktop/git/gittest dev-t +1 &gt; git commit -m <span class="s2">&#34;update: readme&#34;</span>                                 
+</span></span><span class="line"><span class="cl"><span class="o">[</span>dev-t <span class="o">(</span>root-commit<span class="o">)</span> 73fe335<span class="o">]</span> update: readme
+</span></span><span class="line"><span class="cl"> <span class="m">1</span> file changed, <span class="m">1</span> insertion<span class="o">(</span>+<span class="o">)</span>
+</span></span><span class="line"><span class="cl"> create mode <span class="m">100644</span> readmd
+</span></span><span class="line"><span class="cl">~/desktop/git/gittest dev-t &gt; git push origin HEAD:dev-t                                      
+</span></span><span class="line"><span class="cl">fatal: unable to access <span class="s1">&#39;https://github.com/loveyu233/gittest.git/&#39;</span>: Recv failure: Connection was reset
+</span></span><span class="line"><span class="cl">~/desktop/git/gittest dev-t &gt; git commit -m <span class="s2">&#34;update: readme&#34;</span>                                   
+</span></span><span class="line"><span class="cl">On branch dev-t
+</span></span><span class="line"><span class="cl">nothing to commit, working tree clean
+</span></span><span class="line"><span class="cl">~/desktop/git/gittest dev-t &gt; git push origin HEAD:dev-t                                       
+</span></span><span class="line"><span class="cl">Enumerating objects: 3, <span class="k">done</span>.
+</span></span><span class="line"><span class="cl">Counting objects: 100% <span class="o">(</span>3/3<span class="o">)</span>, <span class="k">done</span>.
+</span></span><span class="line"><span class="cl">Writing objects: 100% <span class="o">(</span>3/3<span class="o">)</span>, <span class="m">216</span> bytes <span class="p">|</span> 216.00 KiB/s, <span class="k">done</span>.
+</span></span><span class="line"><span class="cl">Total <span class="m">3</span> <span class="o">(</span>delta 0<span class="o">)</span>, reused <span class="m">0</span> <span class="o">(</span>delta 0<span class="o">)</span>, pack-reused <span class="m">0</span>
+</span></span><span class="line"><span class="cl">To https://github.com/loveyu233/gittest.git
+</span></span><span class="line"><span class="cl"> * <span class="o">[</span>new branch<span class="o">]</span>      HEAD -&gt; dev-t
+</span></span><span class="line"><span class="cl">~/desktop/git/gittest dev-t &gt; vim readmd                                                       
+</span></span><span class="line"><span class="cl">~/desktop/git/gittest dev-t !1 &gt; git add .                                                     
+</span></span><span class="line"><span class="cl">warning: in the working copy of <span class="s1">&#39;readmd&#39;</span>, LF will be replaced by CRLF the next <span class="nb">time</span> Git touches it
+</span></span><span class="line"><span class="cl">~/desktop/git/gittest dev-t +1 &gt; git commit -m <span class="s2">&#34;update: readme1&#34;</span>                               
+</span></span><span class="line"><span class="cl"><span class="o">[</span>dev-t adecc28<span class="o">]</span> update: readme1
+</span></span><span class="line"><span class="cl"> <span class="m">1</span> file changed, <span class="m">1</span> insertion<span class="o">(</span>+<span class="o">)</span>, <span class="m">1</span> deletion<span class="o">(</span>-<span class="o">)</span>
+</span></span><span class="line"><span class="cl">~/desktop/git/gittest dev-t &gt; git push origin HEAD:dev-t                                       
+</span></span><span class="line"><span class="cl">fatal: unable to access <span class="s1">&#39;https://github.com/loveyu233/gittest.git/&#39;</span>: Failed to connect to github.com port <span class="m">443</span> after <span class="m">21089</span> ms: Couldn<span class="s1">&#39;t connect to server
+</span></span></span><span class="line"><span class="cl"><span class="s1">~/desktop/git/gittest dev-t &gt; git push origin HEAD:dev-t                                       
+</span></span></span><span class="line"><span class="cl"><span class="s1">Enumerating objects: 5, done.
+</span></span></span><span class="line"><span class="cl"><span class="s1">Counting objects: 100% (5/5), done.
+</span></span></span><span class="line"><span class="cl"><span class="s1">Writing objects: 100% (3/3), 249 bytes | 249.00 KiB/s, done.
+</span></span></span><span class="line"><span class="cl"><span class="s1">Total 3 (delta 0), reused 0 (delta 0), pack-reused 0
+</span></span></span><span class="line"><span class="cl"><span class="s1">To https://github.com/loveyu233/gittest.git
+</span></span></span><span class="line"><span class="cl"><span class="s1">   73fe335..adecc28  HEAD -&gt; dev-t
+</span></span></span><span class="line"><span class="cl"><span class="s1">~/desktop/git/gittest dev-t &gt; git branch -D dev-t                                               
+</span></span></span><span class="line"><span class="cl"><span class="s1">error: Cannot delete branch &#39;</span>dev-t<span class="s1">&#39; checked out at &#39;</span>C:/Users/user/Desktop/git/gittest<span class="s1">&#39;
+</span></span></span><span class="line"><span class="cl"><span class="s1">~/desktop/git/gittest dev-t &gt; git checkout main                                                 
+</span></span></span><span class="line"><span class="cl"><span class="s1">error: pathspec &#39;</span>main<span class="s1">&#39; did not match any file(s) known to git
+</span></span></span><span class="line"><span class="cl"><span class="s1">~/desktop/git/gittest dev-t &gt; git fetch origin main                                             
+</span></span></span><span class="line"><span class="cl"><span class="s1">remote: Enumerating objects: 1, done.
+</span></span></span><span class="line"><span class="cl"><span class="s1">remote: Counting objects: 100% (1/1), done.
+</span></span></span><span class="line"><span class="cl"><span class="s1">remote: Total 1 (delta 0), reused 0 (delta 0), pack-reused 0
+</span></span></span><span class="line"><span class="cl"><span class="s1">Unpacking objects: 100% (1/1), 625 bytes | 208.00 KiB/s, done.
+</span></span></span><span class="line"><span class="cl"><span class="s1">From https://github.com/loveyu233/gittest
+</span></span></span><span class="line"><span class="cl"><span class="s1"> * branch            main       -&gt; FETCH_HEAD
+</span></span></span><span class="line"><span class="cl"><span class="s1"> * [new branch]      main       -&gt; origin/main
+</span></span></span><span class="line"><span class="cl"><span class="s1">~/desktop/git/gittest dev-t &gt; git checkout main                                                 
+</span></span></span><span class="line"><span class="cl"><span class="s1">Switched to a new branch &#39;</span>main<span class="s1">&#39;
+</span></span></span><span class="line"><span class="cl"><span class="s1">branch &#39;</span>main<span class="s1">&#39; set up to track &#39;</span>origin/main<span class="s1">&#39;.
+</span></span></span><span class="line"><span class="cl"><span class="s1">~/desktop/git/gittest main &gt; git branch -D dev-t                                               
+</span></span></span><span class="line"><span class="cl"><span class="s1">Deleted branch dev-t (was adecc28).
+</span></span></span><span class="line"><span class="cl"><span class="s1">~/desktop/git/gittest main &gt; git checkout -b dev-t2 origin/main                                 
+</span></span></span><span class="line"><span class="cl"><span class="s1">Switched to a new branch &#39;</span>dev-t2<span class="s1">&#39;
+</span></span></span><span class="line"><span class="cl"><span class="s1">branch &#39;</span>dev-t2<span class="s1">&#39; set up to track &#39;</span>origin/main<span class="s1">&#39;.
+</span></span></span><span class="line"><span class="cl"><span class="s1">~/desktop/git/gittest dev-t2:main &gt; vim readmd                                                 
+</span></span></span><span class="line"><span class="cl"><span class="s1">~/desktop/git/gittest dev-t2:main !1 &gt; git add .                                               
+</span></span></span><span class="line"><span class="cl"><span class="s1">warning: in the working copy of &#39;</span>readmd<span class="s1">&#39;, LF will be replaced by CRLF the next time Git touches it
+</span></span></span><span class="line"><span class="cl"><span class="s1">~/desktop/git/gittest dev-t2:main +1 &gt; git commit -m &#34;update: readmet2&#34;                         
+</span></span></span><span class="line"><span class="cl"><span class="s1">[dev-t2 9f5b39d] update: readmet2
+</span></span></span><span class="line"><span class="cl"><span class="s1"> 1 file changed, 1 insertion(+), 1 deletion(-)
+</span></span></span><span class="line"><span class="cl"><span class="s1">~/desktop/git/gittest dev-t2:main &gt;1 &gt; git push origin HEAD:dev-t2                             
+</span></span></span><span class="line"><span class="cl"><span class="s1">Enumerating objects: 5, done.
+</span></span></span><span class="line"><span class="cl"><span class="s1">Counting objects: 100% (5/5), done.
+</span></span></span><span class="line"><span class="cl"><span class="s1">Writing objects: 100% (3/3), 277 bytes | 277.00 KiB/s, done.
+</span></span></span><span class="line"><span class="cl"><span class="s1">Total 3 (delta 0), reused 0 (delta 0), pack-reused 0
+</span></span></span><span class="line"><span class="cl"><span class="s1">remote:
+</span></span></span><span class="line"><span class="cl"><span class="s1">remote: Create a pull request for &#39;</span>dev-t2<span class="s1">&#39; on GitHub by visiting:
+</span></span></span><span class="line"><span class="cl"><span class="s1">remote:      https://github.com/loveyu233/gittest/pull/new/dev-t2
+</span></span></span><span class="line"><span class="cl"><span class="s1">remote:
+</span></span></span><span class="line"><span class="cl"><span class="s1">To https://github.com/loveyu233/gittest.git
+</span></span></span><span class="line"><span class="cl"><span class="s1"> * [new branch]      HEAD -&gt; dev-t2
+</span></span></span><span class="line"><span class="cl"><span class="s1">~/desktop/git/gittest dev-t2:main &gt;1 &gt; git status                                               
+</span></span></span><span class="line"><span class="cl"><span class="s1">On branch dev-t2
+</span></span></span><span class="line"><span class="cl"><span class="s1">Your branch is ahead of &#39;</span>origin/main<span class="s1">&#39; by 1 commit.
+</span></span></span><span class="line"><span class="cl"><span class="s1">  (use &#34;git push&#34; to publish your local commits)
+</span></span></span><span class="line"><span class="cl"><span class="s1">nothing to commit, working tree clean
+</span></span></span><span class="line"><span class="cl"><span class="s1">~/desktop/git/gittest dev-t2:main &gt;1 &gt; vim readmd                                             
+</span></span></span><span class="line"><span class="cl"><span class="s1">~/desktop/git/gittest dev-t2:main &gt;1 !1 &gt; git add .                                             
+</span></span></span><span class="line"><span class="cl"><span class="s1">warning: in the working copy of &#39;</span>readmd<span class="s1">&#39;, LF will be replaced by CRLF the next time Git touches it
+</span></span></span><span class="line"><span class="cl"><span class="s1">~/desktop/git/gittest dev-t2:main &gt;1 +1 &gt; git commit -m &#34;update: readmet2abc&#34;                   
+</span></span></span><span class="line"><span class="cl"><span class="s1">[dev-t2 93eb93f] update: readmet2abc
+</span></span></span><span class="line"><span class="cl"><span class="s1"> 1 file changed, 2 insertions(+), 1 deletion(-)
+</span></span></span><span class="line"><span class="cl"><span class="s1">~/desktop/git/gittest dev-t2:main &gt;2 &gt; git push origin HEAD:dev-t2                             
+</span></span></span><span class="line"><span class="cl"><span class="s1">~/desktop/git/gittest dev-t2:main &gt;2 &gt; git rebase -i HEAD~2                                     
+</span></span></span><span class="line"><span class="cl"><span class="s1">Successfully rebased and updated refs/heads/dev-t2.
+</span></span></span><span class="line"><span class="cl"><span class="s1">~/desktop/git/gittest dev-t2:main &gt;2 &gt; git push origin HEAD:dev-t2 -f                           
+</span></span></span><span class="line"><span class="cl"><span class="s1">fatal: unable to access &#39;</span>https://github.com/loveyu233/gittest.git/<span class="s1">&#39;: Recv failure: Connection was reset
+</span></span></span><span class="line"><span class="cl"><span class="s1">~/desktop/git/gittest dev-t2:main &gt;2 &gt; git push origin HEAD:dev-t2 -f                           
+</span></span></span><span class="line"><span class="cl"><span class="s1">Enumerating objects: 5, done.
+</span></span></span><span class="line"><span class="cl"><span class="s1">Counting objects: 100% (5/5), done.
+</span></span></span><span class="line"><span class="cl"><span class="s1">Delta compression using up to 12 threads
+</span></span></span><span class="line"><span class="cl"><span class="s1">Compressing objects: 100% (2/2), done.
+</span></span></span><span class="line"><span class="cl"><span class="s1">Writing objects: 100% (3/3), 291 bytes | 291.00 KiB/s, done.
+</span></span></span><span class="line"><span class="cl"><span class="s1">Total 3 (delta 0), reused 0 (delta 0), pack-reused 0
+</span></span></span><span class="line"><span class="cl"><span class="s1">To https://github.com/loveyu233/gittest.git
+</span></span></span><span class="line"><span class="cl"><span class="s1">   9f5b39d..93eb93f  HEAD -&gt; dev-t2
+</span></span></span><span class="line"><span class="cl"><span class="s1">~/desktop/git/gittest dev-t2:main &gt;2 &gt; git tag                                                 
+</span></span></span><span class="line"><span class="cl"><span class="s1">~/desktop/git/gittest dev-t2:main &gt;2 &gt; git tag -a v1.0 -m &#34;msg&#34;                                 
+</span></span></span><span class="line"><span class="cl"><span class="s1">~/desktop/git/gittest dev-t2:main &gt;2 &gt; git push origin v1.0                                     
+</span></span></span><span class="line"><span class="cl"><span class="s1">Enumerating objects: 1, done.
+</span></span></span><span class="line"><span class="cl"><span class="s1">Counting objects: 100% (1/1), done.
+</span></span></span><span class="line"><span class="cl"><span class="s1">Writing objects: 100% (1/1), 155 bytes | 155.00 KiB/s, done.
+</span></span></span><span class="line"><span class="cl"><span class="s1">Total 1 (delta 0), reused 0 (delta 0), pack-reused 0
+</span></span></span><span class="line"><span class="cl"><span class="s1">To https://github.com/loveyu233/gittest.git
+</span></span></span><span class="line"><span class="cl"><span class="s1"> * [new tag]         v1.0 -&gt; v1.0
+</span></span></span><span class="line"><span class="cl"><span class="s1">~/desktop/git/gittest dev-t2:main &gt;2 &gt; git tag                                                 
+</span></span></span><span class="line"><span class="cl"><span class="s1">~/desktop/git/gittest dev-t2:main &gt;2 &gt; git log --pretty=oneline                                
+</span></span></span><span class="line"><span class="cl"><span class="s1">~/desktop/git/gittest dev-t2:main &gt;2 &gt; git tag -a v1.1 -m &#34;新内容&#34; 93eb93                       
+</span></span></span><span class="line"><span class="cl"><span class="s1">~/desktop/git/gittest dev-t2:main &gt;2 &gt; git tag -d v1.0                                        
+</span></span></span><span class="line"><span class="cl"><span class="s1">Deleted tag &#39;</span>v1.0<span class="err">&#39;</span> <span class="o">(</span>was 32d1adc<span class="o">)</span>
+</span></span><span class="line"><span class="cl">~/desktop/git/gittest dev-t2:main &gt;2 &gt; git push origin --delete tag                             
+</span></span><span class="line"><span class="cl">fatal: tag shorthand without &lt;tag&gt;
+</span></span><span class="line"><span class="cl">~/desktop/git/gittest dev-t2:main &gt;2 &gt; git push origin --delete v1.0                           
+</span></span><span class="line"><span class="cl">To https://github.com/loveyu233/gittest.git
+</span></span><span class="line"><span class="cl"> - <span class="o">[</span>deleted<span class="o">]</span>         v1.0
+</span></span><span class="line"><span class="cl">~/desktop/git/gittest dev-t2:main &gt;2 &gt; git push origin v1.1                                     
+</span></span><span class="line"><span class="cl">Enumerating objects: 1, <span class="k">done</span>.
+</span></span><span class="line"><span class="cl">Counting objects: 100% <span class="o">(</span>1/1<span class="o">)</span>, <span class="k">done</span>.
+</span></span><span class="line"><span class="cl">Writing objects: 100% <span class="o">(</span>1/1<span class="o">)</span>, <span class="m">171</span> bytes <span class="p">|</span> 171.00 KiB/s, <span class="k">done</span>.
+</span></span><span class="line"><span class="cl">Total <span class="m">1</span> <span class="o">(</span>delta 0<span class="o">)</span>, reused <span class="m">0</span> <span class="o">(</span>delta 0<span class="o">)</span>, pack-reused <span class="m">0</span>
+</span></span><span class="line"><span class="cl">To https://github.com/loveyu233/gittest.git
+</span></span><span class="line"><span class="cl"> * <span class="o">[</span>new tag<span class="o">]</span>         v1.1 -&gt; v1.1  
+</span></span></code></pre></div>
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="http://localhost:1313/tags/go/">Go</a></li>
+      <li><a href="http://localhost:1313/tags/git/">Git</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="http://localhost:1313/posts/go/gotoolpprof%E4%BD%BF%E7%94%A8/">
+    <span class="title">« </span>
+    <br>
+    <span>pprof</span>
+  </a>
+  <a class="next" href="http://localhost:1313/posts/go/fiber%E7%AC%94%E8%AE%B0/">
+    <span class="title"> »</span>
+    <br>
+    <span>fiber基础</span>
+  </a>
+</nav>
+
+
+<ul class="share-buttons">
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share git项目使用 on x"
+            href="https://x.com/intent/tweet/?text=git%e9%a1%b9%e7%9b%ae%e4%bd%bf%e7%94%a8&amp;url=http%3a%2f%2flocalhost%3a1313%2fposts%2fother%2fgit%25E9%25A1%25B9%25E7%259B%25AE%25E4%25BD%25BF%25E7%2594%25A8%2f&amp;hashtags=go%2cgit">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M512 62.554 L 512 449.446 C 512 483.97 483.97 512 449.446 512 L 62.554 512 C 28.03 512 0 483.97 0 449.446 L 0 62.554 C 0 28.03 28.029 0 62.554 0 L 449.446 0 C 483.971 0 512 28.03 512 62.554 Z M 269.951 190.75 L 182.567 75.216 L 56 75.216 L 207.216 272.95 L 63.9 436.783 L 125.266 436.783 L 235.9 310.383 L 332.567 436.783 L 456 436.783 L 298.367 228.367 L 432.367 75.216 L 371.033 75.216 Z M 127.633 110 L 164.101 110 L 383.481 400.065 L 349.5 400.065 Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share git项目使用 on linkedin"
+            href="https://www.linkedin.com/shareArticle?mini=true&amp;url=http%3a%2f%2flocalhost%3a1313%2fposts%2fother%2fgit%25E9%25A1%25B9%25E7%259B%25AE%25E4%25BD%25BF%25E7%2594%25A8%2f&amp;title=git%e9%a1%b9%e7%9b%ae%e4%bd%bf%e7%94%a8&amp;summary=git%e9%a1%b9%e7%9b%ae%e4%bd%bf%e7%94%a8&amp;source=http%3a%2f%2flocalhost%3a1313%2fposts%2fother%2fgit%25E9%25A1%25B9%25E7%259B%25AE%25E4%25BD%25BF%25E7%2594%25A8%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-288.985,423.278l0,-225.717l-75.04,0l0,225.717l75.04,0Zm270.539,0l0,-129.439c0,-69.333 -37.018,-101.586 -86.381,-101.586c-39.804,0 -57.634,21.891 -67.617,37.266l0,-31.958l-75.021,0c0.995,21.181 0,225.717 0,225.717l75.02,0l0,-126.056c0,-6.748 0.486,-13.492 2.474,-18.315c5.414,-13.475 17.767,-27.434 38.494,-27.434c27.135,0 38.007,20.707 38.007,51.037l0,120.768l75.024,0Zm-307.552,-334.556c-25.674,0 -42.448,16.879 -42.448,39.002c0,21.658 16.264,39.002 41.455,39.002l0.484,0c26.165,0 42.452,-17.344 42.452,-39.002c-0.485,-22.092 -16.241,-38.954 -41.943,-39.002Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share git项目使用 on reddit"
+            href="https://reddit.com/submit?url=http%3a%2f%2flocalhost%3a1313%2fposts%2fother%2fgit%25E9%25A1%25B9%25E7%259B%25AE%25E4%25BD%25BF%25E7%2594%25A8%2f&title=git%e9%a1%b9%e7%9b%ae%e4%bd%bf%e7%94%a8">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-3.446,265.638c0,-22.964 -18.616,-41.58 -41.58,-41.58c-11.211,0 -21.361,4.457 -28.841,11.666c-28.424,-20.508 -67.586,-33.757 -111.204,-35.278l18.941,-89.121l61.884,13.157c0.756,15.734 13.642,28.29 29.56,28.29c16.407,0 29.706,-13.299 29.706,-29.701c0,-16.403 -13.299,-29.702 -29.706,-29.702c-11.666,0 -21.657,6.792 -26.515,16.578l-69.105,-14.69c-1.922,-0.418 -3.939,-0.042 -5.585,1.036c-1.658,1.073 -2.811,2.761 -3.224,4.686l-21.152,99.438c-44.258,1.228 -84.046,14.494 -112.837,35.232c-7.468,-7.164 -17.589,-11.591 -28.757,-11.591c-22.965,0 -41.585,18.616 -41.585,41.58c0,16.896 10.095,31.41 24.568,37.918c-0.639,4.135 -0.99,8.328 -0.99,12.576c0,63.977 74.469,115.836 166.33,115.836c91.861,0 166.334,-51.859 166.334,-115.836c0,-4.218 -0.347,-8.387 -0.977,-12.493c14.564,-6.47 24.735,-21.034 24.735,-38.001Zm-119.474,108.193c-20.27,20.241 -59.115,21.816 -70.534,21.816c-11.428,0 -50.277,-1.575 -70.522,-21.82c-3.007,-3.008 -3.007,-7.882 0,-10.889c3.003,-2.999 7.882,-3.003 10.885,0c12.777,12.781 40.11,17.317 59.637,17.317c19.522,0 46.86,-4.536 59.657,-17.321c3.016,-2.999 7.886,-2.995 10.885,0.008c3.008,3.011 3.003,7.882 -0.008,10.889Zm-5.23,-48.781c-16.373,0 -29.701,-13.324 -29.701,-29.698c0,-16.381 13.328,-29.714 29.701,-29.714c16.378,0 29.706,13.333 29.706,29.714c0,16.374 -13.328,29.698 -29.706,29.698Zm-160.386,-29.702c0,-16.381 13.328,-29.71 29.714,-29.71c16.369,0 29.689,13.329 29.689,29.71c0,16.373 -13.32,29.693 -29.689,29.693c-16.386,0 -29.714,-13.32 -29.714,-29.693Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share git项目使用 on facebook"
+            href="https://facebook.com/sharer/sharer.php?u=http%3a%2f%2flocalhost%3a1313%2fposts%2fother%2fgit%25E9%25A1%25B9%25E7%259B%25AE%25E4%25BD%25BF%25E7%2594%25A8%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-106.468,0l0,-192.915l66.6,0l12.672,-82.621l-79.272,0l0,-53.617c0,-22.603 11.073,-44.636 46.58,-44.636l36.042,0l0,-70.34c0,0 -32.71,-5.582 -63.982,-5.582c-65.288,0 -107.96,39.569 -107.96,111.204l0,62.971l-72.573,0l0,82.621l72.573,0l0,192.915l-191.104,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share git项目使用 on whatsapp"
+            href="https://api.whatsapp.com/send?text=git%e9%a1%b9%e7%9b%ae%e4%bd%bf%e7%94%a8%20-%20http%3a%2f%2flocalhost%3a1313%2fposts%2fother%2fgit%25E9%25A1%25B9%25E7%259B%25AE%25E4%25BD%25BF%25E7%2594%25A8%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-58.673,127.703c-33.842,-33.881 -78.847,-52.548 -126.798,-52.568c-98.799,0 -179.21,80.405 -179.249,179.234c-0.013,31.593 8.241,62.428 23.927,89.612l-25.429,92.884l95.021,-24.925c26.181,14.28 55.659,21.807 85.658,21.816l0.074,0c98.789,0 179.206,-80.413 179.247,-179.243c0.018,-47.895 -18.61,-92.93 -52.451,-126.81Zm-126.797,275.782l-0.06,0c-26.734,-0.01 -52.954,-7.193 -75.828,-20.767l-5.441,-3.229l-56.386,14.792l15.05,-54.977l-3.542,-5.637c-14.913,-23.72 -22.791,-51.136 -22.779,-79.287c0.033,-82.142 66.867,-148.971 149.046,-148.971c39.793,0.014 77.199,15.531 105.329,43.692c28.128,28.16 43.609,65.592 43.594,105.4c-0.034,82.149 -66.866,148.983 -148.983,148.984Zm81.721,-111.581c-4.479,-2.242 -26.499,-13.075 -30.604,-14.571c-4.105,-1.495 -7.091,-2.241 -10.077,2.241c-2.986,4.483 -11.569,14.572 -14.182,17.562c-2.612,2.988 -5.225,3.364 -9.703,1.12c-4.479,-2.241 -18.91,-6.97 -36.017,-22.23c-13.314,-11.876 -22.304,-26.542 -24.916,-31.026c-2.612,-4.484 -0.279,-6.908 1.963,-9.14c2.016,-2.007 4.48,-5.232 6.719,-7.847c2.24,-2.615 2.986,-4.484 4.479,-7.472c1.493,-2.99 0.747,-5.604 -0.374,-7.846c-1.119,-2.241 -10.077,-24.288 -13.809,-33.256c-3.635,-8.733 -7.327,-7.55 -10.077,-7.688c-2.609,-0.13 -5.598,-0.158 -8.583,-0.158c-2.986,0 -7.839,1.121 -11.944,5.604c-4.105,4.484 -15.675,15.32 -15.675,37.364c0,22.046 16.048,43.342 18.287,46.332c2.24,2.99 31.582,48.227 76.511,67.627c10.685,4.615 19.028,7.371 25.533,9.434c10.728,3.41 20.492,2.929 28.209,1.775c8.605,-1.285 26.499,-10.833 30.231,-21.295c3.732,-10.464 3.732,-19.431 2.612,-21.298c-1.119,-1.869 -4.105,-2.99 -8.583,-5.232Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share git项目使用 on telegram"
+            href="https://telegram.me/share/url?text=git%e9%a1%b9%e7%9b%ae%e4%bd%bf%e7%94%a8&amp;url=http%3a%2f%2flocalhost%3a1313%2fposts%2fother%2fgit%25E9%25A1%25B9%25E7%259B%25AE%25E4%25BD%25BF%25E7%2594%25A8%2f">
+            <svg version="1.1" xml:space="preserve" viewBox="2 2 28 28" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M26.49,29.86H5.5a3.37,3.37,0,0,1-2.47-1,3.35,3.35,0,0,1-1-2.47V5.48A3.36,3.36,0,0,1,3,3,3.37,3.37,0,0,1,5.5,2h21A3.38,3.38,0,0,1,29,3a3.36,3.36,0,0,1,1,2.46V26.37a3.35,3.35,0,0,1-1,2.47A3.38,3.38,0,0,1,26.49,29.86Zm-5.38-6.71a.79.79,0,0,0,.85-.66L24.73,9.24a.55.55,0,0,0-.18-.46.62.62,0,0,0-.41-.17q-.08,0-16.53,6.11a.59.59,0,0,0-.41.59.57.57,0,0,0,.43.52l4,1.24,1.61,4.83a.62.62,0,0,0,.63.43.56.56,0,0,0,.4-.17L16.54,20l4.09,3A.9.9,0,0,0,21.11,23.15ZM13.8,20.71l-1.21-4q8.72-5.55,8.78-5.55c.15,0,.23,0,.23.16a.18.18,0,0,1,0,.06s-2.51,2.3-7.52,6.8Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share git项目使用 on ycombinator"
+            href="https://news.ycombinator.com/submitlink?t=git%e9%a1%b9%e7%9b%ae%e4%bd%bf%e7%94%a8&u=http%3a%2f%2flocalhost%3a1313%2fposts%2fother%2fgit%25E9%25A1%25B9%25E7%259B%25AE%25E4%25BD%25BF%25E7%2594%25A8%2f">
+            <svg version="1.1" xml:space="preserve" width="30px" height="30px" viewBox="0 0 512 512" fill="currentColor"
+                xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape">
+                <path
+                    d="M449.446 0C483.971 0 512 28.03 512 62.554L512 449.446C512 483.97 483.97 512 449.446 512L62.554 512C28.03 512 0 483.97 0 449.446L0 62.554C0 28.03 28.029 0 62.554 0L449.446 0ZM183.8767 87.9921H121.8427L230.6673 292.4508V424.0079H281.3328V292.4508L390.1575 87.9921H328.1233L256 238.2489z" />
+            </svg>
+        </a>
+    </li>
+</ul>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2025 <a href="http://localhost:1313/">loveyu233</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

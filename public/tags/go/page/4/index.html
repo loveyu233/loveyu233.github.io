@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Go | loveyu233</title>
+<meta name="keywords" content="">
+<meta name="description" content="我的个人博客 - 分享技术与生活">
+<meta name="author" content="loveyu233">
+<link rel="canonical" href="http://localhost:1313/tags/go/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.e13ff79a7b90ac30a7f805291f902c75095888118dcb1fccef74850e837f1253.css" integrity="sha256-4T/3mnuQrDCn&#43;AUpH5AsdQlYiBGNyx/M73SFDoN/ElM=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" type="application/rss+xml" href="http://localhost:1313/tags/go/index.xml">
+<link rel="alternate" hreflang="zh-cn" href="http://localhost:1313/tags/go/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:url" content="http://localhost:1313/tags/go/">
+  <meta property="og:site_name" content="loveyu233">
+  <meta property="og:title" content="Go">
+  <meta property="og:description" content="我的个人博客 - 分享技术与生活">
+  <meta property="og:locale" content="zh-cn">
+  <meta property="og:type" content="website">
+      <meta property="og:image" content="http://localhost:1313/images/cover.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://localhost:1313/images/cover.png">
+<meta name="twitter:title" content="Go">
+<meta name="twitter:description" content="我的个人博客 - 分享技术与生活">
+
+</head>
+
+<body class="list" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="loveyu233 (Alt + H)">loveyu233</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/archives" title="归档">
+                    <span>归档</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/search/" title="搜索">
+                    <span>搜索</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/tags/" title="标签">
+                    <span>标签</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main"> 
+<header class="page-header"><div class="breadcrumbs"><a href="http://localhost:1313/">Home</a>&nbsp;»&nbsp;<a href="http://localhost:1313/tags/">Tags</a></div>
+  <h1>
+    Go
+    <a href="/tags/go/index.xml" title="RSS" aria-label="RSS">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" height="23">
+        <path d="M4 11a9 9 0 0 1 9 9" />
+        <path d="M4 4a16 16 0 0 1 16 16" />
+        <circle cx="5" cy="19" r="1" />
+      </svg>
+    </a>
+  </h1>
+</header>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">滑块验证码实现
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>滑块验证码实现 思路：
+随机数生成x，y两个随机数；x，y随机数大小不能超过背景图片的大小，不能小于遮盖图片的大小 uuid生成bgId作为最后背景图的标识 把x，y作为最大坐标值，x，y分别减去遮盖图片的大小作为最小坐标值，通过最大和最小坐标值可以得到一个矩形 在背景图片中裁剪出这个矩形大小的图片，这个图片为滑块图片 把背景图中裁剪的区域填充进遮盖图片，填充后的图片为真正的背景图 分别把滑块图片和背景图进行base64编码 把背景图的bgid以及x轴坐标保存在服务器缓存中，把bgid保存在客户端缓存中 返回给前端滑块图片和背景图片的base64编码以及y轴坐标 用户滑动滑块后前端返回用户滑动后的x轴坐标 后端拿到客户端缓存中的bgId以及前端返回的x轴坐标把这些数据和服务器缓存中的数据做对比，在允许的误差内即为验证通过 用到的第三方库为：
+&#34;github.com/disintegration/imaging&#34; &#34;github.com/google/uuid&#34; func GetRandInt(max int) int { num, _ := rand.Int(rand.Reader, big.NewInt(int64(max-1))) return int(num.Int64()) } func CreateCode() (string, string, int, int) { //生成随机数,用来随机选取图片 nums := GetRandInt(10) //用于生成的图片名称 imageId := uuid.New().String() //获取图片 f, _ := os.Open(&#34;./jigsaw/bg/&#34; &#43; strconv.Itoa(nums) &#43; &#34;.png&#34;) //获取随机x坐标 imageRandX := GetRandInt(480 - 100) if imageRandX &lt; 200 { imageRandX &#43;= 200 } //获取随机y坐标 imageRandY := GetRandInt(240 - 100) if imageRandY &lt; 100 { imageRandY &#43;= 100 } //转化为image对象 m, err := png.Decode(f) if err != nil { panic(err) } //设置截取的最大坐标值和最小坐标值 maxPotion := image.Point{ X: imageRandX, Y: imageRandY, } minPotion := image.Point{ X: imageRandX - 100, Y: imageRandY - 100, } subimg := image.Rectangle{ Max: maxPotion, Min: minPotion, } f, err = os.Create(&#34;./jigsaw/code/&#34; &#43; imageId &#43; &#34;screenshot.jpeg&#34;) defer f.Close() //截取图像 data := imaging.Crop(m, subimg) jpeg.Encode(f, data, nil) //base64编码 buffer := bytes.NewBuffer(nil) jpeg.Encode(buffer, data, nil) maskBase64 := base64.StdEncoding.EncodeToString(buffer.Bytes()) //设置遮罩 bkBase64 := createCodeImg(&#34;./jigsaw/bg/&#34;&#43;strconv.Itoa(nums)&#43;&#34;.png&#34;, minPotion, imageId) return maskBase64, bkBase64, imageRandX, imageRandY } func createCodeImg(path string, minPotion image.Point, imageId string) string { bg, err := os.Open(path) if err != nil { panic(err) } maskFile, err := os.Open(&#34;./jigsaw/mask.png&#34;) if err != nil { panic(err) } bgimg, err := png.Decode(bg) maskimg, err := png.Decode(maskFile) //参数：背景图，遮盖图，坐标，透明度 data := imaging.Overlay(bgimg, maskimg, minPotion, 1.0) f, err := os.Create(&#34;./jigsaw/code/&#34; &#43; imageId &#43; &#34;.jpeg&#34;) defer f.Close() jpeg.Encode(f, data, nil) //base64编码 buffer := bytes.NewBuffer(nil) jpeg.Encode(buffer, data, nil) return base64.StdEncoding.EncodeToString(buffer.Bytes()) } </p>
+  </div>
+  <footer class="entry-footer"><span title='2022-12-04 19:38:37 +0800 CST'>December 4, 2022</span>&nbsp;·&nbsp;2 min&nbsp;·&nbsp;loveyu</footer>
+  <a class="entry-link" aria-label="post link to 滑块验证码实现" href="http://localhost:1313/posts/go/%E6%BB%91%E5%9D%97%E9%AA%8C%E8%AF%81%E7%A0%81%E5%AE%9E%E7%8E%B0/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">实战技巧
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Redis SETNX 命令在指定的 key 不存在时，为 key 设置指定的值。
+设置成功，返回 1 。 设置失败，返回 0 。
+可以用在分布式锁中
+SETNX KEY_NAME VALUE redis&gt; EXISTS job # job 不存在 (integer) 0 redis&gt; SETNX job &#34;programmer&#34; # job 设置成功 (integer) 1 redis&gt; SETNX job &#34;code-farmer&#34; # 尝试覆盖 job ，失败 (integer) 0 redis&gt; GET job # 没有被覆盖 &#34;programmer&#34; 分布式锁实现 type RedisLock struct { LockName string LockValue string TTl time.Duration } func NewRedisLock(lockName, lockValue string, tll time.Duration) *RedisLock { return &amp;RedisLock{ LockName: lockName, LockValue: lockValue, TTl: tll, } } func (r *RedisLock) TryLock() bool { result, err := redisClient.SetNX(global.Content, lockPrefix&#43;r.LockName, r.LockValue, r.TTl).Result() if err != nil { log.Println(err) } return result } // 使用lua脚本使多条命令具有原子性 var UnLockLuaScript string = ` if redis.call(&#34;GET&#34;,KEYS[1]) == ARGV[1] then return redis.call(&#34;DEL&#34;,KEYS[1]) else return 0 end` func (r *RedisLock) UnLock() { script := redis.NewScript(global.UnLockLuaScript) script.Run(global.Content, redisClient, []string{lockPrefix &#43; r.LockName}, r.LockValue) } Setbit Setbit 命令用于对 key 所储存的字符串值，设置或清除指定偏移量上的位(bit)。
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2022-12-04 19:38:37 +0800 CST'>December 4, 2022</span>&nbsp;·&nbsp;8 min&nbsp;·&nbsp;loveyu</footer>
+  <a class="entry-link" aria-label="post link to 实战技巧" href="http://localhost:1313/posts/go/%E5%AE%9E%E6%88%98%E6%8A%80%E5%B7%A7/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Go Redis项目使用
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>redis实战总结 一：redis存储验证码 相关代码 只展示相关技术点的代码，看完可自己实现
+生成验证码
+func Code() string { rnd := rand.New(rand.NewSource(time.Now().UnixNano())) vcode := fmt.Sprintf(&#34;%06v&#34;, rnd.Int31n(1000000)) return vcode } 存储和读取redis
+client := redis.NewClient(&#34;url&#34;) // key可以为用户手机号、value为Code()生成的验证码；成功保存的返回值为：result:ok err:nil result, err := client.Set(context.TODO(), &#34;key&#34;, &#34;value&#34;, time.Second*60).Result() // result为 key 对应的 value result, err = client.Get(context.TODO(), &#34;key&#34;).Result() 生成jwt/判断jwt
+/*参数结构体为自定义结构体： type JwtClaims struct { tb.TbUser jwt.StandardClaims } 只要包含jwt.StandardClaims即可，其中jwt.StandardClaims的ExpiresAt为设置过期时间 */ func CreateToken(jwtClaims sys.JwtClaims) (string, error) { claims := jwt.NewWithClaims(jwt.SigningMethodHS256, &amp;jwtClaims) token, err := claims.SignedString(&#34;miyao suibian&#34;) return token, err } func ParseToken(token string) (*sys.JwtClaims, error) { claims, err := jwt.ParseWithClaims(token, &amp;sys.JwtClaims{}, func(token *jwt.Token) (interface{}, error) { return &#34;miyao suibian&#34;, nil }) if err != nil { return nil, err } // 返回值强转为自定义结构体的类型，方便取值 return claims.Claims.(*sys.JwtClaims), nil } 二：redis分布式锁 原因 用redis分布式锁的原因：如果用语言自带的锁只能在当前的进程中锁，如果后续服务不再是单体服务而是横向扩展为多个服务同时运行在多个进程中的时候是无法共享锁的，所以需要用到分布式锁，用来在多个进程中共享锁
+原理 redis中有一个命令：setnx key value
+不存在这个key的时候执行该命令返回值为1，当存在key的时候返回值为0
+可以借助这个命令来实现锁：
+当多个线程并发过来的时候，都要先执行setnx命令，返回值为1的即为拿到锁，返回值为0的为没有拿到锁，当拿到锁的线程执行完毕后执行del key 命令删除该key，后续的线程再执行setnx返回值为1即拿到锁。根据这个原理来实现redis分布式锁
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2022-10-23 19:38:37 +0800 CST'>October 23, 2022</span>&nbsp;·&nbsp;4 min&nbsp;·&nbsp;loveyu</footer>
+  <a class="entry-link" aria-label="post link to Go Redis项目使用" href="http://localhost:1313/posts/go/go-redis%E9%A1%B9%E7%9B%AE%E4%BD%BF%E7%94%A8/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">go GRPC使用
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>jsonrpc 把jsonrpc.ServeConn(conn)改为grpc.ServeConn(conn)就是grpc了
+为什么用jsongrpc？
+因为grpc使用的为go语言独有的数据序列化gob，导致其他语言无法解析；
+使用jsonrpc的话数据序列化就使用json这样其他语言都可以解析使用
+服务端 type user struct { } func (u user) Hello(name string, res *string) error { *res = name &#43; &#34; over!&#34; return nil } func main() { // 注册服务 err := rpc.RegisterName(&#34;hello&#34;, new(user)) if err != nil { fmt.Println(&#34;rpc.RegisterName err&#34;, err) return } // 启动监听 listen, err := net.Listen(&#34;tcp&#34;, &#34;localhost:8888&#34;) if err != nil { fmt.Println(&#34;net.Listen err&#34;, err) return } for true { // 建立连接 conn, err := listen.Accept() if err != nil { fmt.Println(&#34;listen.Accept err&#34;, err) return } // 绑定服务 go jsonrpc.ServeConn(conn) } } 客户端 func main() { // 连接 dial, err := jsonrpc.Dial(&#34;tcp&#34;, &#34;localhost:8888&#34;) if err != nil { fmt.Println(&#34;jsonrpc.Dial&#34;, err) return } var str string // 调用 err = dial.Call(&#34;hello.Hello&#34;, &#34;zz&#34;, &amp;str) if err != nil { fmt.Println(&#34;dial.Call err&#34;, err) } fmt.Println(&#34;aaaa:&#34;, str) } 缺点 这样写代码的话会导致代码量太高，注册服务不好查看
+改进 使用protobuf来编写服务
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2021-12-04 19:38:37 +0800 CST'>December 4, 2021</span>&nbsp;·&nbsp;13 min&nbsp;·&nbsp;loveyu</footer>
+  <a class="entry-link" aria-label="post link to go GRPC使用" href="http://localhost:1313/posts/go/grpc/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Go Swagger
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>一：main方法注释 // @title 这里写标题 // @version 1.0 // @description 这里写描述信息 // @termsOfService http://swagger.io/terms/ // @contact.name 这里写联系人信息 // @contact.url 这里写联系人信息url // @contact.email 这里写联系人信息email // @license.name Apache 2.0开源协议 // @license.url http://www.apache.org/licenses/LICENSE-2.0.html协议地址 // @host 这里写接口服务的host // @BasePath 这里写base path func main() { r := gin.New() // 注册swagger服务 r.GET(&#34;/swagger/*any&#34;, gs.WrapHandler(swaggerFiles.Handler)) r.Run(&#34;127.0.0.1:9001&#34;) } 二：请求接口注释 // ShowAccount godoc // @Summary 接口概要 // @Description 接口描述 // @Tags 标签 // @Accept application/json // @Produce application/json //@Param 参数格式，从左到右分别为：参数名、入参类型、数据类型、是否必填、注释 //@Success 响应成功，从左到右分别为：状态码、参数类型、数据类型、注释 //@Failure 响应失败，从左到右分别为：状态码、参数类型、数据类型、注释 // @Router /accounts/show [get] func ShowAccount(ctx *gin.Context) { } 参数类型 query path header body formData 数据类型 string (string) integer (int, uint, uint32, uint64) number (float32) boolean (bool) user defined struct 三: 生成文档 swag init -g main.go 四: 引用 _ &#34;swaggerDemo/docs&#34; 五: 载入gin engine.GET(&#34;/swagger/*any&#34;, ginSwagger.WrapHandler(swaggerFiles.Handler)) 六: 访问index页面 地址/swagger/index.html
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2021-07-12 09:38:37 +0800 CST'>July 12, 2021</span>&nbsp;·&nbsp;1 min&nbsp;·&nbsp;loveyu</footer>
+  <a class="entry-link" aria-label="post link to Go Swagger" href="http://localhost:1313/posts/go/go-swagger/"></a>
+</article>
+<footer class="page-footer">
+  <nav class="pagination">
+    <a class="prev" href="http://localhost:1313/tags/go/page/3/">
+      «&nbsp;&nbsp;3/7
+    </a>
+    <a class="next" href="http://localhost:1313/tags/go/page/5/">&nbsp;5/7&nbsp;»
+    </a>
+  </nav>
+</footer>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2025 <a href="http://localhost:1313/">loveyu233</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

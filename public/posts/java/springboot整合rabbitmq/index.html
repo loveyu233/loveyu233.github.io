@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>springBoot整合rabbitMQ | loveyu233</title>
+<meta name="keywords" content="java, spring, springBoot, rabbitMQ">
+<meta name="description" content="SpringBoot 整合 rabbitMQ
+
+mac安装brew install rabbitmq
+
+application.yml设置
+spring:
+rabbitmq:
+host: 47.115.50.193
+username: admin
+password: admin
+
+
+创建交换机，消息队列，并进行绑定
+@Configuration
+public class RabbitMQConfig {
+    private static final String TOPIC_NAME = &#34;top_name&#34;;
+    private static final String QUEUE_NAME = &#34;queue_name&#34;;
+    //交换机
+    @Bean(&#34;queueEx&#34;)
+    public Exchange queueEx(){
+        return ExchangeBuilder.topicExchange(TOPIC_NAME).durable(true).build();
+    }
+    //消息队列
+    @Bean(&#34;queue&#34;)
+    public Queue queue(){
+        return QueueBuilder.durable(QUEUE_NAME).build();
+    }
+    //绑定
+    @Bean
+    public Binding queueExchange(@Qualifier(&#34;queueEx&#34;) Exchange exchange,@Qualifier(&#34;queue&#34;) Queue queue){
+        return BindingBuilder.bind(queue).to(exchange).with(&#34;a.#&#34;).noargs();
+    }
+}
+
+@Autowired
+private RabbitTemplate rabbitTemplate;
+生产者
+public void q(){
+rabbitTemplate.convertAndSend(&#34;top_name&#34;,&#34;a.qwe&#34;,&#34;rabbitmqboot&#34;);
+}
+消费者
+@RabbitListener(queues = &#34;queue_name&#34;) //设置要监听的消息队列
+public void listenerq(Message message,Channel channel){
+System.out.println(new String(message.getBody()));
+}
+
+
+消息可靠投递
+Application.yml配置
+rabbitmq:
+publisher-confirm-type: correlated
+Java代码配置
+package com.xiaoyu.config;
+
+import org.springframework.amqp.core.ReturnedMessage;
+import org.springframework.amqp.rabbit.connection.CorrelationData;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import javax.annotation.PostConstruct;
+
+@Component
+public class PubConfirmAndReturn implements RabbitTemplate.ReturnsCallback,RabbitTemplate.ConfirmCallback{
+
+@Autowired
+RabbitTemplate rabbitTemplate;
+
+@PostConstruct
+public void init(){
+  rabbitTemplate.setReturnsCallback(this);
+  rabbitTemplate.setConfirmCallback(this);
+}
+
+//confirm确定模式
+@Override
+public void confirm(CorrelationData correlationData, boolean b, String s) {
+  if (b) {
+      System.out.println(&#34;消息发送到exchange成功&#34;);
+  } else {
+      System.out.println(&#34;失败原因：&#34;&#43; s);
+  }
+}
+
+//return退回模式
+@Override
+public void returnedMessage(ReturnedMessage returnedMessage) {
+  System.out.println(&#34;消息送exchange到queue失败，详情为：&#34;);
+  System.out.println(&#34;消息主体 message : &#34;&#43;new String(returnedMessage.getMessage().getBody()));
+  System.out.println(&#34;描述：&#34;&#43; returnedMessage.toString());
+  System.out.println(&#34;消息使用的交换器 exchange : &#34;&#43; returnedMessage.getExchange());
+  System.out.println(&#34;消息使用的路由键 routing : &#34;&#43; returnedMessage.getRoutingKey());
+}
+} 
+rabbitmq 整个消息投递的路径为：
+producer—&gt;rabbitmq broker—&gt;exchange—&gt;queue—&gt;consumer
+消息从 producer 到 exchange 则会返回一个 confirmCallback 确认模式。
+消息从 exchange–&gt;queue 投递失败则会返回一个 returnCallback退回模式 。">
+<meta name="author" content="loveyu">
+<link rel="canonical" href="http://localhost:1313/posts/java/springboot%E6%95%B4%E5%90%88rabbitmq/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.e13ff79a7b90ac30a7f805291f902c75095888118dcb1fccef74850e837f1253.css" integrity="sha256-4T/3mnuQrDCn&#43;AUpH5AsdQlYiBGNyx/M73SFDoN/ElM=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="zh-cn" href="http://localhost:1313/posts/java/springboot%E6%95%B4%E5%90%88rabbitmq/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:url" content="http://localhost:1313/posts/java/springboot%E6%95%B4%E5%90%88rabbitmq/">
+  <meta property="og:site_name" content="loveyu233">
+  <meta property="og:title" content="springBoot整合rabbitMQ">
+  <meta property="og:description" content="SpringBoot 整合 rabbitMQ mac安装brew install rabbitmq
+application.yml设置 spring: rabbitmq: host: 47.115.50.193 username: admin password: admin 创建交换机，消息队列，并进行绑定 @Configuration public class RabbitMQConfig { private static final String TOPIC_NAME = &#34;top_name&#34;; private static final String QUEUE_NAME = &#34;queue_name&#34;; //交换机 @Bean(&#34;queueEx&#34;) public Exchange queueEx(){ return ExchangeBuilder.topicExchange(TOPIC_NAME).durable(true).build(); } //消息队列 @Bean(&#34;queue&#34;) public Queue queue(){ return QueueBuilder.durable(QUEUE_NAME).build(); } //绑定 @Bean public Binding queueExchange(@Qualifier(&#34;queueEx&#34;) Exchange exchange,@Qualifier(&#34;queue&#34;) Queue queue){ return BindingBuilder.bind(queue).to(exchange).with(&#34;a.#&#34;).noargs(); } } @Autowired private RabbitTemplate rabbitTemplate; 生产者 public void q(){ rabbitTemplate.convertAndSend(&#34;top_name&#34;,&#34;a.qwe&#34;,&#34;rabbitmqboot&#34;); } 消费者 @RabbitListener(queues = &#34;queue_name&#34;) //设置要监听的消息队列 public void listenerq(Message message,Channel channel){ System.out.println(new String(message.getBody())); } 消息可靠投递 Application.yml配置 rabbitmq: publisher-confirm-type: correlated Java代码配置 package com.xiaoyu.config; import org.springframework.amqp.core.ReturnedMessage; import org.springframework.amqp.rabbit.connection.CorrelationData; import org.springframework.amqp.rabbit.core.RabbitTemplate; import org.springframework.beans.factory.annotation.Autowired; import org.springframework.stereotype.Component; import javax.annotation.PostConstruct; @Component public class PubConfirmAndReturn implements RabbitTemplate.ReturnsCallback,RabbitTemplate.ConfirmCallback{ @Autowired RabbitTemplate rabbitTemplate; @PostConstruct public void init(){ rabbitTemplate.setReturnsCallback(this); rabbitTemplate.setConfirmCallback(this); } //confirm确定模式 @Override public void confirm(CorrelationData correlationData, boolean b, String s) { if (b) { System.out.println(&#34;消息发送到exchange成功&#34;); } else { System.out.println(&#34;失败原因：&#34;&#43; s); } } //return退回模式 @Override public void returnedMessage(ReturnedMessage returnedMessage) { System.out.println(&#34;消息送exchange到queue失败，详情为：&#34;); System.out.println(&#34;消息主体 message : &#34;&#43;new String(returnedMessage.getMessage().getBody())); System.out.println(&#34;描述：&#34;&#43; returnedMessage.toString()); System.out.println(&#34;消息使用的交换器 exchange : &#34;&#43; returnedMessage.getExchange()); System.out.println(&#34;消息使用的路由键 routing : &#34;&#43; returnedMessage.getRoutingKey()); } } rabbitmq 整个消息投递的路径为： producer—&gt;rabbitmq broker—&gt;exchange—&gt;queue—&gt;consumer 消息从 producer 到 exchange 则会返回一个 confirmCallback 确认模式。 消息从 exchange–&gt;queue 投递失败则会返回一个 returnCallback退回模式 。">
+  <meta property="og:locale" content="zh-cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2019-10-12T11:28:07+08:00">
+    <meta property="article:modified_time" content="2019-10-12T11:28:07+08:00">
+    <meta property="article:tag" content="Java">
+    <meta property="article:tag" content="Spring">
+    <meta property="article:tag" content="SpringBoot">
+    <meta property="article:tag" content="RabbitMQ">
+      <meta property="og:image" content="http://localhost:1313/images/cover.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://localhost:1313/images/cover.png">
+<meta name="twitter:title" content="springBoot整合rabbitMQ">
+<meta name="twitter:description" content="SpringBoot 整合 rabbitMQ
+
+mac安装brew install rabbitmq
+
+application.yml设置
+spring:
+rabbitmq:
+host: 47.115.50.193
+username: admin
+password: admin
+
+
+创建交换机，消息队列，并进行绑定
+@Configuration
+public class RabbitMQConfig {
+    private static final String TOPIC_NAME = &#34;top_name&#34;;
+    private static final String QUEUE_NAME = &#34;queue_name&#34;;
+    //交换机
+    @Bean(&#34;queueEx&#34;)
+    public Exchange queueEx(){
+        return ExchangeBuilder.topicExchange(TOPIC_NAME).durable(true).build();
+    }
+    //消息队列
+    @Bean(&#34;queue&#34;)
+    public Queue queue(){
+        return QueueBuilder.durable(QUEUE_NAME).build();
+    }
+    //绑定
+    @Bean
+    public Binding queueExchange(@Qualifier(&#34;queueEx&#34;) Exchange exchange,@Qualifier(&#34;queue&#34;) Queue queue){
+        return BindingBuilder.bind(queue).to(exchange).with(&#34;a.#&#34;).noargs();
+    }
+}
+
+@Autowired
+private RabbitTemplate rabbitTemplate;
+生产者
+public void q(){
+rabbitTemplate.convertAndSend(&#34;top_name&#34;,&#34;a.qwe&#34;,&#34;rabbitmqboot&#34;);
+}
+消费者
+@RabbitListener(queues = &#34;queue_name&#34;) //设置要监听的消息队列
+public void listenerq(Message message,Channel channel){
+System.out.println(new String(message.getBody()));
+}
+
+
+消息可靠投递
+Application.yml配置
+rabbitmq:
+publisher-confirm-type: correlated
+Java代码配置
+package com.xiaoyu.config;
+
+import org.springframework.amqp.core.ReturnedMessage;
+import org.springframework.amqp.rabbit.connection.CorrelationData;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import javax.annotation.PostConstruct;
+
+@Component
+public class PubConfirmAndReturn implements RabbitTemplate.ReturnsCallback,RabbitTemplate.ConfirmCallback{
+
+@Autowired
+RabbitTemplate rabbitTemplate;
+
+@PostConstruct
+public void init(){
+  rabbitTemplate.setReturnsCallback(this);
+  rabbitTemplate.setConfirmCallback(this);
+}
+
+//confirm确定模式
+@Override
+public void confirm(CorrelationData correlationData, boolean b, String s) {
+  if (b) {
+      System.out.println(&#34;消息发送到exchange成功&#34;);
+  } else {
+      System.out.println(&#34;失败原因：&#34;&#43; s);
+  }
+}
+
+//return退回模式
+@Override
+public void returnedMessage(ReturnedMessage returnedMessage) {
+  System.out.println(&#34;消息送exchange到queue失败，详情为：&#34;);
+  System.out.println(&#34;消息主体 message : &#34;&#43;new String(returnedMessage.getMessage().getBody()));
+  System.out.println(&#34;描述：&#34;&#43; returnedMessage.toString());
+  System.out.println(&#34;消息使用的交换器 exchange : &#34;&#43; returnedMessage.getExchange());
+  System.out.println(&#34;消息使用的路由键 routing : &#34;&#43; returnedMessage.getRoutingKey());
+}
+} 
+rabbitmq 整个消息投递的路径为：
+producer—&gt;rabbitmq broker—&gt;exchange—&gt;queue—&gt;consumer
+消息从 producer 到 exchange 则会返回一个 confirmCallback 确认模式。
+消息从 exchange–&gt;queue 投递失败则会返回一个 returnCallback退回模式 。">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "http://localhost:1313/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "java",
+      "item": "http://localhost:1313/posts/java/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "springBoot整合rabbitMQ",
+      "item": "http://localhost:1313/posts/java/springboot%E6%95%B4%E5%90%88rabbitmq/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "springBoot整合rabbitMQ",
+  "name": "springBoot整合rabbitMQ",
+  "description": "SpringBoot 整合 rabbitMQ mac安装brew install rabbitmq\napplication.yml设置 spring: rabbitmq: host: 47.115.50.193 username: admin password: admin 创建交换机，消息队列，并进行绑定 @Configuration public class RabbitMQConfig { private static final String TOPIC_NAME = \u0026#34;top_name\u0026#34;; private static final String QUEUE_NAME = \u0026#34;queue_name\u0026#34;; //交换机 @Bean(\u0026#34;queueEx\u0026#34;) public Exchange queueEx(){ return ExchangeBuilder.topicExchange(TOPIC_NAME).durable(true).build(); } //消息队列 @Bean(\u0026#34;queue\u0026#34;) public Queue queue(){ return QueueBuilder.durable(QUEUE_NAME).build(); } //绑定 @Bean public Binding queueExchange(@Qualifier(\u0026#34;queueEx\u0026#34;) Exchange exchange,@Qualifier(\u0026#34;queue\u0026#34;) Queue queue){ return BindingBuilder.bind(queue).to(exchange).with(\u0026#34;a.#\u0026#34;).noargs(); } } @Autowired private RabbitTemplate rabbitTemplate; 生产者 public void q(){ rabbitTemplate.convertAndSend(\u0026#34;top_name\u0026#34;,\u0026#34;a.qwe\u0026#34;,\u0026#34;rabbitmqboot\u0026#34;); } 消费者 @RabbitListener(queues = \u0026#34;queue_name\u0026#34;) //设置要监听的消息队列 public void listenerq(Message message,Channel channel){ System.out.println(new String(message.getBody())); } 消息可靠投递 Application.yml配置 rabbitmq: publisher-confirm-type: correlated Java代码配置 package com.xiaoyu.config; import org.springframework.amqp.core.ReturnedMessage; import org.springframework.amqp.rabbit.connection.CorrelationData; import org.springframework.amqp.rabbit.core.RabbitTemplate; import org.springframework.beans.factory.annotation.Autowired; import org.springframework.stereotype.Component; import javax.annotation.PostConstruct; @Component public class PubConfirmAndReturn implements RabbitTemplate.ReturnsCallback,RabbitTemplate.ConfirmCallback{ @Autowired RabbitTemplate rabbitTemplate; @PostConstruct public void init(){ rabbitTemplate.setReturnsCallback(this); rabbitTemplate.setConfirmCallback(this); } //confirm确定模式 @Override public void confirm(CorrelationData correlationData, boolean b, String s) { if (b) { System.out.println(\u0026#34;消息发送到exchange成功\u0026#34;); } else { System.out.println(\u0026#34;失败原因：\u0026#34;+ s); } } //return退回模式 @Override public void returnedMessage(ReturnedMessage returnedMessage) { System.out.println(\u0026#34;消息送exchange到queue失败，详情为：\u0026#34;); System.out.println(\u0026#34;消息主体 message : \u0026#34;+new String(returnedMessage.getMessage().getBody())); System.out.println(\u0026#34;描述：\u0026#34;+ returnedMessage.toString()); System.out.println(\u0026#34;消息使用的交换器 exchange : \u0026#34;+ returnedMessage.getExchange()); System.out.println(\u0026#34;消息使用的路由键 routing : \u0026#34;+ returnedMessage.getRoutingKey()); } } rabbitmq 整个消息投递的路径为： producer—\u0026gt;rabbitmq broker—\u0026gt;exchange—\u0026gt;queue—\u0026gt;consumer 消息从 producer 到 exchange 则会返回一个 confirmCallback 确认模式。 消息从 exchange–\u0026gt;queue 投递失败则会返回一个 returnCallback退回模式 。\n",
+  "keywords": [
+    "java", "spring", "springBoot", "rabbitMQ"
+  ],
+  "articleBody": "SpringBoot 整合 rabbitMQ mac安装brew install rabbitmq\napplication.yml设置 spring: rabbitmq: host: 47.115.50.193 username: admin password: admin 创建交换机，消息队列，并进行绑定 @Configuration public class RabbitMQConfig { private static final String TOPIC_NAME = \"top_name\"; private static final String QUEUE_NAME = \"queue_name\"; //交换机 @Bean(\"queueEx\") public Exchange queueEx(){ return ExchangeBuilder.topicExchange(TOPIC_NAME).durable(true).build(); } //消息队列 @Bean(\"queue\") public Queue queue(){ return QueueBuilder.durable(QUEUE_NAME).build(); } //绑定 @Bean public Binding queueExchange(@Qualifier(\"queueEx\") Exchange exchange,@Qualifier(\"queue\") Queue queue){ return BindingBuilder.bind(queue).to(exchange).with(\"a.#\").noargs(); } } @Autowired private RabbitTemplate rabbitTemplate; 生产者 public void q(){ rabbitTemplate.convertAndSend(\"top_name\",\"a.qwe\",\"rabbitmqboot\"); } 消费者 @RabbitListener(queues = \"queue_name\") //设置要监听的消息队列 public void listenerq(Message message,Channel channel){ System.out.println(new String(message.getBody())); } 消息可靠投递 Application.yml配置 rabbitmq: publisher-confirm-type: correlated Java代码配置 package com.xiaoyu.config; import org.springframework.amqp.core.ReturnedMessage; import org.springframework.amqp.rabbit.connection.CorrelationData; import org.springframework.amqp.rabbit.core.RabbitTemplate; import org.springframework.beans.factory.annotation.Autowired; import org.springframework.stereotype.Component; import javax.annotation.PostConstruct; @Component public class PubConfirmAndReturn implements RabbitTemplate.ReturnsCallback,RabbitTemplate.ConfirmCallback{ @Autowired RabbitTemplate rabbitTemplate; @PostConstruct public void init(){ rabbitTemplate.setReturnsCallback(this); rabbitTemplate.setConfirmCallback(this); } //confirm确定模式 @Override public void confirm(CorrelationData correlationData, boolean b, String s) { if (b) { System.out.println(\"消息发送到exchange成功\"); } else { System.out.println(\"失败原因：\"+ s); } } //return退回模式 @Override public void returnedMessage(ReturnedMessage returnedMessage) { System.out.println(\"消息送exchange到queue失败，详情为：\"); System.out.println(\"消息主体 message : \"+new String(returnedMessage.getMessage().getBody())); System.out.println(\"描述：\"+ returnedMessage.toString()); System.out.println(\"消息使用的交换器 exchange : \"+ returnedMessage.getExchange()); System.out.println(\"消息使用的路由键 routing : \"+ returnedMessage.getRoutingKey()); } } rabbitmq 整个消息投递的路径为： producer—\u003erabbitmq broker—\u003eexchange—\u003equeue—\u003econsumer 消息从 producer 到 exchange 则会返回一个 confirmCallback 确认模式。 消息从 exchange–\u003equeue 投递失败则会返回一个 returnCallback退回模式 。\nack @RabbitListener(queues = \"queue_name\") public void listener(Message message, Channel channel){ long deliveryTag = message.getMessageProperties().getDeliveryTag(); try { System.out.println(new String(message.getBody())); System.out.println(\"处理业务逻辑\"); Thread.sleep(2000); int a = 1/0; // 手动签收 channel.basicAck(deliveryTag,true); } catch (Exception e) { // 第三个参数：requeue：重回队列，如果设置为true，则消息重新回到queue，broker会重新发送消息给消费端 try { channel.basicNack(deliveryTag,true,true); } catch (Exception ioException) { ioException.printStackTrace(); } } } 当消息在被消费时，如果在不手动签收则会停滞，如果在处理业务逻辑时出错，则可以设置是否重回队列 ttl过期 队列过期 @Bean(\"queuettl\") public Queue queueTTL(){ // ttl:队列的过期时间 return QueueBuilder.durable(\"queue_ttl\").ttl(1000000).build(); } @Bean(\"exchangettl\") public Exchange exchangeTTL(){ return ExchangeBuilder.topicExchange(\"exchange_ttl\").durable(true).build(); } @Bean public Binding ttl(@Qualifier(\"queuettl\") Queue queue,@Qualifier(\"exchangettl\") Exchange exchange){ return BindingBuilder.bind(queue).to(exchange).with(\"q.#\").noargs(); } 队列过期是指：所有发送到这个队列的消息如果没有在规定的时间消费就会被处理掉（删除改消息） 消息过期 public void ttl(){ // 消息后处理对象，设置一些消息的参数信息 MessagePostProcessor messagePostProcessor = new MessagePostProcessor() { @Override public Message postProcessMessage(Message message) throws AmqpException { // 设置message的信息 message.getMessageProperties().setExpiration(\"10000\"); // 返回该消息 return message; } }; // 如果同时设置了队列过期时间和消息单独过期时间，以时间短的为准。如下列情况是到十秒同时过期 // 队列过期会将队列内的消息全部移除 // 消息过期后，只有消息在队列的顶端才会判断其是否过期，过期则移除 // 队列过期 rabbitTemplate.convertAndSend(\"exchange_ttl\",\"q.aa\",\"ttl\"); // 消息单独过期 rabbitTemplate.convertAndSend(\"exchange_ttl\",\"q.aa\",\"ttl\",messagePostProcessor); } 消息过期是指：发送的这一条消息会被设置过期时间，正常发送的消息则不会过期。 dlx死信 造成死信的原因： 过期时间\n//.ttl(10000) public void one_dlx(){ rabbitTemplate.convertAndSend(\"test_exchange_dlx\",\"test_dlx.xx\",\"one_del....\"); } 长度限制\n//.maxLength(10)\t设置最大为10条消息 public void two_dlx(){ for (int i = 0; i \u003c 20; i++) { rabbitTemplate.convertAndSend(\"test_exchange_dlx\",\"test_dlx.xx\",\"two_del....\"); } } 消息拒收\npublic void three_dlx(Message message, Channel channel){ System.out.println(new String(message.getBody())); try { channel.basicNack(message.getMessageProperties().getDeliveryTag(),true,false); } catch (IOException e) { e.printStackTrace(); } } 死信配置 // 1:声明正常队列和交换机进行绑定 @Bean(\"test_queue_dlx\") public Queue test_queue_dlx(){ return QueueBuilder.durable(\"test_queue_dlx\").deadLetterExchange(\"exchange_dlx\").deadLetterRoutingKey(\"dlx.suibian\").ttl(10000).maxLength(10).build(); } @Bean(\"test_exchange_dlx\") public Exchange test_exchange_dlx(){ return ExchangeBuilder.topicExchange(\"test_exchange_dlx\").durable(true).build(); } @Bean public Binding test_binding_dlx(@Qualifier(\"test_queue_dlx\")Queue queue,@Qualifier(\"test_exchange_dlx\")Exchange exchange){ return BindingBuilder.bind(queue).to(exchange).with(\"test_dlx.#\").noargs(); } // 2.声明死信队列和交换机进行绑定 @Bean(\"queue_dlx\") public Queue queue_dlx(){ return QueueBuilder.durable(\"queue_dlx\").build(); } @Bean(\"exchange_dlx\") public Exchange exchange_dlx(){ return ExchangeBuilder.topicExchange(\"exchange_dlx\").durable(true).build(); } @Bean public Binding binding_dlx(@Qualifier(\"queue_dlx\")Queue queue,@Qualifier(\"exchange_dlx\")Exchange exchange){ return BindingBuilder.bind(queue).to(exchange).with(\"dlx.#\").noargs(); } 死信队列可以理解为是被绑定正常队列的回收站，死信队列和正常队列一样，一样可以消费其中的消息 ttl+dlx延迟队列 配置 @Bean(\"test_queue_ttl_dlx\") public Queue test_queue_ttl_dlx(){ return QueueBuilder.durable(\"test_queue_ttl_dlx\").deadLetterExchange(\"exchange_ttl_dlx\").deadLetterRoutingKey(\"ttl_dlx.suibian\").ttl(10000).build(); } @Bean(\"test_exchange_ttl_dlx\") public Exchange test_exchange_ttl_dlx(){ return ExchangeBuilder.topicExchange(\"test_exchange_ttl_dlx\").durable(true).build(); } @Bean public Binding test_binding_ttl_dlx(@Qualifier(\"test_queue_ttl_dlx\")Queue queue,@Qualifier(\"test_exchange_ttl_dlx\")Exchange exchange){ return BindingBuilder.bind(queue).to(exchange).with(\"test_ttl_dlx.#\").noargs(); } @Bean(\"queue_ttl_dlx\") public Queue queue_ttl_ttl_dlx(){ return QueueBuilder.durable(\"queue_ttl_dlx\").build(); } @Bean(\"exchange_ttl_dlx\") public Exchange exchange_ttl_dlx(){ return ExchangeBuilder.topicExchange(\"exchange_ttl_dlx\").durable(true).build(); } @Bean public Binding binding_ttl_dlx(@Qualifier(\"queue_ttl_dlx\")Queue queue,@Qualifier(\"exchange_ttl_dlx\")Exchange exchange){ return BindingBuilder.bind(queue).to(exchange).with(\"ttl_dlx.#\").noargs(); } 生产者 @GetMapping(\"/ttl_dlx\") @ResponseBody public void ttl_dlx(){ for (int i = 0; i \u003c 10; i++) { rabbitTemplate.convertAndSend(\"test_exchange_ttl_dlx\",\"test_ttl_dlx.xx\",\"ttl_dlx...\"); } } 消费者 @RabbitListener(queues = \"queue_ttl_dlx\") public void ttl_dlx_li(Message message,Channel channel){ System.out.println(new String(message.getBody())); try { channel.basicAck(message.getMessageProperties().getDeliveryTag(),true); } catch (IOException e) { e.printStackTrace(); } } 延迟队列：设置队列为过期队列，当改消息过期后到绑定的死信队列里面，从而实现消息的延迟 ",
+  "wordCount" : "498",
+  "inLanguage": "zh-cn",
+  "image": "http://localhost:1313/images/cover.png","datePublished": "2019-10-12T11:28:07+08:00",
+  "dateModified": "2019-10-12T11:28:07+08:00",
+  "author":[{
+    "@type": "Person",
+    "name": "loveyu"
+  }],
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "http://localhost:1313/posts/java/springboot%E6%95%B4%E5%90%88rabbitmq/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "loveyu233",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "http://localhost:1313/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="loveyu233 (Alt + H)">loveyu233</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/archives" title="归档">
+                    <span>归档</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/search/" title="搜索">
+                    <span>搜索</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/tags/" title="标签">
+                    <span>标签</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="http://localhost:1313/">Home</a>&nbsp;»&nbsp;<a href="http://localhost:1313/posts/">Posts</a>&nbsp;»&nbsp;<a href="http://localhost:1313/posts/java/">java</a></div>
+    <h1 class="post-title entry-hint-parent">
+      springBoot整合rabbitMQ
+    </h1>
+    <div class="post-meta"><span title='2019-10-12 11:28:07 +0800 CST'>October 12, 2019</span>&nbsp;·&nbsp;3 min&nbsp;·&nbsp;loveyu
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#springboot-%e6%95%b4%e5%90%88-rabbitmq" aria-label="SpringBoot 整合 rabbitMQ">SpringBoot 整合 rabbitMQ</a></li>
+                <li>
+                    <a href="#applicationyml%e8%ae%be%e7%bd%ae" aria-label="application.yml设置">application.yml设置</a><ul>
+                        
+                <li>
+                    <a href="#%e5%88%9b%e5%bb%ba%e4%ba%a4%e6%8d%a2%e6%9c%ba%e6%b6%88%e6%81%af%e9%98%9f%e5%88%97%e5%b9%b6%e8%bf%9b%e8%a1%8c%e7%bb%91%e5%ae%9a" aria-label="创建交换机，消息队列，并进行绑定">创建交换机，消息队列，并进行绑定</a></li>
+                <li>
+                    <a href="#%e7%94%9f%e4%ba%a7%e8%80%85" aria-label="生产者">生产者</a></li>
+                <li>
+                    <a href="#%e6%b6%88%e8%b4%b9%e8%80%85" aria-label="消费者">消费者</a></li>
+                <li>
+                    <a href="#%e6%b6%88%e6%81%af%e5%8f%af%e9%9d%a0%e6%8a%95%e9%80%92" aria-label="消息可靠投递">消息可靠投递</a><ul>
+                        
+                <li>
+                    <a href="#applicationyml%e9%85%8d%e7%bd%ae" aria-label="Application.yml配置">Application.yml配置</a></li>
+                <li>
+                    <a href="#java%e4%bb%a3%e7%a0%81%e9%85%8d%e7%bd%ae" aria-label="Java代码配置">Java代码配置</a></li>
+                <li>
+                    <a href="#rabbitmq-%e6%95%b4%e4%b8%aa%e6%b6%88%e6%81%af%e6%8a%95%e9%80%92%e7%9a%84%e8%b7%af%e5%be%84%e4%b8%ba" aria-label="rabbitmq 整个消息投递的路径为：">rabbitmq 整个消息投递的路径为：</a></li></ul>
+                </li>
+                <li>
+                    <a href="#ack" aria-label="ack">ack</a><ul>
+                        <ul>
+                        
+                <li>
+                    <a href="#%e5%bd%93%e6%b6%88%e6%81%af%e5%9c%a8%e8%a2%ab%e6%b6%88%e8%b4%b9%e6%97%b6%e5%a6%82%e6%9e%9c%e5%9c%a8%e4%b8%8d%e6%89%8b%e5%8a%a8%e7%ad%be%e6%94%b6%e5%88%99%e4%bc%9a%e5%81%9c%e6%bb%9e%e5%a6%82%e6%9e%9c%e5%9c%a8%e5%a4%84%e7%90%86%e4%b8%9a%e5%8a%a1%e9%80%bb%e8%be%91%e6%97%b6%e5%87%ba%e9%94%99%e5%88%99%e5%8f%af%e4%bb%a5%e8%ae%be%e7%bd%ae%e6%98%af%e5%90%a6%e9%87%8d%e5%9b%9e%e9%98%9f%e5%88%97" aria-label="当消息在被消费时，如果在不手动签收则会停滞，如果在处理业务逻辑时出错，则可以设置是否重回队列">当消息在被消费时，如果在不手动签收则会停滞，如果在处理业务逻辑时出错，则可以设置是否重回队列</a></li></ul>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#ttl%e8%bf%87%e6%9c%9f" aria-label="ttl过期">ttl过期</a><ul>
+                        
+                <li>
+                    <a href="#%e9%98%9f%e5%88%97%e8%bf%87%e6%9c%9f" aria-label="队列过期">队列过期</a><ul>
+                        <ul>
+                        
+                <li>
+                    <a href="#%e9%98%9f%e5%88%97%e8%bf%87%e6%9c%9f%e6%98%af%e6%8c%87%e6%89%80%e6%9c%89%e5%8f%91%e9%80%81%e5%88%b0%e8%bf%99%e4%b8%aa%e9%98%9f%e5%88%97%e7%9a%84%e6%b6%88%e6%81%af%e5%a6%82%e6%9e%9c%e6%b2%a1%e6%9c%89%e5%9c%a8%e8%a7%84%e5%ae%9a%e7%9a%84%e6%97%b6%e9%97%b4%e6%b6%88%e8%b4%b9%e5%b0%b1%e4%bc%9a%e8%a2%ab%e5%a4%84%e7%90%86%e6%8e%89%e5%88%a0%e9%99%a4%e6%94%b9%e6%b6%88%e6%81%af" aria-label="队列过期是指：所有发送到这个队列的消息如果没有在规定的时间消费就会被处理掉（删除改消息）">队列过期是指：所有发送到这个队列的消息如果没有在规定的时间消费就会被处理掉（删除改消息）</a></li></ul>
+                    
+                <li>
+                    <a href="#%e6%b6%88%e6%81%af%e8%bf%87%e6%9c%9f" aria-label="消息过期">消息过期</a><ul>
+                        
+                <li>
+                    <a href="#%e6%b6%88%e6%81%af%e8%bf%87%e6%9c%9f%e6%98%af%e6%8c%87%e5%8f%91%e9%80%81%e7%9a%84%e8%bf%99%e4%b8%80%e6%9d%a1%e6%b6%88%e6%81%af%e4%bc%9a%e8%a2%ab%e8%ae%be%e7%bd%ae%e8%bf%87%e6%9c%9f%e6%97%b6%e9%97%b4%e6%ad%a3%e5%b8%b8%e5%8f%91%e9%80%81%e7%9a%84%e6%b6%88%e6%81%af%e5%88%99%e4%b8%8d%e4%bc%9a%e8%bf%87%e6%9c%9f" aria-label="消息过期是指：发送的这一条消息会被设置过期时间，正常发送的消息则不会过期。">消息过期是指：发送的这一条消息会被设置过期时间，正常发送的消息则不会过期。</a></li></ul>
+                </li></ul>
+                </li></ul>
+                </li>
+                <li>
+                    <a href="#dlx%e6%ad%bb%e4%bf%a1" aria-label="dlx死信">dlx死信</a><ul>
+                        
+                <li>
+                    <a href="#%e9%80%a0%e6%88%90%e6%ad%bb%e4%bf%a1%e7%9a%84%e5%8e%9f%e5%9b%a0" aria-label="造成死信的原因：">造成死信的原因：</a><ul>
+                        
+                <li>
+                    <a href="#%e6%ad%bb%e4%bf%a1%e9%85%8d%e7%bd%ae" aria-label="死信配置">死信配置</a><ul>
+                        
+                <li>
+                    <a href="#%e6%ad%bb%e4%bf%a1%e9%98%9f%e5%88%97%e5%8f%af%e4%bb%a5%e7%90%86%e8%a7%a3%e4%b8%ba%e6%98%af%e8%a2%ab%e7%bb%91%e5%ae%9a%e6%ad%a3%e5%b8%b8%e9%98%9f%e5%88%97%e7%9a%84%e5%9b%9e%e6%94%b6%e7%ab%99%e6%ad%bb%e4%bf%a1%e9%98%9f%e5%88%97%e5%92%8c%e6%ad%a3%e5%b8%b8%e9%98%9f%e5%88%97%e4%b8%80%e6%a0%b7%e4%b8%80%e6%a0%b7%e5%8f%af%e4%bb%a5%e6%b6%88%e8%b4%b9%e5%85%b6%e4%b8%ad%e7%9a%84%e6%b6%88%e6%81%af" aria-label="死信队列可以理解为是被绑定正常队列的回收站，死信队列和正常队列一样，一样可以消费其中的消息">死信队列可以理解为是被绑定正常队列的回收站，死信队列和正常队列一样，一样可以消费其中的消息</a></li></ul>
+                </li></ul>
+                </li></ul>
+                </li>
+                <li>
+                    <a href="#ttldlx%e5%bb%b6%e8%bf%9f%e9%98%9f%e5%88%97" aria-label="ttl&#43;dlx延迟队列">ttl+dlx延迟队列</a><ul>
+                        <ul>
+                        
+                <li>
+                    <a href="#%e9%85%8d%e7%bd%ae" aria-label="配置">配置</a></li></ul>
+                    
+                <li>
+                    <a href="#%e7%94%9f%e4%ba%a7%e8%80%85-1" aria-label="生产者">生产者</a></li>
+                <li>
+                    <a href="#%e6%b6%88%e8%b4%b9%e8%80%85-1" aria-label="消费者">消费者</a><ul>
+                        
+                <li>
+                    <a href="#%e5%bb%b6%e8%bf%9f%e9%98%9f%e5%88%97%e8%ae%be%e7%bd%ae%e9%98%9f%e5%88%97%e4%b8%ba%e8%bf%87%e6%9c%9f%e9%98%9f%e5%88%97%e5%bd%93%e6%94%b9%e6%b6%88%e6%81%af%e8%bf%87%e6%9c%9f%e5%90%8e%e5%88%b0%e7%bb%91%e5%ae%9a%e7%9a%84%e6%ad%bb%e4%bf%a1%e9%98%9f%e5%88%97%e9%87%8c%e9%9d%a2%e4%bb%8e%e8%80%8c%e5%ae%9e%e7%8e%b0%e6%b6%88%e6%81%af%e7%9a%84%e5%bb%b6%e8%bf%9f" aria-label="延迟队列：设置队列为过期队列，当改消息过期后到绑定的死信队列里面，从而实现消息的延迟">延迟队列：设置队列为过期队列，当改消息过期后到绑定的死信队列里面，从而实现消息的延迟</a>
+                </li>
+            </ul>
+            </li>
+            </ul>
+            </li>
+            </ul>
+            </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><h1 id="springboot-整合-rabbitmq">SpringBoot 整合 rabbitMQ<a hidden class="anchor" aria-hidden="true" href="#springboot-整合-rabbitmq">#</a></h1>
+<blockquote>
+<p>mac安装brew install rabbitmq</p></blockquote>
+<blockquote>
+<h1 id="applicationyml设置">application.yml设置<a hidden class="anchor" aria-hidden="true" href="#applicationyml设置">#</a></h1>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">spring</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">rabbitmq</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="m">47.115.50.193</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">username</span><span class="p">:</span><span class="w"> </span><span class="l">admin</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="l">admin</span><span class="w">
+</span></span></span></code></pre></div></blockquote>
+<blockquote>
+<h2 id="创建交换机消息队列并进行绑定">创建交换机，消息队列，并进行绑定<a hidden class="anchor" aria-hidden="true" href="#创建交换机消息队列并进行绑定">#</a></h2></blockquote>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@Configuration</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">RabbitMQConfig</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">TOPIC_NAME</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#34;top_name&#34;</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">QUEUE_NAME</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#34;queue_name&#34;</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">//交换机</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nd">@Bean</span><span class="p">(</span><span class="s">&#34;queueEx&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">Exchange</span><span class="w"> </span><span class="nf">queueEx</span><span class="p">(){</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">ExchangeBuilder</span><span class="p">.</span><span class="na">topicExchange</span><span class="p">(</span><span class="n">TOPIC_NAME</span><span class="p">).</span><span class="na">durable</span><span class="p">(</span><span class="kc">true</span><span class="p">).</span><span class="na">build</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">//消息队列</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nd">@Bean</span><span class="p">(</span><span class="s">&#34;queue&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">Queue</span><span class="w"> </span><span class="nf">queue</span><span class="p">(){</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">QueueBuilder</span><span class="p">.</span><span class="na">durable</span><span class="p">(</span><span class="n">QUEUE_NAME</span><span class="p">).</span><span class="na">build</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">//绑定</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nd">@Bean</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">Binding</span><span class="w"> </span><span class="nf">queueExchange</span><span class="p">(</span><span class="nd">@Qualifier</span><span class="p">(</span><span class="s">&#34;queueEx&#34;</span><span class="p">)</span><span class="w"> </span><span class="n">Exchange</span><span class="w"> </span><span class="n">exchange</span><span class="p">,</span><span class="nd">@Qualifier</span><span class="p">(</span><span class="s">&#34;queue&#34;</span><span class="p">)</span><span class="w"> </span><span class="n">Queue</span><span class="w"> </span><span class="n">queue</span><span class="p">){</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">BindingBuilder</span><span class="p">.</span><span class="na">bind</span><span class="p">(</span><span class="n">queue</span><span class="p">).</span><span class="na">to</span><span class="p">(</span><span class="n">exchange</span><span class="p">).</span><span class="na">with</span><span class="p">(</span><span class="s">&#34;a.#&#34;</span><span class="p">).</span><span class="na">noargs</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@Autowired</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">private</span><span class="w"> </span><span class="n">RabbitTemplate</span><span class="w"> </span><span class="n">rabbitTemplate</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></div><h2 id="生产者">生产者<a hidden class="anchor" aria-hidden="true" href="#生产者">#</a></h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">q</span><span class="p">(){</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">rabbitTemplate</span><span class="p">.</span><span class="na">convertAndSend</span><span class="p">(</span><span class="s">&#34;top_name&#34;</span><span class="p">,</span><span class="s">&#34;a.qwe&#34;</span><span class="p">,</span><span class="s">&#34;rabbitmqboot&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h2 id="消费者">消费者<a hidden class="anchor" aria-hidden="true" href="#消费者">#</a></h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@RabbitListener</span><span class="p">(</span><span class="n">queues</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#34;queue_name&#34;</span><span class="p">)</span><span class="w"> </span><span class="c1">//设置要监听的消息队列</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">listenerq</span><span class="p">(</span><span class="n">Message</span><span class="w"> </span><span class="n">message</span><span class="p">,</span><span class="n">Channel</span><span class="w"> </span><span class="n">channel</span><span class="p">){</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">String</span><span class="p">(</span><span class="n">message</span><span class="p">.</span><span class="na">getBody</span><span class="p">()));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div></blockquote>
+<blockquote>
+<h2 id="消息可靠投递">消息可靠投递<a hidden class="anchor" aria-hidden="true" href="#消息可靠投递">#</a></h2>
+<h3 id="applicationyml配置">Application.yml配置<a hidden class="anchor" aria-hidden="true" href="#applicationyml配置">#</a></h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">rabbitmq</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">publisher-confirm-type</span><span class="p">:</span><span class="w"> </span><span class="l">correlated</span><span class="w">
+</span></span></span></code></pre></div><h3 id="java代码配置">Java代码配置<a hidden class="anchor" aria-hidden="true" href="#java代码配置">#</a></h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">package</span><span class="w"> </span><span class="nn">com.xiaoyu.config</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">org.springframework.amqp.core.ReturnedMessage</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">org.springframework.amqp.rabbit.connection.CorrelationData</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">org.springframework.amqp.rabbit.core.RabbitTemplate</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">org.springframework.beans.factory.annotation.Autowired</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">org.springframework.stereotype.Component</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">javax.annotation.PostConstruct</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nd">@Component</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">PubConfirmAndReturn</span><span class="w"> </span><span class="kd">implements</span><span class="w"> </span><span class="n">RabbitTemplate</span><span class="p">.</span><span class="na">ReturnsCallback</span><span class="p">,</span><span class="n">RabbitTemplate</span><span class="p">.</span><span class="na">ConfirmCallback</span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nd">@Autowired</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">RabbitTemplate</span><span class="w"> </span><span class="n">rabbitTemplate</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nd">@PostConstruct</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">init</span><span class="p">(){</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">rabbitTemplate</span><span class="p">.</span><span class="na">setReturnsCallback</span><span class="p">(</span><span class="k">this</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">rabbitTemplate</span><span class="p">.</span><span class="na">setConfirmCallback</span><span class="p">(</span><span class="k">this</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">//confirm确定模式</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nd">@Override</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">confirm</span><span class="p">(</span><span class="n">CorrelationData</span><span class="w"> </span><span class="n">correlationData</span><span class="p">,</span><span class="w"> </span><span class="kt">boolean</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">s</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">&#34;消息发送到exchange成功&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">&#34;失败原因：&#34;</span><span class="o">+</span><span class="w"> </span><span class="n">s</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">//return退回模式</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nd">@Override</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">returnedMessage</span><span class="p">(</span><span class="n">ReturnedMessage</span><span class="w"> </span><span class="n">returnedMessage</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">&#34;消息送exchange到queue失败，详情为：&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">&#34;消息主体 message : &#34;</span><span class="o">+</span><span class="k">new</span><span class="w"> </span><span class="n">String</span><span class="p">(</span><span class="n">returnedMessage</span><span class="p">.</span><span class="na">getMessage</span><span class="p">().</span><span class="na">getBody</span><span class="p">()));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">&#34;描述：&#34;</span><span class="o">+</span><span class="w"> </span><span class="n">returnedMessage</span><span class="p">.</span><span class="na">toString</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">&#34;消息使用的交换器 exchange : &#34;</span><span class="o">+</span><span class="w"> </span><span class="n">returnedMessage</span><span class="p">.</span><span class="na">getExchange</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">&#34;消息使用的路由键 routing : &#34;</span><span class="o">+</span><span class="w"> </span><span class="n">returnedMessage</span><span class="p">.</span><span class="na">getRoutingKey</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w"> 
+</span></span></span></code></pre></div><h3 id="rabbitmq-整个消息投递的路径为">rabbitmq 整个消息投递的路径为：<a hidden class="anchor" aria-hidden="true" href="#rabbitmq-整个消息投递的路径为">#</a></h3>
+<p>producer—&gt;rabbitmq broker—&gt;exchange—&gt;queue—&gt;consumer
+消息从 producer 到 exchange 则会返回一个 confirmCallback 确认模式。
+消息从 exchange–&gt;queue 投递失败则会返回一个 returnCallback退回模式 。</p></blockquote>
+<blockquote>
+<h2 id="ack">ack<a hidden class="anchor" aria-hidden="true" href="#ack">#</a></h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@RabbitListener</span><span class="p">(</span><span class="n">queues</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#34;queue_name&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">listener</span><span class="p">(</span><span class="n">Message</span><span class="w"> </span><span class="n">message</span><span class="p">,</span><span class="w"> </span><span class="n">Channel</span><span class="w"> </span><span class="n">channel</span><span class="p">){</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kt">long</span><span class="w"> </span><span class="n">deliveryTag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">message</span><span class="p">.</span><span class="na">getMessageProperties</span><span class="p">().</span><span class="na">getDeliveryTag</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">try</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">String</span><span class="p">(</span><span class="n">message</span><span class="p">.</span><span class="na">getBody</span><span class="p">()));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">&#34;处理业务逻辑&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">Thread</span><span class="p">.</span><span class="na">sleep</span><span class="p">(</span><span class="n">2000</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kt">int</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">1</span><span class="o">/</span><span class="n">0</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">//        手动签收</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">channel</span><span class="p">.</span><span class="na">basicAck</span><span class="p">(</span><span class="n">deliveryTag</span><span class="p">,</span><span class="kc">true</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="n">Exception</span><span class="w"> </span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">//  第三个参数：requeue：重回队列，如果设置为true，则消息重新回到queue，broker会重新发送消息给消费端</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">try</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">channel</span><span class="p">.</span><span class="na">basicNack</span><span class="p">(</span><span class="n">deliveryTag</span><span class="p">,</span><span class="kc">true</span><span class="p">,</span><span class="kc">true</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="n">Exception</span><span class="w"> </span><span class="n">ioException</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">ioException</span><span class="p">.</span><span class="na">printStackTrace</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h4 id="当消息在被消费时如果在不手动签收则会停滞如果在处理业务逻辑时出错则可以设置是否重回队列">当消息在被消费时，如果在不手动签收则会停滞，如果在处理业务逻辑时出错，则可以设置是否重回队列<a hidden class="anchor" aria-hidden="true" href="#当消息在被消费时如果在不手动签收则会停滞如果在处理业务逻辑时出错则可以设置是否重回队列">#</a></h4></blockquote>
+<blockquote>
+<h2 id="ttl过期">ttl过期<a hidden class="anchor" aria-hidden="true" href="#ttl过期">#</a></h2>
+<h3 id="队列过期">队列过期<a hidden class="anchor" aria-hidden="true" href="#队列过期">#</a></h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@Bean</span><span class="p">(</span><span class="s">&#34;queuettl&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="n">Queue</span><span class="w"> </span><span class="nf">queueTTL</span><span class="p">(){</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">//        ttl:队列的过期时间</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">return</span><span class="w"> </span><span class="n">QueueBuilder</span><span class="p">.</span><span class="na">durable</span><span class="p">(</span><span class="s">&#34;queue_ttl&#34;</span><span class="p">).</span><span class="na">ttl</span><span class="p">(</span><span class="n">1000000</span><span class="p">).</span><span class="na">build</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nd">@Bean</span><span class="p">(</span><span class="s">&#34;exchangettl&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="n">Exchange</span><span class="w"> </span><span class="nf">exchangeTTL</span><span class="p">(){</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">return</span><span class="w"> </span><span class="n">ExchangeBuilder</span><span class="p">.</span><span class="na">topicExchange</span><span class="p">(</span><span class="s">&#34;exchange_ttl&#34;</span><span class="p">).</span><span class="na">durable</span><span class="p">(</span><span class="kc">true</span><span class="p">).</span><span class="na">build</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nd">@Bean</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="n">Binding</span><span class="w"> </span><span class="nf">ttl</span><span class="p">(</span><span class="nd">@Qualifier</span><span class="p">(</span><span class="s">&#34;queuettl&#34;</span><span class="p">)</span><span class="w"> </span><span class="n">Queue</span><span class="w"> </span><span class="n">queue</span><span class="p">,</span><span class="nd">@Qualifier</span><span class="p">(</span><span class="s">&#34;exchangettl&#34;</span><span class="p">)</span><span class="w"> </span><span class="n">Exchange</span><span class="w"> </span><span class="n">exchange</span><span class="p">){</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">return</span><span class="w"> </span><span class="n">BindingBuilder</span><span class="p">.</span><span class="na">bind</span><span class="p">(</span><span class="n">queue</span><span class="p">).</span><span class="na">to</span><span class="p">(</span><span class="n">exchange</span><span class="p">).</span><span class="na">with</span><span class="p">(</span><span class="s">&#34;q.#&#34;</span><span class="p">).</span><span class="na">noargs</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h5 id="队列过期是指所有发送到这个队列的消息如果没有在规定的时间消费就会被处理掉删除改消息">队列过期是指：所有发送到这个队列的消息如果没有在规定的时间消费就会被处理掉（删除改消息）<a hidden class="anchor" aria-hidden="true" href="#队列过期是指所有发送到这个队列的消息如果没有在规定的时间消费就会被处理掉删除改消息">#</a></h5>
+<h4 id="消息过期">消息过期<a hidden class="anchor" aria-hidden="true" href="#消息过期">#</a></h4>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">ttl</span><span class="p">(){</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">//        消息后处理对象，设置一些消息的参数信息</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">MessagePostProcessor</span><span class="w"> </span><span class="n">messagePostProcessor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">MessagePostProcessor</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nd">@Override</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="n">Message</span><span class="w"> </span><span class="nf">postProcessMessage</span><span class="p">(</span><span class="n">Message</span><span class="w"> </span><span class="n">message</span><span class="p">)</span><span class="w"> </span><span class="kd">throws</span><span class="w"> </span><span class="n">AmqpException</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">//                设置message的信息</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">message</span><span class="p">.</span><span class="na">getMessageProperties</span><span class="p">().</span><span class="na">setExpiration</span><span class="p">(</span><span class="s">&#34;10000&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">//                返回该消息</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">return</span><span class="w"> </span><span class="n">message</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">};</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">//        如果同时设置了队列过期时间和消息单独过期时间，以时间短的为准。如下列情况是到十秒同时过期</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">//        队列过期会将队列内的消息全部移除</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">//        消息过期后，只有消息在队列的顶端才会判断其是否过期，过期则移除</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">//        队列过期</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">rabbitTemplate</span><span class="p">.</span><span class="na">convertAndSend</span><span class="p">(</span><span class="s">&#34;exchange_ttl&#34;</span><span class="p">,</span><span class="s">&#34;q.aa&#34;</span><span class="p">,</span><span class="s">&#34;ttl&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">//        消息单独过期</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">rabbitTemplate</span><span class="p">.</span><span class="na">convertAndSend</span><span class="p">(</span><span class="s">&#34;exchange_ttl&#34;</span><span class="p">,</span><span class="s">&#34;q.aa&#34;</span><span class="p">,</span><span class="s">&#34;ttl&#34;</span><span class="p">,</span><span class="n">messagePostProcessor</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h5 id="消息过期是指发送的这一条消息会被设置过期时间正常发送的消息则不会过期">消息过期是指：发送的这一条消息会被设置过期时间，正常发送的消息则不会过期。<a hidden class="anchor" aria-hidden="true" href="#消息过期是指发送的这一条消息会被设置过期时间正常发送的消息则不会过期">#</a></h5></blockquote>
+<blockquote>
+<h2 id="dlx死信">dlx死信<a hidden class="anchor" aria-hidden="true" href="#dlx死信">#</a></h2>
+<h3 id="造成死信的原因">造成死信的原因：<a hidden class="anchor" aria-hidden="true" href="#造成死信的原因">#</a></h3>
+<ul>
+<li>
+<p>过期时间</p>
+</li>
+<li>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="c1">//.ttl(10000)    </span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">one_dlx</span><span class="p">(){</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">rabbitTemplate</span><span class="p">.</span><span class="na">convertAndSend</span><span class="p">(</span><span class="s">&#34;test_exchange_dlx&#34;</span><span class="p">,</span><span class="s">&#34;test_dlx.xx&#34;</span><span class="p">,</span><span class="s">&#34;one_del....&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div></li>
+<li>
+<p>长度限制</p>
+<ul>
+<li>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="c1">//.maxLength(10)	设置最大为10条消息</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">two_dlx</span><span class="p">(){</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">20</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">rabbitTemplate</span><span class="p">.</span><span class="na">convertAndSend</span><span class="p">(</span><span class="s">&#34;test_exchange_dlx&#34;</span><span class="p">,</span><span class="s">&#34;test_dlx.xx&#34;</span><span class="p">,</span><span class="s">&#34;two_del....&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div></li>
+</ul>
+</li>
+<li>
+<p>消息拒收</p>
+<ul>
+<li>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">three_dlx</span><span class="p">(</span><span class="n">Message</span><span class="w"> </span><span class="n">message</span><span class="p">,</span><span class="w"> </span><span class="n">Channel</span><span class="w"> </span><span class="n">channel</span><span class="p">){</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">String</span><span class="p">(</span><span class="n">message</span><span class="p">.</span><span class="na">getBody</span><span class="p">()));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">try</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">channel</span><span class="p">.</span><span class="na">basicNack</span><span class="p">(</span><span class="n">message</span><span class="p">.</span><span class="na">getMessageProperties</span><span class="p">().</span><span class="na">getDeliveryTag</span><span class="p">(),</span><span class="kc">true</span><span class="p">,</span><span class="kc">false</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="n">IOException</span><span class="w"> </span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">e</span><span class="p">.</span><span class="na">printStackTrace</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div></li>
+</ul>
+</li>
+</ul>
+<h4 id="死信配置">死信配置<a hidden class="anchor" aria-hidden="true" href="#死信配置">#</a></h4>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="c1">//    1:声明正常队列和交换机进行绑定</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nd">@Bean</span><span class="p">(</span><span class="s">&#34;test_queue_dlx&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="n">Queue</span><span class="w"> </span><span class="nf">test_queue_dlx</span><span class="p">(){</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">return</span><span class="w"> </span><span class="n">QueueBuilder</span><span class="p">.</span><span class="na">durable</span><span class="p">(</span><span class="s">&#34;test_queue_dlx&#34;</span><span class="p">).</span><span class="na">deadLetterExchange</span><span class="p">(</span><span class="s">&#34;exchange_dlx&#34;</span><span class="p">).</span><span class="na">deadLetterRoutingKey</span><span class="p">(</span><span class="s">&#34;dlx.suibian&#34;</span><span class="p">).</span><span class="na">ttl</span><span class="p">(</span><span class="n">10000</span><span class="p">).</span><span class="na">maxLength</span><span class="p">(</span><span class="n">10</span><span class="p">).</span><span class="na">build</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nd">@Bean</span><span class="p">(</span><span class="s">&#34;test_exchange_dlx&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="n">Exchange</span><span class="w"> </span><span class="nf">test_exchange_dlx</span><span class="p">(){</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">return</span><span class="w"> </span><span class="n">ExchangeBuilder</span><span class="p">.</span><span class="na">topicExchange</span><span class="p">(</span><span class="s">&#34;test_exchange_dlx&#34;</span><span class="p">).</span><span class="na">durable</span><span class="p">(</span><span class="kc">true</span><span class="p">).</span><span class="na">build</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nd">@Bean</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="n">Binding</span><span class="w"> </span><span class="nf">test_binding_dlx</span><span class="p">(</span><span class="nd">@Qualifier</span><span class="p">(</span><span class="s">&#34;test_queue_dlx&#34;</span><span class="p">)</span><span class="n">Queue</span><span class="w"> </span><span class="n">queue</span><span class="p">,</span><span class="nd">@Qualifier</span><span class="p">(</span><span class="s">&#34;test_exchange_dlx&#34;</span><span class="p">)</span><span class="n">Exchange</span><span class="w"> </span><span class="n">exchange</span><span class="p">){</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">return</span><span class="w"> </span><span class="n">BindingBuilder</span><span class="p">.</span><span class="na">bind</span><span class="p">(</span><span class="n">queue</span><span class="p">).</span><span class="na">to</span><span class="p">(</span><span class="n">exchange</span><span class="p">).</span><span class="na">with</span><span class="p">(</span><span class="s">&#34;test_dlx.#&#34;</span><span class="p">).</span><span class="na">noargs</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">//    2.声明死信队列和交换机进行绑定</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nd">@Bean</span><span class="p">(</span><span class="s">&#34;queue_dlx&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="n">Queue</span><span class="w"> </span><span class="nf">queue_dlx</span><span class="p">(){</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">return</span><span class="w"> </span><span class="n">QueueBuilder</span><span class="p">.</span><span class="na">durable</span><span class="p">(</span><span class="s">&#34;queue_dlx&#34;</span><span class="p">).</span><span class="na">build</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nd">@Bean</span><span class="p">(</span><span class="s">&#34;exchange_dlx&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="n">Exchange</span><span class="w"> </span><span class="nf">exchange_dlx</span><span class="p">(){</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">return</span><span class="w"> </span><span class="n">ExchangeBuilder</span><span class="p">.</span><span class="na">topicExchange</span><span class="p">(</span><span class="s">&#34;exchange_dlx&#34;</span><span class="p">).</span><span class="na">durable</span><span class="p">(</span><span class="kc">true</span><span class="p">).</span><span class="na">build</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nd">@Bean</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="n">Binding</span><span class="w"> </span><span class="nf">binding_dlx</span><span class="p">(</span><span class="nd">@Qualifier</span><span class="p">(</span><span class="s">&#34;queue_dlx&#34;</span><span class="p">)</span><span class="n">Queue</span><span class="w"> </span><span class="n">queue</span><span class="p">,</span><span class="nd">@Qualifier</span><span class="p">(</span><span class="s">&#34;exchange_dlx&#34;</span><span class="p">)</span><span class="n">Exchange</span><span class="w"> </span><span class="n">exchange</span><span class="p">){</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">return</span><span class="w"> </span><span class="n">BindingBuilder</span><span class="p">.</span><span class="na">bind</span><span class="p">(</span><span class="n">queue</span><span class="p">).</span><span class="na">to</span><span class="p">(</span><span class="n">exchange</span><span class="p">).</span><span class="na">with</span><span class="p">(</span><span class="s">&#34;dlx.#&#34;</span><span class="p">).</span><span class="na">noargs</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h5 id="死信队列可以理解为是被绑定正常队列的回收站死信队列和正常队列一样一样可以消费其中的消息">死信队列可以理解为是被绑定正常队列的回收站，死信队列和正常队列一样，一样可以消费其中的消息<a hidden class="anchor" aria-hidden="true" href="#死信队列可以理解为是被绑定正常队列的回收站死信队列和正常队列一样一样可以消费其中的消息">#</a></h5></blockquote>
+<blockquote>
+<h2 id="ttldlx延迟队列">ttl+dlx延迟队列<a hidden class="anchor" aria-hidden="true" href="#ttldlx延迟队列">#</a></h2>
+<h4 id="配置">配置<a hidden class="anchor" aria-hidden="true" href="#配置">#</a></h4>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@Bean</span><span class="p">(</span><span class="s">&#34;test_queue_ttl_dlx&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="n">Queue</span><span class="w"> </span><span class="nf">test_queue_ttl_dlx</span><span class="p">(){</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">return</span><span class="w"> </span><span class="n">QueueBuilder</span><span class="p">.</span><span class="na">durable</span><span class="p">(</span><span class="s">&#34;test_queue_ttl_dlx&#34;</span><span class="p">).</span><span class="na">deadLetterExchange</span><span class="p">(</span><span class="s">&#34;exchange_ttl_dlx&#34;</span><span class="p">).</span><span class="na">deadLetterRoutingKey</span><span class="p">(</span><span class="s">&#34;ttl_dlx.suibian&#34;</span><span class="p">).</span><span class="na">ttl</span><span class="p">(</span><span class="n">10000</span><span class="p">).</span><span class="na">build</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nd">@Bean</span><span class="p">(</span><span class="s">&#34;test_exchange_ttl_dlx&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="n">Exchange</span><span class="w"> </span><span class="nf">test_exchange_ttl_dlx</span><span class="p">(){</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">return</span><span class="w"> </span><span class="n">ExchangeBuilder</span><span class="p">.</span><span class="na">topicExchange</span><span class="p">(</span><span class="s">&#34;test_exchange_ttl_dlx&#34;</span><span class="p">).</span><span class="na">durable</span><span class="p">(</span><span class="kc">true</span><span class="p">).</span><span class="na">build</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nd">@Bean</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="n">Binding</span><span class="w"> </span><span class="nf">test_binding_ttl_dlx</span><span class="p">(</span><span class="nd">@Qualifier</span><span class="p">(</span><span class="s">&#34;test_queue_ttl_dlx&#34;</span><span class="p">)</span><span class="n">Queue</span><span class="w"> </span><span class="n">queue</span><span class="p">,</span><span class="nd">@Qualifier</span><span class="p">(</span><span class="s">&#34;test_exchange_ttl_dlx&#34;</span><span class="p">)</span><span class="n">Exchange</span><span class="w"> </span><span class="n">exchange</span><span class="p">){</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">return</span><span class="w"> </span><span class="n">BindingBuilder</span><span class="p">.</span><span class="na">bind</span><span class="p">(</span><span class="n">queue</span><span class="p">).</span><span class="na">to</span><span class="p">(</span><span class="n">exchange</span><span class="p">).</span><span class="na">with</span><span class="p">(</span><span class="s">&#34;test_ttl_dlx.#&#34;</span><span class="p">).</span><span class="na">noargs</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nd">@Bean</span><span class="p">(</span><span class="s">&#34;queue_ttl_dlx&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="n">Queue</span><span class="w"> </span><span class="nf">queue_ttl_ttl_dlx</span><span class="p">(){</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">return</span><span class="w"> </span><span class="n">QueueBuilder</span><span class="p">.</span><span class="na">durable</span><span class="p">(</span><span class="s">&#34;queue_ttl_dlx&#34;</span><span class="p">).</span><span class="na">build</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nd">@Bean</span><span class="p">(</span><span class="s">&#34;exchange_ttl_dlx&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="n">Exchange</span><span class="w"> </span><span class="nf">exchange_ttl_dlx</span><span class="p">(){</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">return</span><span class="w"> </span><span class="n">ExchangeBuilder</span><span class="p">.</span><span class="na">topicExchange</span><span class="p">(</span><span class="s">&#34;exchange_ttl_dlx&#34;</span><span class="p">).</span><span class="na">durable</span><span class="p">(</span><span class="kc">true</span><span class="p">).</span><span class="na">build</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nd">@Bean</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="n">Binding</span><span class="w"> </span><span class="nf">binding_ttl_dlx</span><span class="p">(</span><span class="nd">@Qualifier</span><span class="p">(</span><span class="s">&#34;queue_ttl_dlx&#34;</span><span class="p">)</span><span class="n">Queue</span><span class="w"> </span><span class="n">queue</span><span class="p">,</span><span class="nd">@Qualifier</span><span class="p">(</span><span class="s">&#34;exchange_ttl_dlx&#34;</span><span class="p">)</span><span class="n">Exchange</span><span class="w"> </span><span class="n">exchange</span><span class="p">){</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">return</span><span class="w"> </span><span class="n">BindingBuilder</span><span class="p">.</span><span class="na">bind</span><span class="p">(</span><span class="n">queue</span><span class="p">).</span><span class="na">to</span><span class="p">(</span><span class="n">exchange</span><span class="p">).</span><span class="na">with</span><span class="p">(</span><span class="s">&#34;ttl_dlx.#&#34;</span><span class="p">).</span><span class="na">noargs</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h3 id="生产者-1">生产者<a hidden class="anchor" aria-hidden="true" href="#生产者-1">#</a></h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@GetMapping</span><span class="p">(</span><span class="s">&#34;/ttl_dlx&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nd">@ResponseBody</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">ttl_dlx</span><span class="p">(){</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">10</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">rabbitTemplate</span><span class="p">.</span><span class="na">convertAndSend</span><span class="p">(</span><span class="s">&#34;test_exchange_ttl_dlx&#34;</span><span class="p">,</span><span class="s">&#34;test_ttl_dlx.xx&#34;</span><span class="p">,</span><span class="s">&#34;ttl_dlx...&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h3 id="消费者-1">消费者<a hidden class="anchor" aria-hidden="true" href="#消费者-1">#</a></h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@RabbitListener</span><span class="p">(</span><span class="n">queues</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#34;queue_ttl_dlx&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">ttl_dlx_li</span><span class="p">(</span><span class="n">Message</span><span class="w"> </span><span class="n">message</span><span class="p">,</span><span class="n">Channel</span><span class="w"> </span><span class="n">channel</span><span class="p">){</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">String</span><span class="p">(</span><span class="n">message</span><span class="p">.</span><span class="na">getBody</span><span class="p">()));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">try</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">channel</span><span class="p">.</span><span class="na">basicAck</span><span class="p">(</span><span class="n">message</span><span class="p">.</span><span class="na">getMessageProperties</span><span class="p">().</span><span class="na">getDeliveryTag</span><span class="p">(),</span><span class="kc">true</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="n">IOException</span><span class="w"> </span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">e</span><span class="p">.</span><span class="na">printStackTrace</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h4 id="延迟队列设置队列为过期队列当改消息过期后到绑定的死信队列里面从而实现消息的延迟">延迟队列：设置队列为过期队列，当改消息过期后到绑定的死信队列里面，从而实现消息的延迟<a hidden class="anchor" aria-hidden="true" href="#延迟队列设置队列为过期队列当改消息过期后到绑定的死信队列里面从而实现消息的延迟">#</a></h4></blockquote>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="http://localhost:1313/tags/java/">Java</a></li>
+      <li><a href="http://localhost:1313/tags/spring/">Spring</a></li>
+      <li><a href="http://localhost:1313/tags/springboot/">SpringBoot</a></li>
+      <li><a href="http://localhost:1313/tags/rabbitmq/">RabbitMQ</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="http://localhost:1313/posts/java/springsecurity%E5%8D%95%E7%82%B9%E7%99%BB%E5%BD%95/">
+    <span class="title">« </span>
+    <br>
+    <span>SpringSecurity单点登录</span>
+  </a>
+  <a class="next" href="http://localhost:1313/posts/java/java-rabbitmq/">
+    <span class="title"> »</span>
+    <br>
+    <span>Java RabbitMQ</span>
+  </a>
+</nav>
+
+
+<ul class="share-buttons">
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share springBoot整合rabbitMQ on x"
+            href="https://x.com/intent/tweet/?text=springBoot%e6%95%b4%e5%90%88rabbitMQ&amp;url=http%3a%2f%2flocalhost%3a1313%2fposts%2fjava%2fspringboot%25E6%2595%25B4%25E5%2590%2588rabbitmq%2f&amp;hashtags=java%2cspring%2cspringBoot%2crabbitMQ">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M512 62.554 L 512 449.446 C 512 483.97 483.97 512 449.446 512 L 62.554 512 C 28.03 512 0 483.97 0 449.446 L 0 62.554 C 0 28.03 28.029 0 62.554 0 L 449.446 0 C 483.971 0 512 28.03 512 62.554 Z M 269.951 190.75 L 182.567 75.216 L 56 75.216 L 207.216 272.95 L 63.9 436.783 L 125.266 436.783 L 235.9 310.383 L 332.567 436.783 L 456 436.783 L 298.367 228.367 L 432.367 75.216 L 371.033 75.216 Z M 127.633 110 L 164.101 110 L 383.481 400.065 L 349.5 400.065 Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share springBoot整合rabbitMQ on linkedin"
+            href="https://www.linkedin.com/shareArticle?mini=true&amp;url=http%3a%2f%2flocalhost%3a1313%2fposts%2fjava%2fspringboot%25E6%2595%25B4%25E5%2590%2588rabbitmq%2f&amp;title=springBoot%e6%95%b4%e5%90%88rabbitMQ&amp;summary=springBoot%e6%95%b4%e5%90%88rabbitMQ&amp;source=http%3a%2f%2flocalhost%3a1313%2fposts%2fjava%2fspringboot%25E6%2595%25B4%25E5%2590%2588rabbitmq%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-288.985,423.278l0,-225.717l-75.04,0l0,225.717l75.04,0Zm270.539,0l0,-129.439c0,-69.333 -37.018,-101.586 -86.381,-101.586c-39.804,0 -57.634,21.891 -67.617,37.266l0,-31.958l-75.021,0c0.995,21.181 0,225.717 0,225.717l75.02,0l0,-126.056c0,-6.748 0.486,-13.492 2.474,-18.315c5.414,-13.475 17.767,-27.434 38.494,-27.434c27.135,0 38.007,20.707 38.007,51.037l0,120.768l75.024,0Zm-307.552,-334.556c-25.674,0 -42.448,16.879 -42.448,39.002c0,21.658 16.264,39.002 41.455,39.002l0.484,0c26.165,0 42.452,-17.344 42.452,-39.002c-0.485,-22.092 -16.241,-38.954 -41.943,-39.002Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share springBoot整合rabbitMQ on reddit"
+            href="https://reddit.com/submit?url=http%3a%2f%2flocalhost%3a1313%2fposts%2fjava%2fspringboot%25E6%2595%25B4%25E5%2590%2588rabbitmq%2f&title=springBoot%e6%95%b4%e5%90%88rabbitMQ">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-3.446,265.638c0,-22.964 -18.616,-41.58 -41.58,-41.58c-11.211,0 -21.361,4.457 -28.841,11.666c-28.424,-20.508 -67.586,-33.757 -111.204,-35.278l18.941,-89.121l61.884,13.157c0.756,15.734 13.642,28.29 29.56,28.29c16.407,0 29.706,-13.299 29.706,-29.701c0,-16.403 -13.299,-29.702 -29.706,-29.702c-11.666,0 -21.657,6.792 -26.515,16.578l-69.105,-14.69c-1.922,-0.418 -3.939,-0.042 -5.585,1.036c-1.658,1.073 -2.811,2.761 -3.224,4.686l-21.152,99.438c-44.258,1.228 -84.046,14.494 -112.837,35.232c-7.468,-7.164 -17.589,-11.591 -28.757,-11.591c-22.965,0 -41.585,18.616 -41.585,41.58c0,16.896 10.095,31.41 24.568,37.918c-0.639,4.135 -0.99,8.328 -0.99,12.576c0,63.977 74.469,115.836 166.33,115.836c91.861,0 166.334,-51.859 166.334,-115.836c0,-4.218 -0.347,-8.387 -0.977,-12.493c14.564,-6.47 24.735,-21.034 24.735,-38.001Zm-119.474,108.193c-20.27,20.241 -59.115,21.816 -70.534,21.816c-11.428,0 -50.277,-1.575 -70.522,-21.82c-3.007,-3.008 -3.007,-7.882 0,-10.889c3.003,-2.999 7.882,-3.003 10.885,0c12.777,12.781 40.11,17.317 59.637,17.317c19.522,0 46.86,-4.536 59.657,-17.321c3.016,-2.999 7.886,-2.995 10.885,0.008c3.008,3.011 3.003,7.882 -0.008,10.889Zm-5.23,-48.781c-16.373,0 -29.701,-13.324 -29.701,-29.698c0,-16.381 13.328,-29.714 29.701,-29.714c16.378,0 29.706,13.333 29.706,29.714c0,16.374 -13.328,29.698 -29.706,29.698Zm-160.386,-29.702c0,-16.381 13.328,-29.71 29.714,-29.71c16.369,0 29.689,13.329 29.689,29.71c0,16.373 -13.32,29.693 -29.689,29.693c-16.386,0 -29.714,-13.32 -29.714,-29.693Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share springBoot整合rabbitMQ on facebook"
+            href="https://facebook.com/sharer/sharer.php?u=http%3a%2f%2flocalhost%3a1313%2fposts%2fjava%2fspringboot%25E6%2595%25B4%25E5%2590%2588rabbitmq%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-106.468,0l0,-192.915l66.6,0l12.672,-82.621l-79.272,0l0,-53.617c0,-22.603 11.073,-44.636 46.58,-44.636l36.042,0l0,-70.34c0,0 -32.71,-5.582 -63.982,-5.582c-65.288,0 -107.96,39.569 -107.96,111.204l0,62.971l-72.573,0l0,82.621l72.573,0l0,192.915l-191.104,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share springBoot整合rabbitMQ on whatsapp"
+            href="https://api.whatsapp.com/send?text=springBoot%e6%95%b4%e5%90%88rabbitMQ%20-%20http%3a%2f%2flocalhost%3a1313%2fposts%2fjava%2fspringboot%25E6%2595%25B4%25E5%2590%2588rabbitmq%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-58.673,127.703c-33.842,-33.881 -78.847,-52.548 -126.798,-52.568c-98.799,0 -179.21,80.405 -179.249,179.234c-0.013,31.593 8.241,62.428 23.927,89.612l-25.429,92.884l95.021,-24.925c26.181,14.28 55.659,21.807 85.658,21.816l0.074,0c98.789,0 179.206,-80.413 179.247,-179.243c0.018,-47.895 -18.61,-92.93 -52.451,-126.81Zm-126.797,275.782l-0.06,0c-26.734,-0.01 -52.954,-7.193 -75.828,-20.767l-5.441,-3.229l-56.386,14.792l15.05,-54.977l-3.542,-5.637c-14.913,-23.72 -22.791,-51.136 -22.779,-79.287c0.033,-82.142 66.867,-148.971 149.046,-148.971c39.793,0.014 77.199,15.531 105.329,43.692c28.128,28.16 43.609,65.592 43.594,105.4c-0.034,82.149 -66.866,148.983 -148.983,148.984Zm81.721,-111.581c-4.479,-2.242 -26.499,-13.075 -30.604,-14.571c-4.105,-1.495 -7.091,-2.241 -10.077,2.241c-2.986,4.483 -11.569,14.572 -14.182,17.562c-2.612,2.988 -5.225,3.364 -9.703,1.12c-4.479,-2.241 -18.91,-6.97 -36.017,-22.23c-13.314,-11.876 -22.304,-26.542 -24.916,-31.026c-2.612,-4.484 -0.279,-6.908 1.963,-9.14c2.016,-2.007 4.48,-5.232 6.719,-7.847c2.24,-2.615 2.986,-4.484 4.479,-7.472c1.493,-2.99 0.747,-5.604 -0.374,-7.846c-1.119,-2.241 -10.077,-24.288 -13.809,-33.256c-3.635,-8.733 -7.327,-7.55 -10.077,-7.688c-2.609,-0.13 -5.598,-0.158 -8.583,-0.158c-2.986,0 -7.839,1.121 -11.944,5.604c-4.105,4.484 -15.675,15.32 -15.675,37.364c0,22.046 16.048,43.342 18.287,46.332c2.24,2.99 31.582,48.227 76.511,67.627c10.685,4.615 19.028,7.371 25.533,9.434c10.728,3.41 20.492,2.929 28.209,1.775c8.605,-1.285 26.499,-10.833 30.231,-21.295c3.732,-10.464 3.732,-19.431 2.612,-21.298c-1.119,-1.869 -4.105,-2.99 -8.583,-5.232Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share springBoot整合rabbitMQ on telegram"
+            href="https://telegram.me/share/url?text=springBoot%e6%95%b4%e5%90%88rabbitMQ&amp;url=http%3a%2f%2flocalhost%3a1313%2fposts%2fjava%2fspringboot%25E6%2595%25B4%25E5%2590%2588rabbitmq%2f">
+            <svg version="1.1" xml:space="preserve" viewBox="2 2 28 28" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M26.49,29.86H5.5a3.37,3.37,0,0,1-2.47-1,3.35,3.35,0,0,1-1-2.47V5.48A3.36,3.36,0,0,1,3,3,3.37,3.37,0,0,1,5.5,2h21A3.38,3.38,0,0,1,29,3a3.36,3.36,0,0,1,1,2.46V26.37a3.35,3.35,0,0,1-1,2.47A3.38,3.38,0,0,1,26.49,29.86Zm-5.38-6.71a.79.79,0,0,0,.85-.66L24.73,9.24a.55.55,0,0,0-.18-.46.62.62,0,0,0-.41-.17q-.08,0-16.53,6.11a.59.59,0,0,0-.41.59.57.57,0,0,0,.43.52l4,1.24,1.61,4.83a.62.62,0,0,0,.63.43.56.56,0,0,0,.4-.17L16.54,20l4.09,3A.9.9,0,0,0,21.11,23.15ZM13.8,20.71l-1.21-4q8.72-5.55,8.78-5.55c.15,0,.23,0,.23.16a.18.18,0,0,1,0,.06s-2.51,2.3-7.52,6.8Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share springBoot整合rabbitMQ on ycombinator"
+            href="https://news.ycombinator.com/submitlink?t=springBoot%e6%95%b4%e5%90%88rabbitMQ&u=http%3a%2f%2flocalhost%3a1313%2fposts%2fjava%2fspringboot%25E6%2595%25B4%25E5%2590%2588rabbitmq%2f">
+            <svg version="1.1" xml:space="preserve" width="30px" height="30px" viewBox="0 0 512 512" fill="currentColor"
+                xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape">
+                <path
+                    d="M449.446 0C483.971 0 512 28.03 512 62.554L512 449.446C512 483.97 483.97 512 449.446 512L62.554 512C28.03 512 0 483.97 0 449.446L0 62.554C0 28.03 28.029 0 62.554 0L449.446 0ZM183.8767 87.9921H121.8427L230.6673 292.4508V424.0079H281.3328V292.4508L390.1575 87.9921H328.1233L256 238.2489z" />
+            </svg>
+        </a>
+    </li>
+</ul>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2025 <a href="http://localhost:1313/">loveyu233</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

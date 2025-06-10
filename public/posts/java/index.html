@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>java | loveyu233</title>
+<meta name="keywords" content="">
+<meta name="description" content="java - loveyu233">
+<meta name="author" content="loveyu233">
+<link rel="canonical" href="http://localhost:1313/posts/java/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.e13ff79a7b90ac30a7f805291f902c75095888118dcb1fccef74850e837f1253.css" integrity="sha256-4T/3mnuQrDCn&#43;AUpH5AsdQlYiBGNyx/M73SFDoN/ElM=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" type="application/rss+xml" href="http://localhost:1313/posts/java/index.xml">
+<link rel="alternate" hreflang="zh-cn" href="http://localhost:1313/posts/java/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:url" content="http://localhost:1313/posts/java/">
+  <meta property="og:site_name" content="loveyu233">
+  <meta property="og:title" content="java">
+  <meta property="og:description" content="我的个人博客 - 分享技术与生活">
+  <meta property="og:locale" content="zh-cn">
+  <meta property="og:type" content="website">
+      <meta property="og:image" content="http://localhost:1313/images/cover.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://localhost:1313/images/cover.png">
+<meta name="twitter:title" content="java">
+<meta name="twitter:description" content="我的个人博客 - 分享技术与生活">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "http://localhost:1313/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "java",
+      "item": "http://localhost:1313/posts/java/"
+    }
+  ]
+}
+</script>
+</head>
+
+<body class="list" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="loveyu233 (Alt + H)">loveyu233</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/archives" title="归档">
+                    <span>归档</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/search/" title="搜索">
+                    <span>搜索</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/tags/" title="标签">
+                    <span>标签</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main"> 
+<header class="page-header"><div class="breadcrumbs"><a href="http://localhost:1313/">Home</a>&nbsp;»&nbsp;<a href="http://localhost:1313/posts/">Posts</a></div>
+  <h1>
+    java
+    <a href="/posts/java/index.xml" title="RSS" aria-label="RSS">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" height="23">
+        <path d="M4 11a9 9 0 0 1 9 9" />
+        <path d="M4 4a16 16 0 0 1 16 16" />
+        <circle cx="5" cy="19" r="1" />
+      </svg>
+    </a>
+  </h1>
+</header>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">SpringCloud
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Spring Cloud Alibaba 介绍 Spring Cloud Alibaba 致力于提供微服务开发的一站式解决方案。此项目包含开发分布式应用微服务的必需组件，方便开发者通过 Spring Cloud 编程模型轻松使用这些组件来开发分布式应用服务。
+依托 Spring Cloud Alibaba，您只需要添加一些注解和少量配置，就可以将 Spring Cloud 应用接入阿里微服务解决方案，通过阿里中间件来迅速搭建分布式应用系统。
+主要功能 服务限流降级：默认支持 WebServlet、WebFlux, OpenFeign、RestTemplate、Spring Cloud Gateway, Zuul, Dubbo 和 RocketMQ 限流降级功能的接入，可以在运行时通过控制台实时修改限流降级规则，还支持查看限流降级 Metrics 监控。 服务注册与发现：适配 Spring Cloud 服务注册与发现标准，默认集成了 Ribbon 的支持。 分布式配置管理：支持分布式系统中的外部化配置，配置更改时自动刷新。 消息驱动能力：基于 Spring Cloud Stream 为微服务应用构建消息驱动能力。 分布式事务：使用 @GlobalTransactional 注解， 高效并且对业务零侵入地解决分布式事务问题。 阿里云对象存储：阿里云提供的海量、安全、低成本、高可靠的云存储服务。支持在任何应用、任何时间、任何地点存储和访问任意类型的数据。 分布式任务调度：提供秒级、精准、高可靠、高可用的定时（基于 Cron 表达式）任务调度服务。同时提供分布式的任务执行模型，如网格任务。网格任务支持海量子任务均匀分配到所有 Worker（schedulerx-client）上执行。 阿里云短信服务：覆盖全球的短信服务，友好、高效、智能的互联化通讯能力，帮助企业迅速搭建客户触达通道 组件 Sentinel：把流量作为切入点，从流量控制、熔断降级、系统负载保护等多个维度保护服务的稳定性。
+Nacos：一个更易于构建云原生应用的动态服务发现、配置管理和服务管理平台。
+RocketMQ：一款开源的分布式消息系统，基于高可用分布式集群技术，提供低延时的、高可靠的消息发布与订阅服务。
+Dubbo：Apache Dubbo™ 是一款高性能 Java RPC 框架。
+Seata：阿里巴巴开源产品，一个易于使用的高性能微服务分布式事务解决方案。
+Alibaba Cloud OSS: 阿里云对象存储服务（Object Storage Service，简称 OSS），是阿里云提供的海量、安全、低成本、高可靠的云存储服务。您可以在任何应用、任何时间、任何地点存储和访问任意类型的数据。
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2019-12-01 11:18:26 +0800 CST'>December 1, 2019</span>&nbsp;·&nbsp;10 min&nbsp;·&nbsp;loveyu</footer>
+  <a class="entry-link" aria-label="post link to SpringCloud" href="http://localhost:1313/posts/java/springcloud/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">SpringSecurity单点登录
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Spring Security pom.xml： &lt;parent&gt; &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt; &lt;artifactId&gt;spring-boot-starter-parent&lt;/artifactId&gt; &lt;version&gt;2.5.4&lt;/version&gt; &lt;relativePath/&gt; &lt;/parent&gt; &lt;dependencies&gt; &lt;dependency&gt; &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt; &lt;artifactId&gt;spring-boot-starter-security&lt;/artifactId&gt; &lt;/dependency&gt; &lt;dependency&gt; &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt; &lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt; &lt;/dependency&gt; &lt;dependency&gt; &lt;groupId&gt;mysql&lt;/groupId&gt; &lt;artifactId&gt;mysql-connector-java&lt;/artifactId&gt; &lt;scope&gt;runtime&lt;/scope&gt; &lt;/dependency&gt; &lt;dependency&gt; &lt;groupId&gt;org.projectlombok&lt;/groupId&gt; &lt;artifactId&gt;lombok&lt;/artifactId&gt; &lt;optional&gt;true&lt;/optional&gt; &lt;/dependency&gt; &lt;dependency&gt; &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt; &lt;artifactId&gt;spring-boot-starter-test&lt;/artifactId&gt; &lt;scope&gt;test&lt;/scope&gt; &lt;/dependency&gt; &lt;dependency&gt; &lt;groupId&gt;org.springframework.security&lt;/groupId&gt; &lt;artifactId&gt;spring-security-test&lt;/artifactId&gt; &lt;scope&gt;test&lt;/scope&gt; &lt;/dependency&gt; &lt;dependency&gt; &lt;groupId&gt;com.baomidou&lt;/groupId&gt; &lt;artifactId&gt;mybatis-plus-boot-starter&lt;/artifactId&gt; &lt;version&gt;3.4.2&lt;/version&gt; &lt;/dependency&gt; &lt;dependency&gt; &lt;groupId&gt;org.slf4j&lt;/groupId&gt; &lt;artifactId&gt;slf4j-api&lt;/artifactId&gt; &lt;/dependency&gt; &lt;dependency&gt; &lt;groupId&gt;org.thymeleaf.extras&lt;/groupId&gt; &lt;artifactId&gt;thymeleaf-extras-springsecurity5&lt;/artifactId&gt; &lt;/dependency&gt; &lt;dependency&gt; &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt; &lt;artifactId&gt;spring-boot-starter-thymeleaf&lt;/artifactId&gt; &lt;/dependency&gt; &lt;/dependencies&gt; thymeleaf-extras-springsecurity5：thymeleaf和Spring security的整合jar包
+application.yml： spring: datasource: username: root password: Hzyy1214 driverClassName: com.mysql.cj.jdbc.Driver url: jdbc:mysql://localhost:3306/springSecurityTest?useUnicode=true&amp;characterEncoding=utf8&amp;zeroDateTimeBehavior=convertToNull&amp;useSSL=true&amp;serverTimezone=GMT%2B8 配置数据库
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2019-11-29 11:31:34 +0800 CST'>November 29, 2019</span>&nbsp;·&nbsp;7 min&nbsp;·&nbsp;loveyu</footer>
+  <a class="entry-link" aria-label="post link to SpringSecurity单点登录" href="http://localhost:1313/posts/java/springsecurity%E5%8D%95%E7%82%B9%E7%99%BB%E5%BD%95/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">springBoot整合rabbitMQ
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>SpringBoot 整合 rabbitMQ mac安装brew install rabbitmq
+application.yml设置 spring: rabbitmq: host: 47.115.50.193 username: admin password: admin 创建交换机，消息队列，并进行绑定 @Configuration public class RabbitMQConfig { private static final String TOPIC_NAME = &#34;top_name&#34;; private static final String QUEUE_NAME = &#34;queue_name&#34;; //交换机 @Bean(&#34;queueEx&#34;) public Exchange queueEx(){ return ExchangeBuilder.topicExchange(TOPIC_NAME).durable(true).build(); } //消息队列 @Bean(&#34;queue&#34;) public Queue queue(){ return QueueBuilder.durable(QUEUE_NAME).build(); } //绑定 @Bean public Binding queueExchange(@Qualifier(&#34;queueEx&#34;) Exchange exchange,@Qualifier(&#34;queue&#34;) Queue queue){ return BindingBuilder.bind(queue).to(exchange).with(&#34;a.#&#34;).noargs(); } } @Autowired private RabbitTemplate rabbitTemplate; 生产者 public void q(){ rabbitTemplate.convertAndSend(&#34;top_name&#34;,&#34;a.qwe&#34;,&#34;rabbitmqboot&#34;); } 消费者 @RabbitListener(queues = &#34;queue_name&#34;) //设置要监听的消息队列 public void listenerq(Message message,Channel channel){ System.out.println(new String(message.getBody())); } 消息可靠投递 Application.yml配置 rabbitmq: publisher-confirm-type: correlated Java代码配置 package com.xiaoyu.config; import org.springframework.amqp.core.ReturnedMessage; import org.springframework.amqp.rabbit.connection.CorrelationData; import org.springframework.amqp.rabbit.core.RabbitTemplate; import org.springframework.beans.factory.annotation.Autowired; import org.springframework.stereotype.Component; import javax.annotation.PostConstruct; @Component public class PubConfirmAndReturn implements RabbitTemplate.ReturnsCallback,RabbitTemplate.ConfirmCallback{ @Autowired RabbitTemplate rabbitTemplate; @PostConstruct public void init(){ rabbitTemplate.setReturnsCallback(this); rabbitTemplate.setConfirmCallback(this); } //confirm确定模式 @Override public void confirm(CorrelationData correlationData, boolean b, String s) { if (b) { System.out.println(&#34;消息发送到exchange成功&#34;); } else { System.out.println(&#34;失败原因：&#34;&#43; s); } } //return退回模式 @Override public void returnedMessage(ReturnedMessage returnedMessage) { System.out.println(&#34;消息送exchange到queue失败，详情为：&#34;); System.out.println(&#34;消息主体 message : &#34;&#43;new String(returnedMessage.getMessage().getBody())); System.out.println(&#34;描述：&#34;&#43; returnedMessage.toString()); System.out.println(&#34;消息使用的交换器 exchange : &#34;&#43; returnedMessage.getExchange()); System.out.println(&#34;消息使用的路由键 routing : &#34;&#43; returnedMessage.getRoutingKey()); } } rabbitmq 整个消息投递的路径为： producer—&gt;rabbitmq broker—&gt;exchange—&gt;queue—&gt;consumer 消息从 producer 到 exchange 则会返回一个 confirmCallback 确认模式。 消息从 exchange–&gt;queue 投递失败则会返回一个 returnCallback退回模式 。
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2019-10-12 11:28:07 +0800 CST'>October 12, 2019</span>&nbsp;·&nbsp;3 min&nbsp;·&nbsp;loveyu</footer>
+  <a class="entry-link" aria-label="post link to springBoot整合rabbitMQ" href="http://localhost:1313/posts/java/springboot%E6%95%B4%E5%90%88rabbitmq/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Java RabbitMQ
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>安装： rpm -Uvh https://download.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+yum install erlang
+yum install socat
+rpm -Uvh https://github.com/rabbitmq/rabbitmq-server/releases/download/v3.8.0/rabbitmq-server-3.8.0-1.el7.noarch.rpm
+rpm –import https://www.rabbitmq.com/rabbitmq-release-signing-key.asc
+yum install rabbitmq-server-3.6.8-1.el7.noarch.rpm
+service rabbitmq-server start
+service rabbitmq-server status
+rabbitmq-service start 开始服务
+Rabbitmq-service stop 停止服务
+rabbitmq-server -detached 后台运行
+hello world简单模式 一对一，一个生产者对应一个消费者。 简单模式不需要创建交换机，但是有交换机，是使用的默认交换机。 生产者 package com.xiaoyu.test1; import com.rabbitmq.client.*; import java.io.IOException; import java.util.concurrent.TimeoutException; public class Pro_HelloWorld { public static void main(String[] args) throws IOException, TimeoutException { //配置连接信息 ConnectionFactory factory = new ConnectionFactory(); factory.setHost(&#34;47.115.50.193&#34;);	//ip factory.setPort(5672);	//端口号 factory.setVirtualHost(&#34;/&#34;);	//虚拟机 factory.setUsername(&#34;admin&#34;);	//账户 factory.setPassword(&#34;admin&#34;);	//密码 //配置管道 Connection connection = factory.newConnection(); Channel channel = connection.createChannel(); //队列创建 channel.queueDeclare(&#34;helloworld&#34;, true, false, false, null); /*	参数： queue：队列名称，如果没有这个队列则创建这个队列，有则不会创建。 durable：是否持久化，当mq重启之后是否还有消息。 exclusive：是否独占，只能有一个消费者监听这队列，当connection关闭时，是否删除队列。 autoDelete：是否自动删除，让没有consumer时，自动删除掉。 arguments：参数。 */ //发送消息 String body = &#34;hell rabbitMQ&#34;; channel.basicPublish(&#34;&#34;, &#34;helloworld&#34;, null, body.getBytes()); /*	参数： exchange：交换机名称，简单模式下交换机会使用默认的 ‘’ ’‘。 routingKey：路由名称，使用默认交换机的话路由名称要和队列名称一致。 props：配置信息。 body：发送的消息数据。 */ //关闭 channel.close(); connection.close(); } } 消费者 package com.xiaoyu.test1; import com.rabbitmq.client.*; import java.io.IOException; import java.util.concurrent.TimeoutException; public class Con_HelloWorld { public static void main(String[] args) throws IOException, TimeoutException { //创建连接工厂 ConnectionFactory factory = new ConnectionFactory(); factory.setHost(&#34;47.115.50.193&#34;); factory.setPort(5672); factory.setVirtualHost(&#34;/&#34;); factory.setUsername(&#34;admin&#34;); factory.setPassword(&#34;admin&#34;); //创建连接 Connection connection = factory.newConnection(); //创建管道 Channel channel = connection.createChannel(); //配置信息 channel.queueDeclare(&#34;hello_world1&#34;, true, false, false, null); //消息接收到时自动执行该方法 Consumer consumer = new DefaultConsumer(channel) { @Override public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException { System.out.println(&#34;consumerTag标识:&#34; &#43; consumerTag); System.out.println(&#34;Exchange管道:&#34; &#43; envelope.getExchange()); System.out.println(&#34;RoutingKey路由key:&#34; &#43; envelope.getRoutingKey()); System.out.println(&#34;properties属性:&#34; &#43; properties); System.out.println(&#34;body消息:&#34; &#43; new String(body)); } }; //设置接受那个管道 channel.basicConsume(&#34;hello_world1&#34;, true, consumer); } } Work queues工作队列模式 一对多，一个生产者多个消费者。 工作模式不需要创建交换机，但是有交换机，是使用的默认交换机。 生产者
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2019-09-24 19:38:37 +0800 CST'>September 24, 2019</span>&nbsp;·&nbsp;4 min&nbsp;·&nbsp;loveyu</footer>
+  <a class="entry-link" aria-label="post link to Java RabbitMQ" href="http://localhost:1313/posts/java/java-rabbitmq/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Shiro
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>基本框架搭建： 创建UserRealm.java 继承AuthorizingRealm 实现AuthorizationInfo()：授权方法。 实现AuthenticationInfo()：认证方法。 创建ShiroConfig.java配置类 @bean加载UserRealm()：加载UserRealm.java到Spring。 @bean加载DefaultWebSecurityManager()：shiro管理器。 @bean加载ShiroFilterFactoryBean()：shiro过滤器。 根据需要可加载的方法： ShiroDialect()：用来整合shiro thymeleaf。 HashedCredentialsMatcher()：设置加密。 EhCacheManager()：缓存。 DefaultWebSessionManager()：设置session管理器。 UserRealm.java具体方法实现 授权方法： @Override protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) { SimpleAuthorizationInfo info = new SimpleAuthorizationInfo(); Subject subject = SecurityUtils.getSubject(); Users users = (Users)subject.getPrincipal(); info.addStringPermission(users.getPerms()); return info; } SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();授权方法。 Subject subject = SecurityUtils.getSubject();获取subject。 Users users = (Users)subject.getPrincipal();通过subject获取到当前用户。 users是由AuthenticationInfo()认证方法的SimpleAuthenticationInfo通过参数传入。 info.addStringPermission(users.getPerms());根据用户权限添加权限。 return info即可 认证方法： @Autowired UserServiceImpl userService; @Override protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException { UsernamePasswordToken upToken = (UsernamePasswordToken) token; Users users = userService.queryUserByName(upToken.getUsername()); if (users == null) { return null; } Subject subject = SecurityUtils.getSubject(); Session session = subject.getSession(); session.setAttribute(&#34;loginuser&#34;,users); //ByteSource.Util.bytes(users.getSalt()):告诉shiro加盐的盐值 if (users.getSalt() != null){//必须判断是否有盐值不然会报错：null return new SimpleAuthenticationInfo(users,users.getPassword(),ByteSource.Util.bytes(users.getSalt()),&#34;&#34;); } return new SimpleAuthenticationInfo(users,users.getPassword(),&#34;&#34;); } UsernamePasswordToken upToken = (UsernamePasswordToken) token;获取账号密码令牌 @autoWired属性注入UserServiceImpl Users users = userService.queryUserByName(upToken.getUsername())； upToken.getUsername()：获取当前用户名称。 userService.queryUserByName：查询该用户，并返回。 判断users是否为空，如果为空返回null。shiro会自动报错：没有用户错误。 Subject subject = SecurityUtils.getSubject();获取subject。 Session session = subject.getSession();获取session。 session.setAttribute(“loginuser”,users);把用户信息传入session方便后边使用。 users.getSalt() != null;判断该用户是否有加盐。 不等于null代表加盐，需要返回盐值。 return new SimpleAuthenticationInfo(users,users.getPassword(),ByteSource.Util.bytes(users.getSalt()),&#34;&#34;); 第一个参数为传递该用户的信息 第二个参数：users.getPassword()：传入密码由shiro来判断密码是否正确。 第三个参数：ByteSource.Util.bytes(users.getSalt())：传入盐值 第四个参数：当前的realm名称 等于null代表没有加盐，不需要返回盐值。 return new SimpleAuthenticationInfo(users,users.getPassword(),&#34;&#34;); Controller.java @RequestMapping(&#34;/login&#34;) public ModelAndView log(String username,String password,boolean rememberme){ ModelAndView modelAndView = new ModelAndView(); //获取当前用户 Subject subject = SecurityUtils.getSubject(); //封装用户的登录数据 UsernamePasswordToken token = new UsernamePasswordToken(username, password); try { subject.login(token);//执行登录方法，如果没有异常就ok token.setRememberMe(rememberme); modelAndView.setViewName(&#34;/index&#34;); } catch (UnknownAccountException e) {//用户名不存在异常 modelAndView.addObject(&#34;msgUP&#34;,&#34;用户名不存在或者错误&#34;); modelAndView.setViewName(&#34;/login&#34;); System.out.println(e); } catch (IncorrectCredentialsException e) {//密码不存在 modelAndView.addObject(&#34;msgUP&#34;,&#34;密码不存在&#34;); modelAndView.setViewName(&#34;/login&#34;); System.out.println(e); } return modelAndView; } 登录过程 登录页面填写账号密码. 传入到对应的映射方法. 方法调用subject.login(token)进行登录. 跳转到认证方法方法进行账号密码判断. 判断之后返回到映射方法. 映射方法根据返回结果进行对应逻辑. ShiroConfig.java配置类 UserRealm()：UserRealm方法 @Bean public UserRealm userRealm(@Qualifier(&#34;hashedCredentialsMatcher&#34;)HashedCredentialsMatcher hashedCredentialsMatcher) { UserRealm userRealm = new UserRealm(); userRealm.setCredentialsMatcher(hashedCredentialsMatcher);//添加密码设置。 return userRealm; } 该方法的主要作用就是把UserRealm.java类加载到Spring容器 DefaultWebSecurityManager()：shiro安全管理器方法 @Bean() public DefaultWebSecurityManager getDefaultWebSecurityManager( @Qualifier(&#34;userRealm&#34;) UserRealm userRealm, @Qualifier(&#34;ehCacheManager&#34;)EhCacheManager ehCacheManager, @Qualifier(&#34;defaultWebSessionManager&#34;)DefaultWebSessionManager defaultWebSessionManager, @Qualifier(&#34;cookieRememberMeManager&#34;)CookieRememberMeManager meManager) { DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager(); //关联userRealm securityManager.setRealm(userRealm); //添加第三方缓存 securityManager.setCacheManager(ehCacheManager); //添加设置的sessionManager securityManager.setSessionManager(defaultWebSessionManager); //添加cookie管理器 securityManager.setRememberMeManager(meManager); return securityManager; } 该方法作用为： 添加关联userRealm 添加第三方缓存管理器 添加自定义设置的session管理器 ShiroFilterFactoryBean()：shiro权限过滤器方法 @Bean public ShiroFilterFactoryBean shiroFilterFactoryBean(@Qualifier(&#34;getDefaultWebSecurityManager&#34;) DefaultWebSecurityManager defa) { ShiroFilterFactoryBean bean = new ShiroFilterFactoryBean(); //设置安全管理器 bean.setSecurityManager(defa); //添加shiro的内置过滤器 /* shiro已经定义的关键字 anon:无需认证就可以访问 authc：必须认证才能访问 user：必须拥有记住我功能才能访问 perms：拥有对某个资源的权限才能访问 logout:退出当前登录 */ //设置访问拦截 LinkedHashMap&lt;String, String&gt; hashMap = new LinkedHashMap&lt;&gt;(); //授权 hashMap.put(&#34;/user/add&#34;,&#34;perms[user:add]&#34;); hashMap.put(&#34;/user/update&#34;,&#34;perms[user:update]&#34;); //授权要在认证前边 hashMap.put(&#34;/user/*&#34;, &#34;authc&#34;); //退出登录,/logout不需要具体的映射方法，只要跳转到这个路径就退出。 hashMap.put(&#34;/logout&#34;,&#34;logout&#34;); bean.setFilterChainDefinitionMap(hashMap); //设置登录页面 bean.setLoginUrl(&#34;/toLogin&#34;); //设置未授权请求 bean.setUnauthorizedUrl(&#34;/unauthorized&#34;); bean.setSuccessUrl(&#34;/toLogin&#34;); return bean; } 安全管理器需要添加到该bean： bean.setSecurityManager(defa); 授权map集合的key为资源，value为访问这些资源要携带的权限字符串。 退出登录的路径只需要和前端的退出按钮上的路径一样即可，不需要具体的映射实现方法。 未授权请求就是当该用户没有该权限时访问该资源就会跳转到这个路径的前端页面上，这个需要映射方法的实现来进行跳转 授权和认证的区别： 认证就是必须要登录账号才可以访问 授权时必须要用户登录并携带该权限才可以访问 ShiroDialect()：用来整合shiro thymeleaf方法 @Bean public ShiroDialect shiroDialect(){ return new ShiroDialect(); } &lt;h1&gt;首页&lt;/h1&gt; &lt;!-- th:if=&#34;${session.loginuser!=null}&#34;判断是否有这个session值--&gt; &lt;h2 th:if=&#34;${session.loginuser!=null}&#34;&gt;&lt;a href=&#34;/logout&#34;&gt;退出&lt;/a&gt;&lt;/h2&gt; &lt;h2 th:if=&#34;${session.loginuser==null}&#34;&gt;&lt;a href=&#34;/toLogin&#34;&gt;登录&lt;/a&gt;&lt;/h2&gt; &lt;p th:text=&#34;${msg}&#34;&gt;&lt;/p&gt; &lt;!-- shiro:hasPermission=&#34;user:add&#34;检查是否有这个权限--&gt; &lt;div shiro:hasPermission=&#34;user:add&#34;&gt; &lt;a th:href=&#34;@{/user/add}&#34;&gt;add&lt;/a&gt; &lt;/div&gt; &lt;div shiro:hasPermission=&#34;user:update&#34;&gt; &lt;a th:href=&#34;@{/user/update}&#34;&gt;update&lt;/a&gt; &lt;/div&gt; &lt;!-- thymeleaf和shiro的名称空间--&gt; xmlns:th=&#34;http://www.thymeleaf.org&#34; xmlns:shiro=&#34;http://www.pollix.at/thymeleaf/shiro&#34; &lt;!-- pom.xml坐标 --&gt; &lt;dependency&gt; &lt;groupId&gt;com.github.theborakompanioni&lt;/groupId&gt; &lt;artifactId&gt;thymeleaf-extras-shiro&lt;/artifactId&gt; &lt;version&gt;2.0.0&lt;/version&gt; &lt;/dependency&gt; HashedCredentialsMatcher()：设置加密方法 @Bean(name = &#34;hashedCredentialsMatcher&#34;) public HashedCredentialsMatcher shiro(){ HashedCredentialsMatcher credentialsMatcher = new HashedCredentialsMatcher(); //加密方式 credentialsMatcher.setHashAlgorithmName(&#34;md5&#34;); //散列次数，次数整个项目要统一不然会报错 credentialsMatcher.setHashIterations(1); return credentialsMatcher; } @RequestMapping(&#34;/adduser&#34;) @ResponseBody public String md5(String username,String password){ //在注册是对密码进行加密 Md5Hash md5Hash = new Md5Hash(password); //加盐加密 int num = new Random().nextInt(90000)&#43;10000; Md5Hash md5Hash1 = new Md5Hash(password, num&#43;&#34;&#34;); //加盐加密加散列 val md5Hash2 = new Md5Hash(password, num &#43; &#34;&#34;, 3); //第二种方法进行加密,和Md5Hash一样是重载形式的 final SimpleHash md5 = new SimpleHash(&#34;md5&#34;, password, num &#43; &#34;&#34;, 3); return &#34;只加密&#34;&#43;md5Hash.toString()&#43;&#34;&lt;br&gt;&#34; &#43;&#34;加盐加密：&#34;&#43;md5Hash1.toString()&#43;&#34;盐值：&#34;&#43;num&#43;&#34;&lt;br&gt;&#34; &#43;&#34;加盐加密加散列&#34;&#43;md5Hash2.toString()&#43;&#34;盐值：&#34;&#43;num&#43;&#34;&lt;br&gt;&#34; &#43;&#34;SimpleHash加密&#34;&#43;md5.toString()&#43;&#34;盐值：&#34;&#43;num; } 这两个的散列次数要一致。 散列不一定要随机数字，也可以是字符串，或者用户名称，或者自定义。 shiro默认的加盐是加在密码前边，这个可以自定义实现。 加盐必须是字符串形式不然会报错。 EhCacheManager()：缓存方法 @Bean public EhCacheManager ehCacheManager(){ EhCacheManager ehCacheManager = new EhCacheManager(); ehCacheManager.setCacheManagerConfigFile(&#34;classpath:ehcache.xml&#34;); return ehCacheManager; } &lt;dependency&gt; &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt; &lt;artifactId&gt;spring-boot-starter-cache&lt;/artifactId&gt; &lt;/dependency&gt; &lt;dependency&gt; &lt;groupId&gt;net.sf.ehcache&lt;/groupId&gt; &lt;artifactId&gt;ehcache&lt;/artifactId&gt; &lt;/dependency&gt; &lt;dependency&gt; &lt;groupId&gt;org.apache.shiro&lt;/groupId&gt; &lt;artifactId&gt;shiro-ehcache&lt;/artifactId&gt; &lt;version&gt;1.7.1&lt;/version&gt; &lt;/dependency&gt; &lt;?xml version=&#34;1.0&#34; encoding=&#34;utf-8&#34; ?&gt; &lt;ehcache updateCheck=&#34;false&#34; dynamicConfig=&#34;false&#34;&gt; &lt;diskStore path=&#34;&#34;/&gt; &lt;cache name=&#34;user&#34; maxEntriesLocalHeap=&#34;1000&#34;/&gt; &lt;defaultCache name=&#34;defaultCache&#34; maxElementsInMemory=&#34;1000&#34; maxElementsOnDisk=&#34;10000000&#34; eternal=&#34;false&#34; overflowToDisk=&#34;false&#34; diskPersistent=&#34;false&#34; timeToIdleSeconds=&#34;120&#34; timeToLiveSeconds=&#34;120&#34; diskExpiryThreadIntervalSeconds=&#34;120&#34; memoryStoreEvictionPolicy=&#34;LRU&#34; /&gt; &lt;/ehcache&gt; 第一步导入坐标。
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2019-08-04 19:38:37 +0800 CST'>August 4, 2019</span>&nbsp;·&nbsp;4 min&nbsp;·&nbsp;loveyu</footer>
+  <a class="entry-link" aria-label="post link to Shiro" href="http://localhost:1313/posts/java/shiro/"></a>
+</article>
+<footer class="page-footer">
+  <nav class="pagination">
+    <a class="next" href="http://localhost:1313/posts/java/page/2/">&nbsp;2/2&nbsp;»
+    </a>
+  </nav>
+</footer>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2025 <a href="http://localhost:1313/">loveyu233</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

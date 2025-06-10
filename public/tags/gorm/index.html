@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Gorm | loveyu233</title>
+<meta name="keywords" content="">
+<meta name="description" content="我的个人博客 - 分享技术与生活">
+<meta name="author" content="loveyu233">
+<link rel="canonical" href="http://localhost:1313/tags/gorm/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.e13ff79a7b90ac30a7f805291f902c75095888118dcb1fccef74850e837f1253.css" integrity="sha256-4T/3mnuQrDCn&#43;AUpH5AsdQlYiBGNyx/M73SFDoN/ElM=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" type="application/rss+xml" href="http://localhost:1313/tags/gorm/index.xml">
+<link rel="alternate" hreflang="zh-cn" href="http://localhost:1313/tags/gorm/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:url" content="http://localhost:1313/tags/gorm/">
+  <meta property="og:site_name" content="loveyu233">
+  <meta property="og:title" content="Gorm">
+  <meta property="og:description" content="我的个人博客 - 分享技术与生活">
+  <meta property="og:locale" content="zh-cn">
+  <meta property="og:type" content="website">
+      <meta property="og:image" content="http://localhost:1313/images/cover.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://localhost:1313/images/cover.png">
+<meta name="twitter:title" content="Gorm">
+<meta name="twitter:description" content="我的个人博客 - 分享技术与生活">
+
+</head>
+
+<body class="list" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="loveyu233 (Alt + H)">loveyu233</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/archives" title="归档">
+                    <span>归档</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/search/" title="搜索">
+                    <span>搜索</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/tags/" title="标签">
+                    <span>标签</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main"> 
+<header class="page-header"><div class="breadcrumbs"><a href="http://localhost:1313/">Home</a>&nbsp;»&nbsp;<a href="http://localhost:1313/tags/">Tags</a></div>
+  <h1>
+    Gorm
+    <a href="/tags/gorm/index.xml" title="RSS" aria-label="RSS">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" height="23">
+        <path d="M4 11a9 9 0 0 1 9 9" />
+        <path d="M4 4a16 16 0 0 1 16 16" />
+        <circle cx="5" cy="19" r="1" />
+      </svg>
+    </a>
+  </h1>
+</header>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Gorm
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>一对多 gorm:“column:a;unique”
+unique: 唯一约束
+gorm:“foreignKey:C;references:A”
+foreignKey: 设置外键
+references: 重写引用
+引用的字段必须是唯一约束,不然使用AutoMigrate 创建表会报错, 这里的引用意思是查询Stu时会查询出Demo中C和A相同的数据
+D []Demo 不会创建为表字段,不用设置gorm:&#34;-&#34;
+在查询时必须使用Preload(&#34;外键字段名称,这里为D&#34;) 加载,不然查询出的结果中没有该数据
+如果有多重引用例如Demo中的E则Preload(&#34;D.E&#34;)
+opt.DB.Model(project). Preload(&#34;Lists&#34;). Preload(&#34;Lists.HTTPS&#34;).Preload(&#34;Lists.GRPCS&#34;). Where(&#34;id = ?&#34;, 1).Take(project) type Stu struct { A string `json:&#34;a,omitempty&#34; gorm:&#34;column:a;unique&#34;` B string `json:&#34;b,omitempty&#34; gorm:&#34;column:b&#34;` D []Demo `json:&#34;d,omitempty&#34; gorm:&#34;foreignKey:C;references:A&#34;` } type Demo struct { C string `json:&#34;c,omitempty&#34; gorm:&#34;column:c&#34;` D string `json:&#34;d,omitempty&#34; gorm:&#34;column:d&#34;` } 多态关联 gorm:&#34;polymorphic:Owner;polymorphicValue:master&#34; 使用polymorphicValue更改多态类型的值,这里指定为master则Type字段的值就为master
+type Comment struct { ID uint `json:&#34;id,omitempty&#34; gorm:&#34;column:id;unique&#34;` Body string `json:&#34;body,omitempty&#34; gorm:&#34;column:body&#34;` CommentableID uint `json:&#34;commentable_id,omitempty&#34; gorm:&#34;column:commentable_id&#34;` CommentableType string `json:&#34;commentable_type,omitempty&#34; gorm:&#34;column:commentable_type&#34;` Commentable interface{} `json:&#34;commentable,omitempty&#34; gorm:&#34;-&#34;` } type Post struct { ID uint `json:&#34;id,omitempty&#34; gorm:&#34;column:id;unique&#34;` Title string `json:&#34;title,omitempty&#34; gorm:&#34;column:title&#34;` Comments []*Comment `gorm:&#34;polymorphic:Commentable;&#34; json:&#34;comments,omitempty&#34;` } type Video struct { ID uint `json:&#34;id,omitempty&#34; gorm:&#34;column:id;unique&#34;` Title string `json:&#34;title,omitempty&#34; gorm:&#34;column:title&#34;` Comments []*Comment `gorm:&#34;polymorphic:Commentable;&#34; json:&#34;comments,omitempty&#34;` } ============== 创建数据 ================== opt.DB.AutoMigrate(&amp;Comment{}, &amp;Post{}, &amp;Video{}) post := &amp;Post{ Title: &#34;帖子1&#34;, } c := &amp;Comment{ Body: &#34;评论2&#34;, } post.Comments = append(post.Comments, c) opt.DB.Create(post) ============== 添加数据 ================== post := new(Post) opt.DB.Preload(&#34;Comments&#34;).Where(&#34;id = ?&#34;, 1).Find(post) for i := range post.Comments { t.Log(post.Comments[i]) } post.Comments = append(post.Comments, &amp;Comment{Body: &#34;新的评论&#34;}) opt.DB.Save(post) Save和Create区别 Create:只能用于创建新的数据
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-07-21 11:18:37 +0800 CST'>July 21, 2023</span>&nbsp;·&nbsp;2 min&nbsp;·&nbsp;loveyu</footer>
+  <a class="entry-link" aria-label="post link to Gorm" href="http://localhost:1313/posts/databases/gorm/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Gorm
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>关联关系 关联关系必须要求外键
+关联标签 标签 描述 foreignKey 指定当前模型的列作为连接表的外键 references 指定引用表的列名，其将被映射为连接表外键 polymorphic 指定多态类型，比如模型名 polymorphicValue 指定多态值、默认表名 many2many 指定连接表表名 joinForeignKey 指定连接表的外键列名，其将被映射到当前表 joinReferences 指定连接表的外键列名，其将被映射到引用表 constraint 关系约束，例如：OnUpdate、OnDelete 无关联 CRUD DB.Where(&#34;id &gt; ?&#34;, 2).Select(&#34;id&#34;, &#34;name&#34;).Order(&#34;id&#34;).Find(&amp;users) BeLongs To：属于 belongs to 会与另一个模型建立了一对一的连接。 这种模型的每一个实例都“属于”另一个模型的一个实例。
+// `User` 属于 `Company`，`CompanyID` 是外键 type User struct { gorm.Model Name string CompanyID int Company Company } type Company struct { ID int Name string } 重写外键 foreignKey：重写外键，可以不用外键表&#43;ID这种形式
+默认外键是外键表的名称&#43;ID，创建顺序为先创建User后创建CreditCard；DB.AutoMigrate(&amp;User{}, &amp;CreditCard{})
+type User struct { gorm.Model Name string CompanyRefer int Company Company `gorm:&#34;foreignKey:CompanyRefer&#34;` // 使用 CompanyRefer 作为外键 } type Company struct { ID int Name string } 重写引用 references：重写引用，默认引用的是ID，使用references可以更改引用；
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2020-10-04 19:38:37 +0800 CST'>October 4, 2020</span>&nbsp;·&nbsp;5 min&nbsp;·&nbsp;loveyu</footer>
+  <a class="entry-link" aria-label="post link to Gorm" href="http://localhost:1313/posts/go/gorm/"></a>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2025 <a href="http://localhost:1313/">loveyu233</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

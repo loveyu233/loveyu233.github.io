@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Go | loveyu233</title>
+<meta name="keywords" content="">
+<meta name="description" content="我的个人博客 - 分享技术与生活">
+<meta name="author" content="loveyu233">
+<link rel="canonical" href="http://localhost:1313/categories/go/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.e13ff79a7b90ac30a7f805291f902c75095888118dcb1fccef74850e837f1253.css" integrity="sha256-4T/3mnuQrDCn&#43;AUpH5AsdQlYiBGNyx/M73SFDoN/ElM=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" type="application/rss+xml" href="http://localhost:1313/categories/go/index.xml">
+<link rel="alternate" hreflang="zh-cn" href="http://localhost:1313/categories/go/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:url" content="http://localhost:1313/categories/go/">
+  <meta property="og:site_name" content="loveyu233">
+  <meta property="og:title" content="Go">
+  <meta property="og:description" content="我的个人博客 - 分享技术与生活">
+  <meta property="og:locale" content="zh-cn">
+  <meta property="og:type" content="website">
+      <meta property="og:image" content="http://localhost:1313/images/cover.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://localhost:1313/images/cover.png">
+<meta name="twitter:title" content="Go">
+<meta name="twitter:description" content="我的个人博客 - 分享技术与生活">
+
+</head>
+
+<body class="list" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="loveyu233 (Alt + H)">loveyu233</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/archives" title="归档">
+                    <span>归档</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/search/" title="搜索">
+                    <span>搜索</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/tags/" title="标签">
+                    <span>标签</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main"> 
+<header class="page-header"><div class="breadcrumbs"><a href="http://localhost:1313/">Home</a>&nbsp;»&nbsp;<a href="http://localhost:1313/categories/">Categories</a></div>
+  <h1>
+    Go
+    <a href="/categories/go/index.xml" title="RSS" aria-label="RSS">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" height="23">
+        <path d="M4 11a9 9 0 0 1 9 9" />
+        <path d="M4 4a16 16 0 0 1 16 16" />
+        <circle cx="5" cy="19" r="1" />
+      </svg>
+    </a>
+  </h1>
+</header>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">ES接口
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>ES及接口 v1.0.0
+Base URLs:
+测试环境: http://127.0.0.1:9200 索引 PUT 创建索引 PUT /test1
+返回示例
+200 Response
+{ &#34;acknowledged&#34;: true, &#34;shards_acknowledged&#34;: true, &#34;index&#34;: &#34;string&#34; } 返回结果 状态码 状态码含义 说明 数据模型 200 OK 成功 Inline 返回数据结构 状态码 200
+名称 类型 必选 约束 中文名 说明 » acknowledged boolean true none 响应结果 none » shards_acknowledged boolean true none 分片结果 none » index string true none 索引名称 none DELETE 删除索引 DELETE /test1
+返回示例
+200 Response
+{} 返回结果 状态码 状态码含义 说明 数据模型 200 OK 成功 Inline 返回数据结构 GET 查询索引 GET /test
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-08-11 11:18:37 +0800 CST'>August 11, 2023</span>&nbsp;·&nbsp;6 min&nbsp;·&nbsp;loveyu</footer>
+  <a class="entry-link" aria-label="post link to ES接口" href="http://localhost:1313/posts/databases/es%E5%8F%8A%E6%8E%A5%E5%8F%A3/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Gorm
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>一对多 gorm:“column:a;unique”
+unique: 唯一约束
+gorm:“foreignKey:C;references:A”
+foreignKey: 设置外键
+references: 重写引用
+引用的字段必须是唯一约束,不然使用AutoMigrate 创建表会报错, 这里的引用意思是查询Stu时会查询出Demo中C和A相同的数据
+D []Demo 不会创建为表字段,不用设置gorm:&#34;-&#34;
+在查询时必须使用Preload(&#34;外键字段名称,这里为D&#34;) 加载,不然查询出的结果中没有该数据
+如果有多重引用例如Demo中的E则Preload(&#34;D.E&#34;)
+opt.DB.Model(project). Preload(&#34;Lists&#34;). Preload(&#34;Lists.HTTPS&#34;).Preload(&#34;Lists.GRPCS&#34;). Where(&#34;id = ?&#34;, 1).Take(project) type Stu struct { A string `json:&#34;a,omitempty&#34; gorm:&#34;column:a;unique&#34;` B string `json:&#34;b,omitempty&#34; gorm:&#34;column:b&#34;` D []Demo `json:&#34;d,omitempty&#34; gorm:&#34;foreignKey:C;references:A&#34;` } type Demo struct { C string `json:&#34;c,omitempty&#34; gorm:&#34;column:c&#34;` D string `json:&#34;d,omitempty&#34; gorm:&#34;column:d&#34;` } 多态关联 gorm:&#34;polymorphic:Owner;polymorphicValue:master&#34; 使用polymorphicValue更改多态类型的值,这里指定为master则Type字段的值就为master
+type Comment struct { ID uint `json:&#34;id,omitempty&#34; gorm:&#34;column:id;unique&#34;` Body string `json:&#34;body,omitempty&#34; gorm:&#34;column:body&#34;` CommentableID uint `json:&#34;commentable_id,omitempty&#34; gorm:&#34;column:commentable_id&#34;` CommentableType string `json:&#34;commentable_type,omitempty&#34; gorm:&#34;column:commentable_type&#34;` Commentable interface{} `json:&#34;commentable,omitempty&#34; gorm:&#34;-&#34;` } type Post struct { ID uint `json:&#34;id,omitempty&#34; gorm:&#34;column:id;unique&#34;` Title string `json:&#34;title,omitempty&#34; gorm:&#34;column:title&#34;` Comments []*Comment `gorm:&#34;polymorphic:Commentable;&#34; json:&#34;comments,omitempty&#34;` } type Video struct { ID uint `json:&#34;id,omitempty&#34; gorm:&#34;column:id;unique&#34;` Title string `json:&#34;title,omitempty&#34; gorm:&#34;column:title&#34;` Comments []*Comment `gorm:&#34;polymorphic:Commentable;&#34; json:&#34;comments,omitempty&#34;` } ============== 创建数据 ================== opt.DB.AutoMigrate(&amp;Comment{}, &amp;Post{}, &amp;Video{}) post := &amp;Post{ Title: &#34;帖子1&#34;, } c := &amp;Comment{ Body: &#34;评论2&#34;, } post.Comments = append(post.Comments, c) opt.DB.Create(post) ============== 添加数据 ================== post := new(Post) opt.DB.Preload(&#34;Comments&#34;).Where(&#34;id = ?&#34;, 1).Find(post) for i := range post.Comments { t.Log(post.Comments[i]) } post.Comments = append(post.Comments, &amp;Comment{Body: &#34;新的评论&#34;}) opt.DB.Save(post) Save和Create区别 Create:只能用于创建新的数据
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-07-21 11:18:37 +0800 CST'>July 21, 2023</span>&nbsp;·&nbsp;2 min&nbsp;·&nbsp;loveyu</footer>
+  <a class="entry-link" aria-label="post link to Gorm" href="http://localhost:1313/posts/databases/gorm/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">pprof
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>go test [包路径] [选项] -v：输出详细的测试日志，包括每个测试函数的名称和执行结果。 -run &lt;正则表达式&gt;：指定要运行的测试函数或测试组的正则表达式。 -cover：计算测试覆盖率，并显示每个文件的覆盖率百分比。 -bench &lt;正则表达式&gt;：运行性能基准测试，并显示基准测试的结果。 -timeout &lt;时长&gt;：设置超时时间，单个测试的最大执行时间。 -count &lt;次数&gt;：执行测试的次数，默认为 1 次。 -benchmem 打印出申请内存的次数。一般用于简单的性能测试，不会导出数据文件。 -blockprofile block.out 将协程的阻塞数据写入特定的文件（block.out）。如果-c，则写成二进制文件。 -cpuprofile cpu.out 将协程的CPU使用数据写入特定的文件（cpu.out）。如果-c，则写成二进制文件。 -memprofile mem.out 将协程的内存申请数据写入特定的文件（mem.out）。如果-c，则写成二进制文件。 -mutexprofile mutex.out 将协程的互斥数据写入特定的文件（mutex.out）。如果-c，则写成二进制文件。 -trace trace.out 将执行调用链写入特定文件（trace.out）。 例如，要运行当前目录下所有测试文件的测试，可以执行以下命令：
+bashCopy Codego test 如果你只想运行某个特定包的测试，可以指定包的导入路径：
+bashCopy Codego test github.com/example/package 你还可以使用 -run 标志来选择性地运行特定的测试函数或测试组。例如，下面的命令将运行名称中包含 “TestFoo” 的测试函数：
+bashCopy Codego test -run TestFoo 如果你想在测试运行时生成并查看测试覆盖率报告，可以使用 -cover 标志：
+bashCopy Codego test -cover 项目配置 在项目中导入 _ &#34;net/http/pprof&#34; 启动http服务 http.ListenAndServe(&#34;:6060&#34;, nil) 访问网址 http://27.0.0.1:6060/debug/pprof allocs：查看过去所有内存分配的样本（历史累计）。 block：查看导致阻塞同步的堆栈跟踪（历史累计）。 cmdline： 当前程序的命令行的完整调用路径（从程序一开始运行时决定）。 goroutine：查看当前所有运行的 goroutines 堆栈跟踪（实时变化）。 heap：查看活动对象的内存分配情况（实时变化）。 mutex：查看导致互斥锁的竞争持有者的堆栈跟踪（历史累计）。 profile： 默认进行 30s 的 CPU Profiling，得到一个分析用的 profile 文件（从开始分析，到分析结束）。 threadcreate：查看创建新 OS 线程的堆栈跟踪（一般没啥用）。 默认情况下是不追踪block和mutex的信息,开启方式:
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-07-15 11:18:37 +0800 CST'>July 15, 2023</span>&nbsp;·&nbsp;2 min&nbsp;·&nbsp;loveyu</footer>
+  <a class="entry-link" aria-label="post link to pprof" href="http://localhost:1313/posts/go/gotoolpprof%E4%BD%BF%E7%94%A8/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">git项目使用
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>代码合并前 git add xxx 添加到暂存区
+git commit -m ‘xxx’ 添加到本地仓库，必须添加对应的描述信息：[feat, fix, chore, refactory, update]
+feat：表示新增功能（feature）。当你添加新功能或实现一个新的需求时，使用该状态。 fix：表示修复问题（bug fix）。当你修复代码中的错误、缺陷或漏洞时，使用该状态。 chore：表示杂项任务（chore）。当你进行一些琐碎的、非功能性的变更或工作时，比如构建过程的改进、库/依赖项的更新等，使用该状态。 refactor：表示重构代码（refactor）。当你对现有代码进行重构或优化，而不引入新功能或修复问题时，使用该状态。重构旨在改进代码结构、可读性或性能，而不会改变其行为。 update：表示更新内容。当你对现有文档、配置文件、资源文件或其他非代码文件进行更新时，使用该状态。 xxx: add xxxx, add xxx
+git commit -m &#39;feat: add new grpc method: ListUser&#39; git commit -m &#39;fix: #9119 (用户列表没有用户状态)&#39; git commit -m &#39;chore: .gitlab-ci.yml use new builder tag&#39; git commit -m &#39;refactory: grpc method ListUser&#39; git commit -m &#39;update: grpc method ListUser add cache&#39;
+git push origin HEAD:dev-xxx 这个 Git 命令 git push origin HEAD:dev-xxx 表示将当前分支的最新提交推送到名为 dev-xxx 的远程分支。
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-07-11 11:18:37 +0800 CST'>July 11, 2023</span>&nbsp;·&nbsp;7 min&nbsp;·&nbsp;loveyu</footer>
+  <a class="entry-link" aria-label="post link to git项目使用" href="http://localhost:1313/posts/other/git%E9%A1%B9%E7%9B%AE%E4%BD%BF%E7%94%A8/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">fiber基础
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>获取参数 Params: 获取url参数
+Query: 获取get请求参数
+Get: 获取请求头参数
+FormValue: 获取表单参数
+BodyParser: 获取json格式参数
+FormFile: 获取文件类型参数, 配合SaveFile使用
+APP Name: 给路由起一个名字
+GetRoute: 获取指定name的路由信息
+Stack: 获取全部的路由信息
+Mount: 挂载
+MountPath: 获取挂载后的路由path地址
+GetRoutes: 参数为true过滤中间件,false则不过滤
+ListenTLS: 用于设置https, 参数分别为地址,pem,key
+hooks := app.Hooks():
+onRoute 是请求路由注册时的钩子函数切片。可以通过 app.OnRoute() 方法向切片中添加钩子函数，这些函数将在每次调用 app.Method() 注册路由时触发。
+onName 是命名路由注册时的钩子函数切片。可以通过 app.OnName() 方法向切片中添加钩子函数，这些函数将在每次调用 app.Get(&#34;/path&#34;, handler).Name(“name”) 设置命名路由时触发。
+onGroup 是路由组注册时的钩子函数切片。可以通过 app.OnGroup() 方法向切片中添加钩子函数，这些函数将在每次调用 app.Group(&#34;/prefix&#34;) 创建路由组时触发。
+onGroupName 是命名路由组注册时的钩子函数切片。可以通过 app.OnGroupName() 方法向切片中添加钩子函数，这些函数将在每次调用 app.Group(&#34;/prefix&#34;).Name(“name”) 设置命名路由组时触发。
+onListen 是应用程序监听端口时的钩子函数切片。可以通过 app.OnListen() 方法向切片中添加钩子函数，这些函数将在调用 app.Listen(address) 时触发。
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-07-10 11:18:37 +0800 CST'>July 10, 2023</span>&nbsp;·&nbsp;1 min&nbsp;·&nbsp;loveyu</footer>
+  <a class="entry-link" aria-label="post link to fiber基础" href="http://localhost:1313/posts/go/fiber%E7%AC%94%E8%AE%B0/"></a>
+</article>
+<footer class="page-footer">
+  <nav class="pagination">
+    <a class="prev" href="http://localhost:1313/categories/go/page/2/">
+      «&nbsp;&nbsp;2/8
+    </a>
+    <a class="next" href="http://localhost:1313/categories/go/page/4/">&nbsp;4/8&nbsp;»
+    </a>
+  </nav>
+</footer>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2025 <a href="http://localhost:1313/">loveyu233</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>
