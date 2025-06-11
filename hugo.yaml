@@ -74,12 +74,17 @@ params:
   ShowToc: true
   images: ["images/cover.png"]
 
+  # 日期格式配置 - 添加这些配置来显示数字日期
+  DateFormat: "2006-01-02"  # 归档页面日期格式
+  displayFullDate: true     # 显示完整日期
+  formatDates: "2006-01-02" # 通用日期格式
+
   profileMode:
     enabled: true  # 如果要启用个人资料模式，改为 true
     title: (〃'▽'〃)
     imageUrl: "img/title.gif"  # 你的头像路径
     imageUrl: "img/title.gif"
-    subtitle: "🧨子曰：“学而时习之，不亦说乎？有朋自远方来，不亦乐乎？人不知而不愠，不亦君子乎？” "
+    subtitle: "🧨子曰："学而时习之，不亦说乎？有朋自远方来，不亦乐乎？人不知而不愠，不亦君子乎？" "
     buttons:
       - name: 🐹 Golang
         url: posts/go
