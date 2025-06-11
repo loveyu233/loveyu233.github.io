@@ -84,7 +84,7 @@ params:
     title: (〃'▽'〃)
     imageUrl: "img/title.gif"  # 你的头像路径
     imageUrl: "img/title.gif"
-    subtitle: "🧨子曰："学而时习之，不亦说乎？有朋自远方来，不亦乐乎？人不知而不愠，不亦君子乎？" "
+    subtitle: "🧨子曰：“学而时习之，不亦说乎？有朋自远方来，不亦乐乎？人不知而不愠，不亦君子乎？” "
     buttons:
       - name: 🐹 Golang
         url: posts/go
