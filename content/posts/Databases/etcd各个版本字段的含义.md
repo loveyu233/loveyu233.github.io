@@ -1,6 +1,6 @@
 ---
-date = '2025-06-11T10:08:27+08:00'
-title = 'Etcd各个版本字段的含义'
+date: '2025-06-11T10:08:27+08:00'
+title: 'Etcd各个版本字段的含义'
 author: ["loveyu"]
 draft: false
 categories: 
