@@ -1,0 +1,149 @@
+baseURL: "https://loveyu233.github.io/"  # 改为你的域名
+title: loveyu233  # 改为你的博客标题
+theme: [paperMod]
+
+# 设置默认语言为中文
+languageCode: 'zh-cn'
+defaultContentLanguage: 'zh-cn'
+
+enableInlineShortcodes: true
+enableRobotsTXT: true
+buildDrafts: false
+buildFuture: false
+buildExpired: false
+enableEmoji: true
+pygmentsUseClasses: true
+mainsections: ["posts", "papermod"]
+
+minify:
+  disableXML: true
+
+pagination:
+  disableAliases: false
+  pagerSize: 5
+
+# 移除多语言配置，只保留中文
+languages:
+  zh-cn:
+    languageName: "中文"
+    weight: 1
+    taxonomies:
+      category: categories
+      tag: tags
+      series: series
+    menu:
+      main:
+        - name: 归档
+          url: archives
+          weight: 5
+        - name: 搜索
+          url: search/
+          weight: 10
+        - name: 标签
+          url: tags/
+          weight: 10
+        # - name: 关于
+        #   url: about/
+        #   weight: 20
+    # params:
+    #   homeInfoParams:
+    #     Title: "欢迎来到我的博客 👋"
+    #     Content: "这里分享技术和生活的点点滴滴"
+
+outputs:
+  home:
+    - HTML
+    - RSS
+    - JSON
+
+params:
+  env: production
+  description: "我的个人博客 - 分享技术与生活"
+  author: loveyu233  # 改为你的名字
+
+  defaultTheme: auto
+  ShowShareButtons: true
+  ShowReadingTime: true
+  displayFullLangName: true
+  ShowPostNavLinks: true
+  ShowBreadCrumbs: true
+  ShowCodeCopyButtons: true
+  ShowRssButtonInSectionTermList: true
+  ShowAllPagesInArchive: true
+  ShowPageNums: true
+  ShowToc: true
+  images: ["images/cover.png"]
+
+  # 日期格式配置 - 添加这些配置来显示数字日期
+  DateFormat: "2006-01-02"  # 归档页面日期格式
+  displayFullDate: true     # 显示完整日期
+  formatDates: "2006-01-02" # 通用日期格式
+
+  profileMode:
+    enabled: true  # 如果要启用个人资料模式，改为 true
+    title: (〃'▽'〃)
+    imageUrl: "img/title.gif"  # 你的头像路径
+    imageUrl: "img/title.gif"
+    subtitle: "🧨子曰：“学而时习之，不亦说乎？有朋自远方来，不亦乐乎？人不知而不愠，不亦君子乎？” "
+    buttons:
+      - name: 🐹 Golang
+        url: posts/go
+      - name: ☕ Java
+        url: posts/java
+      - name: 📊 Databases
+        url: posts/databases
+      - name: 🎨 FrontEnd
+        url: posts/frontend/
+      - name: 🛠️ Other
+        url: posts/other
+
+  # homeInfoParams:
+  #   Title: "你好，我是 XXX 👋"
+  #   Content: >
+  #     欢迎来到我的个人博客！
+      
+  #     - 🚀 在这里我会分享技术文章、学习笔记和生活感悟
+      
+  #     - 💡 希望我的内容能对你有所帮助
+      
+  #     - 🎯 让我们一起学习，共同进步！
+
+  socialIcons:
+    - name: github
+      title: 在GitHub上查看
+      url: "https://github.com/loveyu233"  # 改为你的GitHub
+
+  # editPost:
+  #   URL: "https://github.com/yourusername/blog/tree/main/content"  # 改为你的仓库
+  #   Text: "编辑此页"
+  #   appendFilePath: true
+
+  # 搜索配置
+  fuseOpts:
+    isCaseSensitive: false
+    shouldSort: true
+    location: 0
+    distance: 1000
+    threshold: 0.4
+    minMatchCharLength: 0
+    keys: ["title", "permalink", "summary", "content"]
+
+markup:
+  goldmark:
+    renderer:
+      unsafe: true
+  highlight:
+    noClasses: false
+    style: github
+
+# 如果需要分析工具
+# params:
+#   analytics:
+#     google:
+#       SiteVerificationTag: "你的Google验证码"
+
+services:
+  instagram:
+    disableInlineCSS: true
+  x:
+    disableInlineCSS: true

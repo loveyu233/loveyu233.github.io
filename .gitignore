@@ -1,0 +1,14 @@
+# IntelliJ project files
+.idea
+.DS_Store
+/.vscode
+*.iml
+tmp
+
+*.log
+*.exe
+.dockerignore
+
+test
+
+public
