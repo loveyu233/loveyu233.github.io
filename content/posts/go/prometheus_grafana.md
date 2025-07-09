@@ -3,12 +3,9 @@ title: "Prometheus_grafana"
 date: 2025-07-09T09:40:58+08:00
 author: ["loveyu"]
 draft: false
-categories: 
+categories:
 - go
-- grpc
-tags: 
-- 可视化
-- 链路追踪
+tags:
 - prometheus
 - grafana
 ---
