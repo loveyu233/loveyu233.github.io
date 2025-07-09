@@ -1,5 +1,5 @@
 ---
-title: "Prometheus_grafana"
+title: "go服务监控"
 date: 2025-07-09T09:40:58+08:00
 author: ["loveyu"]
 draft: false
